@@ -1,0 +1,10 @@
+/*! Copyright iamsee::ql_os@truesign 真实印记团队 inc. */
+
+body {
+  font: Helvetica, sans-serif;
+  color: #999;
+}
+.logo {
+  width: 40px;
+  height: 40px;
+}

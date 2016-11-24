@@ -1,0 +1,54 @@
+[16:35:38][ALERT][Royal_Prof_TimeStack:63]: TimeStack:
+|--CONNECTION:1229:__construct:mysql
+ 
+[16:35:38][ALERT][Royal_Prof_TimeStack:63]: TimeStack:
+|--SQL:97:query:{"sql":"show tables like 'db_server'","values":null}
+ 
+[16:36:00][ALERT][Royal_Prof_TimeStack:63]: TimeStack:
+|--CONNECTION:76:__construct:mysql
+ 
+[16:36:00][ALERT][Royal_Prof_TimeStack:63]: TimeStack:
+|--SQL:77:query:{"sql":"show tables like 'db_server'","values":null}
+ 
+[16:36:02][ALERT][Royal_Prof_TimeStack:63]: TimeStack:
+|--SQL:1650:query:{"sql":"CREATE TABLE `db_server`(\n`document_id` int  primary key auto_increment,\n`db_group` varchar(100) default ''   ,\n`db_desc` varchar(100) default ''   ,\n`db_type` varchar(20) default ''   ,\n`db_host` varchar(100) default ''   ,\n`db_username` varchar(30) default ''   ,\n`db_password` varchar(60) default ''   ,\n`db_add_auth` varchar(255) default ''   ,\n`tunnel_add_auth` varchar(255) default ''   ,\n`online_status` varchar(100) default ''   ,\n`auth_time` datetime default '0000-00-00 00:00:00'   ,\n`create_time` int default 0   ,\n`update_time` int default 0   \n) ENGINE=InnoDB DEFAULT CHARSET=utf8","values":null}
+ 
+[16:36:02][ALERT][Royal_Prof_TimeStack:63]: TimeStack:
+|--SQL:44:query:{"sql":"show tables like 'db_server'","values":null}
+ 
+[16:36:02][ALERT][Royal_Prof_TimeStack:63]: TimeStack:
+|--SQL:49:query:{"sql":"show keys in `db_server`","values":null}
+ 
+[16:36:58][ALERT][Royal_Prof_TimeStack:63]: TimeStack:
+|--CONNECTION:106:__construct:mysql
+ 
+[16:36:59][ALERT][Royal_Prof_TimeStack:63]: TimeStack:
+|--SQL:46:query:{"sql":"show tables like 'db_server'","values":null}
+ 
+[16:36:59][ALERT][Royal_Prof_TimeStack:63]: TimeStack:
+|--SQL:53:query:{"sql":"desc `db_server`","values":null}
+ 
+[16:37:00][ALERT][Royal_Prof_TimeStack:63]: TimeStack:
+|--SQL:1591:query:{"sql":"ALTER TABLE `db_server` ADD COLUMN `id` int, DROP COLUMN `document_id`","values":null}
+ 
+[16:37:00][ALERT][Royal_Prof_TimeStack:63]: TimeStack:
+|--SQL:46:query:{"sql":"show tables like 'db_server'","values":null}
+ 
+[16:37:00][ALERT][Royal_Prof_TimeStack:63]: TimeStack:
+|--SQL:47:query:{"sql":"show keys in `db_server`","values":null}
+ 
+[16:37:17][ALERT][Royal_Prof_TimeStack:63]: TimeStack:
+|--CONNECTION:137:__construct:mysql
+ 
+[16:37:17][ALERT][Royal_Prof_TimeStack:63]: TimeStack:
+|--SQL:49:query:{"sql":"show tables like 'db_server'","values":null}
+ 
+[16:37:17][ALERT][Royal_Prof_TimeStack:63]: TimeStack:
+|--SQL:305:query:{"sql":"CREATE TABLE `db_server`(\n`id` int  primary key auto_increment,\n`db_group` varchar(100) default ''   ,\n`db_desc` varchar(100) default ''   ,\n`db_type` varchar(20) default ''   ,\n`db_host` varchar(100) default ''   ,\n`db_username` varchar(30) default ''   ,\n`db_password` varchar(60) default ''   ,\n`db_add_auth` varchar(255) default ''   ,\n`tunnel_add_auth` varchar(255) default ''   ,\n`online_status` varchar(100) default ''   ,\n`auth_time` datetime default '0000-00-00 00:00:00'   ,\n`create_time` int default 0   ,\n`update_time` int default 0   \n) ENGINE=InnoDB DEFAULT CHARSET=utf8","values":null}
+ 
+[16:37:17][ALERT][Royal_Prof_TimeStack:63]: TimeStack:
+|--SQL:48:query:{"sql":"show tables like 'db_server'","values":null}
+ 
+[16:37:17][ALERT][Royal_Prof_TimeStack:63]: TimeStack:
+|--SQL:50:query:{"sql":"show keys in `db_server`","values":null}
+ 

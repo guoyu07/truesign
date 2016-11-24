@@ -1,0 +1,231 @@
+[00:56:19][INFO][Royal_Prof_TimeStack:65]: Take:242ms 
+[00:56:20][INFO][Royal_Data_MySQL:494]: SQL_QUERY {"sql":"show tables like 'db_server'","values":null,"ip":null}
+[00:56:20][INFO][Royal_Prof_TimeStack:65]: Take:68ms 
+[00:59:13][INFO][Royal_Prof_TimeStack:65]: Take:1286ms 
+[00:59:13][INFO][Royal_Data_MySQL:494]: SQL_QUERY {"sql":"show tables like 'db_server'","values":null,"ip":null}
+[00:59:13][INFO][Royal_Prof_TimeStack:65]: Take:58ms 
+[00:59:23][INFO][Royal_Prof_TimeStack:65]: Take:102ms 
+[00:59:23][INFO][Royal_Data_MySQL:494]: SQL_QUERY {"sql":"show tables like 'db_server'","values":null,"ip":null}
+[00:59:23][INFO][Royal_Prof_TimeStack:65]: Take:61ms 
+[01:00:05][INFO][Royal_Prof_TimeStack:65]: Take:117ms 
+[01:00:05][INFO][Royal_Data_MySQL:494]: SQL_QUERY {"sql":"show tables like 'db_server'","values":null,"ip":null}
+[01:00:05][INFO][Royal_Prof_TimeStack:65]: Take:68ms 
+[01:00:47][INFO][Royal_Prof_TimeStack:65]: Take:139ms 
+[01:00:47][INFO][Royal_Data_MySQL:494]: SQL_QUERY {"sql":"show tables like 'db_server'","values":null,"ip":null}
+[01:00:47][INFO][Royal_Prof_TimeStack:65]: Take:63ms 
+[01:01:06][INFO][Royal_Prof_TimeStack:65]: Take:106ms 
+[01:01:06][INFO][Royal_Data_MySQL:494]: SQL_QUERY {"sql":"show tables like 'db_server'","values":null,"ip":null}
+[01:01:06][INFO][Royal_Prof_TimeStack:65]: Take:61ms 
+[01:01:23][INFO][Royal_Prof_TimeStack:65]: Take:94ms 
+[01:01:23][INFO][Royal_Data_MySQL:494]: SQL_QUERY {"sql":"show tables like 'db_server'","values":null,"ip":null}
+[01:01:23][INFO][Royal_Prof_TimeStack:65]: Take:50ms 
+[01:01:41][INFO][Royal_Prof_TimeStack:65]: Take:113ms 
+[01:01:41][INFO][Royal_Data_MySQL:494]: SQL_QUERY {"sql":"show tables like 'db_server'","values":null,"ip":null}
+[01:01:41][INFO][Royal_Prof_TimeStack:65]: Take:65ms 
+[01:02:28][INFO][Royal_Prof_TimeStack:65]: Take:1169ms 
+[01:02:28][INFO][Royal_Data_MySQL:494]: SQL_QUERY {"sql":"show tables like 'db_server'","values":null,"ip":null}
+[01:02:28][INFO][Royal_Prof_TimeStack:65]: Take:53ms 
+[01:03:22][INFO][Royal_Prof_TimeStack:65]: Take:117ms 
+[01:03:22][INFO][Royal_Data_MySQL:494]: SQL_QUERY {"sql":"show tables like 'db_server'","values":null,"ip":null}
+[01:03:22][INFO][Royal_Prof_TimeStack:65]: Take:67ms 
+[01:04:41][INFO][Royal_Prof_TimeStack:65]: Take:194ms 
+[01:04:41][INFO][Royal_Data_MySQL:494]: SQL_QUERY {"sql":"show tables like 'db_server'","values":null,"ip":null}
+[01:04:41][INFO][Royal_Prof_TimeStack:65]: Take:60ms 
+[01:04:47][INFO][Royal_Prof_TimeStack:65]: Take:105ms 
+[01:04:47][INFO][Royal_Data_MySQL:494]: SQL_QUERY {"sql":"show tables like 'db_server'","values":null,"ip":null}
+[01:04:47][INFO][Royal_Prof_TimeStack:65]: Take:60ms 
+[01:06:08][INFO][Royal_Prof_TimeStack:65]: Take:170ms 
+[01:06:08][INFO][Royal_Data_MySQL:494]: SQL_QUERY {"sql":"show tables like 'db_server'","values":null,"ip":null}
+[01:06:08][INFO][Royal_Prof_TimeStack:65]: Take:48ms 
+[01:06:31][INFO][Royal_Prof_TimeStack:65]: Take:89ms 
+[01:06:31][INFO][Royal_Data_MySQL:494]: SQL_QUERY {"sql":"show tables like 'db_server'","values":null,"ip":null}
+[01:06:31][INFO][Royal_Prof_TimeStack:65]: Take:46ms 
+[01:06:53][INFO][Royal_Prof_TimeStack:65]: Take:110ms 
+[01:06:53][INFO][Royal_Data_MySQL:494]: SQL_QUERY {"sql":"show tables like 'db_server'","values":null,"ip":null}
+[01:06:53][INFO][Royal_Prof_TimeStack:65]: Take:62ms 
+[01:48:49][INFO][Royal_Prof_TimeStack:65]: Take:1445ms 
+[01:48:49][INFO][Royal_Data_MySQL:494]: SQL_QUERY {"sql":"show tables like 'db_server'","values":null,"ip":null}
+[01:48:49][INFO][Royal_Prof_TimeStack:65]: Take:58ms 
+[01:48:49][INFO][Royal_Data_MySQL:494]: SQL_QUERY {"sql":"CREATE TABLE `db_server`(\n\n) ENGINE=InnoDB DEFAULT CHARSET=utf8","values":null,"ip":null}
+[01:48:49][ERROR][Royal_Data_MySQL:500]: SQL_QUERY_ERROR {"error":"[object] (PDOException(code: 42000): SQLSTATE[42000]: Syntax error or access violation: 1064 You have an error in your SQL syntax; check the manual that corresponds to your MariaDB server version for the right syntax to use near ') ENGINE=InnoDB DEFAULT CHARSET=utf8' at line 3 at /Volumes/OS-DATA/WorkSpace/PhpSpace/truesign/library/Royal/Data/MySQL.php:495)","sql":"CREATE TABLE `db_server`(\n\n) ENGINE=InnoDB DEFAULT CHARSET=utf8","values":null}
+[01:49:18][INFO][Royal_Prof_TimeStack:65]: Take:106ms 
+[01:49:18][INFO][Royal_Data_MySQL:494]: SQL_QUERY {"sql":"show tables like 'db_server'","values":null,"ip":null}
+[01:49:18][INFO][Royal_Prof_TimeStack:65]: Take:61ms 
+[01:51:19][INFO][Royal_Prof_TimeStack:65]: Take:1424ms 
+[01:51:19][INFO][Royal_Data_MySQL:494]: SQL_QUERY {"sql":"show tables like 'db_server'","values":null,"ip":null}
+[01:51:19][INFO][Royal_Prof_TimeStack:65]: Take:60ms 
+[01:51:47][INFO][Royal_Prof_TimeStack:65]: Take:109ms 
+[01:51:47][INFO][Royal_Data_MySQL:494]: SQL_QUERY {"sql":"show tables like 'db_server'","values":null,"ip":null}
+[01:51:47][INFO][Royal_Prof_TimeStack:65]: Take:62ms 
+[01:52:57][INFO][Royal_Prof_TimeStack:65]: Take:186ms 
+[01:52:57][INFO][Royal_Data_MySQL:494]: SQL_QUERY {"sql":"show tables like 'db_server'","values":null,"ip":null}
+[01:52:57][INFO][Royal_Prof_TimeStack:65]: Take:58ms 
+[01:53:27][INFO][Royal_Prof_TimeStack:65]: Take:79ms 
+[01:53:27][INFO][Royal_Data_MySQL:494]: SQL_QUERY {"sql":"show tables like 'db_server'","values":null,"ip":null}
+[01:53:27][INFO][Royal_Prof_TimeStack:65]: Take:51ms 
+[01:53:51][INFO][Royal_Prof_TimeStack:65]: Take:82ms 
+[01:53:51][INFO][Royal_Data_MySQL:494]: SQL_QUERY {"sql":"show tables like 'db_server'","values":null,"ip":null}
+[01:53:51][INFO][Royal_Prof_TimeStack:65]: Take:46ms 
+[01:54:20][INFO][Royal_Prof_TimeStack:65]: Take:115ms 
+[01:54:20][INFO][Royal_Data_MySQL:494]: SQL_QUERY {"sql":"show tables like 'db_server'","values":null,"ip":null}
+[01:54:20][INFO][Royal_Prof_TimeStack:65]: Take:63ms 
+[01:54:33][INFO][Royal_Prof_TimeStack:65]: Take:83ms 
+[01:54:33][INFO][Royal_Data_MySQL:494]: SQL_QUERY {"sql":"show tables like 'db_server'","values":null,"ip":null}
+[01:54:33][INFO][Royal_Prof_TimeStack:65]: Take:46ms 
+[01:54:54][INFO][Royal_Prof_TimeStack:65]: Take:104ms 
+[01:54:54][INFO][Royal_Data_MySQL:494]: SQL_QUERY {"sql":"show tables like 'db_server'","values":null,"ip":null}
+[01:54:54][INFO][Royal_Prof_TimeStack:65]: Take:58ms 
+[01:55:02][INFO][Royal_Prof_TimeStack:65]: Take:81ms 
+[01:55:02][INFO][Royal_Data_MySQL:494]: SQL_QUERY {"sql":"show tables like 'db_server'","values":null,"ip":null}
+[01:55:02][INFO][Royal_Prof_TimeStack:65]: Take:48ms 
+[01:55:02][INFO][Royal_Data_MySQL:494]: SQL_QUERY {"sql":"CREATE TABLE `db_server`(\n`document_id` int  primary key auto_increment,\n`db_group` varchar(100) default ''   ,\n`db_desc` varchar(100) default ''   ,\n`db_type` varchar(20) default ''   ,\n`db_host` varchar(100) default ''   ,\n`db_username` varchar(30) default ''   ,\n`db_password` varchar(60) default ''   ,\n`db_add_auth` varchar(255) default ''   ,\n`tunnel_add_auth` varchar(255) default ''   ,\n`online_status` varchar(100) default ''   ,\n`auth_time` datetime default 0   ,\n`create_time` int default 0   ,\n`update_time` int default 0   \n) ENGINE=InnoDB DEFAULT CHARSET=utf8","values":null,"ip":null}
+[01:55:03][INFO][Royal_Prof_TimeStack:65]: Take:856ms 
+[02:24:51][INFO][Royal_Prof_TimeStack:65]: Take:1458ms 
+[02:24:51][INFO][Royal_Data_MySQL:494]: SQL_QUERY {"sql":"show tables like 'db_server'","values":null,"ip":null}
+[02:24:51][INFO][Royal_Prof_TimeStack:65]: Take:57ms 
+[02:24:51][INFO][Royal_Data_MySQL:494]: SQL_QUERY {"sql":"desc `db_server`","values":null,"ip":null}
+[02:24:52][INFO][Royal_Prof_TimeStack:65]: Take:66ms 
+[02:25:41][INFO][Royal_Prof_TimeStack:65]: Take:102ms 
+[02:25:41][INFO][Royal_Data_MySQL:494]: SQL_QUERY {"sql":"show tables like 'db_server'","values":null,"ip":null}
+[02:25:41][INFO][Royal_Prof_TimeStack:65]: Take:59ms 
+[02:25:41][INFO][Royal_Data_MySQL:494]: SQL_QUERY {"sql":"CREATE TABLE `db_server`(\n`document_id` int  primary key auto_increment,\n`db_group` varchar(100) default ''   ,\n`db_desc` varchar(100) default ''   ,\n`db_type` varchar(20) default ''   ,\n`db_host` varchar(100) default ''   ,\n`db_username` varchar(30) default ''   ,\n`db_password` varchar(60) default ''   ,\n`db_add_auth` varchar(255) default ''   ,\n`tunnel_add_auth` varchar(255) default ''   ,\n`online_status` varchar(100) default ''   ,\n`auth_time` datetime default 0   ,\n`create_time` int default 0   ,\n`update_time` int default 0   \n) ENGINE=InnoDB DEFAULT CHARSET=utf8","values":null,"ip":null}
+[02:25:42][INFO][Royal_Prof_TimeStack:65]: Take:605ms 
+[02:28:33][INFO][Royal_Prof_TimeStack:65]: Take:979ms 
+[02:28:33][INFO][Royal_Data_MySQL:494]: SQL_QUERY {"sql":"show tables like 'db_server'","values":null,"ip":null}
+[02:28:33][INFO][Royal_Prof_TimeStack:65]: Take:61ms 
+[02:28:33][INFO][Royal_Data_MySQL:494]: SQL_QUERY {"sql":"desc `db_server`","values":null,"ip":null}
+[02:28:33][INFO][Royal_Prof_TimeStack:65]: Take:68ms 
+[02:31:27][INFO][Royal_Prof_TimeStack:65]: Take:202ms 
+[02:31:27][INFO][Royal_Data_MySQL:494]: SQL_QUERY {"sql":"show tables like 'db_server'","values":null,"ip":null}
+[02:31:27][INFO][Royal_Prof_TimeStack:65]: Take:47ms 
+[02:31:27][INFO][Royal_Data_MySQL:494]: SQL_QUERY {"sql":"desc `db_server`","values":null,"ip":null}
+[02:31:28][INFO][Royal_Prof_TimeStack:65]: Take:53ms 
+[02:32:19][INFO][Royal_Prof_TimeStack:65]: Take:104ms 
+[02:32:19][INFO][Royal_Data_MySQL:494]: SQL_QUERY {"sql":"show tables like 'db_server'","values":null,"ip":null}
+[02:32:19][INFO][Royal_Prof_TimeStack:65]: Take:59ms 
+[02:32:19][INFO][Royal_Data_MySQL:494]: SQL_QUERY {"sql":"CREATE TABLE `db_server`(\n`document_id` int  primary key auto_increment,\n`db_group` varchar(100) default ''   ,\n`db_desc` varchar(100) default ''   ,\n`db_type` varchar(20) default ''   ,\n`db_host` varchar(100) default ''   ,\n`db_username` varchar(30) default ''   ,\n`db_password` varchar(60) default ''   ,\n`db_add_auth` varchar(255) default ''   ,\n`tunnel_add_auth` varchar(255) default ''   ,\n`online_status` varchar(100) default ''   ,\n`auth_time` datetime default 0   ,\n`create_time` int default 0   ,\n`update_time` int default 0   \n) ENGINE=InnoDB DEFAULT CHARSET=utf8","values":null,"ip":null}
+[02:32:20][INFO][Royal_Prof_TimeStack:65]: Take:602ms 
+[02:32:47][INFO][Royal_Prof_TimeStack:65]: Take:110ms 
+[02:32:47][INFO][Royal_Data_MySQL:494]: SQL_QUERY {"sql":"show tables like 'db_server'","values":null,"ip":null}
+[02:32:48][INFO][Royal_Prof_TimeStack:65]: Take:61ms 
+[02:32:48][INFO][Royal_Data_MySQL:494]: SQL_QUERY {"sql":"desc `db_server`","values":null,"ip":null}
+[02:32:48][INFO][Royal_Prof_TimeStack:65]: Take:63ms 
+[02:33:09][INFO][Royal_Prof_TimeStack:65]: Take:101ms 
+[02:33:09][INFO][Royal_Data_MySQL:494]: SQL_QUERY {"sql":"show tables like 'db_server'","values":null,"ip":null}
+[02:33:09][INFO][Royal_Prof_TimeStack:65]: Take:59ms 
+[02:33:09][INFO][Royal_Data_MySQL:494]: SQL_QUERY {"sql":"desc `db_server`","values":null,"ip":null}
+[02:33:09][INFO][Royal_Prof_TimeStack:65]: Take:62ms 
+[02:36:41][INFO][Royal_Prof_TimeStack:65]: Take:978ms 
+[02:36:49][INFO][Royal_Prof_TimeStack:65]: Take:79ms 
+[02:37:00][INFO][Royal_Prof_TimeStack:65]: Take:102ms 
+[02:40:04][INFO][Royal_Prof_TimeStack:65]: Take:254ms 
+[02:40:04][INFO][Royal_Data_MySQL:494]: SQL_QUERY {"sql":"show tables like 'db_server'","values":null,"ip":null}
+[02:40:04][INFO][Royal_Prof_TimeStack:65]: Take:65ms 
+[02:40:04][INFO][Royal_Data_MySQL:494]: SQL_QUERY {"sql":"desc `db_server`","values":null,"ip":null}
+[02:40:05][INFO][Royal_Prof_TimeStack:65]: Take:70ms 
+[02:40:20][INFO][Royal_Prof_TimeStack:65]: Take:107ms 
+[02:40:20][INFO][Royal_Data_MySQL:494]: SQL_QUERY {"sql":"show tables like 'db_server'","values":null,"ip":null}
+[02:40:20][INFO][Royal_Prof_TimeStack:65]: Take:59ms 
+[02:40:20][INFO][Royal_Data_MySQL:494]: SQL_QUERY {"sql":"desc `db_server`","values":null,"ip":null}
+[02:40:20][INFO][Royal_Prof_TimeStack:65]: Take:62ms 
+[02:40:33][INFO][Royal_Prof_TimeStack:65]: Take:79ms 
+[02:40:33][INFO][Royal_Data_MySQL:494]: SQL_QUERY {"sql":"show tables like 'db_server'","values":null,"ip":null}
+[02:40:33][INFO][Royal_Prof_TimeStack:65]: Take:48ms 
+[02:40:33][INFO][Royal_Data_MySQL:494]: SQL_QUERY {"sql":"desc `db_server`","values":null,"ip":null}
+[02:40:34][INFO][Royal_Prof_TimeStack:65]: Take:53ms 
+[02:41:23][INFO][Royal_Prof_TimeStack:65]: Take:887ms 
+[02:41:24][INFO][Royal_Data_MySQL:494]: SQL_QUERY {"sql":"show tables like 'db_server'","values":null,"ip":null}
+[02:41:24][INFO][Royal_Prof_TimeStack:65]: Take:59ms 
+[02:41:24][INFO][Royal_Data_MySQL:494]: SQL_QUERY {"sql":"CREATE TABLE `db_server`(\n`document_id` int  primary key auto_increment,\n`db_group` varchar(100) default ''   ,\n`db_desc` varchar(100) default ''   ,\n`db_type` varchar(20) default ''   ,\n`db_host` varchar(100) default ''   ,\n`db_username` varchar(30) default ''   ,\n`db_password` varchar(60) default ''   ,\n`db_add_auth` varchar(255) default ''   ,\n`tunnel_add_auth` varchar(255) default ''   ,\n`online_status` varchar(100) default ''   ,\n`auth_time` datetime default 0   ,\n`create_time` int default 0   ,\n`update_time` int default 0   \n) ENGINE=InnoDB DEFAULT CHARSET=utf8","values":null,"ip":null}
+[02:41:24][INFO][Royal_Prof_TimeStack:65]: Take:597ms 
+[02:41:59][INFO][Royal_Prof_TimeStack:65]: Take:107ms 
+[02:41:59][INFO][Royal_Data_MySQL:494]: SQL_QUERY {"sql":"show tables like 'db_server'","values":null,"ip":null}
+[02:41:59][INFO][Royal_Prof_TimeStack:65]: Take:61ms 
+[02:41:59][INFO][Royal_Data_MySQL:494]: SQL_QUERY {"sql":"desc `db_server`","values":null,"ip":null}
+[02:41:59][INFO][Royal_Prof_TimeStack:65]: Take:64ms 
+[02:42:14][INFO][Royal_Prof_TimeStack:65]: Take:103ms 
+[02:42:14][INFO][Royal_Data_MySQL:494]: SQL_QUERY {"sql":"show tables like 'db_server'","values":null,"ip":null}
+[02:42:14][INFO][Royal_Prof_TimeStack:65]: Take:59ms 
+[02:42:14][INFO][Royal_Data_MySQL:494]: SQL_QUERY {"sql":"desc `db_server`","values":null,"ip":null}
+[02:42:14][INFO][Royal_Prof_TimeStack:65]: Take:64ms 
+[02:42:32][INFO][Royal_Prof_TimeStack:65]: Take:1191ms 
+[02:42:32][INFO][Royal_Data_MySQL:494]: SQL_QUERY {"sql":"show tables like 'db_server'","values":null,"ip":null}
+[02:42:32][INFO][Royal_Prof_TimeStack:65]: Take:49ms 
+[02:42:32][INFO][Royal_Data_MySQL:494]: SQL_QUERY {"sql":"CREATE TABLE `db_server`(\n`document_id` int  primary key auto_increment,\n`db_group` varchar(100) default ''   ,\n`db_desc` varchar(100) default ''   ,\n`db_type` varchar(20) default ''   ,\n`db_host` varchar(100) default ''   ,\n`db_username` varchar(30) default ''   ,\n`db_password` varchar(60) default ''   ,\n`db_add_auth` varchar(255) default ''   ,\n`tunnel_add_auth` varchar(255) default ''   ,\n`online_status` varchar(100) default ''   ,\n`auth_time` datetime default 0   ,\n`create_time` int default 0   ,\n`update_time` int default 0   \n) ENGINE=InnoDB DEFAULT CHARSET=utf8","values":null,"ip":null}
+[02:42:33][INFO][Royal_Prof_TimeStack:65]: Take:708ms 
+[02:43:09][INFO][Royal_Prof_TimeStack:65]: Take:111ms 
+[02:43:09][INFO][Royal_Data_MySQL:494]: SQL_QUERY {"sql":"show tables like 'db_server'","values":null,"ip":null}
+[02:43:09][INFO][Royal_Prof_TimeStack:65]: Take:63ms 
+[02:43:09][INFO][Royal_Data_MySQL:494]: SQL_QUERY {"sql":"desc `db_server`","values":null,"ip":null}
+[02:43:09][INFO][Royal_Prof_TimeStack:65]: Take:66ms 
+[02:43:19][INFO][Royal_Prof_TimeStack:65]: Take:111ms 
+[02:43:19][INFO][Royal_Data_MySQL:494]: SQL_QUERY {"sql":"show tables like 'db_server'","values":null,"ip":null}
+[02:43:19][INFO][Royal_Prof_TimeStack:65]: Take:65ms 
+[02:43:19][INFO][Royal_Data_MySQL:494]: SQL_QUERY {"sql":"CREATE TABLE `db_server`(\n`document_id` int  primary key auto_increment,\n`db_group` varchar(100) default ''   ,\n`db_desc` varchar(100) default ''   ,\n`db_type` varchar(20) default ''   ,\n`db_host` varchar(100) default ''   ,\n`db_username` varchar(30) default ''   ,\n`db_password` varchar(60) default ''   ,\n`db_add_auth` varchar(255) default ''   ,\n`tunnel_add_auth` varchar(255) default ''   ,\n`online_status` varchar(100) default ''   ,\n`auth_time` datetime default 0   ,\n`create_time` int default 0   ,\n`update_time` int default 0   \n) ENGINE=InnoDB DEFAULT CHARSET=utf8","values":null,"ip":null}
+[02:43:20][INFO][Royal_Prof_TimeStack:65]: Take:347ms 
+[02:43:56][INFO][Royal_Prof_TimeStack:65]: Take:1182ms 
+[02:43:56][INFO][Royal_Data_MySQL:494]: SQL_QUERY {"sql":"show tables like 'db_server'","values":null,"ip":null}
+[02:43:57][INFO][Royal_Prof_TimeStack:65]: Take:58ms 
+[02:43:57][INFO][Royal_Data_MySQL:494]: SQL_QUERY {"sql":"CREATE TABLE `db_server`(\n`document_id` int  primary key auto_increment,\n`db_group` varchar(100) default ''   ,\n`db_desc` varchar(100) default ''   ,\n`db_type` varchar(20) default ''   ,\n`db_host` varchar(100) default ''   ,\n`db_username` varchar(30) default ''   ,\n`db_password` varchar(60) default ''   ,\n`db_add_auth` varchar(255) default ''   ,\n`tunnel_add_auth` varchar(255) default ''   ,\n`online_status` varchar(100) default ''   ,\n`auth_time` datetime default 0   ,\n`create_time` int default 0   ,\n`update_time` int default 0   \n) ENGINE=InnoDB DEFAULT CHARSET=utf8","values":null,"ip":null}
+[02:43:57][INFO][Royal_Prof_TimeStack:65]: Take:365ms 
+[02:46:46][INFO][Royal_Prof_TimeStack:65]: Take:2222ms 
+[02:46:46][INFO][Royal_Data_MySQL:494]: SQL_QUERY {"sql":"show tables like 'db_server'","values":null,"ip":null}
+[02:46:46][INFO][Royal_Prof_TimeStack:65]: Take:60ms 
+[02:46:46][INFO][Royal_Data_MySQL:494]: SQL_QUERY {"sql":"CREATE TABLE `db_server`(\n`document_id` int  primary key auto_increment,\n`db_group` varchar(100) default 100   ,\n`db_desc` varchar(100) default 100   ,\n`db_type` varchar(20) default 20   ,\n`db_host` varchar(100) default 100   ,\n`db_username` varchar(30) default 30   ,\n`db_password` varchar(60) default 60   ,\n`db_add_auth` varchar(255) default 255   ,\n`tunnel_add_auth` varchar(255) default 255   ,\n`online_status` varchar(100) default 100   ,\n`auth_time` datetime default 16-10-19 02:46:46   ,\n`create_time` int default 11   ,\n`update_time` int default 11   \n) ENGINE=InnoDB DEFAULT CHARSET=utf8","values":null,"ip":null}
+[02:46:46][ERROR][Royal_Data_MySQL:500]: SQL_QUERY_ERROR {"error":"[object] (PDOException(code: 42000): SQLSTATE[42000]: Syntax error or access violation: 1064 You have an error in your SQL syntax; check the manual that corresponds to your MariaDB server version for the right syntax to use near '-10-19 02:46:46   ,\n`create_time` int default 11   ,\n`update_time` int default 1' at line 12 at /Volumes/OS-DATA/WorkSpace/PhpSpace/truesign/library/Royal/Data/MySQL.php:495)","sql":"CREATE TABLE `db_server`(\n`document_id` int  primary key auto_increment,\n`db_group` varchar(100) default 100   ,\n`db_desc` varchar(100) default 100   ,\n`db_type` varchar(20) default 20   ,\n`db_host` varchar(100) default 100   ,\n`db_username` varchar(30) default 30   ,\n`db_password` varchar(60) default 60   ,\n`db_add_auth` varchar(255) default 255   ,\n`tunnel_add_auth` varchar(255) default 255   ,\n`online_status` varchar(100) default 100   ,\n`auth_time` datetime default 16-10-19 02:46:46   ,\n`create_time` int default 11   ,\n`update_time` int default 11   \n) ENGINE=InnoDB DEFAULT CHARSET=utf8","values":null}
+[02:48:01][INFO][Royal_Prof_TimeStack:65]: Take:972ms 
+[02:48:01][INFO][Royal_Data_MySQL:494]: SQL_QUERY {"sql":"show tables like 'db_server'","values":null,"ip":null}
+[02:48:01][INFO][Royal_Prof_TimeStack:65]: Take:58ms 
+[02:48:01][INFO][Royal_Data_MySQL:494]: SQL_QUERY {"sql":"CREATE TABLE `db_server`(\n`document_id` int  primary key auto_increment,\n`db_group` varchar(100) default ''   ,\n`db_desc` varchar(100) default ''   ,\n`db_type` varchar(20) default ''   ,\n`db_host` varchar(100) default ''   ,\n`db_username` varchar(30) default ''   ,\n`db_password` varchar(60) default ''   ,\n`db_add_auth` varchar(255) default ''   ,\n`tunnel_add_auth` varchar(255) default ''   ,\n`online_status` varchar(100) default ''   ,\n`auth_time` datetime default 16-10-19 02:48:01   ,\n`create_time` int default 0   ,\n`update_time` int default 0   \n) ENGINE=InnoDB DEFAULT CHARSET=utf8","values":null,"ip":null}
+[02:48:01][ERROR][Royal_Data_MySQL:500]: SQL_QUERY_ERROR {"error":"[object] (PDOException(code: 42000): SQLSTATE[42000]: Syntax error or access violation: 1064 You have an error in your SQL syntax; check the manual that corresponds to your MariaDB server version for the right syntax to use near '-10-19 02:48:01   ,\n`create_time` int default 0   ,\n`update_time` int default 0 ' at line 12 at /Volumes/OS-DATA/WorkSpace/PhpSpace/truesign/library/Royal/Data/MySQL.php:495)","sql":"CREATE TABLE `db_server`(\n`document_id` int  primary key auto_increment,\n`db_group` varchar(100) default ''   ,\n`db_desc` varchar(100) default ''   ,\n`db_type` varchar(20) default ''   ,\n`db_host` varchar(100) default ''   ,\n`db_username` varchar(30) default ''   ,\n`db_password` varchar(60) default ''   ,\n`db_add_auth` varchar(255) default ''   ,\n`tunnel_add_auth` varchar(255) default ''   ,\n`online_status` varchar(100) default ''   ,\n`auth_time` datetime default 16-10-19 02:48:01   ,\n`create_time` int default 0   ,\n`update_time` int default 0   \n) ENGINE=InnoDB DEFAULT CHARSET=utf8","values":null}
+[02:48:46][INFO][Royal_Prof_TimeStack:65]: Take:105ms 
+[02:48:46][INFO][Royal_Data_MySQL:494]: SQL_QUERY {"sql":"show tables like 'db_server'","values":null,"ip":null}
+[02:48:46][INFO][Royal_Prof_TimeStack:65]: Take:58ms 
+[02:48:46][INFO][Royal_Data_MySQL:494]: SQL_QUERY {"sql":"CREATE TABLE `db_server`(\n`document_id` int  primary key auto_increment,\n`db_group` varchar(100) default ''   ,\n`db_desc` varchar(100) default ''   ,\n`db_type` varchar(20) default ''   ,\n`db_host` varchar(100) default ''   ,\n`db_username` varchar(30) default ''   ,\n`db_password` varchar(60) default ''   ,\n`db_add_auth` varchar(255) default ''   ,\n`tunnel_add_auth` varchar(255) default ''   ,\n`online_status` varchar(100) default ''   ,\n`auth_time` datetime default '16-10-19 02:48:46''   ,\n`create_time` int default 0   ,\n`update_time` int default 0   \n) ENGINE=InnoDB DEFAULT CHARSET=utf8","values":null,"ip":null}
+[02:48:46][ERROR][Royal_Data_MySQL:500]: SQL_QUERY_ERROR {"error":"[object] (PDOException(code: 42000): SQLSTATE[42000]: Syntax error or access violation: 1064 You have an error in your SQL syntax; check the manual that corresponds to your MariaDB server version for the right syntax to use near ''16-10-19 02:48:46''   ,\n`create_time` int default 0   ,\n`update_time` int defau' at line 12 at /Volumes/OS-DATA/WorkSpace/PhpSpace/truesign/library/Royal/Data/MySQL.php:495)","sql":"CREATE TABLE `db_server`(\n`document_id` int  primary key auto_increment,\n`db_group` varchar(100) default ''   ,\n`db_desc` varchar(100) default ''   ,\n`db_type` varchar(20) default ''   ,\n`db_host` varchar(100) default ''   ,\n`db_username` varchar(30) default ''   ,\n`db_password` varchar(60) default ''   ,\n`db_add_auth` varchar(255) default ''   ,\n`tunnel_add_auth` varchar(255) default ''   ,\n`online_status` varchar(100) default ''   ,\n`auth_time` datetime default '16-10-19 02:48:46''   ,\n`create_time` int default 0   ,\n`update_time` int default 0   \n) ENGINE=InnoDB DEFAULT CHARSET=utf8","values":null}
+[02:49:42][INFO][Royal_Prof_TimeStack:65]: Take:116ms 
+[02:49:42][INFO][Royal_Data_MySQL:494]: SQL_QUERY {"sql":"show tables like 'db_server'","values":null,"ip":null}
+[02:49:42][INFO][Royal_Prof_TimeStack:65]: Take:64ms 
+[02:50:48][INFO][Royal_Prof_TimeStack:65]: Take:215ms 
+[02:50:49][INFO][Royal_Data_MySQL:494]: SQL_QUERY {"sql":"show tables like 'db_server'","values":null,"ip":null}
+[02:50:49][INFO][Royal_Prof_TimeStack:65]: Take:65ms 
+[02:52:39][INFO][Royal_Prof_TimeStack:65]: Take:86ms 
+[02:52:39][INFO][Royal_Data_MySQL:494]: SQL_QUERY {"sql":"show tables like 'db_server'","values":null,"ip":null}
+[02:52:39][INFO][Royal_Prof_TimeStack:65]: Take:51ms 
+[02:52:39][INFO][Royal_Data_MySQL:494]: SQL_QUERY {"sql":"CREATE TABLE `db_server`(\n`document_id` int  primary key auto_increment,\n`db_group` varchar(100) default ''   ,\n`db_desc` varchar(100) default ''   ,\n`db_type` varchar(20) default ''   ,\n`db_host` varchar(100) default ''   ,\n`db_username` varchar(30) default ''   ,\n`db_password` varchar(60) default ''   ,\n`db_add_auth` varchar(255) default ''   ,\n`tunnel_add_auth` varchar(255) default ''   ,\n`online_status` varchar(100) default ''   ,\n`auth_time` datetime default '16-10-19 02:52:39'   ,\n`create_time` int default 0   ,\n`update_time` int default 0   \n) ENGINE=InnoDB DEFAULT CHARSET=utf8","values":null,"ip":null}
+[02:52:39][INFO][Royal_Prof_TimeStack:65]: Take:353ms 
+[02:54:07][INFO][Royal_Prof_TimeStack:65]: Take:223ms 
+[02:54:07][INFO][Royal_Data_MySQL:494]: SQL_QUERY {"sql":"show tables like 'db_server'","values":null,"ip":null}
+[02:54:07][INFO][Royal_Prof_TimeStack:65]: Take:66ms 
+[02:54:07][INFO][Royal_Data_MySQL:494]: SQL_QUERY {"sql":"desc `db_server`","values":null,"ip":null}
+[02:54:07][INFO][Royal_Prof_TimeStack:65]: Take:65ms 
+[02:54:34][INFO][Royal_Prof_TimeStack:65]: Take:110ms 
+[02:54:34][INFO][Royal_Data_MySQL:494]: SQL_QUERY {"sql":"show tables like 'db_server'","values":null,"ip":null}
+[02:54:34][INFO][Royal_Prof_TimeStack:65]: Take:62ms 
+[02:54:34][INFO][Royal_Data_MySQL:494]: SQL_QUERY {"sql":"CREATE TABLE `db_server`(\n`document_id` int  primary key auto_increment,\n`db_group` varchar(100) default ''   ,\n`db_desc` varchar(100) default ''   ,\n`db_type` varchar(20) default ''   ,\n`db_host` varchar(100) default ''   ,\n`db_username` varchar(30) default ''   ,\n`db_password` varchar(60) default ''   ,\n`db_add_auth` varchar(255) default ''   ,\n`tunnel_add_auth` varchar(255) default ''   ,\n`online_status` varchar(100) default ''   ,\n`auth_time` datetime default '0000-00-00 00:00:00'   ,\n`create_time` int default 0   ,\n`update_time` int default 0   \n) ENGINE=InnoDB DEFAULT CHARSET=utf8","values":null,"ip":null}
+[02:54:35][INFO][Royal_Prof_TimeStack:65]: Take:870ms 
+[13:36:44][INFO][Royal_Prof_TimeStack:65]: Take:1375ms 
+[13:36:44][INFO][Royal_Data_MySQL:494]: SQL_QUERY {"sql":"show tables like 'db_server'","values":null,"ip":null}
+[13:36:44][INFO][Royal_Prof_TimeStack:65]: Take:68ms 
+[13:36:44][INFO][Royal_Data_MySQL:494]: SQL_QUERY {"sql":"desc `db_server`","values":null,"ip":null}
+[13:36:44][INFO][Royal_Prof_TimeStack:65]: Take:71ms 
+[13:36:59][INFO][Royal_Prof_TimeStack:65]: Take:87ms 
+[13:36:59][INFO][Royal_Data_MySQL:494]: SQL_QUERY {"sql":"show tables like 'db_server'","values":null,"ip":null}
+[13:36:59][INFO][Royal_Prof_TimeStack:65]: Take:48ms 
+[13:36:59][INFO][Royal_Data_MySQL:494]: SQL_QUERY {"sql":"desc `db_server`","values":null,"ip":null}
+[13:36:59][INFO][Royal_Prof_TimeStack:65]: Take:57ms 
+[13:55:00][INFO][Royal_Prof_TimeStack:65]: Take:1293ms 
+[13:55:51][INFO][Royal_Prof_TimeStack:65]: Take:110ms 
+[14:05:31][INFO][Royal_Prof_TimeStack:65]: Take:1424ms 
+[14:05:48][INFO][Royal_Prof_TimeStack:65]: Take:108ms 
+[14:06:40][INFO][Royal_Prof_TimeStack:65]: Take:150ms 
+[14:07:35][INFO][Royal_Prof_TimeStack:65]: Take:96ms 
+[14:07:48][INFO][Royal_Prof_TimeStack:65]: Take:1194ms 
+[14:09:03][INFO][Royal_Prof_TimeStack:65]: Take:112ms 
+[14:10:28][INFO][Royal_Prof_TimeStack:65]: Take:111ms 
+[14:10:46][INFO][Royal_Prof_TimeStack:65]: Take:88ms 
+[14:11:03][INFO][Royal_Prof_TimeStack:65]: Take:106ms 
+[14:11:50][INFO][Royal_Prof_TimeStack:65]: Take:110ms 
+[14:12:31][INFO][Royal_Prof_TimeStack:65]: Take:108ms 
+[14:12:31][INFO][Royal_Data_MySQL:494]: SQL_QUERY {"sql":"show tables like 'db_server'","values":null,"ip":null}
+[14:12:31][INFO][Royal_Prof_TimeStack:65]: Take:60ms 

@@ -1,0 +1,29 @@
+{
+  "name": "lmz/thefairlib",
+  "type": "library",
+  "description": "这个类库只能用于与Yaf框架",
+  "keywords": [
+    "thefair"
+  ],
+  "homepage": "https://github.com/liumingzhij26/thefairlib",
+  "license": "MIT",
+  "authors": [
+    {
+      "name": "mingzhi",
+      "email": "liumingzhij26@gmail.com"
+    }
+  ],
+  "require": {
+    "php": ">5.4.0",
+    "predis/predis": "1.0.3",
+    "illuminate/database": "<4.2",
+    "nmred/kafka-php": "*"
+  },
+  "require-dev": {
+  },
+  "autoload": {
+    "psr-4": {
+      "TheFairLib\\": ""
+    }
+  }
+}
