@@ -26,8 +26,8 @@ const revCollector = require('gulp-rev-collector');
 const exec = require('child_process').exec;
 const CDN = '';
 const APP='o_app'
-const APP_VIEW_PATH = '../../apps/'+APP+'/views'
-const App_PUBLIC_PATH = '../../public/dist'
+const APP_VIEW_PATH = '../apps/'+APP+'/views'
+const App_PUBLIC_PATH = '../public/dist'
 var webpackConfig = {
 	resolve: {
 		root: path.join(__dirname, 'node_modules'),
@@ -129,11 +129,11 @@ gulp.task('views:build', function () {
 });
 
 gulp.task('dist:online',function () {
-    return gulp.src('./public/dist')
-        .pipe(App_PUBLIC_PATH)
+    return gulp.src('./public/dist/**/*')
+        .pipe(gulp.dest(App_PUBLIC_PATH))
 })
 gulp.task('views:online',function () {
-    return gulp.src('.public/views')
+    return gulp.src('.public/views/**/*')
         .pipe(replace(''+ CDN +'/','/public/dist/'))
         .pipe(replace('.html','.phtml'))
         .pipe(gulp.dest(APP_VIEW_PATH))
@@ -356,7 +356,7 @@ gulp.task('online',function () {
     webpackConfig.plugins.push(new webpack.DefinePlugin({
         NODE_ENV: JSON.stringify(process.env.NODE_ENV) || 'production'
     }));
-    build(function() {
+    online(function() {
         del(['./src/tmp'])
     });
 })
