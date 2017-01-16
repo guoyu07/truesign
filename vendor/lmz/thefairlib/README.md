@@ -125,7 +125,7 @@ $status = $file->getFileInfo();
 use Yaf\Plugin_Abstract;
 use Yaf\Request_Abstract;
 use Yaf\Response_Abstract;
-use Yaf\Registry;
+use Yaf_Registry;
 use Yaf\Dispatcher;
 
 class TplPlugin extends Plugin_Abstract

@@ -16,6 +16,7 @@ abstract class Bootstrap {
 
     static function run($app)
     {
+
         static::loadConfig();
 
         $application = new \Yaf_Application(array(

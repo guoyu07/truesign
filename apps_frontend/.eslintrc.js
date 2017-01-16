@@ -33,6 +33,13 @@ module.exports = {
     'spaced-comment': 0,
     'no-unused-vars': 0,
       'brace-style ': 0,
+      'no-multi-spaces': 0,
+      'one-var': 0,
+      'space-in-parens': 0,
+      'no-extra-boolean-cast':0,
+      'brace-style':0,
+      'handle-callback-err':0,
+      'padded-blocks':0,
   },
     env: {
         browser: true,

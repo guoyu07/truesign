@@ -1,7 +1,7 @@
 <template>
   <div
   class="easy-alert"
-  v-show="isShow">
+  >
     <div class="animated tada">
       <p>
         hello vue ～
@@ -14,29 +14,12 @@
 </template>
 
 <script>
-    import {mapState} from 'vuex';
 
   	module.exports = {
   		data: function () {
   			return {
-          isShow: false
   			}
   		},
-	    mounted: function () {
-				this.$nextTick(function () {
-
-				})
-	    },
-	    methods: {
-          hideAlert: function () {
-            this.$store.commit('isShowAlert', false);
-          }
-	    },
-      computed: mapState({
-        isShow: function (state) {
-          return state.isShow;
-        },
-      }),
   	}
 </script>
 

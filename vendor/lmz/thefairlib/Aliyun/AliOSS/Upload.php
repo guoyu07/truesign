@@ -6,8 +6,8 @@ use \TheFairLib\Aliyun\AliOSS\util\OSS_Exception as Exception;
 /**
  *  Demo
  * $file = new TheFairLib\Aliyun\AliOSS\Upload('file', [
- * "host" => Yaf\Registry::get('config')->static['cdn'],
- * "savePath" => Yaf\Registry::get('config')->cache['temp'],
+ * "host" => Yaf_Registry::get('config')->static['cdn'],
+ * "savePath" => Yaf_Registry::get('config')->cache['temp'],
  * "ossPath" => APP_NAME,
  * "maxSize" => 2000, //单位KB
  * "allowFiles" => [".gif", ".png", ".jpg", ".jpeg", ".bmp"]

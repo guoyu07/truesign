@@ -5,10 +5,12 @@ require('./app_config/require')
 // import promise from 'es6-promise'
 import Vue from 'vue'
 import router from './app_config/router-init'
-
+import store from './vuex/store'
 import App from './App.vue'
-import store from './app_config/store'
 /* eslint-disable no-new */
+import Mint from 'mint-ui';
+Vue.use(Mint);
+
 new Vue({
   router,
   store,

@@ -13,7 +13,7 @@ use TheFairLib\BigPipe\Render\StreamLineRender;
 use TheFairLib\BigPipe\Render\TraditionalRender;
 use TheFairLib\Smarty\Adapter;
 use TheFairLib\Utility\Utility;
-use Yaf\Registry;
+use Yaf_Registry;
 
 abstract class Render{
     /**

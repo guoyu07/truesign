@@ -1,6 +1,6 @@
 <?php
 
-namespace Royal\Base;
+namespace ReInit\YafBase;
 
 
 class View implements \Yaf_View_Interface {

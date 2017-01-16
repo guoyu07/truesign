@@ -40,7 +40,13 @@
 
               <li><router-link to="/">首页</router-link></li>
               <li><router-link to="demo">demo</router-link></li>
+              <li><router-link to="awesome">awesome</router-link></li>
               <li><router-link to="semantic">semantic</router-link></li>
+              <li><router-link to="alert">alert</router-link></li>
+              <li><router-link to="vuex">vuex</router-link></li>
+              <li><router-link to="vuex2">vuex2</router-link></li>
+              <li><router-link to="mint-ui">mint-ui</router-link></li>
+              <li><router-link to="socket-io">socket-io</router-link></li>
 
 
 

@@ -14,7 +14,7 @@ use TheFairLib\Http\Response\Page;
 use TheFairLib\Logger\Logger;
 use TheFairLib\Utility\Utility;
 use \Yaf\Exception as Exception;
-use Yaf\Registry;
+use Yaf_Registry;
 
 
 abstract class Error extends ErrorBase
