@@ -9,8 +9,11 @@ import store from './vuex/store'
 import App from './App.vue'
 /* eslint-disable no-new */
 import Mint from 'mint-ui';
+// import VueWebsocket from 'vue-websocket';
 Vue.use(Mint);
-
+// Vue.use(VueWebsocket, 'ws://127.0.0.1:9501', {
+//     reconnection: false
+// });
 new Vue({
   router,
   store,

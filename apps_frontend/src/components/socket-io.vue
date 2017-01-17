@@ -1,44 +1,50 @@
-<template lang="html">
+<template>
   <div>
-      {{ msg }}
       <button type="button" class="btn btn-default" @click="socket_init">连接socket</button>
       <button type="button" class="btn btn-default" @click="disconnect">断开socket</button>
+
+      {{ msg }}
+      <hr>
+      <input type="text" v-model="cmd" />
+      <button type="button" class="btn btn-default" @click="emit">emit</button>
+
   </div>
 </template>
 
 <script>
-    import io from 'socket.io-client'
+    import chat from '../api/socket_client'
 
     export default {
-//        mounted () {
-//            this.msg = 'start'
-//            this.socket = SOCKET_CLIENT.socket
-//
-//        },
+        mounted () {
+
+        },
         data () {
             return {
                 msg: '',
-                socket: ''
+                socket: '',
+                cmd:'cmd'
             }
         },
-//        computed: {
-//
-//        },
+        computed: {
+
+        },
         methods: {
             socket_init()  {
-                this.socket = io.connect('ws://127.0.0.1:9501');
-                setInterval(() => {
-                    this.socket.emit('heartbeat', 1);
-                },1000)
-                this.msg = 'start'
+                chat.init()
             },
             disconnect() {
-                this.socket.disconnect()
-                this.msg = 'end'
+
+            },
+            reconnect() {
+
+            },
+            emit(){
+
             }
 
 
-        }
+        },
+
     }
 </script>
 
