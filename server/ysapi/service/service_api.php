@@ -29,13 +29,23 @@ class server{
 		unset($config['host'], $config['port']);
 		$config['package_max_length'] = intval($config['package_max_length']);
 		$this->packMaxLen=$config['package_max_length'];
-		$this->sw = new \Swoole\Server($this->host, $this->port);
+//		$this->sw = new swoole_server($this->host, $this->port);
+		$this->sw = new swoole_websocket_server($this->host, $this->port);
 		$this->sw->set($config);
 		$this->bind($config);
+
 	}
 	public function run(){
+
 		$this->sw->start();
 	}
+    public function onOpen( $serv , $request ){
+        echo 'onOpen=>';
+    }
+    public function onMessage( $serv , $request ){
+        echo 'onMessage=>';
+
+    }
 	public function onConnect(swoole_server $serv, $fd, $from_id){
 		$this->ids[$fd]=dk_get_next_id(); // 这里看情况上否要用个定时器做清理
 		$this->log(implode('|',[$this->ids[$fd],'onConnect',$fd,$from_id]));
@@ -178,6 +188,13 @@ class server{
 		$this->sw->on('WorkerError',[$this,'onWorkerError']);
 		$this->sw->on('ManagerStop',[$this,'onManagerStop']);
 		$this->sw->on('ManagerStart',[$this,'onManagerStart']);
+
+        $this->sw->on("open",array($this,"onOpen"));
+        $this->sw->on("message",array($this,"onMessage"));
+        $this->sw->on("Task",array($this,"onTask"));
+        $this->sw->on("Finish",array($this,"onFinish"));
+
+
 		if(isset($config['task_worker_num']) && boolval($config['task_worker_num'])){
 			$this->sw->on('Task',[$this,'onTask']);
 			$this->sw->on('Finish',[$this,'onFinish']);

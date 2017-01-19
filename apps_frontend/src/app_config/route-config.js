@@ -68,13 +68,14 @@ const routes = [
         },
         component: require('../components/mint-ui.vue')
     },
+
     {
-        name: 'socket-io',
-        path: '/socket-io',
+        name: 'websocket',
+        path: '/websocket',
         meta: {
-            title: 'socket-io'
+            title: 'websocket'
         },
-        component: require('../components/socket-io.vue')
+        component: require('../components/websocket.vue')
     }
 ]
 export default routes

@@ -46,7 +46,7 @@
               <li><router-link to="vuex">vuex</router-link></li>
               <li><router-link to="vuex2">vuex2</router-link></li>
               <li><router-link to="mint-ui">mint-ui</router-link></li>
-              <li><router-link to="socket-io">socket-io</router-link></li>
+              <li><router-link to="websocket">websocket</router-link></li>
 
 
 
