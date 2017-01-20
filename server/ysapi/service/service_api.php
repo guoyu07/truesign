@@ -40,25 +40,61 @@ class server{
 		$this->sw->start();
 	}
     public function onOpen( $serv , $request ){
-        echo 'onOpen=>';
+        echo "【s】onOpen=> \n";
+        echo json_encode($serv)."\n";
+        echo json_encode($request)."\n";
+        $openmsg = $this->buildMsg('open','self_init');
+        $serv->task([
+            'to' => [$request->fd],
+            'except' => [],
+            'data' => $openmsg
+        ]);
+    }
+    private function buildMsg($data,$type,$status = 200){
+
+        $msg = json_encode([
+            'status' => $status,
+            'type' => $type,
+            'data' => $data
+        ]);
+        return $msg;
     }
     public function onMessage( $serv , $request ){
-        echo 'onMessage=>';
+//    public function onMessage(swoole_websocket_server $serv, swoole_websocket_frame $request){
+        echo "【s】onMessage=> \n";
+        echo json_encode($serv)."\n";
+        echo json_encode($request)."\n";
+        $receive = json_decode($request->data,true);
+        $receive = $request->data;
+        $msg = $this->buildMsg($receive,'message');
+        $task = [
+            'to' => [$request->fd],
+            'except' => [],
+            'data' => $msg
+        ];
 
+        if ($receive['to'] != 0) {
+            $task['to'] = [$receive['to']];
+        }
+
+        $serv->task($task);
     }
 	public function onConnect(swoole_server $serv, $fd, $from_id){
 		$this->ids[$fd]=dk_get_next_id(); // 这里看情况上否要用个定时器做清理
 		$this->log(implode('|',[$this->ids[$fd],'onConnect',$fd,$from_id]));
 	}
 	public function onClose(swoole_server $serv, $fd, $from_id){
+	    echo "【s】onCLose \n";
 		$this->log(implode('|',[$this->ids[$fd],'onClose',$fd,$from_id]));
 		unset($this->ids[$fd]);
 	}
 	public function onStart(swoole_server $serv){
+        echo "【s】onStart \n";
 		$this->log("->[onStart] PHP=".PHP_VERSION." Yaf=".\YAF_VERSION." swoole=".SWOOLE_VERSION." Master-Pid={$this->sw->master_pid} Manager-Pid={$this->sw->manager_pid}");
 		swoole_set_process_name("php-{$this->uname}:master");
 	}
 	public function onReceive(swoole_server $serv, $fd, $from_id, $data){
+        echo "【s】onReceive \n";
 		$start_time=microtime(true);
 		$s_task_id=$this->ids[$fd];
 		$this->log(implode('|',[$s_task_id,'onReceive',$fd,$from_id]));
@@ -113,7 +149,9 @@ class server{
 		}
 	}
 	public function onTask(swoole_server $serv, $task_id, $src_worker_id, $data){
-		$start_time=microtime(true);
+        echo "【s】onTask \n";
+
+        $start_time=microtime(true);
 		$isCount=isset($data['cmd_count_log']);
 		$s_task_id=$data['s_task_id'];
 		$this->log(implode('|',[$s_task_id,'onTask'.($isCount?'-Count':''),$task_id,$src_worker_id]));
@@ -131,8 +169,22 @@ class server{
 			$serv->finish($content);
 		}
 	}
+    public function task($server, $task_id, $from_id, $data){
+        echo "[s]task=>\n".json_encode($data,256)."\n";
+        $clients = $server->connections;
+        if (count($data['to']) > 0) {
+            $clients = $data['to'];
+        }
+        foreach ($clients as $fd) {
+            if (!in_array($fd, $data['except'])) {
+                $server->push($fd,$data['data']);
+            }
+        }
+    }
 	public function onFinish(swoole_server $serv, $task_id, $data){
-		//$this->log(implode('|',[$this->task_id,'onFinish',$task_id]));
+        echo "【s】onFinish \n";
+
+        //$this->log(implode('|',[$this->task_id,'onFinish',$task_id]));
 	}
 	public function onWorkerStart($serv, $worker_id){
 		$this->ids=[]; // reload时清空
@@ -191,14 +243,15 @@ class server{
 
         $this->sw->on("open",array($this,"onOpen"));
         $this->sw->on("message",array($this,"onMessage"));
-        $this->sw->on("Task",array($this,"onTask"));
+//        $this->sw->on("Task",array($this,"onTask"));
+        $this->sw->on("Task",array($this,"task"));
         $this->sw->on("Finish",array($this,"onFinish"));
 
 
-		if(isset($config['task_worker_num']) && boolval($config['task_worker_num'])){
-			$this->sw->on('Task',[$this,'onTask']);
-			$this->sw->on('Finish',[$this,'onFinish']);
-		}
+//		if(isset($config['task_worker_num']) && boolval($config['task_worker_num'])){
+//			$this->sw->on('Task',[$this,'onTask']);
+//			$this->sw->on('Finish',[$this,'onFinish']);
+//		}
 	}
 	public function getConfig($file, $isSelf=true){
 		$config = new \Yaf_Config_Ini($file, $this->env);
