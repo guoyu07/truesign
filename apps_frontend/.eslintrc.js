@@ -40,6 +40,7 @@ module.exports = {
       'brace-style':0,
       'handle-callback-err':0,
       'padded-blocks':0,
+      'camelcase':0,
   },
     env: {
         browser: true,

@@ -40,6 +40,7 @@
             }
         },
         computed: {
+
             ...mapGetters({
                 name: 'getName',
                 token: 'getToken',

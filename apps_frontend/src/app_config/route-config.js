@@ -76,6 +76,22 @@ const routes = [
             title: 'websocket'
         },
         component: require('../components/websocket.vue')
-    }
+    },
+    {
+        name: 'socket-io',
+        path: '/socket-io',
+        meta: {
+            title: 'socket-io'
+        },
+        component: require('../components/socket-io.vue')
+    },
+    {
+        name: 'iview',
+        path: '/iview',
+        meta: {
+            title: 'iview'
+        },
+        component: require('../components/iview.vue')
+    },
 ]
 export default routes
