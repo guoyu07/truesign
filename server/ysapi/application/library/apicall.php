@@ -11,7 +11,7 @@ class apicall{
 	public $tackPid;
 	private $defConfig = [
 		'host'                  => '127.0.0.1',
-		'port'                  => 9501,
+		'port'                  => 9500,
 		'timeout'               => 2,			//默认为0.1s，即100ms
 		'pack_type'             => 'msgpack',	    //系列化方法[msgpack | json]
 		'package_max_length'    => 1024 * 640,	//协议最大长度 k
@@ -144,7 +144,8 @@ class apicall{
 		return $end;
 	}
 	private function getSwooleClient(){
-		$client = new Swoole\Client(SWOOLE_SOCK_TCP);
+//		$client = new Swoole\Client(SWOOLE_SOCK_TCP);
+		$client = new swoole_client(SWOOLE_SOCK_TCP);
 		$client->set($this->config);
 		if (!$client->connect($this->host, $this->port, $this->timeout)) {
 			throw new Exception("connect failed. Error: {$client->errCode}");

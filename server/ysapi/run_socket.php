@@ -9,10 +9,8 @@ try {
 	include(sprintf('%s/service/service_%s.php', APPLICATION_PATH, APPLICATION_NAME));
 	include(sprintf('%s/service/websocket_api.php', APPLICATION_PATH));
 
-	$server = new server(APPLICATION_NAME);
-//    $socket_server = new socket_server('socket');
-    $server->run();
-//    $socket_server->run();
+    $socket_server = new socket_server('socket');
+    $socket_server->run();
 }catch (Exception $e){
 	die('run-ERROR: '.$e->getMessage().PHP_EOL);
 }
