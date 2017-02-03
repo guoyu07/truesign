@@ -93,5 +93,13 @@ const routes = [
         },
         component: require('../components/iview.vue')
     },
+    {
+        name: 'vux',
+        path: '/vux',
+        meta: {
+            title: 'vux'
+        },
+        component: require('../components/vux.vue')
+    },
 ]
 export default routes

@@ -118,6 +118,19 @@ class socket_server{
         $yaf_controller = $yaf['controller'];
         $yaf_action = $yaf['action'];
 
+        if($payload_type=='search'){
+            $yaf_payload = array_merge($yaf,array(
+                'data'=>$payload_data,
+                's_task_id'=>1
+            ));
+
+            $content=$this->runYaf($yaf_payload);
+        }
+
+
+        echo 'content=>'."\n";
+        echo json_encode($content),"\n";
+
 
         $from = [
             'fd_type'=>'client',
@@ -139,7 +152,7 @@ class socket_server{
             'id'=>$me_id,
             'nickname'=>$me_nickname
         ];
-        $msg = $this->buildMsg($from,$to,$me,$receive,'message');
+        $msg = $this->buildMsg($from,$to,$me,$content,'message');
         if(empty($to_id)){
             $task = [
                 'to' => [],
@@ -334,7 +347,12 @@ class socket_server{
         return $config;
     }
     public function runYaf(array $datas){
+        echo "[s]runYaf=>\n";
+
+
         ['module'=>$module,'controller'=>$controller,'action'=>$action,'data'=>$data,'s_task_id'=>$taskId]=$datas;
+
+        $data = json_decode($data,1);
         unset($datas);
         if(!is_array($data)){
             $data=[$data];
@@ -342,6 +360,12 @@ class socket_server{
 
         $request = new \Yaf_Request_Simple('CLI', $module, $controller, $action, $data);
         $request->task_id=$taskId;
+        if(empty($this->yaf)){
+            $configs = $this->initYaf();
+            // 这里处理DB, REDIS, MQ等常驻资源
+            $res = new resources($configs);
+            \Yaf_Registry::set('res_db_ubuntu', $res->getDB('ubuntu'));
+        }
         $response = $this->yaf->getDispatcher()->returnResponse(true)->dispatch($request);
         if (!@property_exists($response, 'contentBody') || !is_array($response->contentBody)) {
             throw new \Exception('Not set or not an array: $response->body');
@@ -349,6 +373,7 @@ class socket_server{
         return $response->contentBody;
     }
     public function initYaf(){
+        echo "initYaf\n";
         $configs=$this->getConfig(APPLICATION_PATH.'/conf/application.ini',false);
         \Yaf_Registry::set('config', $configs);
         $this->yaf=new \Yaf_Application(['application'=>$configs->get('application')->toArray()]);

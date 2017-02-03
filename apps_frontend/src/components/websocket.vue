@@ -181,6 +181,7 @@
                         action:this.action,
                     }
                 }
+                this.payload['cmd'] = this.cmd
                 SOCKET_CLIENT.data.payload = this.payload
                 SOCKET_CLIENT.data.this_vue = this
                 let response = SOCKET_CLIENT.wsSend()

@@ -1,18 +1,23 @@
 <?php
-class server{
+namespace server\link_swoole;
+use \Royal\Data\resources;
+class socket_server{
     public $host;
     public $port;
     public $sw;
     public $yaf;
     public $env;
     public $uname;
+    public $table;
     public $packType; // 0=json, 1=msgpack
     public $packMaxLen;
     public $server_ip;
     public $res_mq_log;
     public $ids=[];
-
-    public function __construct(string $uname, string $configFile='/conf/service.ini', string $env='product'){
+    private $nicknames = [
+        '沉淀', '暖寄归人', '厌世症i', '难免心酸°', '過客。', '昔日餘光。', '独特', '有爱就有恨' ,'共度余生','忆七年','单人旅行','何日许我红装','醉落夕风'
+    ];
+    public function __construct(string $uname, string $configFile='/../config/service.ini', string $env='websocket'){
         if (!defined('IS_CLI')) {
             throw new \Exception('no set IS_CLI');
         }
@@ -29,10 +34,14 @@ class server{
         unset($config['host'], $config['port']);
         $config['package_max_length'] = intval($config['package_max_length']);
         $this->packMaxLen=$config['package_max_length'];
-		$this->sw = new swoole_server($this->host, $this->port);
-//        $this->sw = new swoole_websocket_server($this->host, $this->port);
+        $this->sw = new swoole_websocket_server($this->host, $this->port);
         $this->sw->set($config);
         $this->bind($config);
+
+        $this->table = new swoole_table(1024);
+        $this->table->column('id', swoole_table::TYPE_INT, 4);       //1,2,4,8
+        $this->table->column('nickname', swoole_table::TYPE_STRING, 64);
+        $this->table->create();
 
     }
     public function run(){
@@ -46,55 +55,144 @@ class server{
         echo "【s】request=> \n";
 
         echo json_encode($request)."\n";
-        $openmsg = $this->buildMsg('open','self_init');
+        $nickname = $this->nicknames[array_rand($this->nicknames)].'-'.time();
+        $this->table->set($request->fd,[
+                'id'=>$request->fd,
+                'nickname' => $nickname
+            ]);
+        $from = [
+            'fd_type'=>'server',
+            'fd'=>null,
+        ];
+        $to = [
+            'id_type'=>'client',
+            'id'=>$request->fd
+        ];
+        $me = [
+            'id'=>$request->fd,
+            'nickname'=>$nickname
+        ];
+        $openmsg = $this->buildMsg($from,$to,$me,'open','self_init');
+
+
         $serv->task([
             'to' => [$request->fd],
             'except' => [],
             'data' => $openmsg
         ]);
     }
-    private function buildMsg($data,$type,$status = 200){
-
+    private function buildMsg($from,$to,$me,$data,$type,$status = 200){
+        $user_list = $this->getUserList();
+        $response_data = array();
+        $response_data['response']=$data;
+        $response_data['user_list']=$user_list;
+        $relation = array();
+        $response_data['relation']['from']=$from;
+        $response_data['relation']['to']=$to;
+        $response_data['relation']['me']=$me;
         $msg = json_encode([
             'status' => $status,
             'type' => $type,
-            'data' => $data
+            'data' => json_encode($response_data,256)
         ]);
         return $msg;
+    }
+    private function getUserList(){
+        $user_list = array();
+        $user_list['count']=count($this->table);
+        foreach($this->table as $row)
+        {
+            $user_list['data'][]=$row;
+        }
+        return $user_list;
     }
     public function onMessage( $serv , $request ){
 //    public function onMessage(swoole_websocket_server $serv, swoole_websocket_frame $request){
         echo "【s】onMessage=> \n";
-        echo json_encode($serv)."\n";
-        echo json_encode($request)."\n";
         $receive = json_decode($request->data,true);
-        $receive = $request->data;
-        $msg = $this->buildMsg($receive,'message');
-        $task = [
-            'to' => [$request->fd],
-            'except' => [],
-            'data' => $msg
-        ];
+        echo json_encode($receive,256)."\n";
 
-        if ($receive['to'] != 0) {
-            $task['to'] = [$receive['to']];
+        $to_id = $receive['to'];
+        $payload_type = $receive['payload_type'];
+        $payload_data = $receive['payload_data'];
+        $yaf = $receive['yaf'];
+        $yaf_module = $yaf['module'];
+        $yaf_controller = $yaf['controller'];
+        $yaf_action = $yaf['action'];
+
+        if($payload_type=='search'){
+            $yaf_payload = array_merge($yaf,array(
+                'data'=>$payload_data,
+                's_task_id'=>1
+            ));
+
+            $content=$this->runYaf($yaf_payload);
         }
+
+
+        echo 'content=>'."\n";
+        echo json_encode($content),"\n";
+
+
+        $from = [
+            'fd_type'=>'client',
+            'fd'=>$request->fd,
+        ];
+        $to = [
+            'id_type'=>'client',
+            'id'=>$to_id
+        ];
+        if(!empty($to_id)){
+            $me_id = $to_id;
+            $me_nickname = $this->table->get($to);
+        }
+        else{
+            $me_id = 'unknow';
+            $me_nickname = 'unknow';
+        }
+        $me = [
+            'id'=>$me_id,
+            'nickname'=>$me_nickname
+        ];
+        $msg = $this->buildMsg($from,$to,$me,$content,'message');
+        if(empty($to_id)){
+            $task = [
+                'to' => [],
+//            'except' => [$request->fd],
+                'except' => [],
+                'data' => $msg
+            ];
+        }
+        else{
+            $task = [
+                'to' => [$to_id],
+//            'except' => [$request->fd],
+                'except' => [],
+                'data' => $msg
+            ];
+        }
+
+
+//        if ($receive['to'] != 0) {
+//            $task['to'] = [$receive['to']];
+//        }
 
         $serv->task($task);
     }
     public function onConnect(swoole_server $serv, $fd, $from_id){
-//        $this->ids[$fd]=dk_get_next_id(); // 这里看情况上否要用个定时器做清理
-        $this->ids[$fd]=$fd; // 这里看情况上否要用个定时器做清理
+        $this->ids[$fd]=dk_get_next_id(); // 这里看情况上否要用个定时器做清理
         $this->log(implode('|',[$this->ids[$fd],'onConnect',$fd,$from_id]));
     }
     public function onClose(swoole_server $serv, $fd, $from_id){
         echo "【s】onCLose \n";
         $this->log(implode('|',[$this->ids[$fd],'onClose',$fd,$from_id]));
         unset($this->ids[$fd]);
+        $this->table->del($fd);
+        echo 'fd=>'.$fd;
     }
     public function onStart(swoole_server $serv){
         echo "【s】onStart \n";
-        $this->log("->[onStart] SERVER_TYPE=swoole_server PHP=".PHP_VERSION." Yaf=".\YAF_VERSION." swoole=".SWOOLE_VERSION." Master-Pid={$this->sw->master_pid} Manager-Pid={$this->sw->manager_pid}");
+        $this->log("->[onStart] SERVER_TYPE=".$this->env." PHP=".PHP_VERSION." Yaf=".\YAF_VERSION." swoole=".SWOOLE_VERSION." Master-Pid={$this->sw->master_pid} Manager-Pid={$this->sw->manager_pid}");
         swoole_set_process_name("php-{$this->uname}:master");
     }
     public function onReceive(swoole_server $serv, $fd, $from_id, $data){
@@ -155,45 +253,21 @@ class server{
     public function onTask(swoole_server $serv, $task_id, $src_worker_id, $data){
         echo "【s】onTask \n";
 
-        $start_time=microtime(true);
-        $isCount=isset($data['cmd_count_log']);
-        $s_task_id=$data['s_task_id'];
-        echo 'data'.json_encode($data)."\n";
-        $this->log(implode('|',[$s_task_id,'onTask'.($isCount?'-Count':''),$task_id,$src_worker_id]));
-        $sinfo=implode('|',[$task_id,$serv->worker_id,$src_worker_id,$start_time,'%s']);
-        try {
-            if($isCount){ // 统计处理
-                return $this->handleCounts($s_task_id,$data['s_task_pid'],$data['re'],$data['rn'],$data['client']);
-            }
-            $content=$this->runYaf($data);
-            $content['serv']=sprintf($sinfo,\exeTime($start_time));
-            echo "【s】content=>\n";
-            echo json_encode($content,256)."\n";
-            $serv->finish($content);
-        }catch (\Exception $e){
-            $content=\getBody('', $e->getMessage(), 500);
-            $content['serv']=sprintf($sinfo,\exeTime($start_time));
-            $serv->finish($content);
-        }
-    }
-    public function task($server, $task_id, $from_id, $data){
         echo "[s]task=>\n".json_encode($data,256)."\n";
-        $clients = $server->connections;
+        $clients = $serv->connections;
         if (count($data['to']) > 0) {
             $clients = $data['to'];
         }
         foreach ($clients as $fd) {
             if (!in_array($fd, $data['except'])) {
-                $server->push($fd,$data['data']);
+                $serv->push($fd,$data['data']);
             }
         }
     }
-    public function onFinish(swoole_server $serv, $task_id, $data){
-        echo "【s】onFinish \n";
+    public function task($server, $task_id, $from_id, $data){
 
-//        echo "implode('|',[$this->task_id,'onFinish',$task_id]) \n";
-//        $this->log(implode('|',[$this->task_id,'onFinish',$task_id]));
     }
+
     public function onWorkerStart($serv, $worker_id){
         $this->ids=[]; // reload时清空
         if ($serv->taskworker) {
@@ -252,15 +326,20 @@ class server{
         $this->sw->on("open",array($this,"onOpen"));
         $this->sw->on("message",array($this,"onMessage"));
         $this->sw->on("Task",array($this,"onTask"));
-
-//        $this->sw->on("Task",array($this,"task"));
         $this->sw->on("Finish",array($this,"onFinish"));
 
         if(isset($config['task_worker_num']) && boolval($config['task_worker_num'])){
             $this->sw->on('Task',[$this,'onTask']);
-            $this->sw->on('Finish',[$this,'onFinish']);
+            $this->sw->on("Finish",array($this,"onFinish"));
+
         }
 //
+    }
+    public function onFinish(swoole_server $serv, $task_id, $data){
+        echo "【s】onFinish \n";
+
+//        echo "implode('|',[$this->task_id,'onFinish',$task_id]) \n";
+//        $this->log(implode('|',[$this->task_id,'onFinish',$task_id]));
     }
     public function getConfig($file, $isSelf=true){
         $config = new \Yaf_Config_Ini($file, $this->env);
@@ -270,7 +349,12 @@ class server{
         return $config;
     }
     public function runYaf(array $datas){
+        echo "[s]runYaf=>\n";
+
+
         ['module'=>$module,'controller'=>$controller,'action'=>$action,'data'=>$data,'s_task_id'=>$taskId]=$datas;
+
+        $data = json_decode($data,1);
         unset($datas);
         if(!is_array($data)){
             $data=[$data];
@@ -278,6 +362,12 @@ class server{
 
         $request = new \Yaf_Request_Simple('CLI', $module, $controller, $action, $data);
         $request->task_id=$taskId;
+        if(empty($this->yaf)){
+            $configs = $this->initYaf();
+            // 这里处理DB, REDIS, MQ等常驻资源
+            $res = new resources($configs);
+            \Yaf_Registry::set('res_db_ubuntu', $res->getDB('ubuntu'));
+        }
         $response = $this->yaf->getDispatcher()->returnResponse(true)->dispatch($request);
         if (!@property_exists($response, 'contentBody') || !is_array($response->contentBody)) {
             throw new \Exception('Not set or not an array: $response->body');
@@ -285,22 +375,21 @@ class server{
         return $response->contentBody;
     }
     public function initYaf(){
-        $configs=$this->getConfig(APPLICATION_PATH.'/conf/application.ini',false);
+        echo "initYaf\n";
+        $configs=$this->getConfig(APPLICATION_PATH.'/../config/application.ini',false);
         \Yaf_Registry::set('config', $configs);
         $this->yaf=new \Yaf_Application(['application'=>$configs->get('application')->toArray()]);
         $this->yaf->bootstrap();
         return $configs;
     }
     public function initEnv($env){
-
         $def ='product';
         $env = !$env ? get_cfg_var('yaf.environ') : $env;
-
         if(!$env){
             $env=$def;
         }
         $env=strtolower($env);
-        if(in_array($env,['product','develop','test','beta'])){
+        if(in_array($env,['product','develop','test','beta','websocket'])){
 
             return $env;
         }

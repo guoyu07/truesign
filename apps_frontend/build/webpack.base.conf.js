@@ -10,7 +10,8 @@ var cssSourceMapDev = (env === 'development' && config.dev.cssSourceMap)
 var cssSourceMapProd = (env === 'production' && config.build.productionSourceMap)
 var useCssSourceMap = cssSourceMapDev || cssSourceMapProd
 var webpack = require('webpack')
-module.exports = {
+const vuxLoader = require('vux-loader')
+let webpackConfig = {
   entry: {
     app: './src/main.js'
   },
@@ -108,3 +109,13 @@ module.exports = {
     ]
   }
 }
+module.exports = vuxLoader.merge(webpackConfig, {
+    plugins: [
+        {
+            name: 'vux-ui'
+        },
+        {
+            name: 'duplicate-style'
+        }
+    ]
+})
