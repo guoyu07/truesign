@@ -20,7 +20,7 @@ try {
     $classLoader->setPsr4('Truesign\\', APPLICATION_PATH . '/common');
     $classLoader->setPsr4('Server\\', APPLICATION_PATH . '/server');
 
-    $socket_server = new socket_server('socket');
+    $socket_server = new \Server\link_swoole\socket_server('socket');
     $socket_server->run();
 }catch (Exception $e){
     die('run-ERROR: '.$e->getMessage().PHP_EOL);

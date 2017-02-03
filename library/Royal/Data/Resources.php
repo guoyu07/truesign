@@ -14,14 +14,14 @@ class resources{
 	public function getDB($node){
 		$conf=$this->getConfNode('db.'.$node);
 		$conf['option'] = [
-			PDO::NULL_TO_STRING => true,
-			PDO::ATTR_CASE => PDO::CASE_NATURAL,
-			PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION
+			\PDO::NULL_TO_STRING => true,
+			\PDO::ATTR_CASE => \PDO::CASE_NATURAL,
+			\PDO::ATTR_ERRMODE => \PDO::ERRMODE_EXCEPTION
 		];
 		if(IS_CLI){
-			$conf['option'][PDO::ATTR_PERSISTENT]=true;
+			$conf['option'][\PDO::ATTR_PERSISTENT]=true;
 		}
-		return new \medoo($conf);
+		return new medoo($conf);
 	}
 	public function getRedis($node){
 		$conf=$this->getConfNode('redis.'.$node);

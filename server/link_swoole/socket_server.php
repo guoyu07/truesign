@@ -1,5 +1,14 @@
 <?php
+/**
+ * Created by PhpStorm.
+ * User: ql_os
+ * Date: 2017/2/3
+ * Time: 上午8:07
+ */
+
 namespace server\link_swoole;
+
+
 use \Royal\Data\resources;
 class socket_server{
     public $host;
@@ -17,7 +26,7 @@ class socket_server{
     private $nicknames = [
         '沉淀', '暖寄归人', '厌世症i', '难免心酸°', '過客。', '昔日餘光。', '独特', '有爱就有恨' ,'共度余生','忆七年','单人旅行','何日许我红装','醉落夕风'
     ];
-    public function __construct(string $uname, string $configFile='/../config/service.ini', string $env='websocket'){
+    public function __construct(string $uname, string $configFile='/config/service.ini', string $env='websocket'){
         if (!defined('IS_CLI')) {
             throw new \Exception('no set IS_CLI');
         }
@@ -34,13 +43,13 @@ class socket_server{
         unset($config['host'], $config['port']);
         $config['package_max_length'] = intval($config['package_max_length']);
         $this->packMaxLen=$config['package_max_length'];
-        $this->sw = new swoole_websocket_server($this->host, $this->port);
+        $this->sw = new \swoole_websocket_server($this->host, $this->port);
         $this->sw->set($config);
         $this->bind($config);
 
-        $this->table = new swoole_table(1024);
-        $this->table->column('id', swoole_table::TYPE_INT, 4);       //1,2,4,8
-        $this->table->column('nickname', swoole_table::TYPE_STRING, 64);
+        $this->table = new \swoole_table(1024);
+        $this->table->column('id', \swoole_table::TYPE_INT, 4);       //1,2,4,8
+        $this->table->column('nickname', \swoole_table::TYPE_STRING, 64);
         $this->table->create();
 
     }
@@ -57,9 +66,9 @@ class socket_server{
         echo json_encode($request)."\n";
         $nickname = $this->nicknames[array_rand($this->nicknames)].'-'.time();
         $this->table->set($request->fd,[
-                'id'=>$request->fd,
-                'nickname' => $nickname
-            ]);
+            'id'=>$request->fd,
+            'nickname' => $nickname
+        ]);
         $from = [
             'fd_type'=>'server',
             'fd'=>null,
@@ -107,7 +116,7 @@ class socket_server{
         return $user_list;
     }
     public function onMessage( $serv , $request ){
-//    public function onMessage(swoole_websocket_server $serv, swoole_websocket_frame $request){
+//    public function onMessage(\swoole_websocket_server $serv, swoole_websocket_frame $request){
         echo "【s】onMessage=> \n";
         $receive = json_decode($request->data,true);
         echo json_encode($receive,256)."\n";
@@ -179,23 +188,23 @@ class socket_server{
 
         $serv->task($task);
     }
-    public function onConnect(swoole_server $serv, $fd, $from_id){
+    public function onConnect(\swoole_server $serv, $fd, $from_id){
         $this->ids[$fd]=dk_get_next_id(); // 这里看情况上否要用个定时器做清理
         $this->log(implode('|',[$this->ids[$fd],'onConnect',$fd,$from_id]));
     }
-    public function onClose(swoole_server $serv, $fd, $from_id){
+    public function onClose(\swoole_server $serv, $fd, $from_id){
         echo "【s】onCLose \n";
         $this->log(implode('|',[$this->ids[$fd],'onClose',$fd,$from_id]));
         unset($this->ids[$fd]);
         $this->table->del($fd);
         echo 'fd=>'.$fd;
     }
-    public function onStart(swoole_server $serv){
+    public function onStart(\swoole_server $serv){
         echo "【s】onStart \n";
         $this->log("->[onStart] SERVER_TYPE=".$this->env." PHP=".PHP_VERSION." Yaf=".\YAF_VERSION." swoole=".SWOOLE_VERSION." Master-Pid={$this->sw->master_pid} Manager-Pid={$this->sw->manager_pid}");
         swoole_set_process_name("php-{$this->uname}:master");
     }
-    public function onReceive(swoole_server $serv, $fd, $from_id, $data){
+    public function onReceive(\swoole_server $serv, $fd, $from_id, $data){
         echo "【s】onReceive \n";
         $start_time=microtime(true);
         $s_task_id=$this->ids[$fd];
@@ -250,7 +259,7 @@ class socket_server{
             unset($keys,$_rev,$content,$source,$count,$codes,$code,$_v,$client_inof,$s_task_id,$task_pid);
         }
     }
-    public function onTask(swoole_server $serv, $task_id, $src_worker_id, $data){
+    public function onTask(\swoole_server $serv, $task_id, $src_worker_id, $data){
         echo "【s】onTask \n";
 
         echo "[s]task=>\n".json_encode($data,256)."\n";
@@ -335,7 +344,7 @@ class socket_server{
         }
 //
     }
-    public function onFinish(swoole_server $serv, $task_id, $data){
+    public function onFinish(\swoole_server $serv, $task_id, $data){
         echo "【s】onFinish \n";
 
 //        echo "implode('|',[$this->task_id,'onFinish',$task_id]) \n";
@@ -374,13 +383,40 @@ class socket_server{
         }
         return $response->contentBody;
     }
-    public function initYaf(){
+    public function initYaf($app='o_app'){
         echo "initYaf\n";
-        $configs=$this->getConfig(APPLICATION_PATH.'/../config/application.ini',false);
-        \Yaf_Registry::set('config', $configs);
-        $this->yaf=new \Yaf_Application(['application'=>$configs->get('application')->toArray()]);
+//        $configs=$this->getConfig(APPLICATION_PATH.'/config/application.ini',false);
+//        \Yaf_Registry::set('config', $configs);
+//        $this->yaf=new \Yaf_Application(['application'=>$configs->get('application')->toArray()]);
+//        $this->yaf->bootstrap();
+//        return $configs;
+        $app = $app?'o_app':$app;
+
+        $this->yaf=new \Yaf_Application(array(
+            'application' => array(
+                'directory' => APPLICATION_PATH . '/apps/'.$app.'/application',
+                'system' => array(
+                    'use_spl_autoload' => 1
+                ),
+                'dispatcher' => array(
+                    'catchException' => true
+                ),
+            )
+        ));
         $this->yaf->bootstrap();
+        $configs = self::loadConfig();
         return $configs;
+    }
+    static function loadConfig() {
+        //配置节点
+        $section = 'dbserver';
+        //如果在phpunit环境中，则加载phpunit的配置节点
+        if(defined('IN_PHPUNIT') && IN_PHPUNIT == true){
+            $section = 'phpunit';
+        }
+        $config = new \Yaf_Config_Ini(APPLICATION_PATH.'/config/business.ini', $section);
+        \Yaf_Registry::set('config', $config);
+        return $config;
     }
     public function initEnv($env){
         $def ='product';
