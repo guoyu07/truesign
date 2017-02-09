@@ -18,6 +18,16 @@ class IndexController extends BaseController {
             'name'=>'iamsee',
             'token'=>'123',
         );
-        echo $this->result2JSONP($call,$data);
-	}
+        $this->setBody($data);
+
+    }
+    public function index2Action() {
+        $call = $_GET['callback'];
+        $data = array(
+            'name'=>'ql',
+            'token'=>'456',
+        );
+        $this->setBody($data);
+
+    }
 }

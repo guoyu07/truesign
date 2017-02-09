@@ -17,6 +17,7 @@ class IndexController extends Yaf_Controller_Abstract {
 
        $of = new \Royal\offline();
         $of->indo();
+        echo '123';
 
 	}
 

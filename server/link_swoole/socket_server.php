@@ -374,47 +374,54 @@ class socket_server{
         if(empty($this->yaf)){
             $configs = $this->initYaf();
             // 这里处理DB, REDIS, MQ等常驻资源
-            $res = new resources($configs);
-            \Yaf_Registry::set('res_db_ubuntu', $res->getDB('ubuntu'));
+//            $res = new resources($configs);
+//            \Yaf_Registry::set('res_db_ubuntu', $res->getDB('ubuntu'));
         }
         $response = $this->yaf->getDispatcher()->returnResponse(true)->dispatch($request);
         if (!@property_exists($response, 'contentBody') || !is_array($response->contentBody)) {
-            throw new \Exception('Not set or not an array: $response->body');
+//            throw new \Exception('Not set or not an array: $response->body');
+            var_dump(json_encode($response,256));
         }
         return $response->contentBody;
     }
-    public function initYaf($app='o_app'){
+    public function initYaf($app='c_app'){
         echo "initYaf\n";
-//        $configs=$this->getConfig(APPLICATION_PATH.'/config/application.ini',false);
-//        \Yaf_Registry::set('config', $configs);
-//        $this->yaf=new \Yaf_Application(['application'=>$configs->get('application')->toArray()]);
-//        $this->yaf->bootstrap();
-//        return $configs;
-        $app = $app?'o_app':$app;
-
-        $this->yaf=new \Yaf_Application(array(
-            'application' => array(
-                'directory' => APPLICATION_PATH . '/apps/'.$app.'/application',
-                'system' => array(
-                    'use_spl_autoload' => 1
-                ),
-                'dispatcher' => array(
-                    'catchException' => true
-                ),
-            )
-        ));
+        $configs=$this->getConfig(APPLICATION_PATH.'/config/application.ini',false);
+        \Yaf_Registry::set('config', $configs);
+        $application = ['application'=>$configs->get('application')->toArray()];
+        $application['application']['directory']=APPLICATION_PATH.'/apps/'.$app.'/application';
+        $this->yaf=new \Yaf_Application($application);
         $this->yaf->bootstrap();
-        $configs = self::loadConfig();
         return $configs;
+
+
+//        $this->yaf=new \Yaf_Application(array(
+//            'application' => array(
+//                'directory' => APPLICATION_PATH . '/apps/'.$app.'/application',
+//                'system' => array(
+//                    'use_spl_autoload' => 1
+//                ),
+//                'dispatcher' => array(
+//                    'catchException' => true
+//                ),
+//            )
+//        ));
+//        $configs = self::loadConfig();
+//
+//        $this->yaf=new \Yaf_Application(['application'=>$configs->get('application')->toArray()]);
+//
+//        $this->yaf->bootstrap();
+//        $configs = self::loadConfig();
+//        return $configs;
     }
     static function loadConfig() {
         //配置节点
-        $section = 'dbserver';
+//        $section = 'dbserver';
         //如果在phpunit环境中，则加载phpunit的配置节点
         if(defined('IN_PHPUNIT') && IN_PHPUNIT == true){
             $section = 'phpunit';
         }
-        $config = new \Yaf_Config_Ini(APPLICATION_PATH.'/config/business.ini', $section);
+        $config = new \Yaf_Config_Ini(APPLICATION_PATH.'/config/application.ini', false);
         \Yaf_Registry::set('config', $config);
         return $config;
     }

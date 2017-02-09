@@ -101,5 +101,22 @@ const routes = [
         },
         component: require('../components/vux.vue')
     },
+    {
+        name: 'webgl',
+        path: '/webgl',
+        meta: {
+            title: 'webgl'
+        },
+        component: require('../components/webgl.vue')
+    },
+    {
+        name: 'echat',
+        path: '/echat',
+        meta: {
+            title: 'echat'
+        },
+        component: require('../components/echat.vue')
+    },
+
 ]
 export default routes

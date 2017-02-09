@@ -41,6 +41,9 @@ module.exports = {
       'handle-callback-err':0,
       'padded-blocks':0,
       'camelcase':0,
+      'no-duplicate-imports':0,
+      'space-infix-ops ':0,
+
   },
     env: {
         browser: true,

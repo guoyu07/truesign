@@ -50,6 +50,8 @@
               <li><router-link to="socket-io">socket-io</router-link></li>
               <li><router-link to="iview">iview</router-link></li>
               <li><router-link to="vux">vux</router-link></li>
+              <li><router-link to="webgl">webgl</router-link></li>
+              <li><router-link to="echat">echat</router-link></li>
 
 
 
