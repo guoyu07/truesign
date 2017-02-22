@@ -20,6 +20,7 @@ Vue.use(ElementUI)
 // Vue.use(VueWebsocket, 'ws://127.0.0.1:9501', {
 //     reconnection: false
 // });
+
 new Vue({
   router,
   store,

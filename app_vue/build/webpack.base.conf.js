@@ -36,8 +36,9 @@ let webpackConfig = {
       'src': path.resolve(__dirname, '../src'),
       'assets': path.resolve(__dirname, '../src/assets'),
       'components': path.resolve(__dirname, '../src/components'),
-        // 'jquery': path.resolve(__dirname, '../node_modules/jquery/src/components')
-        'jquery': 'jquery'
+        // 'jquery': path.resolve(__dirname, '../node_modules/jquery/src/components'),
+        'jquery': path.resolve(__dirname, '../node_modules/jquery/src/jquery'),
+
     }
   },
   resolveLoader: {
@@ -109,6 +110,7 @@ let webpackConfig = {
     ]
   }
 }
+
 module.exports = vuxLoader.merge(webpackConfig, {
     plugins: [
         {

@@ -1,6 +1,6 @@
 <template>
   <div>
-  <nav class="navbar navbar-default" role="navigation">
+  <nav class="navbar navbar-default" role="navigation" v-show="show_nav">
     <div class="container-fluid">
       <!-- Brand and toggle get grouped for better mobile display -->
       <div class="navbar-header">
@@ -25,22 +25,29 @@
 
 
               <li><router-link to="/">首页</router-link></li>
-              <li><router-link to="demo">demo</router-link></li>
-              <li><router-link to="awesome">awesome</router-link></li>
-              <li><router-link to="semantic">semantic</router-link></li>
-              <li><router-link to="alert">alert</router-link></li>
-              <li><router-link to="vuex">vuex</router-link></li>
-              <li><router-link to="vuex2">vuex2</router-link></li>
+              <li><router-link to="/test">test</router-link></li>
+              <li><router-link to="/test/demo">demo</router-link></li>
+              <li><router-link to="/test/awesome">awesome</router-link></li>
+              <li><router-link to="/test/semantic">semantic</router-link></li>
+              <li><router-link to="/test/alert">alert</router-link></li>
+              <li><router-link to="/test/vuex">vuex</router-link></li>
+              <li><router-link to="/test/vuex2">vuex2</router-link></li>
 
-              <li><router-link to="websocket">websocket</router-link></li>
-              <li><router-link to="socket-io">socket-io</router-link></li>
-              <li><router-link to="iview">iview</router-link></li>
-              <li><router-link to="vux">vux</router-link></li>
-              <li><router-link to="webgl">webgl</router-link></li>
-              <li><router-link to="echat">echat</router-link></li>
+              <li><router-link to="/test/websocket">websocket</router-link></li>
+              <li><router-link to="/test/socket-io">socket-io</router-link></li>
+              <li><router-link to="/test/iview">iview</router-link></li>
+              <li><router-link to="/test/vux">vux</router-link></li>
+              <li><router-link to="/test/webgl">webgl</router-link></li>
+              <li><router-link to="/test/echat">echat</router-link></li>
               <li><span>初步选定UI</span></li>
-              <li><router-link to="element">web端：element</router-link></a></li>
-              <li><router-link to="mint-ui">mobile端：mint-ui</router-link></li>
+              <li><router-link to="/project">project</router-link></a></li>
+              <li><router-link to="/project/element">web端：element</router-link></a></li>
+              <li><router-link to="/project/mint-ui">mobile端：mint-ui</router-link></li>
+              <li><router-link to="/project/spa">整合:spa</router-link></li>
+
+              <li><span>动效</span></li>
+              <li><router-link to="/effect">effect</router-link></li>
+              <li @click="show_nav=false"><router-link to="/effect/dynamic_effect">dynamic_effect</router-link></li>
 
 
             </ul>
@@ -49,7 +56,13 @@
       </div><!-- /.navbar-collapse -->
     </div><!-- /.container-fluid -->
   </nav>
+    <transition name="fade" mode="out-in">
     <router-view></router-view>
+    </transition>
+    <div>
+
+
+    </div>
   </div>
 </template>
 
@@ -58,15 +71,26 @@
     export default {
         data () {
             return {
-                'msg' : 'hello world'
+                'show_nav':true,
+                'msg' : 'hello world',
+                'transitionName':''
             }
-        }
+        },
+
     }
 
 </script>
 
-<style lang="stylus" rel="stylesheet/stylus">
-  #app
-    color:red
+<style>
+  .fade-enter-active, .fade-leave {
+    transition: all 1.5s ease;
+    transform: translateY(0);
+  }
+  .fade-enter, .fade-leave-active {
+    opacity: 0;
+    transform: translateY(-20%);
 
-</style>
+  }
+
+
+  </style>

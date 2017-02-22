@@ -43,6 +43,7 @@ module.exports = {
       'camelcase':0,
       'no-duplicate-imports':0,
       'space-infix-ops ':0,
+      'quotes':0
 
   },
     env: {

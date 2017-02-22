@@ -13,9 +13,16 @@
     "lint": "eslint --ext .js,.vue src test/unit/specs test/e2e/specs"
   },
   "dependencies": {
+    "animate.css": "^3.5.2",
+    "axios": "^0.15.3",
     "echarts": "^3.4.0",
     "element-ui": "^1.1.6",
+    "gsap": "^1.19.1",
+    "lodash-node": "^3.10.2",
     "mapbox-gl": "^0.32.1",
+    "snabbt.js": "^0.6.4",
+    "tween.js": "^16.6.0",
+    "velocity-animate": "^1.4.2",
     "vue": "^2.1.0"
   },
   "devDependencies": {
