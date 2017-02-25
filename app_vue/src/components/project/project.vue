@@ -1,20 +1,23 @@
 <template>
   <div id="project">
-   <h1>project</h1>
-    <router-view></router-view>
+    <index></index>
     <spa></spa>
-
+      <router-view></router-view>
   </div>
 </template>
 
 <script>
     import spa from './spa/spa.vue'
+    import index from './spa/index.vue'
+
+
   	module.exports = {
   		data: function () {
   			return {
   			}
   		},
         components:{
+            index,
             spa
         }
   	}

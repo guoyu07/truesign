@@ -2,11 +2,11 @@
  * Created by ql_os on 2017/2/18.
  */
 
-const header = resolve => require(['../base/header.vue'], resolve)
-const navbar = resolve => require(['../base/navbar.vue'], resolve)
-const sidebar = resolve => require(['../base/sidebar.vue'], resolve)
-const content = resolve => require(['../base/content.vue'], resolve)
-const footer = resolve => require(['../base/footer.vue'], resolve)
+const spa_header = resolve => require(['../base/header.vue'], resolve)
+const spa_navbar = resolve => require(['../base/navbar.vue'], resolve)
+const spa_sidebar = resolve => require(['../base/sidebar.vue'], resolve)
+const spa_content = resolve => require(['../base/content.vue'], resolve)
+const spa_footer = resolve => require(['../base/footer.vue'], resolve)
 export const  router_spa =
     {
         name: 'spa',
@@ -15,11 +15,11 @@ export const  router_spa =
             title: 'spa'
         },
         components: {
-            header:header,
-            navbar:navbar,
-            sidebar:sidebar,
-            content:content,
-            footer:footer
+            spa_header:spa_header,
+            spa_navbar:spa_navbar,
+            spa_sidebar:spa_sidebar,
+            spa_content:spa_content,
+            spa_footer:spa_footer
         }
     }
 

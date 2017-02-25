@@ -15,7 +15,7 @@ const mint_ui = resolve => require(['../components/project/mint-ui.vue'], resolv
 const websocket = resolve => require(['../components/test/websocket.vue'], resolve)
 const socket_io = resolve => require(['../components/test/socket-io.vue'], resolve)
 const vux = resolve => require(['../components/test/vux.vue'], resolve)
-const iview = resolve => require(['../components/test/iview.vue'], resolve)
+const iview = resolve => require(['../components/project/iview.vue'], resolve)
 const webgl = resolve => require(['../components/test/webgl.vue'], resolve)
 const echat = resolve => require(['../components/test/echat.vue'], resolve)
 const element = resolve => require(['../components/project/element.vue'], resolve)
@@ -112,14 +112,7 @@ const routes = [
                 },
                 component: socket_io
             },
-            {
-                name: 'iview',
-                path: 'iview',
-                meta: {
-                    title: 'iview'
-                },
-                component: iview
-            },
+
             {
                 name: 'vux',
                 path: 'vux',
@@ -164,6 +157,14 @@ const routes = [
                     title: 'element'
                 },
                 component: element
+            },
+            {
+                name: 'iview',
+                path: 'iview',
+                meta: {
+                    title: 'iview'
+                },
+                component: iview
             },
             {
                 name: 'mint-ui',

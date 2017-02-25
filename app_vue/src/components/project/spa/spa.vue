@@ -1,17 +1,15 @@
 <template>
   <div>
-    <router-view   name="header"></router-view>
+    <router-view   name="spa_header"></router-view>
     <div id="app1"  @click="openFullScreen" v-loading.body="fullscreenLoading">
-      123
     </div>
     <div id="app2" @click="openFullScreen">
-      456
     </div>
 
-    <router-view  name="navbar"></router-view>
-    <router-view  name="sidebar"></router-view>
-    <router-view  name="content"></router-view>
-    <router-view  name="footer"></router-view>
+    <router-view  name="spa_navbar"></router-view>
+    <router-view  name="spa_sidebar"></router-view>
+    <router-view  name="spa_content"></router-view>
+    <router-view  name="spa_footer"></router-view>
   </div>
 </template>
 

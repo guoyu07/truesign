@@ -42,8 +42,12 @@ module.exports = {
       'padded-blocks':0,
       'camelcase':0,
       'no-duplicate-imports':0,
-      'space-infix-ops ':0,
-      'quotes':0
+      'space-infix-ops':0,
+      'quotes':0,
+      'no-undef':0,
+      'new-cap':0,
+      'func-call-spacing':0,
+      'no-unexpected-multiline':0
 
   },
     env: {

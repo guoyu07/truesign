@@ -35,16 +35,17 @@
 
               <li><router-link to="/test/websocket">websocket</router-link></li>
               <li><router-link to="/test/socket-io">socket-io</router-link></li>
-              <li><router-link to="/test/iview">iview</router-link></li>
+
               <li><router-link to="/test/vux">vux</router-link></li>
               <li><router-link to="/test/webgl">webgl</router-link></li>
               <li><router-link to="/test/echat">echat</router-link></li>
               <li><span>初步选定UI</span></li>
               <li><router-link to="/project">project</router-link></a></li>
               <li><router-link to="/project/element">web端：element</router-link></a></li>
+              <li><router-link to="/project/iview">web端:iview</router-link></li>
               <li><router-link to="/project/mint-ui">mobile端：mint-ui</router-link></li>
               <li><router-link to="/project/spa">整合:spa</router-link></li>
-
+              <hr>
               <li><span>动效</span></li>
               <li><router-link to="/effect">effect</router-link></li>
               <li @click="show_nav=false"><router-link to="/effect/dynamic_effect">dynamic_effect</router-link></li>
@@ -57,16 +58,20 @@
     </div><!-- /.container-fluid -->
   </nav>
     <transition name="fade" mode="out-in">
-    <router-view></router-view>
+      <router-view></router-view>
+
     </transition>
     <div>
 
 
+
     </div>
+
   </div>
 </template>
 
 <script>
+
     // import fullScreen from './utils/fullScreen'
     export default {
         data () {
@@ -76,6 +81,7 @@
                 'transitionName':''
             }
         },
+
 
     }
 

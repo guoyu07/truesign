@@ -7,13 +7,12 @@ import Vue from 'vue'
 import router from './app_config/router-init'
 import store from './vuex/store'
 import App from './App.vue'
-/* eslint-disable no-new */
-import Mint from 'mint-ui';
-Vue.use(Mint);
+import '../theme/index.css'
 import ElementUI from 'element-ui'
 Vue.use(ElementUI)
 // import iView from 'iview';
 // import 'iview/dist/styles/iview.css';
+//
 // Vue.use(iView);
 
 // import VueWebsocket from 'vue-websocket';
