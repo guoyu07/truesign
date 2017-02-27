@@ -13,42 +13,66 @@ class DrawCanvas {
         this.canvas.height = this.height
         this.ctx = this.canvas.getContext('2d')
 
+        this.ctrl_mode = {
+            mode_x:0,
+            mode_y:0,
+            mode_z:0
+        }
+        this.ctx_center = {
+            x:0,
+            y:0
+        }
         this.dots = []
 
     }
 
-    initDot(
+    initDot({
         fl = 200,
         start_time=Date.parse(new Date()),
         end_time=false,
+        init_center = false,
         center = false,
         radius = false,
         each_touch_test = false,
         edge_touch_test = false,
         style = false,
         z=0,
+        ctrl_v = {
+            c_x:0,
+            c_y:0,
+            c_z:0
+        },
         g = {
             down:1,
             right:0,
             out:0
+        },
+        friction = {
+            x:0.88,
+            y:0.88,
+            z:0.88
         },
         v = {
             vx:0,
             vy:0,
             vz:0
         },
-        scale = 1/(1 + z/fl),
+        scale_fn = 1/(1 + -z/fl),
+        scale = {
+            scale_X:scale_fn,
+            scale_Y:scale_fn
+        },
         vp = {    //消失点
             vpX:window.innerWidth/2,
             vpY:window.innerHeight/2,
         },
         visible=true,
-
+    }
 
     ){
-
+        // console.log(g)
         let dot = {}
-        z = -Math.abs(Math.random()*10)
+
         dot.start_time = start_time
         dot.end_time = end_time
         if(!radius){
@@ -57,39 +81,93 @@ class DrawCanvas {
             // if(radius<0 ){
             //     radius = 1
             // }
-            radius = 30
+            radius = 40
 
         }
-        if(!center){
-            center = {
-                x:parseInt(Math.abs(Math.random()*this.width)-radius),
-                y:parseInt(Math.abs(Math.random()*this.height)-radius),
-            }
-        }
-        if(!style){
-            style = this.initStyle(center,radius)
+        // if(!center){
+        //     // init_center = center = {
+        //     //     x:parseInt(Math.abs(Math.random()*this.width)-radius),
+        //     //     y:parseInt(Math.abs(Math.random()*this.height)-radius),
+        //     // }
+        //     if(init_center){
+        //         center = init_center
+        //     }
+        //     else{
+        //         center = init_center = {
+        //                 x:parseInt(Math.abs(Math.random()*this.width)-radius),
+        //                 y:parseInt(Math.abs(Math.random()*this.height)-radius),
+        //             }
+        //     }
+        // }
 
-        }
         dot.visible = visible
         dot.fl = fl
-        dot.style = style
+        dot.ctrl_v = ctrl_v
+        dot.scale_fn = scale_fn
+        dot.scale = scale = {
+            scale_X : scale_fn,
+            scale_Y : scale_fn
+        }
         dot.vp = vp
         dot.radius = radius
-        dot.center = center
+
+        dot.init_center = init_center
+        dot.center = {
+            x:init_center.x,
+            y:init_center.y
+        }
+
+        if(!style){
+            style = this.initStyle(dot.center,radius)
+
+        }
+        dot.style = style
+
         dot.each_touch_test = each_touch_test
         dot.edge_touch_test = edge_touch_test
         dot.z = z
         dot.g = g
+        dot.friction = friction
         dot.v = v
         this.dots.push(dot)
     }
     move(){
-        var dots = this.dots
+
         var cls = this
         this.dots.forEach(function (k,v) {
-            dots[v].center.x += 1
-        })
+            cls.dots[v].ctrl_v.c_x += cls.ctrl_mode.mode_x
+            cls.dots[v].ctrl_v.c_y += cls.ctrl_mode.mode_y
+            cls.dots[v].ctrl_v.c_z += cls.ctrl_mode.mode_z
+            // cls.dots[v].ctrl_v.c_x = cls.ctrl_mode.mode_x
+            // cls.dots[v].ctrl_v.c_y = cls.ctrl_mode.mode_y
+            // cls.dots[v].ctrl_v.c_z = cls.ctrl_mode.mode_z
+
+            cls.dots[v].init_center.x += cls.dots[v].ctrl_v.c_x
+            cls.dots[v].init_center.y += cls.dots[v].ctrl_v.c_y
+            cls.dots[v].z += cls.dots[v].ctrl_v.c_z
+            console.log(cls.dots[v].ctrl_v.c_z)
+            cls.dots[v].scale_fn = 1/(1 + -cls.dots[v].z/cls.dots[v].fl)
+            cls.dots[v].scale = {
+                scale_X:cls.dots[v].scale_fn,
+                scale_Y:cls.dots[v].scale_fn
+            }
+            // ball.xpos += vx;
+            // ball.ypos += vy;
+            // ball.zpos += vz;
+
+            cls.dots[v].center.x = cls.dots[v].init_center.x * cls.dots[v].scale_fn;
+            cls.dots[v].center.y = cls.dots[v].init_center.y * cls.dots[v].scale_fn;
+            // console.log(cls.dots[v].scale)
+            // console.log(cls.dots[v].center)
+
+            cls.dots[v].ctrl_v.c_x *= cls.dots[v].friction.x
+            cls.dots[v].ctrl_v.c_y *= cls.dots[v].friction.y
+            cls.dots[v].ctrl_v.c_z *= cls.dots[v].friction.z
+
+        });
+
     }
+
     fixDotCenter(new_dot) {
         this.dots.forEach(function (k, v) {
             if(new_dot.each_touch_test)
@@ -137,7 +215,6 @@ class DrawCanvas {
     }
     randomColor(){
         var is_color = (Math.floor(Math.random()*0xffffff).toString(16))+""
-        console.log(is_color+'->'+is_color.length)
         while(is_color.length<=5){
             is_color = '0' + is_color
         }
@@ -165,13 +242,21 @@ class DrawCanvas {
         // style = grd
     }
     drawDots(){
-
+        // console.log(this.dots)
+        this.dots.sort(zSort)
+        // console.log(this.dots)
         this.ctx.clearRect(0, 0, this.width, this.height);
+
+
+
         var canvasM =  this
         this.dots.forEach(function (k,v) {
+            canvasM.ctx.save()
 
             if(k.visible){
-                canvasM.ctx.beginPath()
+                if(k.vp){
+                    canvasM.ctx.translate(k.vp.vpX,k.vp.vpY)
+                }
                 if(k.style){
                     if(k.style.RadialGradient){
                         // canvasM.ctx.fillStyle = k.style.RadialGradient
@@ -188,10 +273,13 @@ class DrawCanvas {
                         canvasM.ctx.strokeStyle = k.style.strokeStyle
                     }
                 }
-                if(k.scala){
-                    canvasM.ctx.scale(k.centerx)
+
+                if(k.scale){
+                    canvasM.ctx.scale(k.scale.scale_X,k.scale.scale_Y)
                 }
+                canvasM.ctx.beginPath()
                 canvasM.ctx.arc(k.center.x,k.center.y,k.radius,0,2* Math.PI)
+                canvasM.ctx.closePath()
                 // canvasM.ctx.arc(10,10,5,0,2* Math.PI)
                 // canvasM.ctx.arc(20,20,10,0,2*Math.PI)
                 if(k.style.strokeStyle) {
@@ -199,16 +287,64 @@ class DrawCanvas {
                 }
                 canvasM.ctx.fill()
             }
+            canvasM.ctx.restore()
 
 
 
         })
+
+        function zSort(a,b){
+            return (a.z - b.z);
+        }
     }
 
-    draw() {
-        this.ctx.beginPath();
-        this.ctx.arc(100, 75, 50, 0, 2 * Math.PI);
-        this.ctx.fill();
+    initCtrl(){
+        const cls = this
+        window.addEventListener('keydown', function (event) {
+            switch (event.keyCode) {
+                case 38:        //up
+                    cls.ctrl_mode.mode_z = 1;
+                    break;
+                case 40:        //down
+                    cls.ctrl_mode.mode_z = -1;
+                    break;
+                case 37:        //left
+                    cls.ctrl_mode.mode_x = 1;
+                    break;
+                case 39:        //right
+                    cls.ctrl_mode.mode_x = -1;
+                    break;
+                case 32:        //space
+                    cls.ctrl_mode.mode_y = 1;
+                    break;
+                case 191:        //ctrl
+                    cls.ctrl_mode.mode_y = -1;
+                    break;
+
+            }
+        }, false);
+
+        window.addEventListener('keyup', function (event) {
+            switch (event.keyCode) {
+                case 38:        //up
+                case 40:        //down
+                    cls.ctrl_mode.mode_z = 0;
+                    break;
+                case 37:        //left
+                case 39:        //right
+                    cls.ctrl_mode.mode_x = 0;
+                    break;
+                case 32:        //space
+                case 191:        //space
+                    cls.ctrl_mode.mode_y = 0;
+                    break;
+            }
+        }, false);
+    }
+
+    draw({x=1,y=2}) {
+        console.log(x)
+        console.log(y)
     }
 
     drawStats() {

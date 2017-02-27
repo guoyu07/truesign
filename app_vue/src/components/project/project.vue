@@ -1,8 +1,8 @@
 <template>
   <div id="project">
     <index></index>
-    <spa></spa>
-      <router-view></router-view>
+    <!--<spa></spa>-->
+      <!--<router-view></router-view>-->
   </div>
 </template>
 

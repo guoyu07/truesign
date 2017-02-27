@@ -18,27 +18,36 @@
   export default{
 
       mounted(){
+          $('.navbar').css('display','none')
 //          var arrayCanvas = new ArrayCanvas('canvas')
           var drawCanvas = new DrawCanvas('canvas')
 //          drawCanvas.draw()
 //          drawCanvas.drawStats()
-          for(let i = 0; i < 500; i++){
-              drawCanvas.initDot()
+          for(let i = 0; i < 1; i++){
+              drawCanvas.initDot(
+                  {
+                      g:{down:-0.3,right:0,out:0},
+                      init_center:{x:Math.random()*(Math.random()>0.5?1:-1) * (drawCanvas.width/2) ,
+                          y:Math.random()*(Math.random()>0.5?1:-1) * (drawCanvas.height/2) },
+                      z:-Math.random()*1000
+                  })
 
           }
-//          console.log(drawCanvas.dots)
-//                        drawCanvas.drawDots()
+
+
+          drawCanvas.initCtrl()
+
+
+//          (function deawFrame(){
+//              drawCanvas.drawDots()
 //              drawCanvas.move()
+//                  window.requestAnimationFrame(deawFrame, drawCanvas.canvas);
+//          }())
+          setInterval(function () {
 
-//          drawCanvas.drawDots()
-
-
-
-              (function deawFrame(){
-                  drawCanvas.drawDots()
-                  drawCanvas.move()
-                  window.requestAnimationFrame(deawFrame, drawCanvas.canvas);
-              }())
+              drawCanvas.drawDots()
+              drawCanvas.move()
+          },20)
 
       }
   }
