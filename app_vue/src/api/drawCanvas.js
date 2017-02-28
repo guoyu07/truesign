@@ -145,15 +145,17 @@ class DrawCanvas {
             cls.dots[v].init_center.x += cls.dots[v].ctrl_v.c_x
             cls.dots[v].init_center.y += cls.dots[v].ctrl_v.c_y
             cls.dots[v].z += cls.dots[v].ctrl_v.c_z
-            console.log(cls.dots[v].ctrl_v.c_z)
+            console.log(cls.dots[v].z)
+            if(cls.dots[v].z>cls.dots[v].fl){
+                cls.dots[v].z -= -10000
+            }
             cls.dots[v].scale_fn = 1/(1 + -cls.dots[v].z/cls.dots[v].fl)
             cls.dots[v].scale = {
                 scale_X:cls.dots[v].scale_fn,
                 scale_Y:cls.dots[v].scale_fn
             }
-            // ball.xpos += vx;
-            // ball.ypos += vy;
-            // ball.zpos += vz;
+            console.log(cls.dots[v].scale)
+
 
             cls.dots[v].center.x = cls.dots[v].init_center.x * cls.dots[v].scale_fn;
             cls.dots[v].center.y = cls.dots[v].init_center.y * cls.dots[v].scale_fn;
