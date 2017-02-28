@@ -23,7 +23,7 @@
           var drawCanvas = new DrawCanvas('canvas')
 //          drawCanvas.draw()
 //          drawCanvas.drawStats()
-          for(let i = 0; i < 20; i++){
+          for(let i = 0; i < 100; i++){
               drawCanvas.initDot(
                   {
                       g:{down:-0.3,right:0,out:0},

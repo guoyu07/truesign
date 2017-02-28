@@ -48,9 +48,9 @@ class DrawCanvas {
             out:0
         },
         friction = {
-            x:0.88,
-            y:0.88,
-            z:0.88
+            x:0.98,
+            y:0.98,
+            z:0.98
         },
         v = {
             vx:0,
@@ -137,6 +137,7 @@ class DrawCanvas {
         this.dots.forEach(function (k,v) {
             cls.dots[v].ctrl_v.c_x += cls.ctrl_mode.mode_x
             cls.dots[v].ctrl_v.c_y += cls.ctrl_mode.mode_y
+            cls.dots[v].ctrl_v.c_y -= cls.dots[v].friction.y * 0.5
             cls.dots[v].ctrl_v.c_z += cls.ctrl_mode.mode_z
             // cls.dots[v].ctrl_v.c_x = cls.ctrl_mode.mode_x
             // cls.dots[v].ctrl_v.c_y = cls.ctrl_mode.mode_y
@@ -148,6 +149,10 @@ class DrawCanvas {
 
 
             cls.dots[v].scale_fn = 1/(1 + -cls.dots[v].z/cls.dots[v].fl)
+
+            if(cls.dots[v].init_center.y < -(cls.height/1.5)){
+              cls.dots[v].init_center.y = cls.height/1.5;
+            }
             if(cls.dots[v].z>cls.dots[v].fl){
               cls.dots[v].z = -1000
             }
@@ -163,8 +168,10 @@ class DrawCanvas {
             }
 
 
+
             cls.dots[v].center.x = cls.dots[v].init_center.x * cls.dots[v].scale_fn;
             cls.dots[v].center.y = cls.dots[v].init_center.y * cls.dots[v].scale_fn;
+
             // console.log(cls.dots[v].scale)
             // console.log(cls.dots[v].center)
 
