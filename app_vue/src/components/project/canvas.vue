@@ -11,7 +11,7 @@
 <script>
 
 //    import ArrayCanvas from '../../../api/array_canvas.js'
-    import DrawCanvas from '../../../api/drawCanvas.js'
+    import DrawCanvas from '../../api/drawCanvas.js'
 
 
 
@@ -19,6 +19,7 @@
 
       mounted(){
           $('.navbar').css('display','none')
+          $('h1').css('display','none')
 //          var arrayCanvas = new ArrayCanvas('canvas')
           var drawCanvas = new DrawCanvas('canvas')
 //          drawCanvas.draw()

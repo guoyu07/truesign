@@ -20,8 +20,10 @@ const webgl = resolve => require(['../components/test/webgl.vue'], resolve)
 const echat = resolve => require(['../components/test/echat.vue'], resolve)
 const element = resolve => require(['../components/project/element.vue'], resolve)
 const spa = resolve => require(['../components/project/spa/spa.vue'], resolve)
+const canvas = resolve => require(['../components/project/canvas.vue'], resolve)
 const test = resolve => require(['../components/test/test.vue'], resolve)
 const project = resolve => require(['../components/project/project.vue'], resolve)
+const gdmap = resolve => require(['../components/project/gdmap.vue'], resolve)
 
 const effect = resolve => require(['../components/effect/effect.vue'], resolve)
 const dynamic_effect = resolve => require(['../components/effect/dynamic_effect.vue'], resolve)
@@ -159,13 +161,14 @@ const routes = [
                 component: element
             },
             {
-                name: 'iview',
-                path: 'iview',
-                meta: {
-                    title: 'iview'
-                },
-                component: iview
+              name: 'gdmap',
+              path: 'gdmap',
+              meta: {
+                title: 'gdmap'
+              },
+              component: gdmap
             },
+
             {
                 name: 'mint-ui',
                 path: 'mint-ui',
@@ -173,6 +176,14 @@ const routes = [
                     title: 'mint-ui'
                 },
                 component: mint_ui
+            },
+            {
+              name: 'canvas',
+              path: 'canvas',
+              meta: {
+                title: 'canvas'
+              },
+              component: canvas
             },
 
             router_spa

@@ -42,9 +42,9 @@
               <li><span>初步选定UI</span></li>
               <li><router-link to="/project">project</router-link></a></li>
               <li><router-link to="/project/element">web端：element</router-link></a></li>
-              <li><router-link to="/project/iview">web端:iview</router-link></li>
               <li><router-link to="/project/mint-ui">mobile端：mint-ui</router-link></li>
-              <li><router-link to="/project/spa">整合:spa</router-link></li>
+              <li><router-link to="/project/gdmap">高德地图</router-link></li>
+              <li><router-link to="/project/canvas">canvas</router-link></li>
               <hr>
               <li><span>动效</span></li>
               <li><router-link to="/effect">effect</router-link></li>
