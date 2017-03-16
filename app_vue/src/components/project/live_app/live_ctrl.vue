@@ -55,14 +55,14 @@
               <div class="app_level" >{{ top_level }}</div>
               <input type="button" class="cancel_auth" value="取消鉴权" v-if="authing" @click="cancel_auth"></input>
               <div class="ui icon input loading forminput">
-                <input type="text" id="level_key" :value="level_key" placeholder="输入级别key">
+                <input type="text" id="level_key" v-model="level_key" placeholder="输入级别key">
                 <i class="search icon"></i>
               </div>
               <div class="ui icon input loading forminput">
-                <input type="text" id="level_pass" :value="level_pass" placeholder="输入级别encode">
+                <input type="text" id="level_pass" v-model="level_pass" placeholder="输入级别encode">
                 <i class="search icon"></i>
               </div>
-              <button @click="bind_app_auth" :class="{ui:ClassisActive, inverted:ClassisActive, teal:ClassisActive, basic:ClassisActive,
+              <button @click="bind_app_auth" v-if="level_key && level_pass" :class="{ui:ClassisActive, inverted:ClassisActive, teal:ClassisActive, basic:ClassisActive,
                button:ClassisActive,loading:authing,    forminput:ClassisActive}"  style="margin-top: 10px">Authentication</button>
             </form>
           </transition>
@@ -108,6 +108,12 @@
                 ],
                 level_key:'',
                 level_pass:'',
+
+                module:'',
+                controller:'',
+                action:'',
+                payload:'',
+
 
             }
         },
@@ -206,6 +212,16 @@
             },
             bind_app_auth(){
                 this.authing = 1
+                var params = {
+                    apps:this.bind_apps,
+                    key:this.level_key,
+                    pass:this.level_pass
+                }
+                this.module = 'index'
+                this.controller = 'index'
+                this.action = 'index'
+                this.payload = params
+                this.send()
             },
             check_status(){
 
@@ -242,10 +258,11 @@
                         action:this.action,
                     }
                 }
-                this.payload['cmd'] = this.cmd
+
                 SOCKET_CLIENT.data.payload = this.payload
                 SOCKET_CLIENT.data.this_vue = this
                 let response = SOCKET_CLIENT.wsSend()
+
 
             },
             dealLevel(str,type='remove'){
@@ -326,9 +343,8 @@
         display: inline-block;
         vertical-align: top;
         background: transparent;
-        border-right solid 2px rgba(105,210,231,0.44)
-        border-top solid 2px rgba(105,210,231,0.44)
-        border-bottom: solid 2px rgba(105,210,231,0.44)
+        border-right solid 1px rgba(105,210,231,0.44)
+
         box-shadow: 2px 0px 15px rgba(81, 140, 159, 0.56);
         .app_level
           display inline-block

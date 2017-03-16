@@ -11,7 +11,7 @@ const SOCKET_CLIENT_DEMO  =  {
     },
     init : function (){
         this.copyright();
-        SOCKET_CLIENT.data.storage  =  window.localStorage;
+        SOCKET_CLIENT_DEMO.data.storage  =  window.localStorage;
 
         if(this.data.wSock){
             console.log('已经是连接状态')
@@ -48,7 +48,7 @@ const SOCKET_CLIENT_DEMO  =  {
         this.data.wSock.onopen  =  function( event ){
             that.data.this_vue.check_status()
             that.data.this_vue.show_process = true
-            SOCKET_CLIENT.print('wsopen',event);
+            SOCKET_CLIENT_DEMO.print('wsopen',event);
             console.log('[c]open=>')
             console.log(event)
         }

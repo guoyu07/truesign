@@ -102,8 +102,8 @@
 </template>
 
 <script>
-    import SOCKET_CLIENT from '../../api/SOCKET_CLIENT_DEMO'
-    SOCKET_CLIENT.data.this_vue = this
+    import SOCKET_CLIENT_DEMO from '../../api/SOCKET_CLIENT_DEMO'
+    SOCKET_CLIENT_DEMO.data.this_vue = this
     export default {
         mounted () {
 
@@ -143,9 +143,9 @@
 //                    console.log(that.process)
                     if(that.process <= 0){
                         that.process = 100
-//                        console.log('SOCKET_CLIENT.data.wSock=>')
-//                        console.log(SOCKET_CLIENT.data.wSock)
-                        if(SOCKET_CLIENT.data.wSock){
+//                        console.log('SOCKET_CLIENT_DEMO.data.wSock=>')
+//                        console.log(SOCKET_CLIENT_DEMO.data.wSock)
+                        if(SOCKET_CLIENT_DEMO.data.wSock){
 
                         }else{
                             that.me.me_status = false
@@ -157,14 +157,14 @@
                 window.clearInterval(this.int_check)
             },
             socket_init()  {
-                SOCKET_CLIENT.data.this_vue = this
+                SOCKET_CLIENT_DEMO.data.this_vue = this
 
-                SOCKET_CLIENT.init()
+                SOCKET_CLIENT_DEMO.init()
             },
             disconnect() {
-                SOCKET_CLIENT.data.this_vue = this
+                SOCKET_CLIENT_DEMO.data.this_vue = this
 
-                SOCKET_CLIENT.wsClose()
+                SOCKET_CLIENT_DEMO.wsClose()
             },
             reconnect() {
 
@@ -182,9 +182,9 @@
                     }
                 }
                 this.payload['cmd'] = this.cmd
-                SOCKET_CLIENT.data.payload = this.payload
-                SOCKET_CLIENT.data.this_vue = this
-                let response = SOCKET_CLIENT.wsSend()
+                SOCKET_CLIENT_DEMO.data.payload = this.payload
+                SOCKET_CLIENT_DEMO.data.this_vue = this
+                let response = SOCKET_CLIENT_DEMO.wsSend()
 
             }
 
