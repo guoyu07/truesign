@@ -62,29 +62,30 @@ const SOCKET_CLIENT_DEMO  =  {
             console.log(d)
             d = JSON.parse(d['data'])
             console.log(d)
-            let user_count = d['user_list']['count']
-            let user_list = d['user_list']['data']
-            let show_user_list = user_count + '\r\n'
-            $.each(user_list,function (k,v) {
-                show_user_list += 'id=>' + v['id'] + ' nickname=>' + v['nickname'] + '\r\n'
-            })
-
-
-            let show_me = d['relation']['me']
-            let show_me_id = show_me['id']
-            let show_me_nickname = show_me['nickname']
-            if(show_me_id !== 'unknow' && show_me_nickname){
-                let me = {
-                    'me_id':show_me_id,
-                    'me_nickname':show_me_nickname,
-                    'me_status':'online'
-                }
-                that.data.this_vue.me = me
-
-            }
-            that.data.this_vue.user_list = show_user_list
-            that.data.this_vue.response = JSON.stringify(d['response'])
-            // $('#response').val(JSON.stringify(d['response']))
+            console.log(JSON.stringify(d['response']))
+        //     let user_count = d['user_list']['count']
+        //     let user_list = d['user_list']['data']
+        //     let show_user_list = user_count + '\r\n'
+        //     $.each(user_list,function (k,v) {
+        //         show_user_list += 'id=>' + v['id'] + ' nickname=>' + v['nickname'] + '\r\n'
+        //     })
+        //
+        //
+        //     let show_me = d['relation']['me']
+        //     let show_me_id = show_me['id']
+        //     let show_me_nickname = show_me['nickname']
+        //     if(show_me_id !== 'unknow' && show_me_nickname){
+        //         let me = {
+        //             'me_id':show_me_id,
+        //             'me_nickname':show_me_nickname,
+        //             'me_status':'online'
+        //         }
+        //         that.data.this_vue.me = me
+        //
+        //     }
+        //     that.data.this_vue.user_list = show_user_list
+        //     that.data.this_vue.response = JSON.stringify(d['response'])
+        //     // $('#response').val(JSON.stringify(d['response']))
         }
 
 

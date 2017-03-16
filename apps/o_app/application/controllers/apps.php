@@ -13,4 +13,18 @@ class appsController extends  oAppBaseController
         $this->output2json($rules);
     }
 
+    public function indexAction(){
+        $call = $_GET['callback'];
+        $data = array(
+            'name'=>'iamsee111',
+            'token'=>'1235',
+        );
+        $this->setBody($data);
+    }
+
+    public function index2Action()
+    {
+        
+    }
+
 }

@@ -112,7 +112,9 @@
                 module:'',
                 controller:'',
                 action:'',
-                payload:'',
+                to:'',
+                payload_type:'',
+                payload_data:'',
 
 
             }
@@ -207,6 +209,15 @@
 
         },
         methods:{
+            doinit(){
+                this.module = 'index'
+                this.controller = 'index'
+                this.action = 'index'
+                this.payload_type = 'seach_apps'
+                this.send()
+
+
+            },
             cancel_auth(){
                 this.authing = 0
             },
@@ -220,7 +231,8 @@
                 this.module = 'index'
                 this.controller = 'index'
                 this.action = 'index'
-                this.payload = params
+                this.payload_type = 'bind_apps'
+                this.payload_data = params
                 this.send()
             },
             check_status(){

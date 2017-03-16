@@ -13,7 +13,7 @@ require('semantic-ui/dist/semantic.js')
 
     // 动效依赖
 require('animate.css/animate.css');// get animate.css
-require('animate.css/animate_zxx.css');// get animate.css
+// require('animate.css/animate_zxx.css');// get animate.css
 require('velocity-animate/velocity.js')
 require('velocity-animate/velocity.ui.js')
 require('node-waves/src/stylus/waves.styl')

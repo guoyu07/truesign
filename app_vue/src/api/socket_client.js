@@ -68,6 +68,8 @@ const SOCKET_CLIENT  =  {
             if(status === 200 && type ==='self_init'){
                 that.conn_status = true
                 that.data.this_vue.conn_status = true
+                that.data.this_vue.doinit()
+
             }
 
             that.data.this_vue.conn_info = '保持连接'
