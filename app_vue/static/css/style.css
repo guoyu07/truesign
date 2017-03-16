@@ -1,0 +1,21 @@
+.pullup{
+    transition: all 1.5s ease;
+    transform: translateY(-100%);
+}
+
+.pullin{
+    transition: all 1.5s ease;
+    transform: translateX(0);
+    transform: translateY(0);
+}
+.pullright{
+    transition: all 1.5s ease;
+    transform: translateX(100%);
+}
+.smooth{
+    background-color:rgba(255, 254, 252, 0.2);
+    backdrop-filter:blur(5px);
+    border: rgba(119, 118, 117, 0.12) 2px solid;
+    color: white;
+}
+

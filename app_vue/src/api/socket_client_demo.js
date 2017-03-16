@@ -1,5 +1,5 @@
 
-const SOCKET_CLIENT  =  {
+const SOCKET_CLIENT_DEMO  =  {
     data : {
         wSock       : null,
         to       : '',
@@ -7,8 +7,7 @@ const SOCKET_CLIENT  =  {
         payload:null,
         wsserver    : 'ws://192.168.1.5:9501',
         response : '',
-        this_vue : null,
-        conn_status : false
+        this_vue : null
     },
     init : function (){
         this.copyright();
@@ -43,7 +42,6 @@ const SOCKET_CLIENT  =  {
         console.log('尝试关闭')
         this.data.wSock.close();
 
-
     },
     wsOpen : function (){
         let that = this
@@ -58,20 +56,34 @@ const SOCKET_CLIENT  =  {
     wsMessage : function(){
         let that = this
         this.data.wSock.onmessage = function(event){
-            var response_data  =  jQuery.parseJSON(event.data);
+            var d  =  jQuery.parseJSON(event.data);
             console.log('[c]message=>')
-            console.log(response_data)
-            let status = response_data.status
-            let type = response_data.type
-            console.log(status)
-            console.log(type)
-            if(status === 200 && type ==='self_init'){
-                that.conn_status = true
-                that.data.this_vue.conn_status = true
-            }
+            // console.log(event)
+            console.log(d)
+            d = JSON.parse(d['data'])
+            console.log(d)
+            let user_count = d['user_list']['count']
+            let user_list = d['user_list']['data']
+            let show_user_list = user_count + '\r\n'
+            $.each(user_list,function (k,v) {
+                show_user_list += 'id=>' + v['id'] + ' nickname=>' + v['nickname'] + '\r\n'
+            })
 
-            that.data.this_vue.conn_info = '保持连接'
-            that.data.this_vue.socket_response = JSON.stringify(response_data['data'])
+
+            let show_me = d['relation']['me']
+            let show_me_id = show_me['id']
+            let show_me_nickname = show_me['nickname']
+            if(show_me_id !== 'unknow' && show_me_nickname){
+                let me = {
+                    'me_id':show_me_id,
+                    'me_nickname':show_me_nickname,
+                    'me_status':'online'
+                }
+                that.data.this_vue.me = me
+
+            }
+            that.data.this_vue.user_list = show_user_list
+            that.data.this_vue.response = JSON.stringify(d['response'])
             // $('#response').val(JSON.stringify(d['response']))
         }
 
@@ -95,9 +107,6 @@ const SOCKET_CLIENT  =  {
                 // that.data.this_vue.show_process = false
                 that.data.this_vue.me = null
                 console.log('关闭成功')
-                that.data.this_vue.conn_status = false
-                that.data.this_vue.conn_info = '失去连接'
-
             }
         }
     },
@@ -117,4 +126,4 @@ const SOCKET_CLIENT  =  {
         console.log('truesign ico pre connect to socket server ……');
     },
 }
-export  default  SOCKET_CLIENT
+export  default  SOCKET_CLIENT_DEMO

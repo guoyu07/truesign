@@ -44,7 +44,6 @@ foreach ($filesnames as $name){
 }
 
 $model = new DbConfig();
-
 //刷新库
 foreach ($adapters as $adapter) {
     $model->refreshTable($adapter);

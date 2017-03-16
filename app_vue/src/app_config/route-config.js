@@ -24,6 +24,7 @@ const canvas = resolve => require(['../components/project/canvas.vue'], resolve)
 const test = resolve => require(['../components/test/test.vue'], resolve)
 const project = resolve => require(['../components/project/project.vue'], resolve)
 const gdmap = resolve => require(['../components/project/gdmap.vue'], resolve)
+const video = resolve => require(['../components/project/video.vue'], resolve)
 
 const effect = resolve => require(['../components/effect/effect.vue'], resolve)
 const dynamic_effect = resolve => require(['../components/effect/dynamic_effect.vue'], resolve)
@@ -167,6 +168,14 @@ const routes = [
                 title: 'gdmap'
               },
               component: gdmap
+            },
+            {
+                name: 'video',
+                path: 'video',
+                meta: {
+                    title: 'video'
+                },
+                component: video
             },
 
             {

@@ -1,6 +1,6 @@
 <template>
   <div>
-  <nav class="navbar navbar-default" role="navigation" v-show="show_nav">
+  <nav id="nav" class="navbar navbar-default" role="navigation" v-show="show_nav">
     <div class="container-fluid">
       <!-- Brand and toggle get grouped for better mobile display -->
       <div class="navbar-header">
@@ -10,6 +10,7 @@
           <span class="icon-bar"></span>
           <span class="icon-bar"></span>
         </button>
+
         <a class="navbar-brand" href="#"></a>
       </div>
 
@@ -45,6 +46,7 @@
               <li><router-link to="/project/mint-ui">mobile端：mint-ui</router-link></li>
               <li><router-link to="/project/gdmap">高德地图</router-link></li>
               <li><router-link to="/project/canvas">canvas</router-link></li>
+              <li><router-link to="/project/video">video</router-link></li>
               <hr>
               <li><span>动效</span></li>
               <li><router-link to="/effect">effect</router-link></li>
@@ -71,7 +73,7 @@
 </template>
 
 <script>
-
+    require('./api/lib/helper/mouse')
     // import fullScreen from './utils/fullScreen'
     export default {
         data () {
@@ -81,6 +83,12 @@
                 'transitionName':''
             }
         },
+        mounted(){
+            $("#nav").on('dblclick',function () {
+                $("#nav").removeClass('pullin')
+                $("#nav").addClass('pullup')
+            })
+        }
 
 
     }
@@ -94,9 +102,20 @@
   }
   .fade-enter, .fade-leave-active {
     opacity: 0;
+
     transform: translateY(-20%);
 
   }
+
+
+  #nav{
+    margin-bottom: 0;
+    padding-bottom: 0;
+    width:  100%;
+
+    opacity:12;position: relative; right:0;z-index:1000
+  }
+
 
 
   </style>

@@ -91,10 +91,8 @@ class socket_server{
         ]);
     }
     private function buildMsg($from,$to,$me,$data,$type,$status = 200){
-        $user_list = $this->getUserList();
         $response_data = array();
         $response_data['response']=$data;
-        $response_data['user_list']=$user_list;
         $relation = array();
         $response_data['relation']['from']=$from;
         $response_data['relation']['to']=$to;
@@ -389,7 +387,7 @@ class socket_server{
         $configs=$this->getConfig(APPLICATION_PATH.'/config/application.ini',false);
         \Yaf_Registry::set('config', $configs);
         $application = ['application'=>$configs->get('application')->toArray()];
-        $application['application']['directory']=APPLICATION_PATH.'/apps/'.$app.'/application';
+        $application['application']['directory']=APPLICATION_PATH.'/Apps/'.$app.'/application';
         $this->yaf=new \Yaf_Application($application);
         $this->yaf->bootstrap();
         return $configs;
@@ -397,7 +395,7 @@ class socket_server{
 
 //        $this->yaf=new \Yaf_Application(array(
 //            'application' => array(
-//                'directory' => APPLICATION_PATH . '/apps/'.$app.'/application',
+//                'directory' => APPLICATION_PATH . '/Apps/'.$app.'/application',
 //                'system' => array(
 //                    'use_spl_autoload' => 1
 //                ),

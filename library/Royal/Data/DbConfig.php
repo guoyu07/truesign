@@ -25,10 +25,13 @@ class DbConfig {
     public function diffKey(DAOAdapter $adapter,$mysql_user = null) {
         $exceptKeys = $this->analysisKeyByAdapter($adapter);
         $currentKeys = $this->analysisKeyByDb($adapter,$mysql_user);
-        $table = Remote::getTable($adapter->table());
 
+        $table = Remote::getTable($adapter->table_Prefix().$adapter->table());
         $sqls = array();
+
+
         foreach ($exceptKeys as $name => $key) {
+
             if (!isset($currentKeys[$name])) {
                 $keyField = join(',', $key['field']);
                 if ($key['type'] == 'unique') {
@@ -38,10 +41,12 @@ class DbConfig {
                 } else {
                     $keyType = 'KEY';
                 }
+
                 $sqls[] = "ADD $keyType ($keyField)";
             }
             unset($currentKeys[$name]);
         }
+
         foreach ($currentKeys as $name => $key) {
             $keyName = $key['name'];
             $sql = "DROP KEY `$keyName`";
@@ -52,6 +57,7 @@ class DbConfig {
             $sqls = "ALTER TABLE `$table` " . join(', ', $sqls);
             return array($sqls);
         }
+
         return $sqls;
     }
 
@@ -100,14 +106,13 @@ class DbConfig {
             $keyName = $row['type'] . '_' . join('_', $row['field']);
             $rows[$keyName] = $row;
         }
-        var_dump($keys);
 
         return $rows;
     }
 
     public function analysisKeyByDb(DAOAdapter $adapter,$mysql_user = null) {
         $db = DAO::instance($adapter,$mysql_user)->getDb($mysql_user);
-        $table = $adapter->table();
+        $table = $adapter->table_Prefix().$adapter->table();
         $exists = $db->get_var("show tables like '$table'");
         if (!$exists) {
             return array();
@@ -150,7 +155,7 @@ class DbConfig {
 
     public function analysisTable(DAOAdapter $adapter,$mysql_user = null) {
         $db = DAO::instance($adapter)->getDb($mysql_user);
-        $table = $adapter->table();
+        $table = $adapter->table_Prefix().$adapter->table();
         $exists = $db->get_var("show tables like '$table'");
         if (!$exists) {
             return array();
@@ -198,6 +203,12 @@ class DbConfig {
             $attrs[$idField]['key'] = 'primary';
             $attrs[$idField]['auto_increment'] = true;
         }
+        if ($createField = $adapter->autoIfDelete()) {
+            $attrs["$prefix$createField"] = array(
+                'type' => 'int',
+                'length' => 1,
+            );
+        }
         $createtimeField = $adapter->autoCreateTimestamp();
         if ($createtimeField) {
             $attrs["$prefix$createtimeField"] = array(
@@ -217,8 +228,8 @@ class DbConfig {
 
     public function refreshTable(DAOAdapter $adapter) {
         $db = DAO::instance($adapter)->getDb();
+
         $sqls = $this->diffTable($adapter);
-        var_dump($sqls);
         foreach ($sqls as $sql) {
             $db->query($sql);
         }
@@ -238,9 +249,8 @@ class DbConfig {
     public function refreshKey(DAOAdapter $adapter) {
         $db = DAO::instance($adapter)->getDbOld();
         $sqls = $this->diffKey($adapter);
-        var_dump($sqls);
         foreach ($sqls as $sql) {
-//            $db->query($sql);
+            $db->query($sql);
         }
         return $sqls;
     }
@@ -262,7 +272,7 @@ class DbConfig {
         }
         $sql = array();
         $lastField = null;
-        $table = Remote::getTable($adapter->table());
+        $table = Remote::getTable($adapter->table_Prefix().$adapter->table());
         $sqlPrefix = "ALTER TABLE `$table` ";
         foreach ($exceptAttrs as $field => $attr) {
             if (!isset($currentAttrs[$field])) {
@@ -329,7 +339,8 @@ class DbConfig {
 
 
     public function getCreateSql(DAOAdapter $adapter, $attrs) {
-        $table = Remote::getTable($adapter->table());
+
+        $table = Remote::getTable($adapter->table_Prefix().$adapter->table());
         $columns = array();
         foreach ($attrs as $field => $attr) {
             $fieldSql = $this->getFieldSqlByAttr($field, $attr);

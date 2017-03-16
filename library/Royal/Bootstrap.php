@@ -1,5 +1,7 @@
 <?php
 namespace Royal;
+
+use Royal\Prof\TimeStack;
 abstract class Bootstrap {
 
     static function loadConfig() {
@@ -14,27 +16,26 @@ abstract class Bootstrap {
         return $config;
     }
 
-    static function run($app)
+    static function run($app='o_app')
     {
 
         static::loadConfig();
-
-        $application = new \Yaf_Application(array(
-            'application' => array(
-                'directory' => APPLICATION_PATH . '/apps/'.$app.'/application',
-                'system' => array(
-                    'use_spl_autoload' => 1
-                ),
-                'dispatcher' => array(
-                    'catchException' => true
-                ),
-            )
-        ));
-
-        $application->bootstrap();
-
         if (php_sapi_name() != 'cli') {
-            $application->run();
+            TimeStack::start();
+            $application = new \Yaf_Application(array(
+                'application' => array(
+                    'directory' => APPLICATION_PATH . '/Apps/'.$app.'/application',
+                    'system' => array(
+                        'use_spl_autoload' => 1
+                    ),
+                    'dispatcher' => array(
+                        'catchException' => true
+                    ),
+                )
+            ));
+            $application->bootstrap()->run();
+
+
         }
 
     }

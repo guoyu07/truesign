@@ -50,7 +50,7 @@ class dbsAdapter extends DbLibraryAdapter
             ->def('tunnel_host')->map('tunnel_port')->varchar(10)->desc('隧道服务器端口')
             ->def('tunnel_host')->map('tunnel_add_auth')->varchar(255)->desc('隧道附加认证方式')
             ->def('online_status')->map('online_status')->varchar(100)->desc('数据库服务器在线状态')
-            ->def('auth_time')->map('auth_time')->datetime()->desc('数据库状态检测时间')
+            ->def('auth_time')->map('auth_time')->int()->desc('数据库状态检测时间')
             ->end();
     }
 

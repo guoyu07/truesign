@@ -114,6 +114,12 @@ class Field {
         return $this;
     }
 
+    public function default($def)
+    {   
+        $this->_default = $def;
+        return this;
+    }
+
     public function end() {
         return $this;
     }

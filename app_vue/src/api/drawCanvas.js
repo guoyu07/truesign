@@ -400,6 +400,7 @@ class DrawCanvas {
                     y: Math.random() * canvas.height,
                     z: Math.random() * canvas.width
                 };
+
                 stars.push(star);
             }
         }

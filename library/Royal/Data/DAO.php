@@ -169,7 +169,15 @@ class DAO
                 }
             }
         }
+        if ($createField = $this->adapter->autoIfDelete()) {
+            if(!isset($params[$createField]))
+                $params[$createField] = 0;
+        }
         $time = time();
+        if ($createField = $this->adapter->autoCreateTimestamp()) {
+            if(!isset($params[$createField]))
+                $params[$createField] = $time;
+        }
         if ($createField = $this->adapter->autoCreateTimestamp()) {
             if(!isset($params[$createField]))
                 $params[$createField] = $time;

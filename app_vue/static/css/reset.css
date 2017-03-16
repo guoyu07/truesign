@@ -31,6 +31,7 @@ footer, header, hgroup, menu, nav, section {
 body {
     line-height: 1;
 }
+a{text-decoration:none}
 ol, ul {
     list-style: none;
 }
@@ -58,4 +59,7 @@ h1{
     margin: 0;
     padding: 0;
 
+}
+input{
+    border:0px;background-color:transparent;
 }

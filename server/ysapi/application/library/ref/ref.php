@@ -1144,7 +1144,7 @@ class ref{
             break;
           }
 
-        // @todo: handle more apps
+        // @todo: handle more Apps
       }      
 
     }

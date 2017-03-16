@@ -5,12 +5,24 @@
  * @see http://www.php.net/manual/en/yaf-dispatcher.catchexception.php
  * @author ql_os
  */
-class ErrorController extends Yaf_Controller_Abstract {
+class ErrorController extends oAppBaseController {
 
 	//从2.1开始, errorAction支持直接通过参数获取异常
 	public function errorAction($exception) {
-		//1. assign to view engine
-		$this->getView()->assign("exception", $exception);
-		//5. render by Yaf 
+        $code = $exception->getCode();
+        if (!$code) {
+            $code = -100;
+        }
+        //throw $exception;
+        $this->inputError($exception->getCode(), $exception->getMessage());
+
+        //       var_dump($exception);
+        ////        $this->_view->display('index/demo.phtml');
+        //        return false;
 	}
+    public function indexAction()
+    {
+        $this->render('error');
+        Yaf_Dispatcher::getInstance()->autoRender(FALSE);
+    }
 }

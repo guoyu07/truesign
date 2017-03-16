@@ -9,6 +9,13 @@ import store from './vuex/store'
 import App from './App.vue'
 import '../theme/index.css'
 import ElementUI from 'element-ui'
+// import VideoPlayer from 'vue-video-player'
+// VideoPlayer.config({
+//     youtube: true,  // default false（youtube的支持）
+//     switcher: true, // default true（播放源切换功能）
+//     hls: true       // default true（直播功能的支持）
+// })
+// Vue.use(VideoPlayer)
 Vue.use(ElementUI)
 // import iView from 'iview';
 // import 'iview/dist/styles/iview.css';

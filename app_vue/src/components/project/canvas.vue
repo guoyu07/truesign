@@ -18,7 +18,6 @@
   export default{
 
       mounted(){
-          $('.navbar').css('display','none')
           $('h1').css('display','none')
 //          var arrayCanvas = new ArrayCanvas('canvas')
           var drawCanvas = new DrawCanvas('canvas')

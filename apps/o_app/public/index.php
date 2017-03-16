@@ -5,7 +5,5 @@ header('Content-type: text/html; charset=utf-8');
 
 define('APP_PATH', realpath(__DIR__.'/../'));
 $i_app = new Yaf_Application( APP_PATH . "/conf/application.ini");
-Yaf_Registry::set('aa','aaa');
-Yaf_Registry::set('aa','aaa');
 $i_app->bootstrap()->run();
 ?>

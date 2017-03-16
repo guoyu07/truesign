@@ -102,7 +102,7 @@
 </template>
 
 <script>
-    import SOCKET_CLIENT from '../../api/SOCKET_CLIENT'
+    import SOCKET_CLIENT from '../../api/SOCKET_CLIENT_DEMO'
     SOCKET_CLIENT.data.this_vue = this
     export default {
         mounted () {
