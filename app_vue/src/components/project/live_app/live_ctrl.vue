@@ -53,6 +53,7 @@
           <transition name="slide-fade-down" mode="out-in">
             <form id="bind_app" style=" " action="javascript:return false" v-if="top_level>0">
               <div class="app_level" >{{ top_level }}</div>
+              <input type="button" class="cancel_auth" value="取消鉴权" v-if="authing" @click="cancel_auth"></input>
               <div class="ui icon input loading forminput">
                 <input type="text" id="level_key" :value="level_key" placeholder="输入级别key">
                 <i class="search icon"></i>
@@ -105,8 +106,8 @@
                     'rgba(128,0,128,0.35)',
                     'rgba(255,79,6,0.35)',
                 ],
-                level_key:123,
-                level_pass:123,
+                level_key:'',
+                level_pass:'',
 
             }
         },
@@ -200,6 +201,9 @@
 
         },
         methods:{
+            cancel_auth(){
+                this.authing = 0
+            },
             bind_app_auth(){
                 this.authing = 1
             },
@@ -315,6 +319,7 @@
 
 
       #bind_app
+        position relative
         margin 20px 0 20px 0
 
         width: 63%; height: 90%;
@@ -326,6 +331,7 @@
         border-bottom: solid 2px rgba(105,210,231,0.44)
         box-shadow: 2px 0px 15px rgba(81, 140, 159, 0.56);
         .app_level
+          display inline-block
           width 50px
           height 50px
           border-radius 10px
@@ -336,6 +342,22 @@
           font-size 22px
           line-height:50px;
           color #54FFFF
+        .cancel_auth
+          border 2px solid rgba(255, 137, 19, 0.44)
+          position absolute
+          display inline-block
+          right 0
+          width 100px
+          height 30px
+          border-radius 10px
+          background-color rgba(192, 192, 192, 0.31)
+          margin-top 10px
+          margin-left 10px
+          text-align center
+          font-size 16px
+          line-height:20px;
+          color  rgba(255, 137, 19, 0.44) !important
+          margin-top 15px
         .forminput
             margin-left 10%
             margin-top 2%
