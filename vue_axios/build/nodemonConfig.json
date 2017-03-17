@@ -1,9 +1,0 @@
-{
-    "verbose": true,
-    "ignore": [
-        "static/*",
-        "src/*",
-        "index.html",
-        "npm-debug.log"
-    ]
-}

@@ -17,7 +17,7 @@ class appsController extends  oAppBaseController
         $call = $_GET['callback'];
         $data = array(
             'name'=>'iamsee111',
-            'token'=>'1235',
+            'token'=>'aaaabbb',
         );
         $this->setBody($data);
     }
