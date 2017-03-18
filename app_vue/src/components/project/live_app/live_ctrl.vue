@@ -539,9 +539,8 @@
 
     width: 100%;
     position: absolute;
-    top: 0px;
-    left 220px
     color: #e79977;
+    left 100%
     font-size: 20px;
     text-align: center;
     animation: bounce 2s  linear infinite;
