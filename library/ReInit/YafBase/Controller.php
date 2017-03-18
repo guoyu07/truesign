@@ -11,8 +11,8 @@ class Controller extends \Yaf_Controller_Abstract {
         $helper = new \Royal\Util\helper();
         $rev=$helper::getBody($data, $info, $code);
         if(IS_CLI) {
-            $response = $this->getResponse();
-            $response->contentBody = $rev;
+//            $response = $this->getResponse();
+//            $response->contentBody = $rev;
         }else{
             $rev['argv']=$this->getData();
             $rev['serv']=[

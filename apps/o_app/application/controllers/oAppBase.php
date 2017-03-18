@@ -173,8 +173,13 @@ class oAppBaseController extends \ReInit\YafBase\Controller
         $helper = new \Royal\Util\helper();
         $rev=$helper::getBody($data, $info, $code);
         if(IS_CLI) {
+//            $response = $this->getResponse();
+//            $response->contentBody = $rev;
             $response = $this->getResponse();
-            $response->contentBody = $rev;
+            $request = $this->getRequest();
+            $response_data['request']=$request;
+            $response_data['response']=$rev;
+            $response->contentBody=$response_data;
         }else{
             $rev['argv']=$this->getData();
             $rev['serv']=[
