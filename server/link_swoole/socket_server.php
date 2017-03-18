@@ -130,18 +130,20 @@ class socket_server{
         $yaf_controller = $yaf['controller'];
         $yaf_action = $yaf['action'];
 
-        if($payload_type=='search'){
-            $yaf_payload = array_merge($yaf,array(
+//        if($payload_type=='search'){
+//            $yaf_payload = array_merge($yaf,array(
+//                'data'=>$payload_data,
+//                's_task_id'=>1
+//            ));
+//
+//            $content=$this->runYaf($yaf_payload);
+//        }
+        $yaf_payload = array_merge($yaf,array(
                 'data'=>$payload_data,
                 's_task_id'=>1
             ));
 
-            $content=$this->runYaf($yaf_payload);
-        }
-
-
-
-
+        $response_content=$this->runYaf($yaf_payload);
         $from = [
             'fd_type'=>'client',
             'fd'=>$request->fd,
@@ -162,7 +164,7 @@ class socket_server{
             'id'=>$me_id,
             'nickname'=>$me_nickname
         ];
-        $msg = $this->buildMsg($from,$to,$me,$content,'message');
+        $msg = $this->buildMsg($from,$to,$me,$response_content,'message');
         if(empty($to_id)){
             $task = [
                 'to' => [],
