@@ -82,7 +82,16 @@ class socket_server{
             'id'=>$request->fd,
             'nickname'=>$nickname
         ];
-        $openmsg = $this->buildMsg($from,$to,$me,'open','self_init');
+        echo "申请唯一识别id\n";
+        $yaf_payload=[
+            'moudle'=>'index',
+            'controller'=>'chaos',
+            'action'=>'wserver',
+            'data'=>[],
+            's_task_id'=>'0'
+        ];
+        $unique_timestamp_code = $this->runYaf($yaf_payload);
+        $openmsg = $this->buildMsg($from,$to,$me,$unique_timestamp_code,'self_init');
 
 
         $serv->task([
@@ -103,7 +112,7 @@ class socket_server{
         $msg = json_encode([
             'status' => $status,
             'type' => $type,
-            'data' => json_encode($response_data,256)
+            'data' => (object)($response_data)
         ]);
         return $msg;
     }
@@ -366,21 +375,22 @@ class socket_server{
 
 
         ['module'=>$module,'controller'=>$controller,'action'=>$action,'data'=>$data,'s_task_id'=>$taskId]=$datas;
-        $data = [];
         $request = new \Yaf_Request_Simple('CLI', $module, $controller, $action, $data);
         $request->task_id=$taskId;
 
         $response = $this->yaf->getDispatcher()->returnResponse(true)->dispatch($request);
-        if (!@property_exists($response, 'contentBody') || !is_array($response->contentBody)) {
-//            throw new \Exception('Not set or not an array: $response->body');
-            var_dump($response);
-        }
+//        if (!@property_exists($response, 'contentBody') || !is_array($response->contentBody)) {
+////            throw new \Exception('Not set or not an array: $response->body');
+//            var_dump($response);
+//        }
+        var_dump(gettype($response->contentBody));
+        var_dump($response);
         $this->sw->reload();
         return $response->contentBody;
     }
     public function initYaf($app='o_app'){
         echo "initYaf\n";
-        $configs=$this->getConfig(APPLICATION_PATH.'/config/application.ini',false);
+        $configs=new \Yaf_Config_Ini(APPLICATION_PATH.'/config/business.ini','dbserver');
         \Yaf_Registry::set('config', $configs);
         $application = ['application'=>$configs->get('application')->toArray()];
         $application['application']['directory']=APPLICATION_PATH.'/Apps/'.$app.'/application';

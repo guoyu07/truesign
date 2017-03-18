@@ -4,8 +4,13 @@ namespace Royal\Validator;
 use \Exception;
 
 class ParamValidator {
+    function __construct()
+    {
+//        $Yaf_Request = new \Yaf_Request_Simple;
+////        $Yaf_Request = new \Yaf_Request_Simple;
+    }
 
-    static function getPairParam(\Yaf_Request_Http &$request, ParamRule &$rule) {
+    static function getPairParam(\Yaf_Request_Simple &$request, ParamRule &$rule) {
         $value = $request->get($rule->name, $rule->defaultValue);
         if('0'==$value) {
 
@@ -71,7 +76,7 @@ class ParamValidator {
         return $param;
     }
 
-    static function paramsFromRequest(\Yaf_Request_Http &$request, $required, $optional) {
+    static function paramsFromRequest(\Yaf_Request_Simple &$request, $required, $optional) {
         $rules = array();
         foreach ((array)$required as $r) {
             $rules[$r] = ParamRule::rule($r)->type('raw')->required(true);
@@ -83,7 +88,7 @@ class ParamValidator {
         return static::paramsFromRequestAndRules($request, $rules);
     }
 
-    static function paramsFromRequestAndRules(\Yaf_Request_Http &$request, $rules,$throw_code=-100) {
+    static function paramsFromRequestAndRules(\Yaf_Request_Simple &$request, $rules,$throw_code=-100) {
         $params = array();
         foreach ($rules as $name => $rule) {
             $param = static::getParam($request, $rule,$throw_code);
@@ -97,7 +102,7 @@ class ParamValidator {
         return $params;
     }
 
-    static function pairParamsFromRequestAndRules(\Yaf_Request_Http &$request, $rules) {
+    static function pairParamsFromRequestAndRules(\Yaf_Request_Simple &$request, $rules) {
         $params = array();
         foreach ($rules as $name => $rule) {
             $param = static::getPairParam($request, $rule);
@@ -117,10 +122,17 @@ class ParamValidator {
      * @return mixed
      * @throws Exception
      */
-    static function getParam(\Yaf_Request_Http &$request, ParamRule &$rule,$throw_code=-100) {
+    static function unicode_decode($name){
+
+        $json = '{"str":"'.$name.'"}';
+        $arr = json_decode($json,true);
+        if(empty($arr)) return '';
+        return $arr['str'];
+    }
+    static function getParam(\Yaf_Request_Simple &$request, ParamRule &$rule,$throw_code=-100) {
+
         $param = $request->get($rule->name, $rule->defaultValue);
-        $login=new \Eagle\Service\LoginInfo();
-        $companyid=$login->getCompanyId();
+
         if ($param === false) {
             if ($rule->required) {
                 throw new Exception(ParamValidator::requiredErrorDesc($rule->desc()), $throw_code);
@@ -140,7 +152,9 @@ class ParamValidator {
                 return $rule->allowEmpty ? '' : false;
             }
         }
-
+        if(gettype($param) === 'array'){
+            return $param;
+        }
         switch ($rule->type) {
 //            case 'int':
 //                $param = intval($param);

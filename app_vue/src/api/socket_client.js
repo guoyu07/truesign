@@ -69,11 +69,21 @@ const SOCKET_CLIENT  =  {
                 that.conn_status = true
                 that.data.this_vue.conn_status = true
                 that.data.this_vue.doinit()
+                that.data.this_vue.conn_info = '保持连接'
+
+            }
+            else if(status === 200 && type ==='message'){
+                console.log('response_data=>')
+                console.log(response_data)
+                console.log(response_data.data.response.response_data)
+
+                that.data.this_vue.socket_response = response_data.data.response.response_data
+                that.data.this_vue.doinitapps()
 
             }
 
-            that.data.this_vue.conn_info = '保持连接'
-            that.data.this_vue.socket_response = JSON.stringify(response_data['data'])
+
+
             // $('#response').val(JSON.stringify(d['response']))
         }
 

@@ -13,13 +13,9 @@ class appsController extends  oAppBaseController
         $this->setResponseBody($rules);
     }
 
-    public function indexAction(){
-        $call = $_GET['callback'];
-        $data = array(
-            'name'=>'index',
-            'token'=>'12345',
-        );
-        $this->setResponseBody($data);
+    public function bindappsAction(){
+        $params = $this->getParams(array('apps','key','pass','sysinfo'),array());
+        $this->setResponseBody($params);
     }
     public function index2Action(){
         $call = $_GET['callback'];

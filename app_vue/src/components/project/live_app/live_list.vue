@@ -78,11 +78,11 @@
         },
         created(){
 
-            axioxapi.axios.get('//localhost:5001/livevideo/getvideolist')
-                .then((res) => {
-                    this.items = res.data
-
-                })
+//            axioxapi.axios.get('//localhost:5001/livevideo/getvideolist')
+//                .then((res) => {
+//                    this.items = res.data
+//
+//                })
         },
         mounted(){
             $('input').css('color','#6cf2ff')

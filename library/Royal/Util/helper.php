@@ -2,11 +2,11 @@
 namespace Royal\Util;
 class helper{
     static function  getBody($data, string $info='', int $code=200){
-        return [
+        return (object)([
             'code'=>(int)$code,
             'info'=>(string)$info,
             'data'=>$data
-        ];
+        ]);
     }
 
     static function exeTime($stime){

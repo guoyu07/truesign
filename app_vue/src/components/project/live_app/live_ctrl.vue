@@ -72,7 +72,7 @@
       </div>
       <div id="ctrl_show">
         <div class="test1 test2">
-          test
+          {{ app_rules }}
         </div>
       </div>
       <div id="cut_line"></div>
@@ -83,9 +83,10 @@
     import SOCKET_CLIENT from '../../../api/SOCKET_CLIENT'
     SOCKET_CLIENT.data.this_vue = this
     const Waves  = require('node-waves');
-    import AxiosApi from '../../../api/axiosApi'
-    const axioxapi = new AxiosApi()
+//    import AxiosApi from '../../../api/axiosApi'
+//    const axioxapi = new AxiosApi()
     const _ = require('lodash');
+    var platform = require('platform');
 
     export default {
 
@@ -122,12 +123,12 @@
         created(){
             this.check_status()
 
-            axioxapi.axios.get('//localhost:5001/apps/getAppRule')
-                .then((res) => {
-                    this.app_rules = res.data.data
-
-
-                })
+//            axioxapi.axios.get('//localhost:5001/apps/getAppRule')
+//                .then((res) => {
+//                    this.app_rules = res.data.data
+//
+//
+//                })
         },
         mounted(){
             var vm = this
@@ -139,7 +140,52 @@
             },function () {
                 $(this).css('background','transparent')
             })
-            $('#select_app').dropdown({
+
+            $('.search').css('color','#FFFFFF')
+
+
+
+            var config = {
+                // How long Waves effect duration
+                // when it's clicked (in milliseconds)
+                duration: 1500,
+
+                // Delay showing Waves effect on touch
+                // and hide the effect if user scrolls
+                // (0 to disable delay) (in milliseconds)
+                delay: 2000
+            };
+            Waves.init(config)
+            Waves.attach('#app_form', ['waves-block']);
+            Waves.attach('#link_server', ['waves-block']);
+            Waves.attach('.init_conn', ['waves-button']);
+            Waves.attach('.loading-0');
+            Waves.attach('.loading-1');
+            Waves.attach('.loading-2');
+
+
+
+
+        },
+        methods:{
+            doinit(){
+                this.module = 'index'
+                this.controller = 'apps'
+                this.action = 'getAppRule'
+                this.payload_type = ''
+                this.payload_data = []
+                this.send()
+
+
+
+
+            },
+            doinitapps(){
+                var vm = this
+                console.log('doinitapps')
+                this.app_rules = this.socket_response.data.data
+                console.log(this.app_rules)
+                $('#select_app').dropdown({
 //                    direction: 'upward',
                     allowAdditions: true,
                     useLabels:true,
@@ -182,46 +228,15 @@
 
 
                 });
-            $('.search').css('color','#FFFFFF')
-
-
-
-            var config = {
-                // How long Waves effect duration
-                // when it's clicked (in milliseconds)
-                duration: 1500,
-
-                // Delay showing Waves effect on touch
-                // and hide the effect if user scrolls
-                // (0 to disable delay) (in milliseconds)
-                delay: 2000
-            };
-            Waves.init(config)
-            Waves.attach('#app_form', ['waves-block']);
-            Waves.attach('#link_server', ['waves-block']);
-            Waves.attach('.init_conn', ['waves-button']);
-            Waves.attach('.loading-0');
-            Waves.attach('.loading-1');
-            Waves.attach('.loading-2');
-
-
-
-
-        },
-        methods:{
-            doinit(){
-                this.module = 'index'
-                this.controller = 'apps'
-                this.action = 'index'
-                this.payload_type = 'seach'
-                this.send()
-
-
             },
             cancel_auth(){
                 this.authing = 0
             },
             bind_app_auth(){
+
+
+                let sysinfo = []
+
                 this.authing = 1
                 var params = {
                     apps:this.bind_apps,
@@ -229,8 +244,8 @@
                     pass:this.level_pass
                 }
                 this.module = 'index'
-                this.controller = 'index'
-                this.action = 'index'
+                this.controller = 'apps'
+                this.action = 'bindapps'
                 this.payload_type = 'bind_apps'
                 this.payload_data = params
                 this.send()
@@ -315,6 +330,7 @@
     background transparent !important
     color #55EEEF !important
   loader_width = 30%
+
   .label
     background rgba(105, 210, 231, 0.47) !important
   #live_ctrl_terminal
