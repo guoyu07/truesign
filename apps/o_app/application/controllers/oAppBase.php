@@ -169,15 +169,15 @@ class oAppBaseController extends \ReInit\YafBase\Controller
 
 
 
-    public function setBody($data, string $info='', int $code=200){
+    public function setResponseBody($data, string $info='', int $code=200){
         $helper = new \Royal\Util\helper();
         $rev=$helper::getBody($data, $info, $code);
         if(IS_CLI) {
 //            $response = $this->getResponse();
 //            $response->contentBody = $rev;
             $response = $this->getResponse();
-            $request = $this->getRequest();
-            $response_data['request']=$request;
+//            $request = $this->getRequest();
+//            $response_data['request']=$request;
             $response_data['response']=$rev;
             $response->contentBody=$response_data;
         }else{

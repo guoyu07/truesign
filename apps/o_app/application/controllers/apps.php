@@ -10,7 +10,7 @@ class appsController extends  oAppBaseController
     public function getAppRuleAction(){
         $apprule = new \Royal\Data\DAO(new \Truesign\Adapter\Apps\appRuleAdapter());
         $rules = $apprule->readSpecified(array(),array());
-        $this->output2json($rules);
+        $this->setResponseBody($rules);
     }
 
     public function indexAction(){
@@ -19,7 +19,7 @@ class appsController extends  oAppBaseController
             'name'=>'index',
             'token'=>'12345',
         );
-        $this->setBody($data);
+        $this->setResponseBody($data);
     }
     public function index2Action(){
         $call = $_GET['callback'];
@@ -27,7 +27,7 @@ class appsController extends  oAppBaseController
             'name'=>'index2',
             'token'=>'12123123',
         );
-        $this->setBody($data);
+        $this->setResponseBody($data);
     }
     public function index3Action(){
         $call = $_GET['callback'];
@@ -35,7 +35,7 @@ class appsController extends  oAppBaseController
             'name'=>'index3qqqq',
             'token'=>'aa',
         );
-        $this->setBody($data);
+        $this->setResponseBody($data);
         return false;
     }
     public function index4Action(){
@@ -44,7 +44,7 @@ class appsController extends  oAppBaseController
             'name'=>'index4',
             'token'=>'aaabb',
         );
-        $this->setBody($data);
+        $this->setResponseBody($data);
     }
 
 
