@@ -211,9 +211,9 @@
         methods:{
             doinit(){
                 this.module = 'index'
-                this.controller = 'index'
+                this.controller = 'apps'
                 this.action = 'index'
-                this.payload_type = 'seach_apps'
+                this.payload_type = 'seach'
                 this.send()
 
 
@@ -314,7 +314,7 @@
   input
     background transparent !important
     color #55EEEF !important
-  loader_width = 300px
+  loader_width = 30%
   .label
     background rgba(105, 210, 231, 0.47) !important
   #live_ctrl_terminal
@@ -492,9 +492,8 @@
 
     width: 100%;
     position: absolute;
-    top: 0px;
-    left 220px
     color: #69d2e7;
+    left 100%
     font-size: 20px;
     text-align: center;
     animation: bounce 2s  linear infinite;
