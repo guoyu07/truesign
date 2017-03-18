@@ -37,6 +37,7 @@ class socket_server{
         $this->env = $this->initEnv($env);
         $this->server_ip=current(swoole_get_local_ip());
         $config = $this->getConfig(APPLICATION_PATH . $configFile);
+        var_dump($config);
         $config['log_file']=sprintf($config['log_file'],$uname);
         $this->host = $config['host'];
         $this->port = (int)$config['port'];
@@ -139,8 +140,6 @@ class socket_server{
         }
 
 
-        echo 'content=>'."\n";
-        echo json_encode($content),"\n";
 
 
         $from = [
@@ -278,13 +277,16 @@ class socket_server{
     }
 
     public function onWorkerStart($serv, $worker_id){
+        if(empty($this->yaf)){
+            $this->initYaf();
+        }
         $this->ids=[]; // reload时清空
         if ($serv->taskworker) {
             $type = 'task';
-            $configs = $this->initYaf();
-            // 这里处理DB, REDIS, MQ等常驻资源
-            $res = new resources($configs);
-            \Yaf_Registry::set('res_db_ubuntu', $res->getDB('ubuntu'));
+//            $configs = $this->initYaf();
+//            // 这里处理DB, REDIS, MQ等常驻资源
+//            $res = new resources($configs);
+//            \Yaf_Registry::set('res_db_ubuntu', $res->getDB('ubuntu'));
             //\Yaf_Registry::set('res_redis_self', $res->getRedis('self'));
             //$this->res_mq_log=$res->getMQexchange('ubuntu','Eapilogs');
         } else {
@@ -362,21 +364,10 @@ class socket_server{
 
 
         ['module'=>$module,'controller'=>$controller,'action'=>$action,'data'=>$data,'s_task_id'=>$taskId]=$datas;
-
-        $data = json_decode($data,1);
-        unset($datas);
-        if(!is_array($data)){
-            $data=[$data];
-        }
-
+        $data = [];
         $request = new \Yaf_Request_Simple('CLI', $module, $controller, $action, $data);
         $request->task_id=$taskId;
-        if(empty($this->yaf)){
-            $configs = $this->initYaf();
-            // 这里处理DB, REDIS, MQ等常驻资源
-//            $res = new resources($configs);
-//            \Yaf_Registry::set('res_db_ubuntu', $res->getDB('ubuntu'));
-        }
+
         $response = $this->yaf->getDispatcher()->returnResponse(true)->dispatch($request);
         if (!@property_exists($response, 'contentBody') || !is_array($response->contentBody)) {
 //            throw new \Exception('Not set or not an array: $response->body');
@@ -391,9 +382,10 @@ class socket_server{
         \Yaf_Registry::set('config', $configs);
         $application = ['application'=>$configs->get('application')->toArray()];
         $application['application']['directory']=APPLICATION_PATH.'/Apps/'.$app.'/application';
-        $this->yaf=new \Yaf_Application($application);
-        $this->yaf->bootstrap();
-        return $configs;
+        if(empty($this->yaf)){
+            $this->yaf=new \Yaf_Application($application);
+            $this->yaf->bootstrap();
+        }
 
 
 //        $this->yaf=new \Yaf_Application(array(
