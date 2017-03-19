@@ -63,7 +63,7 @@ class socket_server{
         echo "【s】server=> \n";
         echo json_encode($serv)."\n";
         echo "【s】request=> \n";
-        var_dump($request);
+
         $nickname = $this->nicknames[array_rand($this->nicknames)].'-'.time();
         $this->table->set($request->fd,[
             'id'=>$request->fd,
@@ -84,16 +84,20 @@ class socket_server{
         echo "生成唯一识别id\n";
 
         $unique_timestamp_code = session_create_id();
-//        $yaf_payload=[
-//            'moudle'=>'index',
-//            'controller'=>'chaos',
-//            'action'=>'wserver',
-//            'data'=>[],
-//            's_task_id'=>'0'
-//        ];
-//        $unique_timestamp_code = $this->runYaf($yaf_payload);
-//        $sysinfo['handinfo']
-        $openmsg = $this->buildMsg($from,$to,$me,['unique_timestamp_code'=>$unique_timestamp_code],'self_init');
+
+        $sysinfo = [];
+        $sysinfo['ua']=$request->data;
+        $sysinfo['ip']=$request->server['remote_addr'];
+        $sysinfo['unique_timestamp_code']=$unique_timestamp_code;
+        $yaf_payload=[
+            'moudle'=>'index',
+            'controller'=>'wsserver',
+            'action'=>'initconn',
+            'data'=>$sysinfo,
+            's_task_id'=>'0'
+        ];
+        $init_response = $this->runYaf($yaf_payload);
+        $openmsg = $this->buildMsg($from,$to,$me,$init_response,'self_init');
 
 
 
@@ -386,9 +390,6 @@ class socket_server{
 ////            throw new \Exception('Not set or not an array: $response->body');
 //            var_dump($response);
 //        }
-        var_dump(gettype($response->contentBody));
-
-        var_dump($response);
         $this->sw->reload();
         return $response->contentBody;
     }
