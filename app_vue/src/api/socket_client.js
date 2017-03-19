@@ -5,7 +5,7 @@ const SOCKET_CLIENT  =  {
         to       : '',
         message        : null,
         payload:null,
-        wsserver    : 'ws://192.168.1.5:9501',
+        wsserver    : 'ws://0.0.0.0:9501',
         response : '',
         this_vue : null,
         conn_status : false
