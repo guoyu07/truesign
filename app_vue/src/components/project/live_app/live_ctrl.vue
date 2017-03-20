@@ -133,7 +133,7 @@
                 payload_data:'',
 
                 unique_auth_code:'',
-
+                encryption_key:'',
 //                本地存储
                 localvoucher_keys:'',
                 localStorage_key:'',
@@ -211,7 +211,7 @@
                 this.module = 'index'
                 this.controller = 'apps'
                 this.action = 'getAppRule'
-                this.payload_type = ''
+                this.payload_type = 'getapps'
                 this.payload_data = []
                 this.send()
 
@@ -277,7 +277,8 @@
                 var params = {
                     apps:this.bind_apps,
                     key:this.level_key,
-                    pass:this.level_pass
+                    pass:this.level_pass,
+                    unique_auth_code:this.unique_auth_code
                 }
                 this.module = 'index'
                 this.controller = 'apps'

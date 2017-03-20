@@ -16,7 +16,9 @@ class WSserverController extends  oAppBaseController
         $preParams['user_agent'] = $params['ua'];
         $preParams['ip'] = $params['ip'];
         $preParams['authway'] = $params['authway'];
-        $db_response = $doDao->insertOrupdate($preParams,'unique_auth_code');
+
+        $conditionParams['unique_auth_code'] = $params['unique_auth_code'];
+        $db_response = $doDao->insertOrupdate($preParams,$conditionParams);
         if(!empty($db_response)){
             $response = [];
             $response['id']=$db_response;

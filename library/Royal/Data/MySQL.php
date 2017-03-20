@@ -158,7 +158,9 @@ class MySQL {
     }
 
     public function getRowByCondition($table, $condition, $fields = '') {
+
         list($condition, $values) = $this->getConditionPair($condition);
+
         if($condition)
             $where = 'WHERE';
         else{
@@ -536,7 +538,9 @@ class MySQL {
     }
 
     public function getConditionPair($condition) {
+
         if (is_array($condition)) {
+
             return $condition;
         }
 

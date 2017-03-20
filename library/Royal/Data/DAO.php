@@ -154,10 +154,17 @@ class DAO
         return $id;
     }
 
-    public function insertOrupdate($params,$idField,$condition=array()){
+    public function insertOrupdate($params,$condition){
         self::checkDemo();
         $fields = $this->prepareForCreate($params);
-        $id = $this->getDb()->insertOrUpdateTable($this->getTable($this->adapter->table_Prefix().$this->adapter->table()),$fields,$condition,$idField);
+
+
+        $id = $this->getDb()->insertOrUpdateTable(
+            $this->getTable($this->adapter->table_Prefix().$this->adapter->table()),
+            $fields,
+            $this->paramsToCondition($condition),
+            $this->adapter->primaryIdParamName());
+
         return $id;
     }
 
@@ -352,7 +359,7 @@ class DAO
             // db query.
             $db = $this->getDb();
 
-            $count = $db->getCountByCondition($this->getTable($this->adapter->table()), $condition);
+            $count = $db->getCountByCondition($this->getTable($this->adapter->table_Prefix().$this->adapter->table()), $condition);
             $stat = array('count' => $count);
             $result = array();
 

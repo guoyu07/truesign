@@ -57,11 +57,10 @@ const SOCKET_CLIENT  =  {
         this.data.wSock.onmessage = function(event){
             var response_data  =  jQuery.parseJSON(event.data);
             console.log('[c]message=>')
-            console.log(response_data)
+
             let status = response_data.status
             let type = response_data.type
-            console.log(status)
-            console.log(type)
+            console.log('...............'+type+'...............')
             if(status === 200 && type ==='self_init'){
                 that.conn_status = true
                 that.data.this_vue.conn_status = true
@@ -74,10 +73,8 @@ const SOCKET_CLIENT  =  {
                 }
 
             }
-            else if(status === 200 && type ==='message'){
-                console.log('response_data=>')
-                console.log(response_data)
-                console.log(response_data.data.response.response_data)
+            else if(status === 200 && type ==='getapps'){
+
 
                 that.data.this_vue.socket_response = response_data.data.response.response_data
                 that.data.this_vue.doinitapps()

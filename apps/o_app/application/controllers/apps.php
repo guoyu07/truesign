@@ -14,8 +14,15 @@ class appsController extends  oAppBaseController
     }
 
     public function bindappsAction(){
-        $params = $this->getParams(array('apps','key','pass','sysinfo'),array());
-        $this->setResponseBody($params);
+        $params = $this->getParams(array('apps','key','pass','unique_auth_code'),array());
+        $doDao = new \Royal\Data\DAO(new \Truesign\Adapter\Apps\appCtrlLevelAdapter());
+        $db_response = $doDao->readSpecified(
+            array('`key`'=>$params['key'],'`pass`'=>$params['pass']),
+            array('document_id','nickname')
+        );
+        $preParams = [];
+
+        $this->setResponseBody($db_response['data']);
     }
     public function index2Action(){
         $call = $_GET['callback'];

@@ -195,7 +195,7 @@ class socket_server{
             'id'=>$me_id,
             'nickname'=>$me_nickname
         ];
-        $msg = $this->buildMsg($from,$to,$me,$response_content,'message');
+        $msg = $this->buildMsg($from,$to,$me,$response_content,$payload_type);
         if(empty($to_id)){
             $task = [
                 'to' => [],
