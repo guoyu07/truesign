@@ -136,7 +136,7 @@ class DAO
         self::checkDemo();
         $fields = $this->prepareForCreate($params);
 
-        $id = $this->getDb()->insertTable($this->getTable($this->adapter->table()), $fields,$ignore_error);
+        $id = $this->getDb()->insertTable($this->getTable($this->adapter->table_Prefix().$this->adapter->table()), $fields,$ignore_error);
         $idField = $this->paramNameToField($this->adapter->primaryIdParamName());
 
         if ($this->isEsEnabled()) {
@@ -151,6 +151,13 @@ class DAO
                 }
             }
         }
+        return $id;
+    }
+
+    public function insertOrupdate($params,$idField,$condition=array()){
+        self::checkDemo();
+        $fields = $this->prepareForCreate($params);
+        $id = $this->getDb()->insertOrUpdateTable($this->getTable($this->adapter->table_Prefix().$this->adapter->table()),$fields,$condition,$idField);
         return $id;
     }
 
@@ -926,7 +933,7 @@ class DAO
         $fields = $this->paramPairsToFieldPairs($params);
 
 
-        $rowsAffected = $this->getDb()->updateTable($this->getTable($this->adapter->table()), $fields,
+        $rowsAffected = $this->getDb()->updateTable($this->getTable($this->adapter->table_Prefix().$this->adapter->table()), $fields,
             MySQL::condition(sprintf('%s=?', $idParam), $id));
 
         if ($rowsAffected) {

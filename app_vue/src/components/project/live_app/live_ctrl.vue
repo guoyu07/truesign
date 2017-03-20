@@ -71,9 +71,23 @@
 
       </div>
       <div id="ctrl_show">
-        <div class="test1 test2">
-          {{ app_rules }}
-        </div>
+          {{ unique_auth_code }}
+          <div class="ui icon input loading ">
+            <input type="text"  v-model="localStorage_key" placeholder="key">
+            <i class="search icon"></i>
+          </div>
+          <div class="ui icon input loading ">
+            <input type="text"  v-model="localStorage_value" placeholder="value">
+            <i class="search icon"></i>
+          </div>
+          <hr>
+          <button @click="doStorageSave"  :class="{ui:ClassisActive, inverted:ClassisActive, teal:ClassisActive, basic:ClassisActive,
+               button:ClassisActive,    forminput:ClassisActive}"  style="margin-top: 10px">存储</button>
+        <button @click="doStorageGet"  :class="{ui:ClassisActive, inverted:ClassisActive, teal:ClassisActive, basic:ClassisActive,
+               button:ClassisActive,    forminput:ClassisActive}"  style="margin-top: 10px">读取</button>
+        <button @click="doStorageGetKeys"  :class="{ui:ClassisActive, inverted:ClassisActive, teal:ClassisActive, basic:ClassisActive,
+               button:ClassisActive,    forminput:ClassisActive}"  style="margin-top: 10px">获取keys</button>
+        {{ localvoucher_keys }}
       </div>
       <div id="cut_line"></div>
     </div>
@@ -81,7 +95,8 @@
 </template>
 <script>
     import SOCKET_CLIENT from '../../../api/SOCKET_CLIENT'
-    SOCKET_CLIENT.data.this_vue = this
+    import LocalVoucher from '../../../api/LocalVoucher'
+    SOCKET_CLIENT.data.this_vue = LocalVoucher.data.this_vue = this
     const Waves  = require('node-waves');
 //    import AxiosApi from '../../../api/axiosApi'
 //    const axioxapi = new AxiosApi()
@@ -117,11 +132,21 @@
                 payload_type:'',
                 payload_data:'',
 
+                unique_auth_code:'',
+
+//                本地存储
+                localvoucher_keys:'',
+                localStorage_key:'',
+                localStorage_value:''
+
 
             }
         },
         created(){
-            this.check_status()
+
+            LocalVoucher.checkStorageMode()
+            LocalVoucher.initEngine()
+            this.unique_auth_code = LocalVoucher.getValue('unique_auth_code')
 
 //            axioxapi.axios.get('//localhost:5001/apps/getAppRule')
 //                .then((res) => {
@@ -168,6 +193,20 @@
 
         },
         methods:{
+            doStorageAuthCode(){
+                LocalVoucher.setKeyValue('unique_auth_code',this.unique_auth_code)
+            },
+            doStorageSave(){
+                LocalVoucher.setKeyValue(this.localStorage_key,this.localStorage_value)
+            },
+            doStorageGet(){
+                this.localStorage_value = LocalVoucher.getValue(this.localStorage_key)
+            },
+            doStorageGetKeys(){
+                this.localvoucher_keys = LocalVoucher.getKeys()
+            },
+
+
             doinit(){
                 this.module = 'index'
                 this.controller = 'apps'
@@ -175,9 +214,6 @@
                 this.payload_type = ''
                 this.payload_data = []
                 this.send()
-
-
-
 
             },
             doinitapps(){
@@ -252,7 +288,7 @@
             },
             check_status(){
 
-                if(SOCKET_CLIENT.data.wSock){
+                if(SOCKET_CLIENT.data.status === '连接正常'){
                     this.conn_info = '保持连接'
                     this.conn_status = true
                 }
@@ -263,7 +299,7 @@
             socket_init()  {
                 SOCKET_CLIENT.data.this_vue = this
 
-                SOCKET_CLIENT.init()
+                SOCKET_CLIENT.init(this.unique_auth_code)
             },
             disconnect() {
                 SOCKET_CLIENT.data.this_vue = this

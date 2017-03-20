@@ -8,12 +8,26 @@
 class WSserverController extends  oAppBaseController
 {
     public function initConnAction(){
-        $params = $this->getParams(array('unique_timestamp_code','ua','ip'));
+        $params = $this->getParams(array('unique_auth_code','ua','ip','authway'));
+        $doDao = new \Royal\Data\DAO(new \Truesign\Adapter\Apps\appAuthLogAdapter());
 
+        $preParams = [];
+        $preParams['unique_auth_code'] = $params['unique_auth_code'];
+        $preParams['user_agent'] = $params['ua'];
+        $preParams['ip'] = $params['ip'];
+        $preParams['authway'] = $params['authway'];
+        $db_response = $doDao->insertOrupdate($preParams,'unique_auth_code');
+        if(!empty($db_response)){
+            $response = [];
+            $response['id']=$db_response;
+            $response['unique_auth_code']= $params['unique_auth_code'];
+            $response['init_status']= 1;
+        }
+        else{
+            $response['init_status']= 0;
+        }
 
-
-
-        $this->setResponseBody($params);
+        $this->setResponseBody($response);
     }
 
 

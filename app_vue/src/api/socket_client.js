@@ -5,27 +5,26 @@ const SOCKET_CLIENT  =  {
         to       : '',
         message        : null,
         payload:null,
-        wsserver    : 'ws://0.0.0.0:9501',
+        wsserver    : 'ws://192.168.1.5:9501',
         response : '',
         this_vue : null,
-        conn_status : false
+        conn_status : false,
+        status:'暂未连接到服务器'
     },
-    init : function (){
+    init : function (unique_auth_code=0){
         this.copyright();
-        SOCKET_CLIENT.data.storage  =  window.localStorage;
-
-        if(this.data.wSock){
-            console.log('已经是连接状态')
+        if(this.data.status === '连接正常'){
+            console.log(this.data.status)
         }
         else{
-            this.ws();
+            this.ws(unique_auth_code);
         }
 
     },
 
-    ws : function(){
-
-        this.data.wSock  =  new WebSocket(this.data.wsserver);
+    ws : function(unique_auth_code){
+        console.log('准备连接到服务器=>')
+        this.data.wSock  =  new WebSocket('ws://192.168.1.5:9501/?unique_auth_code='+unique_auth_code);
         this.wsOpen();
         this.wsMessage();
         this.wsOnclose();
@@ -48,11 +47,9 @@ const SOCKET_CLIENT  =  {
     wsOpen : function (){
         let that = this
         this.data.wSock.onopen  =  function( event ){
+            that.data.status = '连接正常'
             that.data.this_vue.check_status()
-            that.data.this_vue.show_process = true
             SOCKET_CLIENT.print('wsopen',event);
-            console.log('[c]open=>')
-            console.log(event)
         }
     },
     wsMessage : function(){
@@ -70,6 +67,11 @@ const SOCKET_CLIENT  =  {
                 that.data.this_vue.conn_status = true
                 that.data.this_vue.doinit()
                 that.data.this_vue.conn_info = '保持连接'
+
+                if(response_data.data.response.response_data.data.init_status){
+                    that.data.this_vue.unique_auth_code = response_data.data.response.response_data.data.unique_auth_code
+                    that.data.this_vue.doStorageAuthCode()
+                }
 
             }
             else if(status === 200 && type ==='message'){
@@ -102,13 +104,15 @@ const SOCKET_CLIENT  =  {
                 console.log('关闭失败')
             }
             else{
+                that.data.status = '连接关闭'
                 that.data.this_vue.stop_check_status()
-                that.data.this_vue.process = 100
                 // that.data.this_vue.show_process = false
                 that.data.this_vue.me = null
+
                 console.log('关闭成功')
                 that.data.this_vue.conn_status = false
                 that.data.this_vue.conn_info = '失去连接'
+
 
             }
         }
@@ -126,7 +130,10 @@ const SOCKET_CLIENT  =  {
         console.log('----'  +  flag  +  ' end-------');
     },
     copyright:function(){
-        console.log('truesign ico pre connect to socket server ……');
+        if(this.data.status !== '连接正常'){
+            this.data.status = 'truesign ico pre connect to socket server ……'
+            console.log(this.data.status);
+        }
     },
 }
 export  default  SOCKET_CLIENT

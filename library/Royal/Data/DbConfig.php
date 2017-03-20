@@ -231,6 +231,7 @@ class DbConfig {
 
         $sqls = $this->diffTable($adapter);
         foreach ($sqls as $sql) {
+            var_dump($sql);
             $db->query($sql);
         }
         return $sqls;

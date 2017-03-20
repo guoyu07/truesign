@@ -49,9 +49,9 @@ class appAuthLogAdapter extends DbLibraryAdapter
             ->def('ctrlname')->map('ctrlname')->varchar(100)->desc('控制人员名称')
             ->def('authway')->map('authway')->varchar(255)->desc('认证方式') //web 、客户端
             ->def('note')->map('note')->varchar(255)->desc('备注')
-            ->def('sysinfo')->map('sysinfo')->varchar(255)->desc('系统信息')
+            ->def('user_agent')->map('user_agent')->varchar(1000)->desc('系统信息')
             ->def('ip')->map('ip')->varchar(255)->desc('认证ip')
-            ->def('topkeystamp')->map('topkeystamp')->varchar(255)->desc('时间序列码')
+            ->def('unique_auth_code')->map('unique_auth_code')->varchar(100)->desc('唯一序列码')->unique()
             ->end();
     }
 

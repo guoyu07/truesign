@@ -58,11 +58,16 @@ class socket_server{
 
         $this->sw->start();
     }
+    public function onConnection($serv , $request ){
+        echo "【s】onConnection=> \n";
+    }
     public function onOpen( $serv , $request ){
         echo "【s】onOpen=> \n";
         echo "【s】server=> \n";
-        echo json_encode($serv)."\n";
         echo "【s】request=> \n";
+        $query_string = $request->server['query_string'];
+        parse_str($query_string,$query_arr);
+
 
         $nickname = $this->nicknames[array_rand($this->nicknames)].'-'.time();
         $this->table->set($request->fd,[
@@ -82,13 +87,23 @@ class socket_server{
             'nickname'=>$nickname
         ];
         echo "生成唯一识别id\n";
+        if($query_arr['unique_auth_code']){
+            var_dump(1);
+            $unique_auth_code = $query_arr['unique_auth_code'];
+        }
+        else{
+            var_dump(2);
 
-        $unique_timestamp_code = session_create_id();
+            $unique_auth_code = session_create_id();
+
+        }
+        var_dump($unique_auth_code);
 
         $sysinfo = [];
         $sysinfo['ua']=$request->data;
         $sysinfo['ip']=$request->server['remote_addr'];
-        $sysinfo['unique_timestamp_code']=$unique_timestamp_code;
+        $sysinfo['unique_auth_code']=$unique_auth_code;
+        $sysinfo['authway']='Browser';
         $yaf_payload=[
             'moudle'=>'index',
             'controller'=>'wsserver',
@@ -111,7 +126,7 @@ class socket_server{
         $user_list = $this->getUserList();
         $response_data = array();
         $response_data['response']=$data;
-        $response_data['user_list']=$user_list;
+//        $response_data['user_list']=$user_list;
         $relation = array();
         $response_data['relation']['from']=$from;
         $response_data['relation']['to']=$to;
@@ -352,6 +367,7 @@ class socket_server{
         $this->sw->on('ManagerStop',[$this,'onManagerStop']);
         $this->sw->on('ManagerStart',[$this,'onManagerStart']);
 
+        $this->sw->on("connection",array($this,"onConnection"));
         $this->sw->on("open",array($this,"onOpen"));
         $this->sw->on("message",array($this,"onMessage"));
         $this->sw->on("Task",array($this,"onTask"));

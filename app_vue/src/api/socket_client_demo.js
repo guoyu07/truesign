@@ -47,10 +47,7 @@ const SOCKET_CLIENT_DEMO  =  {
         let that = this
         this.data.wSock.onopen  =  function( event ){
             that.data.this_vue.check_status()
-            that.data.this_vue.show_process = true
-            SOCKET_CLIENT_DEMO.print('wsopen',event);
-            console.log('[c]open=>')
-            console.log(event)
+            SOCKET_CLIENT_DEMO.rebind('wsopen',event);
         }
     },
     wsMessage : function(){
@@ -118,7 +115,7 @@ const SOCKET_CLIENT_DEMO  =  {
         }
     },
 
-    print:function(flag,obj){
+    rebind:function(flag,obj){
         console.log('----'  +  flag  +  ' start-------');
         console.log(obj);
         console.log('----'  +  flag  +  ' end-------');

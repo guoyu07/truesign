@@ -159,11 +159,15 @@ class MySQL {
 
     public function getRowByCondition($table, $condition, $fields = '') {
         list($condition, $values) = $this->getConditionPair($condition);
+        if($condition)
+            $where = 'WHERE';
+        else{
+            $where = '';
+        }
         if (empty($fields))
-            $sql = sprintf('SELECT * FROM %s WHERE %s LIMIT 1', $table, $condition);
+            $sql = sprintf('SELECT * FROM %s %s %s LIMIT 1', $table,$where, $condition);
         else
-            $sql = sprintf('SELECT %s FROM %s WHERE %s LIMIT 1', $fields, $table, $condition);
-
+            $sql = sprintf('SELECT %s FROM %s %s %s LIMIT 1', $fields, $table,$where, $condition);
         return $this->get_row($sql, $values);
     }
 
@@ -402,10 +406,16 @@ class MySQL {
 
     public function updateTable($table, $data, $condition) {
         list($condition, $conditionValues) = $this->getConditionPair($condition);
+        if($condition){
+            $where = 'WHERE';
+        }
+        else{
+            $where = '';
+        }
         if (is_array($data)) {
             list ($fields, $values) = $this->getConditionArray($data);
             if (count($values) > 0) {
-                $sql = sprintf('UPDATE %s SET %s WHERE %s', $table, $fields, $condition);
+                $sql = sprintf('UPDATE %s SET %s %s %s', $table, $fields,$where, $condition);
                 if (count($conditionValues))
                     $values = array_merge($values, $conditionValues);
                 return $this->query($sql, $values)->rowCount();

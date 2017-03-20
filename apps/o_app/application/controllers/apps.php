@@ -9,7 +9,7 @@ class appsController extends  oAppBaseController
 {
     public function getAppRuleAction(){
         $apprule = new \Royal\Data\DAO(new \Truesign\Adapter\Apps\appRuleAdapter());
-        $rules = $apprule->readSpecified(array(),array());
+        $rules = $apprule->readSpecified(array(),array('id','appname','applevel'));
         $this->setResponseBody($rules);
     }
 
