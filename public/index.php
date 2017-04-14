@@ -2,6 +2,7 @@
 date_default_timezone_set('Asia/Shanghai');
 error_reporting(E_ALL & ~E_NOTICE & ~E_WARNING);
 header('Content-type: text/html; charset=utf-8');
+header("Access-Control-Allow-Origin: *");
 $app = 'sjtt';
 foreach ($_REQUEST as $k=>$v){
     if($k=='app'){
