@@ -24,7 +24,7 @@ abstract class Bootstrap {
             TimeStack::start();
             $application = new \Yaf_Application(array(
                 'application' => array(
-                    'directory' => APPLICATION_PATH . '/Apps/'.$app.'/application',
+                    'directory' => APPLICATION_PATH . '/apps/'.$app.'/application',
                     'system' => array(
                         'use_spl_autoload' => 1
                     ),
