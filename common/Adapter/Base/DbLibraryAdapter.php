@@ -1,7 +1,8 @@
 <?php
 namespace Truesign\Adapter\Base;
+
 use \Royal\Data\DAOAdapter;
-use Royal\Data\Field;
+use \Royal\Data\Field;
 
 abstract class DbLibraryAdapter extends DAOAdapter
 {
