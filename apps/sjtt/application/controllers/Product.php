@@ -1,6 +1,6 @@
 <?php
 
-class productController extends AppBaseController {
+class ProductController extends AppBaseController {
 
     public function getTypeAction()
     {

@@ -1,6 +1,6 @@
 <?php
 
-class commonController extends AppBaseController {
+class CommonController extends AppBaseController {
 
 	public function updateimg2ossByClientAction() {
         $params = $this->getParams(array('filename','type'));

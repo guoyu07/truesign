@@ -1,6 +1,6 @@
 <?php
 
-class accountsController extends AppBaseController {
+class AccountsController extends AppBaseController {
 
     public function LoginAction()
     {

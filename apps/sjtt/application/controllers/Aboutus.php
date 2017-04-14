@@ -1,6 +1,6 @@
 <?php
 
-class aboutusController extends AppBaseController {
+class AboutusController extends AppBaseController {
 
     public function getAboutUsAction()
     {
