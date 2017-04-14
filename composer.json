@@ -1,0 +1,6 @@
+{
+    "name": "ql_os/truesign",
+    "require": {
+        "monolog/monolog": "^1.21"
+    }
+}
