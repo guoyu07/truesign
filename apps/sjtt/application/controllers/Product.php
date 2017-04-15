@@ -11,6 +11,7 @@ class ProductController extends AppBaseController {
     public function updateTypeAction()
     {
         $params = $this->getParams(array('document_id','type'));
+        $params['id'] = $params['document_id'];
         $doDao = new \Royal\Data\DAO(new \Truesign\Adapter\Sjtt\productTypeAdapter());
         $db_response = $doDao->update($params);
         $this->output2json($db_response);
