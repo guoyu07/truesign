@@ -1,2 +1,0 @@
-webpackJsonp([36,38],{519:function(e,t,n){var r=n(3)(n(1122),n(601),null,null);e.exports=r.exports},601:function(e,t){e.exports={render:function(){var e=this,t=e.$createElement,n=e._self._c||t;return n("Checkbox",{attrs:{checked:e.single}},[e._v("Checkbox")])},staticRenderFns:[]}},1122:function(e,t){"use strict";Object.defineProperty(t,"__esModule",{value:!0}),t.default={data:function(){return{single:!1}}}}});
-//# sourceMappingURL=36.114a590fb99eb2791c60.js.map
