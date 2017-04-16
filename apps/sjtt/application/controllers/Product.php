@@ -53,14 +53,14 @@ class ProductController extends AppBaseController {
     }
     public function updateProductAction()
     {
-        $params = $this->getParams(array('document_id'),array('img','title','note','info'));
+        $params = $this->getParams(array('document_id'),array('img','title','note','info','sort_ord'));
         $params['id']=$params['document_id'];
         $doDao = new \Royal\Data\DAO(new \Truesign\Adapter\Sjtt\productAdapter());
         $db_response = $doDao->update($params);
         $this->output2json($db_response);
     }
     public function addProductAction(){
-        $params = $this->getParams(array('type_id','img','title','note','info'));
+        $params = $this->getParams(array('type_id','img','title','note','info','sort_ord'));
         $doDao = new \Royal\Data\DAO(new \Truesign\Adapter\Sjtt\productAdapter());
         $db_response = $doDao->create($params);
         $this->output2json($db_response);
