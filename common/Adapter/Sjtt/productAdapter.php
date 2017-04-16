@@ -41,6 +41,7 @@ class productAdapter extends DbLibraryAdapter
         return Field::start()
             ->def('document_id')->map('id')->int()->desc('id')
             ->def('type_id')->map('type_id')->int()->desc('绑定类别id')
+            ->def('sort_ord')->map('sort_ord')->int()->desc('排序位置')
             ->def('img')->map('img')->varchar(500)->desc('展示图')
             ->def('title')->map('title')->varchar(50)->desc('检索标题')
             ->def('note')->map('note')->varchar(50)->desc('简介')
