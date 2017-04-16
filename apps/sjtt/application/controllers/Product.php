@@ -45,7 +45,7 @@ class ProductController extends AppBaseController {
         $db_product_response = $doDao_producttype->readSpecified(array('document_id'=>$params['type_id']),array());
         $type_name = $db_product_response['data'][0]['type'];
         $doDao = new \Royal\Data\DAO(new \Truesign\Adapter\Sjtt\productAdapter());
-        $db_response = $doDao->readSpecified($params,array(),array(),array('update_time'=>'desc'));
+        $db_response = $doDao->readSpecified($params,array(),array(),array('sort_ord'=>'asc','update_time'=>'desc'));
         foreach ($db_response['data'] as $k=>$v){
             $db_response['data'][$k]['type'] = $type_name;
         }
