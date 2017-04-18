@@ -5,7 +5,7 @@
  * Date: 2017/3/10
  * Time: 13:20
  */
-class apiController extends  oAppBaseController
+class apiController extends  OAppBaseController
 {
     public function init()
     {

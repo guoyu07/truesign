@@ -5,7 +5,7 @@
  * Date: 2017/3/10
  * Time: 13:20
  */
-class userController extends  oAppBaseController
+class userController extends  OAppBaseController
 {
     public function saveOrUpdateUserinfoAndDanmuAction()
     {

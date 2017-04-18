@@ -5,7 +5,7 @@
  * Date: 2017/3/10
  * Time: 13:20
  */
-class WSserverController extends  oAppBaseController
+class WSserverController extends  OAppBaseController
 {
     public function initConnAction(){
         $params = $this->getParams(array('fd','unique_auth_code','ua','ip','authway'));

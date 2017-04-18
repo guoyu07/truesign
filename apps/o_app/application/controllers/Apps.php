@@ -5,7 +5,7 @@
  * Date: 2017/3/10
  * Time: 13:20
  */
-class appsController extends  oAppBaseController
+class appsController extends  OAppBaseController
 {
     public function getAppRuleAction(){
         $apprule = new \Royal\Data\DAO(new \Truesign\Adapter\Apps\appRuleAdapter());

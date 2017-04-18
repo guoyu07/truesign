@@ -5,7 +5,7 @@
  * Date: 2017/3/10
  * Time: 13:20
  */
-class applivevideoController extends  oAppBaseController
+class applivevideoController extends  OAppBaseController
 {
     public function getVideoAction(){
 //        $scandir = new \Royal\Util\Scandir();
