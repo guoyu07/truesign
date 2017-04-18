@@ -26,7 +26,7 @@ class socket_server{
     public $res_mq_log;
     public $ids=[];
     private $nicknames = [
-        '沉淀', '暖寄归人', '厌世症i', '难免心酸°', '過客。', '昔日餘光。', '独特', '有爱就有恨' ,'共度余生','忆七年','单人旅行','何日许我红装','醉落夕风'
+        '沉淀1', '暖寄归人', '厌世症i', '难免心酸°', '過客。', '昔日餘光。', '独特', '有爱就有恨' ,'共度余生','忆七年','单人旅行','何日许我红装','醉落夕风'
     ];
     public function __construct(string $uname, string $configFile='/config/service.ini', string $env='websocket'){
         if (!defined('IS_CLI')) {
