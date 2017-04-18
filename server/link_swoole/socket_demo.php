@@ -7,9 +7,9 @@ class socket_demo
     private $socketServer;
     public function __construct()
     {
-        $this->socketServer = new swoole_websocket_server('0.0.0.0', 8282);
+        $this->socketServer = new swoole_websocket_server('0.0.0.0', 8282 );
         $this->socketServer->set([
-            'worker_num' => 8,
+            'worker_num' => 4,
             'daemonize'  => false,
         ]);
         $this->socketServer->on('open', [$this, 'onOpen']);
