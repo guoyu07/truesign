@@ -16,7 +16,9 @@ class SamplePlugin extends Yaf_Plugin_Abstract {
 	public function dispatchLoopStartup(Yaf_Request_Abstract $request, Yaf_Response_Abstract $response) {
         $controller = strtolower($request->getControllerName());
         $action = strtolower($request->getActionName());
-
+        if($controller == 'website'){
+            return;
+        }
         if($controller == 'apps' || $controller == 'wsserver'){
             return;
         }
