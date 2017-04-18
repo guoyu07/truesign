@@ -5,7 +5,7 @@ const SOCKET_CLIENT  =  {
         to       : '',
         message        : null,
         payload:null,
-        wsserver    : 'ws://192.168.1.5:9501',
+        wsserver    : 'ws://iamsee.com:9501',
         response : '',
         this_vue : null,
         conn_status : false,
@@ -24,7 +24,7 @@ const SOCKET_CLIENT  =  {
 
     ws : function(unique_auth_code){
         console.log('准备连接到服务器=>')
-        this.data.wSock  =  new WebSocket('ws://192.168.1.5:9501/?unique_auth_code='+unique_auth_code);
+        this.data.wSock  =  new WebSocket('ws://iamsee.com:9501/?unique_auth_code='+unique_auth_code);
         this.wsOpen();
         this.wsMessage();
         this.wsOnclose();
