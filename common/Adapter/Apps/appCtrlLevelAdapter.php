@@ -46,7 +46,7 @@ class appCtrlLevelAdapter extends DbLibraryAdapter
             ->def('document_id')->map('id')->int()->desc('ctrl id')
             ->def('level')->map('level')->varchar(100)->desc('权限等级')
             ->def('nickname')->map('nickname')->varchar(100)->desc('昵称')
-            ->def('img')->map('img')->varchar(100)->desc('头像')
+            ->def('img')->map('img')->varchar(1000)->desc('头像')
             ->def('key')->map('key')->varchar(100)->desc('key')
             ->def('pass')->map('pass')->varchar(100)->desc('密码')
             ->end();

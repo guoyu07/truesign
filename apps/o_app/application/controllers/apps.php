@@ -102,7 +102,7 @@ class appsController extends  oAppBaseController
             preg_match($regex_rule,$item,$res);
             $app_level_arr[] = str_replace('@','',$res[0]);
         }
-        if($accessLevel > (int)max($app_level_arr)){
+        if($accessLevel >= (int)max($app_level_arr)){
             return true;
         }
         else{

@@ -1,7 +1,8 @@
 <template>
   <div class="top_router_view"  >
-        <div class="triangle-bottomright" style="position: absolute;z-index:1"></div>
-        <div class="triangle-topleft" style="position: absolute;z-index:1"></div>
+        <div style="text-align: center;color: white">
+            <h1>{{screenWidth}},{{screenHeight}}</h1>
+        </div>
   </div>
 </template>
 
@@ -17,10 +18,45 @@
 
         },
         mounted(){
-            console.log($('.triangle-bottomright').css('border-bottom'))
+            const vm = this
+            window.onresize = () => {
+                return (() => {
+                    window.screenWidth = document.body.clientWidth
+                    window.screenHeight = document.body.clientHeight
+                    vm.screenWidth = window.screenWidth
+                    vm.screenHeight = window.screenHeight
+                    vm.$root.eventHub.$emit('screenWidth2screenHeight',screenWidth+','+screenHeight)
+                })()
+            }
         },
         components:{
+            watch: {
+                screenWidth (val) {
+                    if (!this.timer) {
+                        this.screenWidth = val
+                        this.timer = true
+                        let that = this
+                        setTimeout(function () {
+                            // that.screenWidth = that.$store.state.canvasWidth
+                            console.log(that.screenWidth)
+                            that.timer = false
+                        }, 400)
+                    }
+                },
+                screenHeight (val) {
+                    if (!this.timer) {
+                        this.screenHeight = val
 
+                        this.timer = true
+                        let that = this
+                        setTimeout(function () {
+                            // that.screenWidth = that.$store.state.canvasWidth
+                            console.log(that.screenHeight)
+                            that.timer = false
+                        }, 400)
+                    }
+                }
+            },
 
         }
   	}
