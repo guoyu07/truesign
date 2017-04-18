@@ -11,7 +11,7 @@ use Truesign\Adapter\Base\DbLibraryAdapter;
 use Royal\Data\Field;
 
 
-class appLiveVideoAdapter extends DbLibraryAdapter
+class appWebSiteAdapter extends DbLibraryAdapter
 {
     public function database()
     {
@@ -26,28 +26,31 @@ class appLiveVideoAdapter extends DbLibraryAdapter
     }
     public function tableAccess()
     {
-        return 1;
+        return 3;
     }
 
     public function table()
     {
-        return 'livevideo';
+        return 'website';
 
     }
 
     public function tableDesc()
     {
-        return '视频直播';
+        return '网站数据';
     }
 
     public function tableInit()
     {
         return Field::start()
             ->def('document_id')->map('id')->int()->desc('app id')
-            ->def('videoname')->map('videoname')->varchar(100)->desc('视频名称')
-            ->def('videouri')->map('videouri')->varchar(100)->desc('视频网络路径')
-            ->def('videoticket')->map('videoticket')->int()->desc('视频得票')
-            ->def('playcount')->map('playcount')->int()->desc('播放数')
+            ->def('username')->map('username')->varchar(100)->desc('用户名')
+            ->def('pass')->map('pass')->varchar(100)->desc('密码')
+            ->def('email')->map('email')->varchar(100)->desc('邮箱')
+            ->def('look_for')->map('look_for')->int()->desc('目的')
+            ->def('reg_ip')->map('reg_ip')->int()->desc('注册ip')
+            ->def('ip')->map('ip')->int()->desc('最新登录ip')
+            ->def('mark')->map('mark')->int()->desc('备注')
             ->end();
     }
 
