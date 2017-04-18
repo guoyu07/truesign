@@ -487,7 +487,7 @@ class socket_server{
         $configs=new \Yaf_Config_Ini(APPLICATION_PATH.'/config/business.ini','dbserver');
         \Yaf_Registry::set('config', $configs);
         $application = ['application'=>$configs->get('application')->toArray()];
-        $application['application']['directory']=APPLICATION_PATH.'/Apps/'.$app.'/application';
+        $application['application']['directory']=APPLICATION_PATH.'/apps/'.$app.'/application';
         if(empty($this->yaf)){
             $this->yaf=new \Yaf_Application($application);
             $this->yaf->bootstrap();
