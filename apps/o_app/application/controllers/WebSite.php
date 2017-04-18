@@ -11,7 +11,7 @@ class WebSiteController extends  OAppBaseController
 
         echo 'website';
     }
-    public function regOrLogin()
+    public function regOrLoginAction()
     {
         $params = $this->getParams(array('username', 'pass', 'email'), array('look_for', 'ip'));
         $doDao = new \Royal\Data\DAO(new \Truesign\Adapter\Apps\appWebSiteAdapter());
