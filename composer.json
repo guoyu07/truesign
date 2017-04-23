@@ -1,6 +1,7 @@
 {
     "name": "ql_os/truesign",
     "require": {
-        "monolog/monolog": "^1.21"
+        "monolog/monolog": "^1.21",
+        "overtrue/wechat": "~3.1"
     }
 }
