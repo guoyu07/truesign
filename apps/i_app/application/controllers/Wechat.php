@@ -5,6 +5,7 @@
  * Date: 2017/3/10
  * Time: 13:20
  */
+use EasyWeChat\Foundation\Application;
 class WechatController extends  IAppBaseController
 {
     public function InterfaceAction()
