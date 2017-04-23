@@ -6,20 +6,20 @@
           <div  @click="socket_init" class="ctrl_cls init_conn">连接伺服器</div>
           <div  @click="disconnect" class="ctrl_cls init_conn" style="background-color: rgba(231,129,83,0.52)">断开连接伺服器</div>
           <transition name="slide-fade-right" mode="out-in">
-            <div  v-if="conn_status" key="conn_on">
+            <div  v-if="website.conn_status" key="conn_on">
 
               <div class="loader">
                 <div class="loading--1"></div>
                 <div class="loading-0"></div>
                 <div class="loading-1"></div>
-                <div class="loading-2">{{ conn_info }}</div>
+                <!--<div class="loading-2">{{ conn_info }}</div>-->
               </div>
 
             </div>
-            <div  v-if="!conn_status" key="conn_off">
+            <div  v-if="!website.conn_status" key="conn_off">
               <div class="loader">
                 <div class="loading-3"></div>
-                <div class="loading-4">{{ conn_info }}</div>
+                <!--<div class="loading-4">{{ conn_info }}</div>-->
               </div>
             </div>
 
@@ -28,15 +28,15 @@
         </div>
         <transition name="slide-fade-down-top" mode="out-in">
 
-          <div v-if="conn_status" id="app_form" style="box-shadow: 0 0 10px #57DCDF;">
+          <div v-if="website.conn_status" id="app_form" style="box-shadow: 0 0 10px #57DCDF;">
             <transition name="slide-fade-down-top" mode="out-in">
-              <div v-if="!encryption_key" key="access_no">
+              <div v-if="!website.encryption_key ||  !website.access_user" key="access_no">
                 <div id="select_app" :class="{
-              ui:ClassisActive, loading:ClassisActive,
-               fluid:ClassisActive, multiple:ClassisActive, search:ClassisActive,
-                 selection:ClassisActive, dropdown:ClassisActive,
-                 disabled:authing
-            }"
+                    ui:ClassisActive, loading:ClassisActive,
+                     fluid:ClassisActive, multiple:ClassisActive, search:ClassisActive,
+                       selection:ClassisActive, dropdown:ClassisActive,
+                       disabled:authing
+                  }"
                      style="background: transparent; display: inline-block;position: static;box-shadow: 0 0 10px #57DCDF" disabled="">
                   <input type="hidden" name="select_app" value="">
                   <i class="dropdown icon"></i>
@@ -72,13 +72,14 @@
                   </form>
                 </transition>
               </div>
-              <div v-if="encryption_key" key="access_yes" style="width: 100%;height: 100%;">
+              <div v-if="website.encryption_key && website.access_user" key="access_yes" style="width: 100%;height: 100%;">
+
                 <div class="" style="margin:0 auto;width: 60%; height: 80%;margin-top:25px;box-shadow: 0 0 20px #57DCDF;border-radius: 5px">
                   <img :src="getheadpic" width="40%" height="100%" style="box-shadow: 0 0 20px #57DCDF;" >
                   <div style="display: inline-block;width: 60%;height: 100%;float: right; text-align: center">
-                    <a class=" card-btn" >{{ access_user.nickname }}</a>
+                    <a class=" card-btn" >{{ website.access_user.nickname }}</a>
 
-                    <a class=" card-btn" style="margin-top: 10%">{{ access_user.level }}</a>
+                    <a class=" card-btn" style="margin-top: 10%">{{ website.access_user.level }}</a>
                   </div>
                 </div>
 
@@ -90,59 +91,18 @@
         </transition>
 
       </div>
-      <div id="ctrl_show">
-        <!--{{ unique_auth_code }}-->
-        <!--<div class="ui icon input loading ">-->
-        <!--<input type="text"  v-model="localStorage_key" placeholder="key">-->
-        <!--<i class="search icon"></i>-->
-        <!--</div>-->
-        <!--<div class="ui icon input loading ">-->
-        <!--<input type="text"  v-model="localStorage_value" placeholder="value">-->
-        <!--<i class="search icon"></i>-->
-        <!--</div>-->
-        <!--<hr>-->
-        <!--<button @click="doStorageSave"  :class="{ui:ClassisActive, inverted:ClassisActive, teal:ClassisActive, basic:ClassisActive,-->
-        <!--button:ClassisActive,    forminput:ClassisActive}"  style="margin-top: 10px">存储</button>-->
-        <!--<button @click="doStorageGet"  :class="{ui:ClassisActive, inverted:ClassisActive, teal:ClassisActive, basic:ClassisActive,-->
-        <!--button:ClassisActive,    forminput:ClassisActive}"  style="margin-top: 10px">读取</button>-->
-        <!--<button @click="doStorageGetKeys"  :class="{ui:ClassisActive, inverted:ClassisActive, teal:ClassisActive, basic:ClassisActive,-->
-        <!--button:ClassisActive,    forminput:ClassisActive}"  style="margin-top: 10px">获取keys</button>-->
-        <!--<button @click="doStorageClear"  :class="{ui:ClassisActive, inverted:ClassisActive, teal:ClassisActive, basic:ClassisActive,-->
-        <!--button:ClassisActive,    forminput:ClassisActive}"  style="margin-top: 10px">清空</button>-->
-        <!--{{ localvoucher_keys }}-->
-        <!--<table class="ui celled table danmu-list-table" style="background-color:rgba(255,251,251,0.06);text-align: left; font-size: 14px ;color: white ;">-->
-          <!--<thead>-->
-          <!--<tr>-->
-            <!--<th >昵称</th>-->
-            <!--<th style="width: 280px">消息</th>-->
-            <!--<th >时间戳</th>-->
-            <!--<th >来源</th>-->
-          <!--</tr>-->
-          <!--</thead>-->
-
-          <!--<transition-group name="danmu-list" tag="tbody">-->
-            <!--&lt;!&ndash;v-bind:css="false"&ndash;&gt;-->
-            <!--&lt;!&ndash;v-on:before-enter="beforeEnter"&ndash;&gt;-->
-            <!--&lt;!&ndash;v-on:enter="enter"&ndash;&gt;-->
-            <!--&lt;!&ndash;v-on:leave="leave"&ndash;&gt;-->
-
-            <!--&lt;!&ndash;<tr  v-for="item in items" v-bind:key="item.filename">&ndash;&gt;-->
-            <!--&lt;!&ndash;<tr class="danmu-list-item"  v-for="item in danmu_list" v-bind:key="item"   >&ndash;&gt;-->
-              <!--&lt;!&ndash;<td >{{ item.nickname }}</td>&ndash;&gt;-->
-              <!--&lt;!&ndash;<td style="width: 300px">{{ item.content }}</td>&ndash;&gt;-->
-              <!--&lt;!&ndash;<td >{{ item.time }}</td>&ndash;&gt;-->
-              <!--&lt;!&ndash;<td >{{ item.source }}</td>&ndash;&gt;-->
-            <!--&lt;!&ndash;</tr>&ndash;&gt;-->
-          <!--</transition-group>-->
-        <!--</table>-->
-      </div>
-      <div id="cut_line"></div>
+      <!--<div id="ctrl_show">-->
+      <!--</div>-->
+      <!--<div id="cut_line"></div>-->
     </div>
   </div>
 </template>
 <script>
     import SOCKET_CLIENT from '../../api/SOCKET_CLIENT'
     import LocalVoucher from '../../api/LocalVoucher'
+    import { mapGetters,mapActions } from 'vuex'
+    import { analysis_socket_response } from '../../api/lib/helper/dataAnalysis'
+
     SOCKET_CLIENT.data.this_vue = LocalVoucher.data.this_vue = this
     const Waves  = require('node-waves');
     //    import AxiosApi from '../../../api/axiosApi'
@@ -155,62 +115,56 @@
 
         data() {
             return {
+                authing:false,
                 ClassisActive: true,
-                authing:0,
-                conn_status:false,
-                conn_info:'失去连接',
-                socket_response:'',
                 app_rules:[],
-                test:[1,2,3],
                 bind_apps:[],
                 top_level:0,
-                level_color:[
-                    'rgba(0,128,0,0.35)',
-                    'rgba(0,0,255,0.35)',
-                    'rgba(128,0,128,0.35)',
-                    'rgba(255,79,6,0.35)',
-                ],
                 level_key:'',
                 level_pass:'',
-
                 module:'',
                 controller:'',
                 action:'',
                 to:'',
                 payload_type:'',
                 payload_data:'',
-
-                unique_auth_code:'',
-                encryption_key:'',
-                access_user:'',
                 isbindapps:'',
 //                本地存储
                 localvoucher_keys:'',
                 localStorage_key:'',
                 localStorage_value:'',
 
-                danmu_list:[]
+                socket_send_factory:[],
+                init_socket_send_factory:[],
 
 
 
 
             }
         },
-        created(){
-            this.socket_init()
-            console.log('live_ctrl->create')
-            LocalVoucher.checkStorageMode()
-            LocalVoucher.initEngine()
-            this.unique_auth_code = LocalVoucher.getValue('unique_auth_code')
-            this.check_status()
-            this.re_check_bind()
+        computed: {
+            // 使用对象展开运算符将 getters 混入 computed 对象中
+            ...mapGetters([
+                'apprules',
+                'website',
+                'sysinfo'
+            ]),
+            getheadpic:function () {
+                //console.log('getheadpic->',this.access_user)
+                return    this.website.access_user.img?this.website.access_user.img:'http://truesign-app.oss-cn-beijing.aliyuncs.com/headpic/7dd98d1001e939010096ed5c7dec54e736d1963f.jpg'
 
-//            axioxapi.axios.get('//localhost:5001/apps/getAppRule')
-//                .then((res) => {
-//                    this.app_rules = res.data.data
-//
-//
-//                })
+            },
+
+        },
+        created(){
+            this.updateWebSite({
+
+                conn_status:0,
+                access_user:null
+
+            })
+            this.autoInit()
+
         },
         mounted(){
             var vm = this
@@ -241,79 +195,178 @@
             Waves.attach('.loading-0');
             Waves.attach('.loading-1');
             Waves.attach('.loading-2');
-
-
-            this.$root.eventHub.$on('autoInit',function (data) {
-                console.log('autoInit')
-                vm.socket_init()
-                vm.level_key = 'anonymous'
-                vm.level_pass = 'anonymous'
-                vm.bind_apps = ['website#2@1']
-
-                setTimeout(function () {
-                    vm.bind_app_auth()
-
-                },1000)
-            })
-            
+//
+//
+//            this.$root.eventHub.$on('autoInit',function (data) {
+//                vm.autoInit()
+//            })
+//
+//            /*
+//            统一接口处理socket 发送信息 放入payload工厂等待遍历发送
+//             */
             this.$root.eventHub.$on('socket_send',function (data) {
-                console.log('socket_send')
-                vm.to = data.to
-                vm.payload_type = data.payload_type
-                vm.payload_data = data.payload_data
-                vm.module = data.yaf.module
-                vm.controller = data.yaf.controller
-                vm.action = data.yaf.action
-                vm.send()
+//                console.log('socket_send',data)
+
+
+
+                var payload_data_final = Object.assign(vm.website,data.payload_data)
+                data.payload_data = payload_data_final
+
+                if(data.payload_type === 'fetchPreConnApps' || data.payload_type === 'bind_apps'){
+                  vm.init_socket_send_factory.push(data)
+                }
+                else{
+                  vm.socket_send_factory.push(data)
+                }
 
             })
+//
+//            /*
+//            处理socket 连接问题状况，及自动重新连接
+//             */
+            this.$root.eventHub.$on('socket_error',function (data) {
+                if(data !== 1){
+                    vm.autoInit(true)
+                }
+            })
+//
+//            /*
+//              遍历向服务端发送socket信息
+//             */
+            setInterval(function () {
+                if(vm.website.conn_status){
+                    var init_data = vm.init_socket_send_factory.shift()
+                    if(init_data){
+                        console.log('init_socket_send_factory',init_data.payload_type,init_data.yaf,init_data.payload_data)
+
+                        vm.to = init_data.to
+                        vm.payload_type = init_data.payload_type
+                        vm.payload_data = init_data.payload_data
+                        vm.module = init_data.yaf.module
+                        vm.controller = init_data.yaf.controller
+                        vm.action = init_data.yaf.action
+                        vm.send()
+                    }
+                }
+                if(vm.website.conn_status && vm.website.isbindapps.length > 0){
+
+                    var data = vm.socket_send_factory.shift()
+
+                    if(data){
+                        if(data.payload_type === 'c2c_msg'){
+                            vm.send(true,data)
+                            return
+                        }
+//                        console.log('socket_send_factory',data.payload_type,data.yaf,data.payload_data)
+                        vm.to = data.to
+                        vm.payload_type = data.payload_type
+                        vm.payload_data = data.payload_data
+                        vm.module = data.yaf.module
+                        vm.controller = data.yaf.controller
+                        vm.action = data.yaf.action
+                        vm.send()
+                    }
+                }
+
+            },100)
+            /*
+            统一处理服务器返回信息
+            
+             */
+//
+            this.$root.eventHub.$on('socket_response',function (data) {
+//                console.log('socket_reponse',data)
+                var socket_reponse = analysis_socket_response(data)
+                if(socket_reponse.response_type === 'self_init' && socket_reponse.response_init_data.init_status){
 
 
+                    vm.updateWebSite({
+                        unique_auth_code:socket_reponse.response_init_data.unique_auth_code,
+                        conn_status:1,
+                        socket_id:socket_reponse.response_init_data.socket_id,
 
-        },
-        beforeUpdate(){
-//            while(this.danmu_list.length>13){
-//                this.danmu_list.pop()
-//            }
+                    })
+                    vm.updateSysInfo({
+                        ip:socket_reponse.response_init_data.ip
+                    })
+                    vm.fetchPreConnApps()
+                }
+                if(socket_reponse.response_type === 'fetchPreConnApps'){
+                    vm.doinitapps(socket_reponse.reponse_data)
+                }
+                if(socket_reponse.response_type === 'bind_apps'){
+                    if(socket_reponse.response_init_data.bind_status){
+                        vm.updateWebSite({
+                            encryption_key:socket_reponse.response_init_data.bind_status,
+                            access_user:socket_reponse.response_init_data.access_user,
+                            isbindapps:JSON.stringify(socket_reponse.response_init_data.isbindapps),
+
+                        })
+                    }
+                    else{
+                        vm.$root.eventHub.$emit('showtip',{
+                            content:'系统底层 -·'+socket_reponse.response_init_data.note+'·- 请联系【最高】级别管理员'
+                        })
+                    }
+                }
+
+            })
+            this.$root.eventHub.$on('socket_close',function (data) {
+                vm.updateWebSite({
+                    conn_status:0,
+                    socket_id:''
+                })
+            })
+//
+
         },
         updated(){
             Waves.attach('#app_form', ['waves-block']);
-
-
         },
         methods:{
-            doStorageAuthCode(){
-                LocalVoucher.setKeyValue('unique_auth_code',this.unique_auth_code)
-            },
-            doStorageSave(){
-                LocalVoucher.setKeyValue(this.localStorage_key,this.localStorage_value)
-            },
-            doStorageGet(){
-                this.localStorage_value = LocalVoucher.getValue(this.localStorage_key)
-            },
-            doStorageGetKeys(){
-                this.localvoucher_keys = LocalVoucher.getKeys()
-            },
-            doStorageClear(){
-                console.log('clear=>')
-                LocalVoucher.clear()
-            },
-
-
-            doinit(){
-                this.module = 'index'
-                this.controller = 'apps'
-                this.action = 'getAppRule'
-                this.payload_type = 'getapps'
-                this.payload_data = []
-                this.send()
-
-            },
-            doinitapps(){
+            ...mapActions([
+                'updateWebSite',
+                'updateSysInfo',
+                'updateAppRules',
+            ]),
+            autoInit(reinit=false){
+                if(reinit){
+                    this.socket_init()
+                }
+                this.socket_init()
                 var vm = this
-                console.log('doinitapps')
-                this.app_rules = this.socket_response.data.data
-                console.log(this.app_rules)
+                vm.level_key = 'anonymous'
+                vm.level_pass = 'anonymous'
+                vm.bind_apps = ['website#2@1']
+                var init_bind_app = setInterval(function () {
+                    if(vm.website.conn_status){
+                        vm.bind_app_auth()
+                        clearInterval(init_bind_app)
+                    }
+                },10)
+            },
+
+            fetchPreConnApps(){
+                var vm = this
+                var params = {
+                    to:null,
+                    payload_type:'fetchPreConnApps',
+                    payload_data:{},
+                    yaf:{
+                        module:'index',
+                        controller:'apps',
+                        action:'getAppRule'
+                    }
+                }
+                vm.$root.eventHub.$emit('socket_send',params)
+            },
+            doinitapps(apprules){
+                var vm = this
+
+                this.app_rules = apprules
+                vm.updateWebSite({
+                    apprules:apprules
+                })
                 $('#select_app').dropdown({
 //                    direction: 'upward',
                     allowAdditions: true,
@@ -326,245 +379,97 @@
 
                     },
                     onChange(value, text, $choice){
-                        console.log('change')
+                        //console.log('change')
 
 
                     },
                     onAdd(addedValue, addedText, $addedChoice){
-                        console.log('add')
-                        console.log(addedValue)
-                        console.log(addedText)
-                        console.log($addedChoice)
+                        //console.log('add')
+                        //console.log(addedValue)
+                        //console.log(addedText)
+                        //console.log($addedChoice)
                         vm.dealLevel(addedText,'add')
                     },
                     onRemove(removedValue, removedText, $removedChoice){
-                        console.log('remove')
-                        console.log(removedValue)
-                        console.log(removedText)
-                        console.log($removedChoice)
+                        //console.log('remove')
+                        //console.log(removedValue)
+                        //console.log(removedText)
+                        //console.log($removedChoice)
                         vm.dealLevel(removedText,'remove')
                     },
                     onLabelSelect($selectedLabels){
-                        console.log('labelSelect')
+                        //console.log('labelSelect')
                     },
                     onShow(){
-                        console.log('onShow')
+                        //console.log('onShow')
                     },
                     onHide(){
-                        console.log('onHide')
+                        //console.log('onHide')
                     }
 
 
 
                 });
             },
-            doCheckBindApps(){
-                var vm = this
-                console.log('doCheckBindApps')
-                if(this.socket_response.data.bind_status)
-                {
-                    this.encryption_key = this.socket_response.data.bind_status
-                    this.access_user = this.socket_response.data.access_user
-                    this.isbindapps = this.socket_response.data.isbindapps
-                    console.log(this.socket_response.data)
-                    LocalVoucher.setKeyValue('encryption_key',this.encryption_key)
-                    LocalVoucher.setKeyValue('access_user',JSON.stringify(this.access_user))
-                    LocalVoucher.setKeyValue('isbindapps',JSON.stringify(this.isbindapps))
-                    this.isbindapps.forEach(function (v,k) {
-                        console.log(v)
-                        console.log(v.indexOf('live_video'))
-                        if(v.indexOf('live_video') >= 0){
-                            vm.module = 'index'
-                            vm.controller = 'appliveVideo'
-                            vm.action = 'getVideo'
-                            vm.payload_type = 'getLiveVideo'
-                            vm.payload_data = {
-                                'encryption_key':vm.encryption_key,
-                                'unique_auth_code':vm.unique_auth_code,
-
-                            }
-                            vm.send()
-                        }
-                    })
-
+            bind_app_auth(){
+                this.authing = 1
+                var params = {
+                    to:null,
+                    payload_type:'bind_apps',
+                    payload_data:{
+                        apps:this.bind_apps,
+                        key:this.level_key,
+                        pass:this.level_pass,
+                    },
+                    yaf:{
+                        module:'index',
+                        controller:'apps',
+                        action:'bindapps'
+                    }
                 }
-            },
-          /*
-           用于远程更新
-           */
-            updateLiveVideo(){
-                this.module = 'index'
-                this.controller = 'appliveVideo'
-                this.action = 'getVideo'
-                this.payload_type = 'getLiveVideo'
-                this.payload_data = {
-                    'encryption_key':this.encryption_key,
-                    'unique_auth_code':this.unique_auth_code,
-
-                }
-                this.send()
-            },
-            pauseOrplay(type=1){
-
-                this.$root.eventHub.$emit('pauseOrplay',type)
-
-            },
-            touchCtrl(){
-                this.$root.eventHub.$emit('touchCtrl','')
-            },
-            doCheckLogin(){
-                var vm = this
-                console.log('doCheckLogin')
-                console.log(this.socket_response.data)
-                if(this.socket_response.data.status)
-                {
-                    this.unique_auth_code = LocalVoucher.getValue('unique_auth_code')
-                    this.encryption_key = LocalVoucher.getValue('encryption_key')
-                    this.access_user = JSON.parse(LocalVoucher.getValue('access_user'))
-                    this.isbindapps =  JSON.parse(LocalVoucher.getValue('isbindapps'))
-                }
-                else{
-
-                    this.encryption_key = ''
-                    this.access_user = ''
-                    this.isbindapps =  ''
-                }
-            },
-            refreshDanmu(){
-                var vm = this
-
-
-                console.log('refreshDanmu')
-                console.log(this.socket_response)
-
-
-                this.danmu_list.unshift(this.socket_response)
-
-//                this.danmu_list.splice(Math.random() * 10,0,this.socket_response)
-                this.$root.eventHub.$emit('toShowDanmuList',this.socket_response)
-                console.log('emit->toShowDanmuList->')
-                if(this.danmu_list.length>15){
-
-//                    Vue.nextTick(function () {
-//                        console.log($('.danmu_list_tr').length)
-//                        console.log(vm.danmu_list.length)
-//                        console.log($('.danmu_list_tr:last').html())
-//                        $('.danmu_list_tr:last').remove()
-//                    })
-//                    if(vm.danmu_list.length>100){
-//                        vm.danmu_list.splice(10,100)
-//
-//                    }
-                    this.danmu_list.splice(16,100)
-                    console.log(this.danmu_list.length)
-                }
-                this.matchMoveSelect(this.socket_response)
-
-
-
-//                this.danmu_list = _.sortBy(this.danmu_list, function(item) {
-//                    return -item.time;
-//                });
-
-//                console.log(this.danmu_list)
-
-            },
-            initLiveVideoList(){
-                console.log('initLiveVideoList');
-                console.log(this.socket_response)
-                console.log(this.socket_response.response_data.data);
-                this.$root.eventHub.$emit('initLiveVideoList',this.socket_response.response_data.data)
-            },
-            DanmuDemand(){
-                console.log('DanmuDemand')
-                console.log(this.socket_response.response_data.data);
-                if(this.socket_response.response_data.data.status){
-                    this.$root.eventHub.$emit('DanmuDemand',this.socket_response.response_data.data.danmu)
-                }
+                this.$root.eventHub.$emit('socket_send',params)
             },
             cancel_auth(){
                 this.authing = 0
             },
-            bind_app_auth(){
-                console.log('bind_app_auth')
-
-                let sysinfo = []
-
-                this.authing = 1
-                var params = {
-                    apps:this.bind_apps,
-                    key:this.level_key,
-                    pass:this.level_pass,
-                    unique_auth_code:this.unique_auth_code
-                }
-                this.module = 'index'
-                this.controller = 'apps'
-                this.action = 'bindapps'
-                this.payload_type = 'bind_apps'
-                this.payload_data = params
-                this.send()
-            },
-            check_status(){
-
-                if(SOCKET_CLIENT.data.status === '连接正常'){
-                    this.conn_info = '保持连接'
-                    this.conn_status = true
-                }
-            },
-            re_check_bind(){
-                if(SOCKET_CLIENT.data.status === '连接正常' && LocalVoucher.getValue('unique_auth_code') && LocalVoucher.getValue('encryption_key')) {
-
-                    this.module = 'index'
-                    this.controller = 'apps'
-                    this.action = 'checkLogin'
-                    this.payload_type = 'checkLogin'
-                    this.payload_data = {
-                        'unique_auth_code': LocalVoucher.getValue('unique_auth_code'),
-                        'encryption_key': LocalVoucher.getValue('encryption_key')
-
-                    }
-                    this.send()
-                }
-            },
-            stop_check_status(){
-                window.clearInterval(this.int_check)
-            },
             socket_init()  {
+                
                 SOCKET_CLIENT.data.this_vue = this
-
-                SOCKET_CLIENT.init(this.unique_auth_code)
+                SOCKET_CLIENT.init(this.website.unique_auth_code)
 
             },
             disconnect() {
-                SOCKET_CLIENT.data.this_vue = this
+                this.updateWebSite({
+                    conn_status:0,
+                    socket_id:'',
 
+                })
                 SOCKET_CLIENT.wsClose()
-                LocalVoucher.clear()
-                LocalVoucher.setKeyValue('unique_auth_code',this.unique_auth_code)
-                this.bind_apps = []
-                this.authing = ''
-                this.level_key = ''
-                this.level_pass = ''
-            },
-            reconnect() {
 
             },
-            send(){
-
-                this.payload = {
-                    to:parseInt(this.to),
-                    payload_type:this.payload_type,
-                    payload_data:this.payload_data,
-                    yaf:{
-                        module:this.module,
-                        controller:this.controller,
-                        action:this.action,
+            send(c2c_msg=false,msg=''){
+                if(!c2c_msg){
+                    this.payload = {
+                        to:parseInt(this.to),
+                        payload_type:this.payload_type,
+                        payload_data:this.payload_data,
+                        yaf:{
+                            module:this.module,
+                            controller:this.controller,
+                            action:this.action,
+                        }
                     }
+
+                    SOCKET_CLIENT.data.payload = this.payload
+                    SOCKET_CLIENT.data.this_vue = this
+                    let response = SOCKET_CLIENT.wsSend()
+                }
+                else if(c2c_msg){
+                    SOCKET_CLIENT.data.payload = msg
+                    SOCKET_CLIENT.data.this_vue = this
+                    let response = SOCKET_CLIENT.wsSend()
                 }
 
-                SOCKET_CLIENT.data.payload = this.payload
-                SOCKET_CLIENT.data.this_vue = this
-                let response = SOCKET_CLIENT.wsSend()
 
 
             },
@@ -578,7 +483,7 @@
                         return item !== str
                     })
                 }
-                console.log(this.bind_apps)
+                //console.log(this.bind_apps)
                 let tmp_level = 0
                 this.bind_apps.forEach(function (v,k) {
                     let id = v.match(/#\d+/)[0].replace('#','')
@@ -592,23 +497,23 @@
                 if(this.top_level === 0){
                     this.authing = 0
                 }
-                console.log(this.top_level)
+                //console.log(this.top_level)
 
             },
             matchMoveSelect(data){
                 console.log('matchMoveSelect')
-                console.log(data)
+                //console.log(data)
                 var reg = /#.+-\d+/
                 var match_data = (data.content + "").match(reg)
-                console.log(match_data[0])
+                //console.log(match_data[0])
                 if(match_data){
                     var match_arr = match_data[0].split('-')
 
                     var match_movie = match_arr[0].replace('#','')
                     var match_ticket = parseInt(match_arr[1])
 
-                    console.log(match_movie)
-                    console.log(match_ticket)
+                    //console.log(match_movie)
+                    //console.log(match_ticket)
                     if(match_ticket>=100){
                         this.module = 'index'
                         this.controller = 'user'
@@ -634,21 +539,7 @@
 
 
         },
-        computed:{
-            getheadpic:function () {
-                console.log('getheadpic->',this.access_user)
-                return    this.access_user.img?this.access_user.img:'http://truesign-app.oss-cn-beijing.aliyuncs.com/headpic/7dd98d1001e939010096ed5c7dec54e736d1963f.jpg'
 
-            },
-            dealDanmuList:function () {
-                if(this.danmu_list.length>15){
-                    var new_danmu_list = this.danmu_list.slice(0,15)
-                    this.danmu_list = []
-                    this.danmu_list = new_danmu_list
-                }
-                return  this.danmu_list
-            }
-        },
     }
 </script>
 <style lang="stylus" rel="stylesheet/stylus">
@@ -716,7 +607,7 @@
   .label
     background rgba(105, 210, 231, 0.47) !important
   #live_ctrl_terminal
-    width 95%
+    width 600px
     height 90%
     margin 40px auto
 
@@ -729,7 +620,7 @@
     border 1px solid gray
     padding-right  1px
   #ctrl_conn
-    width 45%
+    width 100%
     height 100%
     position relative
     float left
@@ -740,12 +631,13 @@
       padding 0
       min-height 300px
       height auto
+      text-align center
       #select_app
-        display inline-block
+        display block
         padding 0
         margin 20px 0 20px 0
-        margin-left 10px
-        width 33.5%
+
+        width 80%
 
 
       #bind_app

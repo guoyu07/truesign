@@ -47,10 +47,12 @@ class appWebSiteAdapter extends DbLibraryAdapter
             ->def('username')->map('username')->varchar(100)->desc('用户名')
             ->def('pass')->map('pass')->varchar(100)->desc('密码')
             ->def('email')->map('email')->varchar(100)->desc('邮箱')
-            ->def('look_for')->map('look_for')->int()->desc('目的')
-            ->def('reg_ip')->map('reg_ip')->int()->desc('注册ip')
-            ->def('ip')->map('ip')->int()->desc('最新登录ip')
+            ->def('look_for')->map('look_for')->varchar(1000)->desc('目的')
+            ->def('reg_ip')->map('reg_ip')->varchar(100)->desc('注册ip')
+            ->def('ip')->map('ip')->varchar(100)->desc('最新登录ip')
+            ->def('website_level')->map('website_level')->int()->desc('网站权限等级')
             ->def('mark')->map('mark')->int()->desc('备注')
+            ->def('unique_auth_code')->map('unique_auth_code')->varchar(100)->desc('唯一识别码')
             ->end();
     }
 

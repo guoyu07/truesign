@@ -20,6 +20,26 @@ routes.forEach(function (v,k) {
                     'path':v.path+'/'+vv.path,
                 }
             )
+            if(vv.children){
+                vv.children.forEach(function (vvv,kkk) {
+                    router_item.push(
+                        {
+                            'name':v.name+'/'+vv.name+'/'+vvv.name,
+                            'path':v.path+'/'+vv.path+'/'+vvv.path,
+                        }
+                    )
+                    if(vvv.children){
+                        vvv.children.forEach(function (vvvv,kkkk) {
+                            router_item.push(
+                                {
+                                    'name': v.name + '/' + vv.name + '/' + vvv.name + '/' +vvvv.name,
+                                    'path': v.path + '/' + vv.path + '/' + vvv.path + '/' +vvvv.path,
+                                }
+                            )
+                        })
+                    }
+                })
+            }
         })
     }
 router_build.push(router_item)

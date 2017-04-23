@@ -75,12 +75,12 @@
             },
 
             beforeEnter(el) {
-                console.log('beforeEnter')
+                //console.log('beforeEnter')
                 el.style.opacity = 0
                 el.style.height = 0
             },
             enter(el,done) {
-                console.log('enter')
+                //console.log('enter')
                 var delay = el.dataset.index * 100
                 setTimeout(function () {
                     Velocity(
@@ -91,17 +91,17 @@
                 }, delay)
             },
             afterEnter(el) {
-                console.log('afterenter')
+                //console.log('afterenter')
 
             },
             enterCancelled(el) {
-                console.log('enterCancelled')
+                //console.log('enterCancelled')
             },
             beforeLeave(el){
-                console.log('befaoreLeave')
+                //console.log('befaoreLeave')
             },
             leave(el,done){
-                console.log('Leave')
+                //console.log('Leave')
                 var delay = el.dataset.index * 100
                 setTimeout(function () {
                     Velocity(
@@ -112,10 +112,10 @@
                 }, delay)
             },
             afterLeave(el){
-                console.log('afterLeave')
+                //console.log('afterLeave')
             },
             leaveCancelled(el){
-                console.log('leaveCancelled')
+                //console.log('leaveCancelled')
             },
             test(){
                 alert(1)
@@ -154,7 +154,7 @@
     position fixed
     left 0
     top 0px
-    width 280px
+    width 420px
     height 35px
     background-color transparent
     text-align center

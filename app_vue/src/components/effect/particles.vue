@@ -15,7 +15,7 @@
         },
         mounted(){
             const config = require('../../api/lib/particles/particlesjs-config.json')
-            console.log(particlesJS)
+//            console.log(particlesJS)
 
 
 

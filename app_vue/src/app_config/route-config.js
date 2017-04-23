@@ -23,6 +23,13 @@ const element = resolve => require(['../components/project/element.vue'], resolv
 const spa = resolve => require(['../components/project/spa/spa.vue'], resolve)
 const canvas = resolve => require(['../components/project/canvas.vue'], resolve)
 const test = resolve => require(['../components/test/test.vue'], resolve)
+/*
+工具组件工作区
+ */
+const tools = resolve => require(['../components/tools/tools.vue'], resolve)
+const VueQuillEditor = resolve => require(['../components/tools/VueQuillEditor.vue'], resolve)
+const vue2editor = resolve => require(['../components/tools/vue2-editor.vue'], resolve)
+
 const project = resolve => require(['../components/project/project.vue'], resolve)
 const gdmap = resolve => require(['../components/project/gdmap.vue'], resolve)
 const video = resolve => require(['../components/project/video.vue'], resolve)
@@ -63,6 +70,19 @@ const initSocket = resolve => require(['../components/communicationModule/initSo
 const siteshow_main = resolve => require(['../components/project/siteshow/main.vue'], resolve)
 const siteshow_backend = resolve => require(['../components/project/siteshow/backend.vue'], resolve)
 
+/*
+truesign-project 工作区
+ */
+/*
+website 网站工作区
+ */
+const website_main = resolve => require(['../components/project/website_app/main.vue'], resolve)
+const website_index = resolve => require(['../components/project/website_app/index.vue'], resolve)
+const website_app_square = resolve => require(['../components/project/website_app/app_square.vue'], resolve)
+
+const apps = resolve => require(['../components/project/website_app/apps/apps.vue'], resolve)
+const wechat = resolve => require(['../components/project/website_app/apps/wechat.vue'], resolve)
+
 
 
 
@@ -91,6 +111,33 @@ const routes = [
             title: 'home'
         },
         component: home
+    },
+    {
+        name: 'tools',
+        path: '/tools',
+        meta: {
+            title: 'tools'
+        },
+        component: tools,
+        children:[
+            {
+                name: 'VueQuillEditor',
+                path: 'VueQuillEditor',
+                meta: {
+                    title: 'VueQuillEditor'
+                },
+                component: VueQuillEditor
+            },
+            {
+                name: 'vue2editor',
+                path: 'vue2editor',
+                meta: {
+                    title: 'vue2editor'
+                },
+                component: vue2editor
+            },
+
+        ]
     },
     {
         name: 'common',
@@ -307,6 +354,51 @@ const routes = [
               },
               component: canvas
             },
+            {
+                name: 'website_main',
+                path: 'website_main',
+                meta: {
+                    title: 'website_main'
+                },
+                component: website_main,
+                children:[
+                    {
+                        name: 'website_index',
+                        path: 'website_index',
+                        meta: {
+                            title: 'website_index'
+                        },
+                        component: website_index
+                    },
+                    {
+                        name: 'website_app_square',
+                        path: 'website_app_square',
+                        meta: {
+                            title: 'website_app_square'
+                        },
+                        component: website_app_square,
+                    },
+                    {
+                        name: 'apps',
+                        path: 'apps',
+                        meta: {
+                            title: 'apps'
+                        },
+                        component: apps,
+                        children:[
+                            {
+                                name: 'wechat',
+                                path: 'wechat',
+                                meta: {
+                                    title: 'wechat'
+                                },
+                                component: wechat
+                            },
+                        ]
+                    },
+                ]
+            },
+
 
             router_spa
         ]

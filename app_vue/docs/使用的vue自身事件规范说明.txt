@@ -1,0 +1,9 @@
+发送请求
+this.$root.eventHub.$emit(name,value)
+接收请求
+this.$root.eventHub.$on(name,function(value){
+})
+
+已经使用的name如下
+socket_response
+接收socket服务端返回的信息

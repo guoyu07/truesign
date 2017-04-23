@@ -1,5 +1,5 @@
 <template>
-  <div class="top_router_view "   >
+  <div class="top_router_view "  >
         <!--<input v-model="on_logo_pos" style="position: absolute;z-index:100000;background-color: white;color: black!important;margin-left: 200px">-->
         <div id="logo_scope" :class="{'logo_effect_center_out':on_logo_pos === 'center'}"
              :style="{
@@ -128,10 +128,10 @@
 
 
             this.$root.eventHub.$on('screenWidth2screenHeight',function (data) {
-                console.log('screenWidth2screenHeight')
-                console.log(data)
+//                console.log('screenWidth2screenHeight')
+//                console.log(data)
                 var width2height = data.split(",")
-                console.log(width2height)
+//                console.log(width2height)
                 vm.screenWidth = parseInt(width2height[0])
                 vm.screenHeight = parseInt(width2height[1])
                 vm.resize_effect_logo()

@@ -1,5 +1,5 @@
 <template>
-  <div class="top_router_view"  style="overflow: scroll;text-align: center">
+  <div class="top_router_view">
         <!--<input id="query_top" v-model="query" style="color: black !important;background-color: white;position: absolute;z-index: 100000;left:300px">-->
        <!--<effect_line :effect_line_top="query" style=""></effect_line>-->
         <router-view></router-view>

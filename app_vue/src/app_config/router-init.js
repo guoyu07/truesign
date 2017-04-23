@@ -2,7 +2,7 @@ import Vue from 'vue'
 import VueRouter from 'vue-router'
 import routes from './route-config'
 
-const title = '天津世纪通泰科技有限公司'
+const title = ''//天津世纪通泰科技有限公司
 
 Vue.use(VueRouter)
 

@@ -16,10 +16,17 @@ class SamplePlugin extends Yaf_Plugin_Abstract {
 	public function dispatchLoopStartup(Yaf_Request_Abstract $request, Yaf_Response_Abstract $response) {
         $controller = strtolower($request->getControllerName());
         $action = strtolower($request->getActionName());
-        if($controller == 'website'){
+        if($controller == 'website' && $action == 'regorlogin'){
             return;
         }
-        if($controller == 'apps' || $controller == 'wsserver'){
+        if($controller == 'common' || $controller == 'wechat'  ){
+            return;
+        }
+
+        if($controller == 'apps' && ($action=='getapprule' || $action=='bindapps' || $action== 'getfdbyapp' || $action== 'disconnapp' || $action=='checklogin')){
+            return;
+        }
+        if( $controller == 'wsserver' ){
             return;
         }
         if($action == 'getFdByApp' || $action == 'saveorupdateuserinfoanddanmu'){
@@ -27,59 +34,110 @@ class SamplePlugin extends Yaf_Plugin_Abstract {
             return;
         }
         $params = $request->getParams();
-        $encryption_key = $params['encryption_key'];
-        $unique_auth_code = $params['unique_auth_code'];
-        if(empty($encryption_key) || empty($unique_auth_code)){
-//            $response->clearBody();
-//            $response->setBody( '请求非法 1no access');
-            throw new Exception('请求非法 no access',-100);
-
-//            throw new Exception('请求非法 no access',-199);
+        $website_encryption_key = $request->get('website_encryption_key');
+        $encryption_key = $request->get('encryption_key');
+        $unique_auth_code = $request->get('unique_auth_code');
+        if(empty($unique_auth_code)){
+            throw new Exception('请求非法.无法确定唯一识别码, no access',-100);
+        }
+        elseif(empty($encryption_key) && empty($website_encryption_key)){
+            throw new Exception('请求非法.无法确定任何一种授权序列key, no access',-100);
         }
         else{
+            $check_encryption_key = self::check_encryption_key($unique_auth_code,$encryption_key);
+            $check_website_encryption_key = self::check_encryption_key($unique_auth_code,$website_encryption_key,true);
+            if(!empty($check_encryption_key['status']) && (!empty($check_website_encryption_key[status]))){
+                return;
+            }
+            else{
+                throw new Exception($check_encryption_key['msg'].';'.$check_website_encryption_key['msg'],-199);
+            }
+
+        }
+	}
+
+	public function check_encryption_key($unique_auth_code,$key,$website=false){
+	    if(!$website){
+
             $doDao = new \Royal\Data\DAO(new \Truesign\Adapter\Apps\appAuthLogAdapter());
             $needData = $doDao->readSpecified(array(
-                'unique_auth_code'=>$params['unique_auth_code']
+                'unique_auth_code'=>$unique_auth_code
             ),array());
+
             if($needData['data'][0]['document_id']){
-                $decode_encryption_key = \Royal\Util\Decrypt::encryption($params['encryption_key'],$needData['data'][0]['document_id'],1);
+                $decode_encryption_key = \Royal\Util\Decrypt::encryption($key,$needData['data'][0]['document_id'],1);
                 if(sizeof($decode_encryption_key) == 2){
                     [0=>$tmp_unique_auth_code,1=>$limit_time]=$decode_encryption_key;
                     if($limit_time>time()){
-                        if($tmp_unique_auth_code == $params['unique_auth_code'] && !empty($needData['data'][0]['apps'])){
+                        if($tmp_unique_auth_code == $unique_auth_code && !empty($needData['data'][0]['apps'])){
                             $re_check['status'] = 1;
-                            $re_check['note'] = '验证成功';
-                            return;
+                            $re_check['msg'] = '验证成功';
+
                         }
                         elseif(empty($needData['data'][0]['apps'])){
                             $re_check['status'] = 0;
-                            $re_check['note'] = '上次连接已经断开';
+                            $re_check['msg'] = '上次连接已经断开';
                         }
                         else{
                             $re_check['status'] = 0;
-                            $re_check['note'] = '唯一验证key不一致';
+                            $re_check['msg'] = '唯一验证key不一致';
                         }
                     }
                     else{
                         $re_check['status'] = 0;
-                        $re_check['note'] = '加密key已经过期';
+                        $re_check['msg'] = '加密key已经过期';
                     }
                 }
                 else{
                     $re_check['status'] = 0;
-                    $re_check['note'] = '加密key违法';
+                    $re_check['msg'] = '加密key违法';
                 }
             }
-    //
-    //        ['0'=>$encryption_key,'1'=>$limit_time] = \Royal\Util\Decrypt::en
-//            $response->clearBody() ;
-//            $response->setBody( $re_check) ;
-            throw new Exception('请求非法 1no access',-100);
+            else{
+                $re_check['status'] = 0;
+                $re_check['msg'] = '此唯一识别码未颁发';
 
+            }
+            return $re_check;
         }
-//
-	}
+        else{
+            $doDao = new \Royal\Data\DAO(new \Truesign\Adapter\Apps\appWebSiteAdapter());
+            $needData = $doDao->readSpecified(array(
+                'unique_auth_code'=>$unique_auth_code
+            ),array());
+            if($needData['data'][0]['document_id']){
+                $decode_encryption_key = \Royal\Util\Decrypt::encryption($key,$needData['data'][0]['document_id'],1);
+                if(sizeof($decode_encryption_key) == 2){
+                    [0=>$tmp_unique_auth_code,1=>$limit_time]=$decode_encryption_key;
+                    if($limit_time>time()){
+                        if($tmp_unique_auth_code == $unique_auth_code){
+                            $re_check['status'] = 1;
+                            $re_check['msg'] = 'website验证成功';
 
+                        }
+                        else{
+                            $re_check['status'] = 0;
+                            $re_check['msg'] = 'website唯一验证key不一致';
+                        }
+                    }
+                    else{
+                        $re_check['status'] = 0;
+                        $re_check['msg'] = 'website加密key已经过期';
+                    }
+                }
+                else{
+                    $re_check['status'] = 0;
+                    $re_check['msg'] = 'website加密key违法';
+                }
+            }
+            else{
+                $re_check['status'] = 0;
+                $re_check['msg'] = 'website此唯一识别码未颁发';
+            }
+            return $re_check;
+        }
+
+    }
 	public function preDispatch(Yaf_Request_Abstract $request, Yaf_Response_Abstract $response) {
 	}
 

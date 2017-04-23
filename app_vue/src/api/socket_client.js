@@ -1,4 +1,4 @@
-
+import { String2Blob } from './lib/helper/javascriptDatatypeConvert'
 const SOCKET_CLIENT  =  {
     data : {
         wSock       : null,
@@ -9,7 +9,8 @@ const SOCKET_CLIENT  =  {
         response : '',
         this_vue : null,
         conn_status : false,
-        status:'暂未连接到服务器'
+        status:'暂未连接到服务器',
+        check_socket_status:'',
     },
     init : function (unique_auth_code=0){
         this.copyright();
@@ -24,17 +25,20 @@ const SOCKET_CLIENT  =  {
 
     ws : function(unique_auth_code){
         console.log('准备连接到服务器=>')
+        clearInterval(this.data.check_socket_status)
         this.data.wSock  =  new WebSocket('ws://iamsee.com:9501/?unique_auth_code='+unique_auth_code);
         this.wsOpen();
         this.wsMessage();
         this.wsOnclose();
         this.wsOnerror();
+        this.loopCheckStatus()
     },
     wsSend : function(){
 
-        console.log('send=>')
-        console.log(JSON.stringify(this.data.payload))
-        this.data.wSock.send(JSON.stringify(this.data.payload));
+        // console.log('send=>')
+        // console.log(JSON.stringify(this.data.payload))
+        var send_blob = String2Blob(JSON.stringify(this.data.payload))
+        this.data.wSock.send(send_blob);
 
     },
     wsClose : function () {
@@ -48,78 +52,24 @@ const SOCKET_CLIENT  =  {
         let that = this
         this.data.wSock.onopen  =  function( event ){
             that.data.status = '连接正常'
-            that.data.this_vue.check_status()
-            that.data.this_vue.re_check_bind()
             SOCKET_CLIENT.print('wsopen',event);
         }
     },
     wsMessage : function(){
         let that = this
         this.data.wSock.onmessage = function(event){
-            var response_data  =  jQuery.parseJSON(event.data);
-            console.log('[c]message=>')
-            console.log(response_data)
-            let status = response_data.status
-            let type = response_data.type
-            console.log('...............'+type+'...............')
-            if(status === 200 && type ==='self_init'){
-                that.conn_status = true
-                that.data.this_vue.conn_status = true
-                that.data.this_vue.doinit()
-                that.data.this_vue.conn_info = '保持连接'
-
-                if(response_data.data.response.response_data.data.init_status){
-                    that.data.this_vue.unique_auth_code = response_data.data.response.response_data.data.unique_auth_code
-                    that.data.this_vue.doStorageAuthCode()
-                }
-
+            var reader = new FileReader();
+            reader.readAsText(event.data, 'utf-8');
+            reader.onload = function (e) {
+                event.datastr = reader.result
+                var response_data  =  jQuery.parseJSON(event.datastr);
+                let status = response_data.status
+                let type = response_data.type
+                console.log('...............'+type+'...............')
+                that.data.this_vue.$root.eventHub.$emit('socket_response',response_data)
             }
-            else if(status === 200 && type ==='getapps'){
 
 
-                that.data.this_vue.socket_response = response_data.data.response.response_data
-                that.data.this_vue.doinitapps()
-
-            }
-            else if(status === 200 && type === 'bind_apps'){
-                that.data.this_vue.socket_response = response_data.data.response.response_data
-                that.data.this_vue.doCheckBindApps()
-
-            }
-            else if(status === 200 && type === "checkLogin"){
-                that.data.this_vue.socket_response = response_data.data.response.response_data
-                that.data.this_vue.doCheckLogin()
-
-            }
-            else if(status === 200 && type === 'danmu_data'){
-                that.data.this_vue.socket_response = response_data.data.response
-                that.data.this_vue.refreshDanmu()
-            }
-            else if(status === 200 && type === 'getLiveVideo'){
-                that.data.this_vue.socket_response = response_data.data.response
-                that.data.this_vue.initLiveVideoList()
-            }
-            else if(status === 200 && type === 'demandLiveVideo'){
-                that.data.this_vue.socket_response = response_data.data.response
-                that.data.this_vue.DanmuDemand()
-            }
-            else if(status === 200 && type === 'updateLiveVideo'){
-
-                that.data.this_vue.updateLiveVideo()
-            }
-            else if(status === 200 && type === 'pauseOrplay'){
-                console.log(response_data.data.response)
-                that.data.this_vue.pauseOrplay(response_data.data.response)
-            }
-            else if(status === 200 && type === 'touchCtrl'){
-                console.log(response_data.data.response)
-                that.data.this_vue.touchCtrl(response_data.data.response)
-            }
-            console.log('-----------eventHub->-------------')
-            that.data.this_vue.$root.eventHub.$emit('socket_response',response_data)
-
-
-            // $('#response').val(JSON.stringify(d['response']))
         }
 
 
@@ -127,6 +77,7 @@ const SOCKET_CLIENT  =  {
     },
     wsOnclose : function(){
         let that = this
+
         this.data.wSock.onclose  =  function(event){
             console.log('[c]close=>');
             console.log(event)
@@ -138,14 +89,10 @@ const SOCKET_CLIENT  =  {
             }
             else{
                 that.data.status = '连接关闭'
-                that.data.this_vue.stop_check_status()
-                // that.data.this_vue.show_process = false
-                that.data.this_vue.me = null
-
                 console.log('关闭成功')
-                that.data.this_vue.conn_status = false
-                that.data.this_vue.conn_info = '失去连接'
-                that.data.this_vue.doCheckLogin()
+                that.data.this_vue.$root.eventHub.$emit('socket_close',1)
+
+
 
 
             }
@@ -169,5 +116,28 @@ const SOCKET_CLIENT  =  {
             console.log(this.data.status);
         }
     },
+    loopCheckStatus:function () {
+        var that = this
+        if(check_socket_status){
+            clearInterval(check_socket_status)
+        }
+
+        var check_socket_status = setInterval(function () {
+            that.data.this_vue.$root.eventHub.$emit('check_level',1)
+            if(!that.data.wSock){
+                // console.log('socket_error->','未连接')
+                that.data.this_vue.$root.eventHub.$emit('socket_error','未连接')
+            }
+            else if(that.data.wSock.readyState != 1){
+                // console.log('socket_error->',that.data.wSock.readyState)
+                that.data.this_vue.$root.eventHub.$emit('socket_error',that.data.wSock.readyState)
+            }
+            else{
+                // console.log('socket_status->',that.data.wSock.readyState)
+                that.data.this_vue.$root.eventHub.$emit('socket_error',that.data.wSock.readyState)
+            }
+        },3000)
+        this.data.check_socket_status = check_socket_status
+    }
 }
 export  default  SOCKET_CLIENT

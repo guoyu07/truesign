@@ -157,7 +157,7 @@
 //                        oss api 不会根据参数类型进行顺序调用,文件应该放到上传列表key的后面,最好放到最后一位
 
                         formData.append('file', (vm.imgfile)[0]);
-                        axios.post(url,formData,axios)
+                        axios.post(url,formData,axios_config)
                             .then((res) => {
                               console.log(res)
                               if(res.data.file_path){

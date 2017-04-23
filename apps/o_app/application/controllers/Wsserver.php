@@ -5,7 +5,7 @@
  * Date: 2017/3/10
  * Time: 13:20
  */
-class WSserverController extends  OAppBaseController
+class WsserverController extends  OAppBaseController
 {
     public function initConnAction(){
         $params = $this->getParams(array('fd','unique_auth_code','ua','ip','authway'));
@@ -22,8 +22,9 @@ class WSserverController extends  OAppBaseController
         $db_response = $doDao->insertOrupdate($preParams,$conditionParams);
         if(!empty($db_response)){
             $response = [];
-            $response['id']=$db_response;
+//            $response['id']=$db_response;
             $response['unique_auth_code']= $params['unique_auth_code'];
+            $response['ip']= $params['ip'];
             $response['init_status']= 1;
         }
         else{

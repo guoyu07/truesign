@@ -1,7 +1,7 @@
 <template>
     <div id="footerbar">
 
-        <span class="showip">IP   {{ ip }}</span>
+        <span class="showip">IP   {{ sysinfo.ip }}</span>
 
 
     </div>
@@ -13,25 +13,35 @@
 <script>
     import Velocity from 'velocity-animate'
     import Vue from 'vue'
+    import { mapGetters,mapActions } from 'vuex'
 
     export default {
         data() {
             return{
-                ip:'127.0.0.1'
+
             }
         },
+        computed: {
+            // 使用对象展开运算符将 getters 混入 computed 对象中
+            ...mapGetters([
+                'apprules',
+                'website',
+                'sysinfo'
+            ])
+        },
         mounted(){
-
+            var vm = this
+            this.$root.eventHub.$on('fresh_ip',function (data) {
+                console.log('fresh_ip',data)
+                vm.ip =  data
+            })
 
 
         },
         methods:{
 
         },
-        computed:{
 
-
-        }
 
     }
 </script>

@@ -9,10 +9,48 @@ class appsController extends  OAppBaseController
 {
     public function getAppRuleAction(){
         $apprule = new \Royal\Data\DAO(new \Truesign\Adapter\Apps\appRuleAdapter());
-        $rules = $apprule->readSpecified(array(),array('id','appname','applevel'));
+        $rules = $apprule->readSpecified(array(),array('id','appname','apptype','applevel','appimg','apptitle','apptable'),array(),array('applevel'=>'asc'));
+        $this->output2json($rules);
         $this->setResponseBody($rules);
     }
-
+    public function checkLoginAction(){
+        $params = $this->getParams(array('unique_auth_code','encryption_key'),array());
+        $doDao = new \Royal\Data\DAO(new \Truesign\Adapter\Apps\appAuthLogAdapter());
+        $needData = $doDao->readSpecified(array(
+            'unique_auth_code'=>$params['unique_auth_code']
+        ),array());
+        if($needData['data'][0]['document_id']){
+            $decode_encryption_key = \Royal\Util\Decrypt::encryption($params['encryption_key'],$needData['data'][0]['document_id'],1);
+            if(sizeof($decode_encryption_key) == 2){
+                [0=>$tmp_unique_auth_code,1=>$limit_time]=$decode_encryption_key;
+                if($limit_time>time()){
+                    if($tmp_unique_auth_code == $params['unique_auth_code'] && !empty($needData['data'][0]['apps'])){
+                        $re_check['status'] = 1;
+                        $re_check['note'] = '验证成功';
+                    }
+                    elseif(empty($needData['data'][0]['apps'])){
+                        $re_check['status'] = 0;
+                        $re_check['note'] = '上次连接已经断开';
+                    }
+                    else{
+                        $re_check['status'] = 0;
+                        $re_check['note'] = '唯一验证key不一致';
+                    }
+                }
+                else{
+                    $re_check['status'] = 0;
+                    $re_check['note'] = '加密key已经过期';
+                }
+            }
+            else{
+                $re_check['status'] = 0;
+                $re_check['note'] = '加密key违法';
+            }
+        }
+//
+//        ['0'=>$encryption_key,'1'=>$limit_time] = \Royal\Util\Decrypt::en
+        $this->setResponseBody($re_check);
+    }
     public function bindappsAction(){
         $params = $this->getParams(array('apps','key','pass','unique_auth_code'),array('note'));
         $doDao = new \Royal\Data\DAO(new \Truesign\Adapter\Apps\appCtrlLevelAdapter());
@@ -54,46 +92,15 @@ class appsController extends  OAppBaseController
             }
 
         }
+        else{
+            $this->setResponseBody(array(
+                'bind_status'=>0,
+                'note'=>'无法验证账户'
 
-
-    }
-    public function checkLoginAction(){
-        $params = $this->getParams(array('unique_auth_code','encryption_key'),array());
-        $doDao = new \Royal\Data\DAO(new \Truesign\Adapter\Apps\appAuthLogAdapter());
-        $needData = $doDao->readSpecified(array(
-            'unique_auth_code'=>$params['unique_auth_code']
-        ),array());
-        if($needData['data'][0]['document_id']){
-            $decode_encryption_key = \Royal\Util\Decrypt::encryption($params['encryption_key'],$needData['data'][0]['document_id'],1);
-            if(sizeof($decode_encryption_key) == 2){
-                [0=>$tmp_unique_auth_code,1=>$limit_time]=$decode_encryption_key;
-                if($limit_time>time()){
-                    if($tmp_unique_auth_code == $params['unique_auth_code'] && !empty($needData['data'][0]['apps'])){
-                        $re_check['status'] = 1;
-                        $re_check['note'] = '验证成功';
-                    }
-                    elseif(empty($needData['data'][0]['apps'])){
-                        $re_check['status'] = 0;
-                        $re_check['note'] = '上次连接已经断开';
-                    }
-                    else{
-                        $re_check['status'] = 0;
-                        $re_check['note'] = '唯一验证key不一致';
-                    }
-                }
-                else{
-                    $re_check['status'] = 0;
-                    $re_check['note'] = '加密key已经过期';
-                }
-            }
-            else{
-                $re_check['status'] = 0;
-                $re_check['note'] = '加密key违法';
-            }
+            ));
         }
-//
-//        ['0'=>$encryption_key,'1'=>$limit_time] = \Royal\Util\Decrypt::en
-        $this->setResponseBody($re_check);
+
+
     }
     public static function appsLevelCheck($accessLevel,$apps){
         $regex_rule = '/@.+/';
@@ -127,6 +134,58 @@ class appsController extends  OAppBaseController
         $doDao = new \Royal\Data\DAO(new \Truesign\Adapter\Apps\appAuthLogAdapter());
         $db_resposne = $doDao->updateByQuery(array('fd'=>'','apps'=>'','ctrlid'=>'','ctrlname'=>'','ctrllevel'=>''),$params);
         $this->setResponseBody($db_resposne);
+    }
+
+    public function updateAppRuleAction()
+    {
+        $params = $this->getParams(array('document_id'),array('appname','applevel','appimg','apptitle'));
+        $params['id'] = $params['document_id'];
+        $doDao = new \Royal\Data\DAO(new \Truesign\Adapter\Apps\appRuleAdapter());
+        $db_reponse = $doDao->update($params);
+        if(!empty($db_reponse)){
+            $res_reponse['status']=1;
+            $res_reponse['msg']='app更新成功';
+        }
+        else{
+            $res_reponse['status']=0;
+            $res_reponse['msg']='app更新失败';
+        }
+        $this->setResponseBody($res_reponse);
+    }
+
+    public function addAppRuleAction()
+    {
+        $params = $this->getParams(array(),array('appname','applevel','appimg','apptitle','apptype','apptable'));
+        $doDao = new \Royal\Data\DAO(new \Truesign\Adapter\Apps\appRuleAdapter());
+        $db_reponse = $doDao->create($params);
+        if(!empty($db_reponse)){
+            $res_reponse['status']=1;
+            $res_reponse['msg']='app增加成功';
+        }
+        else{
+            $res_reponse['status']=0;
+            $res_reponse['msg']='app增加失败';
+        }
+        $this->setResponseBody($res_reponse);
+    }
+
+    public function delAppRuleAction()
+    {
+        $params = $this->getParams(array('document_id'),array('appname','applevel','appimg','apptitle','apptype','apptable'));
+        $params['id'] = $params['document_id'];
+        $params['if_delete'] = 1;
+        $doDao = new \Royal\Data\DAO(new \Truesign\Adapter\Apps\appRuleAdapter());
+
+        $db_reponse = $doDao->update($params);
+        if(!empty($db_reponse)){
+            $res_reponse['status']=1;
+            $res_reponse['msg']='app删除成功';
+        }
+        else{
+            $res_reponse['status']=0;
+            $res_reponse['msg']='app删除失败';
+        }
+        $this->setResponseBody($res_reponse);
     }
 
 

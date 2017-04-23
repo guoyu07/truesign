@@ -1,7 +1,7 @@
 <template>
   <div class="top_router_view "  style="">
 
-      <input v-model="effect_line_top" style="position: absolute;z-index: 11;background-color: white;color: black !important;left:50%">
+      <!--<input v-model="effect_line_top" style="position: absolute;z-index: 11;background-color: white;color: black !important;left:50%">-->
       <!--<div>-->
           <!--v-on:before-enter="beforeEnter"-->
           <!--v-on:enter="enter"-->
@@ -16,7 +16,7 @@
                 :style="{
                 position: 'absolute',
                 zIndex :2,
-                borderBottom:borderStyle.borderBottom*effect_line_rate +'px solid RGB(255,255,255)',
+                borderBottom:borderStyle.borderBottom*effect_line_rate +'px solid #3A4552',
                 borderLeft:borderStyle.borderLeft*effect_line_rate +'px solid transparent',
                 marginLeft:-(margin.x-parseInt(trim))+'px',
                 marginTop:-(margin.y-parseInt(trim))+'px',
@@ -28,7 +28,7 @@
              :style="{
                 position: 'absolute',
                 zIndex :2,
-                borderTop:borderStyle.borderTop*effect_line_rate+'px solid RGB(255,255,255)',
+                borderTop:borderStyle.borderTop*effect_line_rate+'px solid #3A4552',
                 borderRight:borderStyle.borderRight*effect_line_rate+'px solid transparent',
                 marginLeft:-(margin.x+parseInt(trim))+'px',
                 marginTop:-(margin.y+parseInt(trim))+'px',
@@ -36,7 +36,7 @@
                }">
 
         </div>
-        <div id="effect_line_color"
+        <div id="effect_line_color" v-if="effect_line_top>0"
              :style="{
                 width: '100%',
                 height: '100%',
@@ -47,7 +47,7 @@
     //            top:'100%'
                 }" >
         </div>
-         <effectlogo  :logo_pos='logo_pos'></effectlogo>
+         <!--<effectlogo  :logo_pos='logo_pos'></effectlogo>-->
 
   </div>
 </template>
@@ -198,7 +198,6 @@
         },
         mounted(){
 
-  		    console.log(this.effect_line_top,this.aaa)
   		    var vm = this
             this.$root.eventHub.$on('effect_line_top',function (data) {
                 vm.effect_line_top = parseInt(data)
@@ -206,10 +205,10 @@
             })
             this.resize_effect_line()
             this.$root.eventHub.$on('screenWidth2screenHeight',function (data) {
-                console.log('screenWidth2screenHeight')
-                console.log(data)
+//                console.log('screenWidth2screenHeight')
+//                console.log(data)
                 var width2height = data.split(",")
-                console.log(width2height)
+//                console.log(width2height)
                 vm.screenWidth = parseInt(width2height[0])
                 vm.screenHeight = parseInt(width2height[1])
                 vm.resize_effect_line()
@@ -231,8 +230,8 @@
 
         },
         updated(){
-            console.log('updated')
-            console.log(this.screenHeight)
+//            console.log('updated')
+//            console.log(this.screenHeight)
         },
         components:{
             effectlogo
@@ -241,20 +240,20 @@
         watch:{
             effect_line_top(val){
                 var vm = this
-                console.log('effect_line_top->',val)
+//                console.log('effect_line_top->',val)
                 this.effect_line_per =parseInt(this.effect_line_top)
                 if(this.effect_line_per === 100){
 
                     setTimeout(function () {
                         vm.resize_effect_over()
 
-                    },1500)
+                    },800)
                 }
                 else if(this.effect_line_per <= 0){
                     setTimeout(function () {
                         vm.resize_effect_start()
 
-                    },1500)
+                    },800)
                 }
             }
         }
@@ -263,8 +262,8 @@
 
 <style lang="stylus" rel="stylesheet/stylus">
 #effect_line_color
-    transition: all 1.5s linear
+    transition: all 0.8s linear
 .animation_line
-    transition: all 1.5s linear
+    transition: all 0.8s linear
 
 </style>

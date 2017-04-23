@@ -67,19 +67,22 @@ class socket_server{
         echo "【s】onOpen=> \n";
         echo "【s】server=> \n";
         echo "【s】request=> \n";
+
+
 //        var_dump($request);
 
         $header_app = $request->server['path_info'];
         var_dump($header_app);
         $query_string = $request->server['query_string'];
         parse_str($query_string,$query_arr);
+        var_dump($query_arr);
 
 
-        $nickname = $this->nicknames[array_rand($this->nicknames)].'-'.time();
-        $this->table->set($request->fd,[
-            'id'=>$request->fd,
-            'nickname' => $nickname
-        ]);
+//        $nickname = $this->nicknames[array_rand($this->nicknames)].'-'.time();
+//        $this->table->set($request->fd,[
+//            'id'=>$request->fd,
+//            'nickname' => $nickname
+//        ]);
         $from = [
             'fd_type'=>'server',
             'fd'=>null,
@@ -90,17 +93,19 @@ class socket_server{
         ];
         $me = [
             'id'=>$request->fd,
-            'nickname'=>$nickname
+//            'nickname'=>$nickname
         ];
         if($header_app != '/live_video_datain'){
-            echo "生成唯一识别id\n";
+
             if($query_arr['unique_auth_code']){
-                var_dump(1);
+                echo "存在唯一识别id\n";
+
                 $unique_auth_code = $query_arr['unique_auth_code'];
             }
             else{
-                var_dump(2);
 
+
+                echo "生成唯一识别id\n";
                 $unique_auth_code = session_create_id();
 
             }
@@ -120,6 +125,7 @@ class socket_server{
                 's_task_id'=>'0'
             ];
             $init_response = $this->runYaf($yaf_payload);
+            $init_response['response_data']->data['socket_id'] = $request->fd;
             $openmsg = $this->buildMsg($from,$to,$me,$init_response,'self_init');
 
         }
@@ -175,69 +181,79 @@ class socket_server{
     public function onMessage( $serv , $request ){
 //    public function onMessage(\swoole_websocket_server $serv, swoole_websocket_frame $request){
         echo "【s】onMessage=> \n";
-        var_dump($request);
+//        var_dump($request);
         $receive = json_decode($request->data,true);
 
         var_dump($receive);
-        if($receive['yaf'] != 'none'){
+        if($receive['payload_type'] == 'c2c_msg'){
+            var_dump('c2c_msg');
             $payload_type = $receive['payload_type'];
-            $payload_data = $receive['payload_data'];
-            $yaf = $receive['yaf'];
-            $yaf_module = $yaf['module'];
-            $yaf_controller = $yaf['controller'];
-            $yaf_action = $yaf['action'];
-
-            $yaf_payload = array_merge($yaf,array(
-                'data'=>$payload_data,
-                's_task_id'=>1
-            ));
-
-            $response_content=$this->runYaf($yaf_payload);
-            $to_id = $receive['to']?$receive['to']:$request->fd;
-
+            $to_id = $receive['to'];
+            $response_content = $receive['msg'];
         }
         else{
-            $datato_app = $receive['to_app'];
-            $payload_type = $receive['payload_type'];
+            if($receive['yaf'] != 'none'){
+                $payload_type = $receive['payload_type'];
+                $payload_data = $receive['payload_data'];
+                $yaf = $receive['yaf'];
+                $yaf_module = $yaf['module'];
+                $yaf_controller = $yaf['controller'];
+                $yaf_action = $yaf['action'];
 
-            $payload_data = array('app'=>$datato_app);
-            $yaf['module'] = 'index';
-            $yaf['controller'] = 'apps';
-            $yaf['action'] = 'getFdByApp';
-            $yaf_payload = array_merge($yaf,array(
-                'data'=>$payload_data,
-                's_task_id'=>1
-            ));
+                $yaf_payload = array_merge($yaf,array(
+                    'data'=>$payload_data,
+                    's_task_id'=>1
+                ));
 
-            $response_content=$this->runYaf($yaf_payload);
-            if($response_content['response_data']->data  != 'none'){
-                $to_id = [];
-                foreach ($response_content['response_data']->data as $k=>$v){
-                    $to_id[] = $v['fd'];
-                }
+                $response_content=$this->runYaf($yaf_payload);
+                $to_id = $receive['to']?$receive['to']:$request->fd;
+
             }
-            if($payload_type == 'get_danmu') {
-                $source_uri = $receive['source'];
-                $payload_type = 'danmu_data';
-                $payload_data = [];
-                $payload_data['nickname'] = $receive['msg']['nickname'];
-                $payload_data['content'] = $receive['msg']['content'];
-                $payload_data['source'] = $source_uri;
-                $yaf_payload = self::buildYaf('index', 'user', 'saveOrUpdateUserinfoAndDanmu', $payload_data);
-                $info_savedb_response = $this->runYaf($yaf_payload);
-                $response_content = $payload_data;
-                $response_content['time'] = self::getMillisecond();
-                $response_content['info_savedb_response'] =$info_savedb_response;
-            }
-
-
             else{
-                $response_content = $receive['payload_data'];
+                $datato_app = $receive['to_app'];
+                $payload_type = $receive['payload_type'];
+
+                $payload_data = array('app'=>$datato_app);
+                $yaf['module'] = 'index';
+                $yaf['controller'] = 'apps';
+                $yaf['action'] = 'getFdByApp';
+                $yaf_payload = array_merge($yaf,array(
+                    'data'=>$payload_data,
+                    's_task_id'=>1
+                ));
+
+                $response_content=$this->runYaf($yaf_payload);
+                if($response_content['response_data']->data  != 'none'){
+                    $to_id = [];
+                    foreach ($response_content['response_data']->data as $k=>$v){
+                        $to_id[] = $v['fd'];
+                    }
+                }
+                if($payload_type == 'get_danmu') {
+                    $source_uri = $receive['source'];
+                    $payload_type = 'danmu_data';
+                    $payload_data = [];
+                    $payload_data['nickname'] = $receive['msg']['nickname'];
+                    $payload_data['content'] = $receive['msg']['content'];
+                    $payload_data['source'] = $source_uri;
+                    $yaf_payload = self::buildYaf('index', 'user', 'saveOrUpdateUserinfoAndDanmu', $payload_data);
+                    $info_savedb_response = $this->runYaf($yaf_payload);
+                    $response_content = $payload_data;
+                    $response_content['time'] = self::getMillisecond();
+                    $response_content['info_savedb_response'] =$info_savedb_response;
+                }
+
+
+                else{
+                    $response_content = $receive['payload_data'];
+                }
+
+
+
             }
-
-
-
         }
+
+
 
 
         $from = [
@@ -288,8 +304,9 @@ class socket_server{
         $serv->task($task);
     }
     public function onConnect(\swoole_server $serv, $fd, $from_id){
-        $this->ids[$fd]=dk_get_next_id(); // 这里看情况上否要用个定时器做清理
-        $this->log(implode('|',[$this->ids[$fd],'onConnect',$fd,$from_id]));
+        echo '【onConnect】'."\n";
+//        $this->ids[$fd]=dk_get_next_id(); // 这里看情况上否要用个定时器做清理
+//        $this->log(implode('|',[$this->ids[$fd],'onConnect',$fd,$from_id]));
     }
     public function onClose(\swoole_server $serv, $fd, $from_id){
         echo "【s】onCLose \n";
@@ -370,7 +387,7 @@ class socket_server{
             $clients = $data['to'];
             foreach ($clients as $fd) {
                 if (!in_array($fd, $data['except'])) {
-                    $serv->push($fd,$data['data']);
+                    $serv->push($fd,$data['data'],2);
                 }
             }
         }

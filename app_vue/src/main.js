@@ -5,7 +5,7 @@ require('./app_config/require')
 // import promise from 'es6-promise'
 import Vue from 'vue'
 import router from './app_config/router-init'
-import store from './vuex/store'
+import store from './store'
 import App from './App.vue'
 import '../theme/index.css'
 import ElementUI from 'element-ui'

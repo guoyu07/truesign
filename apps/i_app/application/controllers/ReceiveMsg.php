@@ -9,21 +9,16 @@ class ReceiveMsgController extends  iAppBaseController
 {
 
     public function ReceiveMsgAction(){
-        $params = $this->getParams(array('test'));
-        echo '<pre>';
-        print_r($params);
-        $params = $_GET;
-        echo '<pre>';
 
-        print_r($params);
-        $params = $_POST;
-        echo '<pre>';
-
-        print_r($params);
-        $params = $_SERVER;
-        echo '<pre>';
-
-        print_r($params);
+        $myfile = fopen("get.txt", "w");
+        fwrite($myfile,json_encode($_GET,256));
+        fclose($myfile);
+        $myfile = fopen("post.txt", "w");
+        fwrite($myfile,json_encode($_POST,256));
+        fclose($myfile);
+        $myfile = fopen("server.txt", "w");
+        fwrite($myfile,json_encode($_SERVER,256));
+        fclose($myfile);
     }
 
 }
