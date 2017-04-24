@@ -56,9 +56,14 @@
     font-size: 22px;
     color: #00b5ad;
     font-weight: 800;
-
-
-
+}
+.sec_router_tip{
+    position: fixed;
+    right:10px;
+    top:10px;
+    font-size: 18px;
+    color: #e3cc20;
+    font-weight: 600;
 }
 
 input::-webkit-input-placeholder{
