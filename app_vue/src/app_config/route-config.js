@@ -29,6 +29,7 @@ const test = resolve => require(['../components/test/test.vue'], resolve)
 const tools = resolve => require(['../components/tools/tools.vue'], resolve)
 const VueQuillEditor = resolve => require(['../components/tools/VueQuillEditor.vue'], resolve)
 const vue2editor = resolve => require(['../components/tools/vue2-editor.vue'], resolve)
+const wangeditor = resolve => require(['../components/tools/wangeditor.vue'], resolve)
 
 const project = resolve => require(['../components/project/project.vue'], resolve)
 const gdmap = resolve => require(['../components/project/gdmap.vue'], resolve)
@@ -82,6 +83,7 @@ const website_app_square = resolve => require(['../components/project/website_ap
 
 const apps = resolve => require(['../components/project/website_app/apps/apps.vue'], resolve)
 const wechat = resolve => require(['../components/project/website_app/apps/wechat.vue'], resolve)
+const chat = resolve => require(['../components/project/website_app/apps/chat.vue'], resolve)
 
 
 
@@ -135,6 +137,14 @@ const routes = [
                     title: 'vue2editor'
                 },
                 component: vue2editor
+            },
+            {
+                name: 'wangeditor',
+                path: 'wangeditor',
+                meta: {
+                    title: 'wangeditor'
+                },
+                component: wangeditor
             },
 
         ]
@@ -393,6 +403,14 @@ const routes = [
                                     title: 'wechat'
                                 },
                                 component: wechat
+                            },
+                            {
+                                name: 'chat',
+                                path: 'chat',
+                                meta: {
+                                    title: 'chat'
+                                },
+                                component: chat
                             },
                         ]
                     },

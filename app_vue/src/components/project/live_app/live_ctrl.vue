@@ -300,6 +300,7 @@
                 var vm = this
                 console.log('doinitapps')
                 this.app_rules = this.socket_response.data.data
+                this.app_rules =
                 console.log(this.app_rules)
                 $('#select_app').dropdown({
 //                    direction: 'upward',

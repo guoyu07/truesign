@@ -10,7 +10,7 @@ class appsController extends  OAppBaseController
     public function getAppRuleAction(){
         $apprule = new \Royal\Data\DAO(new \Truesign\Adapter\Apps\appRuleAdapter());
         $rules = $apprule->readSpecified(array(),array('id','appname','apptype','applevel','appimg','apptitle','apptable'),array(),array('applevel'=>'asc'));
-        $this->output2json($rules);
+//        $this->output2json($rules);
         $this->setResponseBody($rules);
     }
     public function checkLoginAction(){
@@ -130,7 +130,7 @@ class appsController extends  OAppBaseController
 
     public function disconnAppAction()
     {
-        $params = $this->getParams(array('fd'));
+        $params = $this->getParams(array(),array('fd'));
         $doDao = new \Royal\Data\DAO(new \Truesign\Adapter\Apps\appAuthLogAdapter());
         $db_resposne = $doDao->updateByQuery(array('fd'=>'','apps'=>'','ctrlid'=>'','ctrlname'=>'','ctrllevel'=>''),$params);
         $this->setResponseBody($db_resposne);

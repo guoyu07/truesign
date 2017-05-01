@@ -25,9 +25,6 @@ class socket_server{
     public $server_ip;
     public $res_mq_log;
     public $ids=[];
-    private $nicknames = [
-        '沉淀', '暖寄归人', '厌世症i', '难免心酸°', '過客。', '昔日餘光。', '独特', '有爱就有恨' ,'共度余生','忆七年','单人旅行','何日许我红装','醉落夕风'
-    ];
     public function __construct(string $uname, string $configFile='/config/service.ini', string $env='websocket'){
         if (!defined('IS_CLI')) {
             throw new \Exception('no set IS_CLI');
@@ -39,7 +36,7 @@ class socket_server{
         $this->env = $this->initEnv($env);
         $this->server_ip=current(swoole_get_local_ip());
         $config = $this->getConfig(APPLICATION_PATH . $configFile);
-        var_dump($config);
+//        var_dump($config);
         $config['log_file']=sprintf($config['log_file'],$uname);
         $this->host = $config['host'];
         $this->port = (int)$config['port'];
@@ -47,398 +44,23 @@ class socket_server{
         $config['package_max_length'] = intval($config['package_max_length']);
         $this->packMaxLen=$config['package_max_length'];
         $this->sw = new \swoole_websocket_server($this->host, $this->port);
+        var_dump($config);
         $this->sw->set($config);
         $this->bind($config);
 
-        $this->table = new \swoole_table(1024);
-        $this->table->column('id', \swoole_table::TYPE_INT, 4);       //1,2,4,8
-        $this->table->column('nickname', \swoole_table::TYPE_STRING, 64);
-        $this->table->create();
+//        $this->table = new \swoole_table(1024);
+//        $this->table->column('id', \swoole_table::TYPE_INT, 4);       //1,2,4,8
+//        $this->table->create();
 
     }
     public function run(){
 
         $this->sw->start();
     }
-    public function onConnection($serv , $request ){
-        echo "【s】onConnection=> \n";
-    }
-    public function onOpen( $serv , $request ){
-        echo "【s】onOpen=> \n";
-        echo "【s】server=> \n";
-        echo "【s】request=> \n";
 
-
-//        var_dump($request);
-
-        $header_app = $request->server['path_info'];
-        var_dump($header_app);
-        $query_string = $request->server['query_string'];
-        parse_str($query_string,$query_arr);
-        var_dump($query_arr);
-
-
-//        $nickname = $this->nicknames[array_rand($this->nicknames)].'-'.time();
-//        $this->table->set($request->fd,[
-//            'id'=>$request->fd,
-//            'nickname' => $nickname
-//        ]);
-        $from = [
-            'fd_type'=>'server',
-            'fd'=>null,
-        ];
-        $to = [
-            'id_type'=>'client',
-            'id'=>$request->fd
-        ];
-        $me = [
-            'id'=>$request->fd,
-//            'nickname'=>$nickname
-        ];
-        if($header_app != '/live_video_datain'){
-
-            if($query_arr['unique_auth_code']){
-                echo "存在唯一识别id\n";
-
-                $unique_auth_code = $query_arr['unique_auth_code'];
-            }
-            else{
-
-
-                echo "生成唯一识别id\n";
-                $unique_auth_code = session_create_id();
-
-            }
-            var_dump($unique_auth_code);
-
-            $sysinfo = [];
-            $sysinfo['fd']=$request->fd;
-            $sysinfo['ua']=$request->data;
-            $sysinfo['ip']=$request->server['remote_addr'];
-            $sysinfo['unique_auth_code']=$unique_auth_code;
-            $sysinfo['authway']='Browser';
-            $yaf_payload=[
-                'moudle'=>'index',
-                'controller'=>'wsserver',
-                'action'=>'initconn',
-                'data'=>$sysinfo,
-                's_task_id'=>'0'
-            ];
-            $init_response = $this->runYaf($yaf_payload);
-            $init_response['response_data']->data['socket_id'] = $request->fd;
-            $openmsg = $this->buildMsg($from,$to,$me,$init_response,'self_init');
-
-        }
-        else if($header_app == '/live_video_datain'){
-            $openmsg = $this->buildMsg($from,$to,$me,$header_app,'receive_init');
-            var_dump($openmsg);
-
-        }
-
-
-
-
-        $serv->task([
-            'to' => [$request->fd],
-            'except' => [],
-            'data' => $openmsg
-        ]);
-    }
-    private function buildMsg($from,$to,$me,$data,$type,$status = 200){
-        $user_list = $this->getUserList();
-        $response_data = array();
-        $response_data['response']=$data;
-//        $response_data['user_list']=$user_list;
-        $relation = array();
-        $response_data['relation']['from']=$from;
-        $response_data['relation']['to']=$to;
-        $response_data['relation']['me']=$me;
-        $msg = json_encode([
-            'status' => $status,
-            'type' => $type,
-            'data' => (object)($response_data)
-        ]);
-        return $msg;
-    }
-    private function buildYaf($moudle,$controller,$action,$payload_data,$s_task_id=1,$payload_type='未定义'){
-        $yaf_payload = [];
-        $yaf_payload['moudle']=$moudle;
-        $yaf_payload['controller']=$controller;
-        $yaf_payload['action']=$action;
-        $yaf_payload['data']=$payload_data;
-        $yaf_payload['s_task_id']=$s_task_id;
-        return $yaf_payload;
-    }
-    private function getUserList(){
-        $user_list = array();
-        $user_list['count']=count($this->table);
-        foreach($this->table as $row)
-        {
-            $user_list['data'][]=$row;
-        }
-        return $user_list;
-    }
-    public function onMessage( $serv , $request ){
-//    public function onMessage(\swoole_websocket_server $serv, swoole_websocket_frame $request){
-        echo "【s】onMessage=> \n";
-//        var_dump($request);
-        $receive = json_decode($request->data,true);
-
-        var_dump($receive);
-        if($receive['payload_type'] == 'c2c_msg'){
-            var_dump('c2c_msg');
-            $payload_type = $receive['payload_type'];
-            $to_id = $receive['to'];
-            $response_content = $receive['msg'];
-        }
-        else{
-            if($receive['yaf'] != 'none'){
-                $payload_type = $receive['payload_type'];
-                $payload_data = $receive['payload_data'];
-                $yaf = $receive['yaf'];
-                $yaf_module = $yaf['module'];
-                $yaf_controller = $yaf['controller'];
-                $yaf_action = $yaf['action'];
-
-                $yaf_payload = array_merge($yaf,array(
-                    'data'=>$payload_data,
-                    's_task_id'=>1
-                ));
-
-                $response_content=$this->runYaf($yaf_payload);
-                $to_id = $receive['to']?$receive['to']:$request->fd;
-
-            }
-            else{
-                $datato_app = $receive['to_app'];
-                $payload_type = $receive['payload_type'];
-
-                $payload_data = array('app'=>$datato_app);
-                $yaf['module'] = 'index';
-                $yaf['controller'] = 'apps';
-                $yaf['action'] = 'getFdByApp';
-                $yaf_payload = array_merge($yaf,array(
-                    'data'=>$payload_data,
-                    's_task_id'=>1
-                ));
-
-                $response_content=$this->runYaf($yaf_payload);
-                if($response_content['response_data']->data  != 'none'){
-                    $to_id = [];
-                    foreach ($response_content['response_data']->data as $k=>$v){
-                        $to_id[] = $v['fd'];
-                    }
-                }
-                if($payload_type == 'get_danmu') {
-                    $source_uri = $receive['source'];
-                    $payload_type = 'danmu_data';
-                    $payload_data = [];
-                    $payload_data['nickname'] = $receive['msg']['nickname'];
-                    $payload_data['content'] = $receive['msg']['content'];
-                    $payload_data['source'] = $source_uri;
-                    $yaf_payload = self::buildYaf('index', 'user', 'saveOrUpdateUserinfoAndDanmu', $payload_data);
-                    $info_savedb_response = $this->runYaf($yaf_payload);
-                    $response_content = $payload_data;
-                    $response_content['time'] = self::getMillisecond();
-                    $response_content['info_savedb_response'] =$info_savedb_response;
-                }
-
-
-                else{
-                    $response_content = $receive['payload_data'];
-                }
-
-
-
-            }
-        }
-
-
-
-
-        $from = [
-            'fd_type'=>'client',
-            'fd'=>$request->fd,
-        ];
-        $to = [
-            'id_type'=>'client',
-            'id'=>$to_id
-        ];
-        if(!empty($to_id)){
-            $me_id = $to_id;
-            $me_nickname = $this->table->get($to);
-        }
-        else{
-            $me_id = 'unknow';
-            $me_nickname = 'unknow';
-        }
-        $me = [
-            'id'=>$me_id,
-            'nickname'=>$me_nickname
-        ];
-        $msg = $this->buildMsg($from,$to,$me,$response_content,$payload_type);
-        if(empty($to_id)){
-            $task = [
-                'to' => [],
-//            'except' => [$request->fd],
-                'except' => [],
-                'data' => $msg
-            ];
-        }
-        else{
-            $to_id = gettype($to_id) == 'array'?$to_id:[$to_id];
-
-            $task = [
-                'to' => $to_id,
-//            'except' => [$request->fd],
-                'except' => [],
-                'data' => $msg
-            ];
-        }
-
-
-//        if ($receive['to'] != 0) {
-//            $task['to'] = [$receive['to']];
-//        }
-
-        $serv->task($task);
-    }
-    public function onConnect(\swoole_server $serv, $fd, $from_id){
-        echo '【onConnect】'."\n";
-//        $this->ids[$fd]=dk_get_next_id(); // 这里看情况上否要用个定时器做清理
-//        $this->log(implode('|',[$this->ids[$fd],'onConnect',$fd,$from_id]));
-    }
-    public function onClose(\swoole_server $serv, $fd, $from_id){
-        echo "【s】onCLose \n";
-        $this->log(implode('|',[$this->ids[$fd],'onClose',$fd,$from_id]));
-        $yaf_payload = self::buildYaf('index','apps','disconnApp',array('fd'=>$fd));
-        $yaf_response = $this->runYaf($yaf_payload);
-        var_dump($yaf_response);
-        unset($this->ids[$fd]);
-        $this->table->del($fd);
-        echo 'fd=>'.$fd;
-    }
-    public function onStart(\swoole_server $serv){
-        echo "【s】onStart \n";
-        $this->log("->[onStart] SERVER_TYPE=".$this->env." PHP=".PHP_VERSION." Yaf=".\YAF_VERSION." swoole=".SWOOLE_VERSION." Master-Pid={$this->sw->master_pid} Manager-Pid={$this->sw->manager_pid}");
-        swoole_set_process_name("php-{$this->uname}:master");
-    }
-    public function onReceive(\swoole_server $serv, $fd, $from_id, $data){
-        echo "【s】onReceive \n";
-        $start_time=microtime(true);
-        $s_task_id=$this->ids[$fd];
-        $this->log(implode('|',[$s_task_id,'onReceive',$fd,$from_id]));
-        $task_pid='0';
-        try {
-            $_rev=$this->unpack($data);
-            ['source'=>$source,'count'=>$count,'data'=>$datas,'task_pid'=>$task_pid]=$_rev;
-            foreach ($datas as &$_v){
-                $_v['s_task_id']=$s_task_id;
-            }
-
-            $resv=$serv->taskWaitMulti($datas, 0.5); //def 0.5 //throw new \Exception('aaaaaaaaaaaaaaaaaaaa');
-            $codes=0;
-            $content=[];
-            $content['payload'] = json_encode($_rev);
-            $keys=array_keys($datas);
-            foreach($keys as $i=>$k){
-                if(isset($resv[$i])) {
-
-                    $content[$k] = $resv[$i];
-                    $codes+=$resv[$i]['code'];
-                }else{
-                    $content[$k] =\getBody('', 'timeout or other', 500);
-                    $content[$k]['serv']=implode('|',[0,$from_id,$from_id,$start_time,\exeTime($start_time)]);
-                    $codes+=500;
-                }
-            }
-            if($codes==(200*$count)){
-                $code=200;
-            }elseif($codes==(500*$count)){
-                $code=500;
-            }else{
-                $code=300;
-            }
-            $content['code']=$code;
-            $content['serv']=implode('|',[$s_task_id,$this->packType,$source,$count,$fd,$from_id,$start_time,\exeTime($start_time)]);
-            $serv->send($fd, $this->pack($content));
-            unset($resv,$datas,$i,$k);
-        }catch (\Exception $e){
-            $content=[
-                'code'=>500,
-                'info'=>'server: '.$e->getMessage(),
-                'serv'=>implode('|',[$s_task_id,$fd,$from_id,$start_time,\exeTime($start_time)])
-            ];
-            $serv->send($fd, $this->pack($content));
-        }finally{
-            $client_inof=$serv->connection_info($fd,$from_id,true);
-            $client_inof['server_ip']=$this->server_ip;
-            // 这里处理日志
-            //$serv->task(['cmd_count_log'=>1,'s_task_id'=>$s_task_id,'s_task_pid'=>$task_pid,'re'=>$_rev,'rn'=>$content,'client'=>$client_inof]);//统计
-            unset($keys,$_rev,$content,$source,$count,$codes,$code,$_v,$client_inof,$s_task_id,$task_pid);
-        }
-    }
-    public function onTask(\swoole_server $serv, $task_id, $src_worker_id, $data){
-        echo "【s】onTask \n";
-
-        echo "[s]task=>\n".json_encode($data,256)."\n";
-//        $clients = $serv->connections;
-        if (count($data['to']) > 0) {
-            $clients = $data['to'];
-            foreach ($clients as $fd) {
-                if (!in_array($fd, $data['except'])) {
-                    $serv->push($fd,$data['data'],2);
-                }
-            }
-        }
-
-
-
-    }
-    public function task($server, $task_id, $from_id, $data){
-
-    }
-
-    public function onWorkerStart($serv, $worker_id){
-        if(empty($this->yaf)){
-            $this->initYaf();
-        }
-        $this->ids=[]; // reload时清空
-        if ($serv->taskworker) {
-            $type = 'task';
-//            $configs = $this->initYaf();
-//            // 这里处理DB, REDIS, MQ等常驻资源
-//            $res = new resources($configs);
-//            \Yaf_Registry::set('res_db_ubuntu', $res->getDB('ubuntu'));
-            //\Yaf_Registry::set('res_redis_self', $res->getRedis('self'));
-            //$this->res_mq_log=$res->getMQexchange('ubuntu','Eapilogs');
-        } else {
-            $type = 'work';
-            $loader=\Yaf_Loader::getInstance(APPLICATION_PATH.'/application/library');
-            $loader::import('helper.php');
-        }
-        swoole_set_process_name("php-{$this->uname}:{$type}:" . $worker_id);
-        $this->log("->[onWorkerStart] Type: {$type} WorkerId: {$worker_id} WorkerPid: {$serv->worker_pid}");
-    }
-    public function onWorkerStop($serv, $worker_id){
-        $this->log("->[onWorkerStop] WorkerId: {$worker_id}");
-    }
-    public function onWorkerError($serv, $worker_id, $worker_pid, $exit_code){
-        $this->log("->[onWorkerError] WorkerId: {$worker_id} WorkerPid: {$worker_pid} ExitCode: {$exit_code}");
-    }
-    public function onManagerStart($serv){
-        $this->log("->[onManagerStart]");
-        swoole_set_process_name("php-{$this->uname}:manager");
-    }
-    public function onManagerStop($serv){
-        $this->log('->[onManagerStop]');
-    }
-    public function onShutdown($serv){
-        $this->log("->[onShutdown]");
-    }
-    public function onPipeMessage($serv, $from_worker_id, $message){
-        $this->log("->[onPipeMessage] FromWorkerId: {$from_worker_id} Message:".strlen($message));
-    }
+    /*
+     * 工具层函数
+     */
     public function onPacket($serv, $data, $client_info){
         $this->log("->[onPacket]");
     }
@@ -456,12 +78,18 @@ class socket_server{
         $this->sw->on('WorkerError',[$this,'onWorkerError']);
         $this->sw->on('ManagerStop',[$this,'onManagerStop']);
         $this->sw->on('ManagerStart',[$this,'onManagerStart']);
-
-        $this->sw->on("connection",array($this,"onConnection"));
         $this->sw->on("open",array($this,"onOpen"));
+//        $this->sw->on('open', function (\swoole_websocket_server $_server, $request) {
+//            $fd = $request->fd;
+//            $_server->tick(2000, function($id) use ($fd, $_server) {
+//                var_dump('tick');
+//                var_dump($fd);
+//                var_dump($id);
+//            });
+//        });
         $this->sw->on("message",array($this,"onMessage"));
-        $this->sw->on("Task",array($this,"onTask"));
-        $this->sw->on("Finish",array($this,"onFinish"));
+//        $this->sw->on("Task",array($this,"onTask"));
+//        $this->sw->on("Finish",array($this,"onFinish"));
 
         if(isset($config['task_worker_num']) && boolval($config['task_worker_num'])){
             $this->sw->on('Task',[$this,'onTask']);
@@ -482,53 +110,6 @@ class socket_server{
             return $config->get($this->uname)->toArray();
         }
         return $config;
-    }
-    public function runYaf(array $datas){
-        echo "[s]runYaf=>\n";
-
-
-        ['module'=>$module,'controller'=>$controller,'action'=>$action,'data'=>$data,'s_task_id'=>$taskId]=$datas;
-        $request = new \Yaf_Request_Simple('CLI', $module, $controller, $action, $data);
-        $request->task_id=$taskId;
-
-        $response = $this->yaf->getDispatcher()->returnResponse(true)->dispatch($request);
-//        if (!@property_exists($response, 'contentBody') || !is_array($response->contentBody)) {
-////            throw new \Exception('Not set or not an array: $response->body');
-//            var_dump($response);
-//        }
-        $this->sw->reload();
-        return $response->contentBody;
-    }
-    public function initYaf($app='o_app'){
-        echo "initYaf\n";
-        $configs=new \Yaf_Config_Ini(APPLICATION_PATH.'/config/business.ini','dbserver');
-        \Yaf_Registry::set('config', $configs);
-        $application = ['application'=>$configs->get('application')->toArray()];
-        $application['application']['directory']=APPLICATION_PATH.'/apps/'.$app.'/application';
-        if(empty($this->yaf)){
-            $this->yaf=new \Yaf_Application($application);
-            $this->yaf->bootstrap();
-        }
-
-
-//        $this->yaf=new \Yaf_Application(array(
-//            'application' => array(
-//                'directory' => APPLICATION_PATH . '/Apps/'.$app.'/application',
-//                'system' => array(
-//                    'use_spl_autoload' => 1
-//                ),
-//                'dispatcher' => array(
-//                    'catchException' => true
-//                ),
-//            )
-//        ));
-//        $configs = self::loadConfig();
-//
-//        $this->yaf=new \Yaf_Application(['application'=>$configs->get('application')->toArray()]);
-//
-//        $this->yaf->bootstrap();
-//        $configs = self::loadConfig();
-//        return $configs;
     }
     static function loadConfig() {
         //配置节点
@@ -706,5 +287,441 @@ class socket_server{
             default:
                 echo $msg;
         }
+    }
+    /*
+     * 系统层函数
+     */
+    public function onStart(\swoole_server $serv){
+        echo "【s】onStart \n";
+        $this->log("->[onStart] SERVER_TYPE=".$this->env." PHP=".PHP_VERSION." Yaf=".\YAF_VERSION." swoole=".SWOOLE_VERSION." Master-Pid={$this->sw->master_pid} Manager-Pid={$this->sw->manager_pid}");
+        swoole_set_process_name("php-{$this->uname}:master");
+    }
+    public function onTask(\swoole_server $serv, $task_id, $src_worker_id, $data){
+        echo "【s】onTask \n";
+
+//        echo "[s]task=>\n".json_encode($data,256)."\n";
+//        $clients = $serv->connections;
+//        var_dump($data['to']);
+        if (count($data['to']) > 0) {
+            $clients = $data['to'];
+            foreach ($clients as $fd) {
+                if (!in_array($fd, $data['except'])) {
+                    $serv->push($fd,$data['data'],2);
+                }
+            }
+        }
+        else{
+
+            echo "循环向所有人发送消息\n";
+
+            foreach($serv->connections as $fd)
+            {
+                echo "当前fd=>".$fd."\n";
+                $serv->push($fd,$data['data'],2);
+            }
+        }
+
+
+
+    }
+    public function onWorkerStart($serv, $worker_id){
+
+
+        $this->ids=[]; // reload时清空
+        if ($serv->taskworker) {
+            $type = 'task';
+
+//            $configs = $this->initYaf();
+//            // 这里处理DB, REDIS, MQ等常驻资源
+//            $res = new resources($configs);
+//            \Yaf_Registry::set('res_db_ubuntu', $res->getDB('ubuntu'));
+            //\Yaf_Registry::set('res_redis_self', $res->getRedis('self'));
+            //$this->res_mq_log=$res->getMQexchange('ubuntu','Eapilogs');
+        } else {
+            $type = 'work';
+            $loader=\Yaf_Loader::getInstance(APPLICATION_PATH.'/application/library');
+            $loader::import('helper.php');
+
+            if(empty($this->yaf)){
+                $this->initYaf();
+            }
+            $this->heartbeat($serv,'');
+        }
+        swoole_set_process_name("php-{$this->uname}:{$type}:" . $worker_id);
+        $this->log("->[on<".$type.">Start] Type: {$type} WorkerId: {$worker_id} WorkerPid: {$serv->worker_pid}");
+    }
+    public function onWorkerStop($serv, $worker_id){
+        $this->log("->[onWorkerStop] WorkerId: {$worker_id}");
+    }
+    public function onWorkerError($serv, $worker_id, $worker_pid, $exit_code){
+        $this->log("->[onWorkerError] WorkerId: {$worker_id} WorkerPid: {$worker_pid} ExitCode: {$exit_code}");
+    }
+    public function onManagerStart($serv){
+        $this->log("->[onManagerStart]");
+        swoole_set_process_name("php-{$this->uname}:manager");
+    }
+    public function onManagerStop($serv){
+        $this->log('->[onManagerStop]');
+    }
+    public function onShutdown($serv){
+        $this->log("->[onShutdown]");
+    }
+    public function onPipeMessage($serv, $from_worker_id, $message){
+        $this->log("->[onPipeMessage] FromWorkerId: {$from_worker_id} Message:".strlen($message));
+    }
+
+
+
+    /*
+     * 业务层函数
+     */
+    public function onOpen( $serv , $request ){
+        echo "【s】onOpen=> \n";
+        echo "【s】server=> \n";
+        echo "【s】request=> \n";
+
+
+        $header_app = $request->server['path_info'];
+
+        $query_string = $request->server['query_string'];
+        parse_str($query_string,$query_arr);
+
+        $from = [
+            'fd_type'=>'server',
+            'fd'=>null,
+        ];
+        $to = [
+            'id_type'=>'client',
+            'id'=>$request->fd
+        ];
+        $me = [
+            'id'=>$request->fd,
+
+        ];
+        if($header_app != '/live_video_datain'){
+
+            if($query_arr['unique_auth_code']){
+                echo "存在唯一识别id\n";
+
+                $unique_auth_code = $query_arr['unique_auth_code'];
+            }
+            else{
+
+                $unique_auth_code = session_create_id();
+
+                echo "生成唯一识别id->".$unique_auth_code.PHP_EOL;
+
+            }
+////            var_dump($unique_auth_code);
+//
+            $sysinfo = [];
+            $sysinfo['fd']=$request->fd;
+            $sysinfo['ua']=$request->data;
+            $sysinfo['ip']=$request->server['remote_addr'];
+            $sysinfo['unique_auth_code']=$unique_auth_code;
+            $sysinfo['authway']='Browser';
+            $yaf_payload=[
+                'moudle'=>'index',
+                'controller'=>'wsserver',
+                'action'=>'initconn',
+                'data'=>$sysinfo,
+                's_task_id'=>'0'
+            ];
+            $init_response = $this->runYaf($yaf_payload,$reload=false);
+            $init_response['response_data']->data['socket_id'] = $request->fd;
+            $openmsg = $this->buildMsg($from,$to,$me,$init_response,'self_init');
+
+        }
+        else if($header_app == '/live_video_datain'){
+            $openmsg = $this->buildMsg($from,$to,$me,$header_app,'receive_init');
+
+        }
+        $serv->task([
+            'to' => [$request->fd],
+            'except' => [],
+            'data' => $openmsg
+        ]);
+
+
+
+    }
+    public function onConnect(\swoole_server $serv, $fd, $from_id){
+        echo '【onConnect】'."\n";
+//        $this->ids[$fd]=dk_get_next_id(); // 这里看情况上否要用个定时器做清理
+//        $this->log(implode('|',[$this->ids[$fd],'onConnect',$fd,$from_id]));
+    }
+    public function onReceive(\swoole_server $serv, $fd, $from_id, $data){
+        echo "【s】onReceive \n";
+
+    }
+    public function onMessage( $serv , $request ){
+//    public function onMessage(\swoole_websocket_server $serv, swoole_websocket_frame $request){
+        $receive = json_decode($request->data,true);
+
+        echo "【s】onMessage=> ".$receive['payload_type'].PHP_EOL;
+//        var_dump($request);
+        if($receive['payload_type'] == 'checkloginbykey'){
+            var_dump($receive);
+        }
+        if($receive['payload_type'] == 'c2c_msg'){
+//            var_dump('c2c_msg');
+            $payload_type = $receive['payload_type'];
+            $to_id = $receive['to'];
+//            $connections = $serv->connection_list(0,100);
+//            var_dump($connections);
+            $response_content = array('msg'=>$receive['msg'],'website_user'=>$receive['payload_data']['website_user'],'timestamp'=>$receive['timestamp'],'connections'=>$connections);
+//            $response_content = $receive['msg'];
+        }
+        else{
+            if($receive['yaf'] != 'none'){
+                $payload_type = $receive['payload_type'];
+                $payload_data = $receive['payload_data'];
+                $yaf = $receive['yaf'];
+                $yaf_module = $yaf['module'];
+                $yaf_controller = $yaf['controller'];
+                $yaf_action = $yaf['action'];
+
+                $yaf_payload = array_merge($yaf,array(
+                    'data'=>$payload_data,
+                    's_task_id'=>1
+                ));
+
+                $response_content=$this->runYaf($yaf_payload);
+                $to_id = $receive['to']?$receive['to']:$request->fd;
+
+            }
+            else{
+                $datato_app = $receive['to_app'];
+                $payload_type = $receive['payload_type'];
+
+                $payload_data = array('app'=>$datato_app);
+                $yaf['module'] = 'index';
+                $yaf['controller'] = 'apps';
+                $yaf['action'] = 'getFdByApp';
+                $yaf_payload = array_merge($yaf,array(
+                    'data'=>$payload_data,
+                    's_task_id'=>1
+                ));
+
+                $response_content=$this->runYaf($yaf_payload);
+                if($response_content['response_data']->data  != 'none'){
+                    $to_id = [];
+                    foreach ($response_content['response_data']->data as $k=>$v){
+                        $to_id[] = $v['fd'];
+                    }
+                }
+                if($payload_type == 'get_danmu') {
+                    $source_uri = $receive['source'];
+                    $payload_type = 'danmu_data';
+                    $payload_data = [];
+                    $payload_data['nickname'] = $receive['msg']['nickname'];
+                    $payload_data['content'] = $receive['msg']['content'];
+                    $payload_data['source'] = $source_uri;
+                    $yaf_payload = self::buildYaf('index', 'user', 'saveOrUpdateUserinfoAndDanmu', $payload_data);
+                    $info_savedb_response = $this->runYaf($yaf_payload);
+                    $response_content = $payload_data;
+                    $response_content['time'] = self::getMillisecond();
+                    $response_content['info_savedb_response'] =$info_savedb_response;
+                }
+
+
+                else{
+                    $response_content = $receive['payload_data'];
+                }
+
+
+
+            }
+        }
+
+
+
+
+        $from = [
+            'fd_type'=>'client',
+            'fd'=>$request->fd,
+        ];
+        $to = [
+            'id_type'=>'client',
+            'id'=>$to_id
+        ];
+        if(!empty($to_id)){
+            $me_id = $to_id;
+//            $me_nickname = $this->table->get($to);
+        }
+        else{
+            $me_id = 'unknow';
+//            $me_nickname = 'unknow';
+        }
+        $me = [
+            'id'=>$me_id,
+//            'nickname'=>$me_nickname
+        ];
+        $msg = $this->buildMsg($from,$to,$me,$response_content,$payload_type);
+        if(empty($to_id)){
+            $task = [
+                'to' => [],
+//            'except' => [$request->fd],
+                'except' => [],
+                'data' => $msg
+            ];
+        }
+        else{
+            $to_id = gettype($to_id) == 'array'?$to_id:[$to_id];
+
+            $task = [
+                'to' => $to_id,
+//            'except' => [$request->fd],
+                'except' => [],
+                'data' => $msg
+            ];
+        }
+
+
+//        if ($receive['to'] != 0) {
+//            $task['to'] = [$receive['to']];
+//        }
+
+        $serv->task($task);
+
+
+    }
+    public function onClose(\swoole_server $serv, $fd, $from_id){
+        echo "【s】onCLose \n";
+//        $this->log(implode('|',[$this->ids[$fd],'onClose',$fd,$from_id]));
+        $this->unlinkfd($fd);
+        unset($this->ids[$fd]);
+//        $this->table->del($fd);
+        echo 'fd=>'.$fd;
+    }
+
+    /*
+     * 调用yaf层函数
+     */
+    public function initYaf($app='o_app'){
+//        echo "initYaf".PHP_EOL;
+        $configs=new \Yaf_Config_Ini(APPLICATION_PATH.'/config/business.ini','dbserver');
+        \Yaf_Registry::set('config', $configs);
+        $application = ['application'=>$configs->get('application')->toArray()];
+        $application['application']['directory']=APPLICATION_PATH.'/apps/'.$app.'/application';
+        if(empty($this->yaf)){
+            $this->yaf=new \Yaf_Application($application);
+            $this->yaf->bootstrap();
+        }
+
+
+//        $this->yaf=new \Yaf_Application(array(
+//            'application' => array(
+//                'directory' => APPLICATION_PATH . '/Apps/'.$app.'/application',
+//                'system' => array(
+//                    'use_spl_autoload' => 1
+//                ),
+//                'dispatcher' => array(
+//                    'catchException' => true
+//                ),
+//            )
+//        ));
+//        $configs = self::loadConfig();
+//
+//        $this->yaf=new \Yaf_Application(['application'=>$configs->get('application')->toArray()]);
+//
+//        $this->yaf->bootstrap();
+//        $configs = self::loadConfig();
+//        return $configs;
+    }
+    private function buildYaf($moudle,$controller,$action,$payload_data,$s_task_id=1,$payload_type='未定义'){
+        $yaf_payload = [];
+        $yaf_payload['moudle']=$moudle;
+        $yaf_payload['controller']=$controller;
+        $yaf_payload['action']=$action;
+        $yaf_payload['data']=$payload_data;
+        $yaf_payload['s_task_id']=$s_task_id;
+        return $yaf_payload;
+    }
+    private function buildMsg($from,$to,$me,$data,$type,$status = 200){
+        $response_data = array();
+        $response_data['response']=$data;
+//        $response_data['user_list']=$user_list;
+        $relation = array();
+        $response_data['relation']['from']=$from;
+        $response_data['relation']['to']=$to;
+        $response_data['relation']['me']=$me;
+        $msg = json_encode([
+            'status' => $status,
+            'type' => $type,
+            'data' => (object)($response_data)
+        ]);
+        return $msg;
+    }
+    public function runYaf(array $datas,$reload = true){
+//        echo "[s]runYaf=>\n";
+
+
+        ['module'=>$module,'controller'=>$controller,'action'=>$action,'data'=>$data,'s_task_id'=>$taskId]=$datas;
+        $request = new \Yaf_Request_Simple('CLI', $module, $controller, $action, $data);
+        $request->task_id=$taskId;
+
+        $response = $this->yaf->getDispatcher()->returnResponse(true)->dispatch($request);
+//        if (!@property_exists($response, 'contentBody') || !is_array($response->contentBody)) {
+////            throw new \Exception('Not set or not an array: $response->body');
+//            var_dump($response);
+//        }
+//        $this->sw->reload($only_reload_taskworkrer = true);
+        $this->sw->reload();
+//        if(!$reload){
+//            $this->sw->reload();
+//        }
+        return $response->contentBody;
+    }
+
+
+
+    /*
+     * 处理断开掉线情况
+     */
+    public function unlinkfd($fd)
+    {
+        if(!empty($fd)){
+            $yaf_payload = self::buildYaf('index','apps','disconnApp',array('fd'=>$fd));
+            $yaf_response = $this->runYaf($yaf_payload);
+            $yaf_payload = self::buildYaf('index','website','dislinkSocketId',array('socket_id'=>$fd));
+            $yaf_response = $this->runYaf($yaf_payload);
+        }
+        else{
+            $yaf_payload = self::buildYaf('index','apps','disconnApp',array('fd'=>$fd));
+            $yaf_response = $this->runYaf($yaf_payload);
+            $yaf_payload = self::buildYaf('index','website','dislinkSocketId',array('socket_id'=>$fd));
+            $yaf_response = $this->runYaf($yaf_payload);
+        }
+
+    }
+
+    /*
+     * 处理心跳
+     */
+    public function heartbeat($serv,$request)
+    {
+//        echo 'pre heartbeat'.PHP_EOL;
+        if($request){
+            $fd = $request->fd;
+            if(!empty($fd)){
+                $serv->tick(1500, function() use ($fd, $serv) {
+                    $serv->push($fd,array('payload_type'=>'ping'),2);
+                });
+            }
+        }
+        else{
+
+            foreach($serv->connections as $fd)
+            {
+                $serv->tick(1500, function() use ($fd, $serv) {
+//                    echo 'heartbeat->'.$fd.PHP_EOL;
+                    $serv->push($fd,json_encode(array('type'=>'ping')),2);
+                });
+            }
+
+
+        }
+
     }
 }

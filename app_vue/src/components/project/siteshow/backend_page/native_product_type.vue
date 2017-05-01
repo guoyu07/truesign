@@ -112,7 +112,8 @@
                     img:'http://truesign-app.oss-cn-beijing.aliyuncs.com/demo/demo.jpg',
                     title:'demo',
                     note:'demo',
-                    info:'demo'
+                    info:'demo',
+                    sort_ord:0,
                 }
 
                 this.product.unshift(new_product)

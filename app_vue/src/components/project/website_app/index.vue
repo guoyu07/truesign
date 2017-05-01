@@ -9,6 +9,14 @@
         <login  v-if="parseInt(effect_line_top) > 0 || !show_loading"   id="main_page" style="position:absolute;z-index: 12;transition: all 1s"></login>
 
         <effectlogo id="effectlogo"   logo_pos='center' style="position: absolute;z-index:15"></effectlogo>
+        <div v-if="show_login_log" id="loding_log_show" style="width: 50%;height: 100%;position: absolute;z-index:100;background-color: transparent;color:rgba(139,226,255,0.65);font-size: 16px;font-weight: 800;text-align: center;padding-top: 50px ">
+               <p>预加载:  {{effect_line_top}}%</p>
+               <p>初始化服务器通讯:  {{init_conn}}</p>
+               <p>初始化权限连接:  {{bind_app}}</p>
+               <p>检测IP:  {{sysinfo.ip}}</p>
+               <p>初始化网站状态:  {{website_status}}</p>
+               <p>检测账户日志:  {{login_status}}</p>
+        </div>
     </div>
 </template>
 
@@ -20,11 +28,18 @@
     import login from './login.vue'
     import effect_line from '../../loading/effect_line.vue'
     import initsocket from '../../communicationModule/initSocket.vue'
+    import { analysis_socket_response } from '../../../api/lib/helper/dataAnalysis'
     export default {
         data(){
             return{
+                show_login_log:true,
                 effect_line_top:'0',
                 show_loading:false,
+                init_conn:'执行中',
+                bind_app:'执行中',
+                website_status:'执行中',
+                login_status:'鉴定中',
+
 
             }
         },
@@ -37,6 +52,15 @@
             ])
         },
         created(){
+            this.$root.eventHub.$on('socket_response',function (data) {
+                var socket_response = analysis_socket_response(data)
+                if(socket_response.response_type !== 'ping'){
+//                    console.log('index->socket_response','*** '+socket_response.response_type+' ***')
+//                    console.log(socket_response)
+
+                }
+
+            })
 
 
         },
@@ -45,34 +69,74 @@
             网站预加载工作区
              */
             var vm = this
+
+            vm.show_loading=true
+            if(vm.website.conn_status){
+                vm.init_conn = 'done'
+                vm.effect_line_top='10'
+            }
+            this.$root.eventHub.$on('conn_status',function (data) {
+                if(data){
+                    vm.init_conn = 'done'
+                    vm.effect_line_top='10'
+                }
+            })
+
+            if(vm.website.isbindapps.length > 0){
+                vm.bind_app = vm.website.access_user.nickname
+                vm.effect_line_top='20'
+            }
+            this.$root.eventHub.$on('init_bind_apps',function (data) {
+                if(data){
+                    vm.bind_app = data.nickname
+                    vm.effect_line_top='20'
+                }
+            })
+            this.$root.eventHub.$on('init_website_status',function (data) {
+                vm.website_status = 'done'
+                vm.effect_line_top= parseInt(vm.effect_line_top)>85?vm.effect_line_top:'85'
+            })
+            this.$root.eventHub.$on('init_login_status',function (data) {
+                console.log('on->init_login_status')
+                if(data){
+                    vm.login_status = data.username +' 即将进入主页面'
+                    vm.effect_line_top='100'
+                    setTimeout(function () {
+                        vm.$router.push('/project/website_main/website_app_square')
+                    },2000)
+                }
+                else{
+                    vm.login_status = '未登录'
+                    vm.effect_line_top='100'
+                    setTimeout(function () {
+                        vm.show_login_log = false
+
+                    },2000)
+
+                }
+
+
+            })
 //            var line_per = Math.random()*90
-//            var time_random = Math.random()*2000
+//            var time_random = Math.random()*1000
 //            vm.show_loading=true
 //            setTimeout(function () {
 //
 //                vm.effect_line_top=line_per+''
 //            },time_random)
-            vm.show_loading=true
-
-            var line_per = Math.random()*90
-            var time_random = Math.random()*1000
-            vm.show_loading=true
-            setTimeout(function () {
-
-                vm.effect_line_top=line_per+''
-            },time_random)
-            setTimeout(function () {
-                vm.effect_line_top='100'
-
-            },1000)
-            setTimeout(function () {
-                vm.show_loading=false
-                this.effect_line_top='0'
-
-            },5000)
+//            setTimeout(function () {
+//                vm.effect_line_top='100'
+//
+//            },1000)
+//            setTimeout(function () {
+//                vm.show_loading=false
+//                this.effect_line_top='0'
+//
+//            },5000)
 
 
             this.$root.eventHub.$emit('autoInit',1)
+
             this.$root.eventHub.$on('laoding',function (data) {
                 console.log('loading->',data)
                 if(data==='start'){
@@ -122,6 +186,11 @@
     }
 </script>
 <style>
+    #loding_log_show p {
+        width: 50%;
+        text-align: right;
+    }
+
     .fade-show-enter-active{
         transition: all 1s;
         opacity: 1;

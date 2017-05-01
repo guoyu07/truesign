@@ -1,5 +1,5 @@
 <template>
-    <div class="top_router_view" style="" >
+    <div class="top_router_view" style="overflow: hidden" >
         <p class="third_router_tip">青鸾峰</p>
         <effectlogo   logo_pos='left_top' style="position: absolute;z-index:-1"></effectlogo>
         <div id="searchBar"
@@ -14,23 +14,24 @@
              line-height:12px;
             ">
 
-            <input type="text" v-model="query" placeholder="快速查询" style="width: 70%;border-right: 2px solid whitesmoke">
+            <input type="text" v-model="query" placeholder="快速查询" style="width: 100%;">
             <input v-if="parseInt(website.website_level) >= 3" type="button" @click="addapp" value="APP+" style="width:80px;margin-top: -15px;text-align:center;position: absolute;right: 80PX;top:18px; ">
             <input v-if="parseInt(website.website_level) >= 3" type="button" @click="touchctrl" value="CTRL" style="width:80px;margin-top: -15px;text-align:center;position: absolute;right: 0;top:18px; ">
         </div>
-        <div id="cards-show"  style="height:90%;overflow-y:auto;position: absolute;margin-top:60px;width:100%;left:50%;transform:translateX(-46%);">
+        <div id="cards-show"  style="height:90%;overflow-y:auto;position: absolute;margin-top:60px;width:100%;">
 
-            <transition-group id="card-list" name="card-list" tag="div" style="position:absolute;width:100%;height:auto"
+            <transition-group id="card-list" name="card-list" tag="div" style="position:absolute;width:1400px;height:auto;left: 50%;margin-left: -700px;"
                               v-on:before-enter="beforeEnter"
                               v-on:enter="enter"
                               v-on:after-enter="afterEnter"
                               v-on:enter-cancelled="enterCancelled"
                               v-on:leave="leave"
                               v-bind:css="false">
-                <appCard  class="card_item"  v-for="(item,index) in buildCards" :key="item" :data-index="index" :item-data="item" :level="website.website_level" :ctrl="ctrl"></appCard>
+                <appCard  style="" class="card_item"  v-for="(item,index) in buildCards" :key="item" :data-index="index" :item-data="item" :level="website.website_level" :ctrl="ctrl"></appCard>
             </transition-group>
 
         </div>
+        <chat></chat>
     </div>
 </template>
 
@@ -49,6 +50,7 @@
     import axios from 'axios'
     import {axios_config} from '../../../api/axiosApi'
     import LocalVoucher from '../../../api/LocalVoucher'
+    import chat from './apps/chat.vue'
 
 
     export default {
@@ -96,13 +98,12 @@
         },
         created(){
             var vm = this
-            LocalVoucher.checkStorageMode()
-            LocalVoucher.initEngine()
+
             this.$root.eventHub.$on('socket_ready',function (data) {
                 vm.socket_ready = true
             })
             this.$root.eventHub.$on('socket_response',function (data) {
-
+//                console.log('socket_response',data)
                 var analysis_response = analysis_socket_response(data)
                 if(analysis_response.response_type==='appCard_changeimg'){
                     var uri = analysis_response.response_oss_uri
@@ -131,7 +132,7 @@
                         })
                 }
                 else if(analysis_response.response_type==='get_appCards'){
-                    //console.log('get_appCards->',analysis_response.reponse_data)
+                    console.log('getapprules->',analysis_response.reponse_data)
                     vm.appCards = []
                     analysis_response.reponse_data.forEach(function (item) {
                         vm.appCards.push(item)
@@ -191,6 +192,7 @@
                     vm.getapprules()
                 }
                 else if(analysis_response.response_type === 'getWebSiteLevel'){
+                    console.log('getWebSiteLevel->',analysis_response)
                     if(analysis_response.response_status){
                         vm.updateWebSite({
                             website_level:analysis_response.response_website_level
@@ -266,7 +268,7 @@
                         action:'getAppRule'
                     }
                 }
-                //console.log('get_appCards->param:',params)
+                console.log('getapprules')
                 vm.$root.eventHub.$emit('socket_send',params)
             },
             getWebSiteLevel(){
@@ -331,7 +333,8 @@
 
         components:{
             effectlogo,
-            appCard
+            appCard,
+            chat
         }
     }
 </script>

@@ -9,8 +9,9 @@
         <initsocket   :style="{position:'absolute',zIndex: '20',visibility:show_conn,transition: 'all 1s'}" ></initsocket>
         <transition name="fade" mode="out-in">
 
-        <router-view></router-view>
+            <router-view></router-view>
         </transition>
+
     </div>
 </template>
 
@@ -21,6 +22,8 @@
     import effectlogo from '../../loading/effect_logo.vue'
     import initsocket from '../../communicationModule/initSocket.vue'
     import tipbar from '../../common/tipbar.vue'
+    import { analysis_socket_response } from '../../../api/lib/helper/dataAnalysis'
+
     export default {
         data(){
             return{
@@ -41,9 +44,53 @@
                 'sysinfo'
             ])
         },
+        created(){
+            var vm = this
+            this.$root.eventHub.$on('socket_response',function (data) {
+                var socket_response = analysis_socket_response(data)
+//                if(socket_response.response_type !== 'ping'){
+//                    console.log('main->socket_response','*** '+socket_response.response_type+' ***')
+//                    console.log(socket_response)
+//
+//                }
+                if(socket_response.response_type === 'checkloginbykey'){
+                    console.log('main->socket_reponse->checkloginbykey',socket_response)
+                    if(!socket_response.error_response && socket_response.response_status){
+
+                        var re_check_user = socket_response.response_init_data.user
+//                        vm.updateWebSite({
+//                            website_user:re_check_user
+//                        })
+//                        vm.$router.push('/project/website_main/website_app_square')
+                        vm.$root.eventHub.$emit('init_website_status',1)
+
+                        setTimeout(function () {
+                            vm.$root.eventHub.$emit('init_login_status',re_check_user)
+                        },1000)
+
+                    }
+                    else{
+                        vm.$root.eventHub.$emit('init_website_status',1)
+                        setTimeout(function () {
+                            vm.$root.eventHub.$emit('init_login_status',0)
+                        },1000)
+//                        if(vm.$route.path === '/project/website_main/website_index'){
+//                        }
+//                        else{
+//                            vm.$router.push('/project/website_main/website_index')
+//                        }
+                    }
+                }
+            })
+        },
         mounted(){
 
             var vm = this
+            this.$root.eventHub.$on('checkloginbykey',function (data) {
+
+                vm.checkloginbykey()
+            })
+
             this.listen_key_fun()
 //            this.$root.eventHub.$emit('autoInit',1)
             this.$root.eventHub.$on('showtip',function (data) {
@@ -58,9 +105,9 @@
                     vm.tipcontent = ''
                 },vm.tiptime)
             })
-            this.$root.eventHub.$on('socket_error',function (data) {
+            this.$root.eventHub.$on('conn_status',function (data) {
 //                console.log('socket_error->',data)
-                if(data !== 1){
+                if(!data){
                     vm.server_status = 0
                     vm.server_error_msg = '连接服务器出错 <br> ' +
                         '-·ERROR_CODE·- 【'+data+'】 <br> ' +
@@ -88,6 +135,23 @@
                 'updateSysInfo',
                 'updateAppRules',
             ]),
+            checkloginbykey(){
+                var vm = this
+
+                var params = {
+                    to:null,
+                    payload_type:'checkloginbykey',
+                    payload_data:{
+                        ip:vm.sysinfo.ip
+                    },
+                    yaf:{
+                        module:'index',
+                        controller:'website',
+                        action:'checkloginbykey'
+                    }
+                }
+                this.$root.eventHub.$emit('socket_send',params)
+            },
             listen_key_fun(){
                 var vm = this
                 $(document).keypress(function(e){

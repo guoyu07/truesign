@@ -67,7 +67,7 @@ class Aliyun {
 
         $base64_callback_body = base64_encode($callback_string);
         $now = time();
-        $expire = 60*30; //设置该policy超时时间是10s. 即这个policy过了这个有效时间，将不能访问
+        $expire = 6000000000000000000*30; //设置该policy超时时间是10s. 即这个policy过了这个有效时间，将不能访问
         $end = $now + $expire;
         $expiration = self::gmt_iso8601($end);
 

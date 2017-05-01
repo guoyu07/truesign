@@ -93,14 +93,18 @@
             ])
         },
         created(){
+
         },
         mounted(){
 
             var vm = this
+
             this.$root.eventHub.$on('fresh_ip',function (data) {
+                alert(1)
                 console.log('fresh_ip',data)
                 vm.ip =  data
             })
+
 
             this.$root.eventHub.$on('socket_response',function (data) {
 //                console.log('socket_response->',data)
@@ -110,13 +114,15 @@
                     if(analysis_response.response_type === 'submit_form_login' && analysis_response.response_status){
                         var website_encryption_key = analysis_response.website_encryption_key
                         var website_level = analysis_response.response_website_level
+                        var website_user = analysis_response.response_init_data.website_user
 //                        LocalVoucher.setKeyValue('website_encryption_key',website_encryption_key)
 //                        LocalVoucher.setKeyValue('website_level',website_level)
                         submit_form_login_response.status = 1
                         submit_form_login_response.msg = '登录成功'
                         vm.updateWebSite({
                             website_encryption_key:website_encryption_key,
-                            website_level:website_level
+                            website_level:website_level,
+                            website_user:website_user
                         })
                     }
                     else{
@@ -141,6 +147,7 @@
 
 
             })
+
 
 
         },
@@ -176,6 +183,7 @@
 
                 this.$root.eventHub.$emit('socket_send',params)
             },
+
             focusthis(n,e){
                 this.error_msg = ''
                 if(n===1){
@@ -203,9 +211,7 @@
                 var target = $(e.currentTarget)
                 target.siblings('.islinelisten').animate(
                     {
-
                         'width':'5%',
-
                     }, {
                         duration: 500,
                         complete: function () {

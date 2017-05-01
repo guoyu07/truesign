@@ -5,7 +5,7 @@
  * @desc 默认控制器
  * @see http://www.php.net/manual/en/class.yaf-controller-abstract.php
  */
-class IndexController extends Yaf_Controller_Abstract {
+class IndexController extends OAppBaseController {
 
 
 	/** 
@@ -21,9 +21,10 @@ class IndexController extends Yaf_Controller_Abstract {
 
 	}
 
-    public function index2Action()
+    public function testAction()
     {
-        echo 'aaa';
+        throw new Exception('111',-199);
+        $this->setResponseBody(array('333'));
 
 	}
 

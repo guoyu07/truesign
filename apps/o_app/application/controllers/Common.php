@@ -14,6 +14,20 @@ class CommonController extends OAppBaseController {
         $this->setResponseBody($pre_data);
 
 	}
+    public function updateimg2ossByClientOnEditorAction() {
+	    $type = 'editor';
+        $fileExt = $_POST['fileExt'];
+        $filename = md5(time() . mt_rand(1,1000000)).'.'.$fileExt;
+        $pre_data  = \Royal\Aliyun\Aliyun::AppSign($type.'/'.$filename,array(),'/common/cb_updateimg2ossByClient');
+        if(!empty($param['nowater']))
+        {
+            $pre_data['nowater']=true;
+        }
+        $pre_data['status'] = 1;
+        $pre_data['sys_msg'] = 'oss';
+        $this->output2json($pre_data);
+
+    }
 
     public function cb_updateimg2ossByClientAction()
     {

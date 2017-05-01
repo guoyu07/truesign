@@ -11,6 +11,9 @@ const getters = {
     },
     sysinfo: state => {
         return state.SysInfo
+    },
+    eventfactory : state => {
+        return state.EventFactory
     }
 }
 

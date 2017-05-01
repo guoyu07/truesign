@@ -15,7 +15,12 @@
                     <div class="i_bar_dot2" :style="{backgroundColor:colorCtrl.i_bar_dot2}"></div>
                 </div>
 
+
             </div>
+            <div v-if="parseInt(logo_width)<100" style="text-align: center;color: #00b000 !important;" class="i_bar logo_effect_center_in">
+                ●●●●●●
+           </div>
+
         </div>
 
   </div>
@@ -79,6 +84,12 @@
                 required: false,
 
             },
+            logo_width:{
+                type: String,
+                default: '100', //left_top
+                required: false,
+
+            },
 
 
 
@@ -109,8 +120,8 @@
                     this.center_logo.left = 0
                     this.center_logo.top = 0
                     this.center_logo.borderRadius = 100
-                    this.center_logo.width = 100
-                    this.center_logo.height = 100
+                    this.center_logo.width = parseInt(vm.logo_width)
+                    this.center_logo.height = parseInt(vm.logo_width)
 
                     this.borderStyle.borderLeft = 20
                     this.borderStyle.borderRight = 20

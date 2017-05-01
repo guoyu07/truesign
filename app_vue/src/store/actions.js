@@ -17,7 +17,11 @@ const actions = {
   },
   updateAppRules({commit}, data) {
     commit(types.APPRULES,data);
-  }
+  },
+  updateEventFactory({commit}, data){
+    commit(types.EVENTFACTORY,data);
+  },
+
 }
 
 export default actions

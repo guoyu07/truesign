@@ -147,7 +147,8 @@
             ...mapGetters([
                 'apprules',
                 'website',
-                'sysinfo'
+                'sysinfo',
+                'eventfactory',
             ]),
             getheadpic:function () {
                 //console.log('getheadpic->',this.access_user)
@@ -157,6 +158,8 @@
 
         },
         created(){
+            var vm = this
+
             this.updateWebSite({
 
                 conn_status:0,
@@ -164,10 +167,25 @@
 
             })
             this.autoInit()
+            this.$root.eventHub.$on('conn_status',function (data) {
+                if(!data){
+                    vm.updateWebSite({
+                        conn_status:0,
+                        socket_id:''
+                    })
+                }
+                else{
+                    vm.updateWebSite({
+                        conn_status:1,
+                    })
+                }
+
+            })
 
         },
         mounted(){
             var vm = this
+
             $('.menu').css('background','transparent')
             $('.item').css('background','transparent')
             $('.item').css('color','#f8f8f8')
@@ -205,7 +223,6 @@
 //            统一接口处理socket 发送信息 放入payload工厂等待遍历发送
 //             */
             this.$root.eventHub.$on('socket_send',function (data) {
-//                console.log('socket_send',data)
 
 
 
@@ -213,10 +230,10 @@
                 data.payload_data = payload_data_final
 
                 if(data.payload_type === 'fetchPreConnApps' || data.payload_type === 'bind_apps'){
-                  vm.init_socket_send_factory.push(data)
+                  vm.updateEventFactory({type:'init_socket_send_factory',event:data})
                 }
                 else{
-                  vm.socket_send_factory.push(data)
+                  vm.updateEventFactory({type:'socket_send_factory',event:data})
                 }
 
             })
@@ -226,56 +243,56 @@
 //             */
             this.$root.eventHub.$on('socket_error',function (data) {
                 if(data !== 1){
-                    vm.autoInit(true)
+//                    vm.autoInit(true)
                 }
             })
 //
 //            /*
 //              遍历向服务端发送socket信息
 //             */
-            setInterval(function () {
-                if(vm.website.conn_status){
-                    var init_data = vm.init_socket_send_factory.shift()
-                    if(init_data){
-                        console.log('init_socket_send_factory',init_data.payload_type,init_data.yaf,init_data.payload_data)
 
-                        vm.to = init_data.to
-                        vm.payload_type = init_data.payload_type
-                        vm.payload_data = init_data.payload_data
-                        vm.module = init_data.yaf.module
-                        vm.controller = init_data.yaf.controller
-                        vm.action = init_data.yaf.action
-                        vm.send()
-                    }
-                }
-                if(vm.website.conn_status && vm.website.isbindapps.length > 0){
-
-                    var data = vm.socket_send_factory.shift()
-
-                    if(data){
-                        if(data.payload_type === 'c2c_msg'){
-                            vm.send(true,data)
-                            return
-                        }
-//                        console.log('socket_send_factory',data.payload_type,data.yaf,data.payload_data)
-                        vm.to = data.to
-                        vm.payload_type = data.payload_type
-                        vm.payload_data = data.payload_data
-                        vm.module = data.yaf.module
-                        vm.controller = data.yaf.controller
-                        vm.action = data.yaf.action
-                        vm.send()
-                    }
-                }
-
-            },100)
+//            var loop_socket_send = setInterval(function () {
+//                if(vm.website.conn_status && vm.init_socket_send_factory.length > 0){
+//                    var init_data = vm.init_socket_send_factory.shift()
+//                    if(init_data){
+////                        console.log('init_socket_send_factory',init_data.payload_type,init_data.yaf,init_data.payload_data)
+//
+//                        vm.to = init_data.to
+//                        vm.payload_type = init_data.payload_type
+//                        vm.payload_data = init_data.payload_data
+//                        vm.module = init_data.yaf.module
+//                        vm.controller = init_data.yaf.controller
+//                        vm.action = init_data.yaf.action
+//                        vm.send()
+//                    }
+//                }
+//                if(vm.website.conn_status && vm.website.isbindapps.length > 0 &&  vm.socket_send_factory.length > 0){
+//                    var data = vm.socket_send_factory.shift()
+//
+//                    if(data){
+//                        if(data.payload_type === 'c2c_msg'){
+//                            vm.send(true,data)
+//                            return
+//                        }
+////                        console.log('socket_send_factory',data.payload_type,data.yaf,data.payload_data)
+//                        vm.to = data.to
+//                        vm.payload_type = data.payload_type
+//                        vm.payload_data = data.payload_data
+//                        vm.module = data.yaf.module
+//                        vm.controller = data.yaf.controller
+//                        vm.action = data.yaf.action
+//                        vm.send()
+//                    }
+//                }
+//
+//            },100)
             /*
             统一处理服务器返回信息
             
              */
 //
             this.$root.eventHub.$on('socket_response',function (data) {
-//                console.log('socket_reponse',data)
+//                console.log('initSocket->socket_reponse',data)
                 var socket_reponse = analysis_socket_response(data)
                 if(socket_reponse.response_type === 'self_init' && socket_reponse.response_init_data.init_status){
 
@@ -289,6 +306,7 @@
                     vm.updateSysInfo({
                         ip:socket_reponse.response_init_data.ip
                     })
+                    vm.$root.eventHub.$emit('checkloginbykey',1)
                     vm.fetchPreConnApps()
                 }
                 if(socket_reponse.response_type === 'fetchPreConnApps'){
@@ -302,6 +320,7 @@
                             isbindapps:JSON.stringify(socket_reponse.response_init_data.isbindapps),
 
                         })
+                        vm.$root.eventHub.$emit('init_bind_apps',socket_reponse.response_init_data.access_user)
                     }
                     else{
                         vm.$root.eventHub.$emit('showtip',{
@@ -309,14 +328,59 @@
                         })
                     }
                 }
+                if(socket_reponse.response_type === 'ping'){
+//                    console.log('pong',vm.eventfactory)
+                    vm.updateWebSite({
+
+                        conn_status:1,
+
+                    })
+                    if(vm.sysinfo.ip !== '0.0.0.0' && vm.$route.path === '/project/website_main/website_index'){
+                        vm.$root.eventHub.$emit('checkloginbykey',1)
+                    }
+                    if(vm.website.conn_status && vm.eventfactory.init_socket_send_factory.length > 0){
+                        var init_data = vm.eventfactory.init_socket_send_factory.shift()
+                        vm.updateEventFactory({type:'shift_init_socket_send_factory'})
+                        if(init_data){
+//                        console.log('init_socket_send_factory',init_data.payload_type,init_data.yaf,init_data.payload_data)
+
+                            vm.to = init_data.to
+                            vm.payload_type = init_data.payload_type
+                            vm.payload_data = init_data.payload_data
+                            vm.module = init_data.yaf.module
+                            vm.controller = init_data.yaf.controller
+                            vm.action = init_data.yaf.action
+                            vm.send()
+                        }
+                    }
+//                    console.log('怎么不执行',vm.website.conn_status,vm.website.isbindapps.length,)
+
+                    if(vm.website.conn_status && vm.website.isbindapps.length > 0 &&  vm.eventfactory.socket_send_factory.length > 0){
+                        var event_data = vm.eventfactory.socket_send_factory.shift()
+                        vm.updateEventFactory({type:'shift_socket_send_factory'})
+                       
+
+                        if(event_data){
+                            if(event_data.payload_type === 'c2c_msg'){
+                                vm.send(true,event_data)
+                            }
+//                        console.log('socket_send_factory',data.payload_type,data.yaf,data.payload_data)
+                            else{
+                                vm.to = event_data.to
+                                vm.payload_type = event_data.payload_type
+                                vm.payload_data = event_data.payload_data
+                                vm.module = event_data.yaf.module
+                                vm.controller = event_data.yaf.controller
+                                vm.action = event_data.yaf.action
+                                vm.send()
+                            }
+
+                        }
+                    }
+                }
 
             })
-            this.$root.eventHub.$on('socket_close',function (data) {
-                vm.updateWebSite({
-                    conn_status:0,
-                    socket_id:''
-                })
-            })
+
 //
 
         },
@@ -328,6 +392,7 @@
                 'updateWebSite',
                 'updateSysInfo',
                 'updateAppRules',
+                'updateEventFactory',
             ]),
             autoInit(reinit=false){
                 if(reinit){

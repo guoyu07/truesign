@@ -16,7 +16,16 @@ class SamplePlugin extends Yaf_Plugin_Abstract {
 	public function dispatchLoopStartup(Yaf_Request_Abstract $request, Yaf_Response_Abstract $response) {
         $controller = strtolower($request->getControllerName());
         $action = strtolower($request->getActionName());
+        if($controller == 'index'){
+            return;
+        }
         if($controller == 'website' && $action == 'regorlogin'){
+            return;
+        }
+        if($controller == 'website' && $action == 'dislinksocketid'){
+            return;
+        }
+        if($controller == 'website' && $action == 'checkloginbykey'){
             return;
         }
         if($controller == 'common' || $controller == 'wechat'  ){
@@ -50,7 +59,7 @@ class SamplePlugin extends Yaf_Plugin_Abstract {
                 return;
             }
             else{
-                throw new Exception($check_encryption_key['msg'].';'.$check_website_encryption_key['msg'],-199);
+//                throw new Exception(123,-100);
             }
 
         }

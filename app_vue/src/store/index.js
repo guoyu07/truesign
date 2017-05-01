@@ -9,6 +9,10 @@ LocalVoucher.initEngine()
 Vue.use(Vuex);
 
 const state = {
+    EventFactory:{
+        init_socket_send_factory:[],
+        socket_send_factory:[]
+    },
     WebSite: {
         unique_auth_code: LocalVoucher.getValue('WebSite.unique_auth_code'),
         encryption_key:LocalVoucher.getValue('WebSite.encryption_key'),

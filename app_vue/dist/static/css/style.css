@@ -1,3 +1,15 @@
+html,body{
+    height:100%;
+    width:100%;
+    margin:0px;
+    background:rgba(0, 0, 0, 0.35)
+}
+body{
+    overflow:hidden
+}
+nav{
+    display:none
+}
 .pullup{
     transition: all 1.5s ease;
     transform: translateY(-100%);
@@ -56,16 +68,26 @@
     font-size: 22px;
     color: #00b5ad;
     font-weight: 800;
+
+
+
 }
 .sec_router_tip{
     position: fixed;
     right:10px;
-    top:10px;
+    top:50px;
     font-size: 18px;
     color: #e3cc20;
     font-weight: 600;
 }
-
+.third_router_tip{
+    position: fixed;
+    right:10px;
+    top:90px;
+    font-size: 16px;
+    color: #858585;
+    font-weight: 400;
+}
 input::-webkit-input-placeholder{
     text-align:center;
     color: #69d2e7;opacity:1;

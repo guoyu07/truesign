@@ -7,4 +7,5 @@ apprules 处理
  */
 export const APPRULES = 'APPRULES'
 export const SYSINFO = 'SYSINFO'
+export const EVENTFACTORY = 'EVENTFACTORY'
 

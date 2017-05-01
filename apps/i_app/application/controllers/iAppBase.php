@@ -64,16 +64,11 @@ class iAppBaseController extends \ReInit\YafBase\Controller
     protected  function output2json($result){
         echo json_encode($result);
     }
-
     protected function inputError($code, $msg)
     {
         echo json_encode(array('code' => $code, 'desc' => $msg));
         \Yaf_Dispatcher::getInstance()->autoRender(FALSE);
     }
-
-
-
-
     public function setResponseBody($data, string $info='', int $code=200){
         $helper = new \Royal\Util\helper();
         $rev=$helper::getBody($data, $info, $code);
@@ -123,14 +118,12 @@ class iAppBaseController extends \ReInit\YafBase\Controller
     public function getTaskId(){
         return $this->getRequest()->task_id;
     }
-
     public function getRedis($node){
         return \publics::getRedis($node);
     }
     public function getDB($node){
         return \publics::getDB($node);
     }
-
     protected function getPageParams() {
         $pageRules = array(
             'page'=>ParamRule::rule('page')->type('int')->defaultValue(1),

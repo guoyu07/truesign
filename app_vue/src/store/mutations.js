@@ -52,6 +52,8 @@ export const mutations = {
     }
     if(data.website_user){
         state.WebSite.website_user = data.website_user;
+        LocalVoucher.setKeyValue('WebSite.website_user',JSON.stringify(state.WebSite.website_user))
+
     }
     if(data.website_level){
         state.WebSite.website_level = data.website_level;
@@ -79,6 +81,21 @@ export const mutations = {
       if(data.ip){
           state.SysInfo.ip = data.ip
       }
+  },
+  [types.EVENTFACTORY](state,data) {
+    if(data.type === 'init_socket_send_factory'){
+        state.EventFactory.init_socket_send_factory.push(data.event)
+    }
+    else if(data.type === 'socket_send_factory'){
+        state.EventFactory.socket_send_factory.push(data.event)
+
+    }
+    else if(data.type === 'shift_init_socket_send_factory'){
+        state.EventFactory.init_socket_send_factory.shift()
+    }
+    else if(data.type === 'shift_socket_send_factory'){
+        state.EventFactory.socket_send_factory.shift()
+    }
   },
 
 }

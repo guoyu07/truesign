@@ -54,7 +54,7 @@
     position fixed
     left 0
     bottom 0
-    width 100%
+    width 20%
     height 25px
     background-color transparent
 
