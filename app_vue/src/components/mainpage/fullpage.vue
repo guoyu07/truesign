@@ -22,7 +22,7 @@
 //    require('fullpage.js/vendors/jquery.easings.min.js')
 ////    require('fullpage.js/vendors/fullpage.parallax.limited.min.js')
 //    require('fullpage.js/dist/jquery.fullpage.extensions.min.js')
-    require('jquery.scrollto/jquery.scrollto.js')
+//    require('jquery.scrollto/jquery.scrollto.js')
     import {apihost} from '../../app_config/base_config.js'
     import axios from 'axios'
     import {axios_config} from '../../api/axiosApi'

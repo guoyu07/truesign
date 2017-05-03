@@ -1,12 +1,14 @@
 <template>
-    <div class="top_router_view" style="background-color: transparent;" >
 
+    <div class="top_router_view" style="background-color: transparent;" >
         <div v-if="!server_status" style="line-height:40px;color:black !important; position: absolute;width: 100%;height: 100%;z-index:19;background-color: whitesmoke;text-align: center;font-weight: 800;font-size: 32px">
             <span style="position:absolute;top:20%;transform: translateX(-50%)" v-html="server_error_msg" > </span>
         </div>
         <p class="sec_router_tip">main</p>
         <tipbar :show="show_tip" :content="tipcontent" :time="tiptime" :width="tipwidth"></tipbar>
+
         <initsocket   :style="{position:'absolute',zIndex: '20',visibility:show_conn,transition: 'all 1s'}" ></initsocket>
+
         <transition name="fade" mode="out-in">
 
             <router-view></router-view>
@@ -54,7 +56,8 @@
 //
 //                }
                 if(socket_response.response_type === 'checkloginbykey'){
-                    console.log('main->socket_reponse->checkloginbykey',socket_response)
+//                    console.log('main->socket_reponse->checkloginbykey',socket_response)
+
                     if(!socket_response.error_response && socket_response.response_status){
 
                         var re_check_user = socket_response.response_init_data.user

@@ -101,10 +101,10 @@
     import {axios_config} from '../../../api/axiosApi'
     const aboutus_api = apihost+'aboutus/'
     const account_api = apihost+'accounts/'
-    import localVoucher from '../../../api/localVoucher'
+    import localVoucher from '../../../api/localVoucherTools'
 
-    module.exports = {
-  		data: function () {
+    export default {
+  		data () {
   			return {
                 activeName: 'index',
                 targetMenu:'index',

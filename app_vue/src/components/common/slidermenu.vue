@@ -1,8 +1,8 @@
 <template>
-    <div id="slidermenu" style="overflow: auto" @mouseleave="menu_mouseleave">
+    <div id="slidermenu" :style="{overflow:'auto',marginLeft:showmenu===false?'-360px':'5px'}" @mouseleave="menu_mouseleave">
 
 
-        <div id="menubar" :class="{showallmenu:showmenu}" @mouseover="menu_mouseover" @animationend="test" >
+        <div id="menubar"  @mouseover="menu_mouseover" @animationend="test" >
         <input v-model="query" style="width: 80%;height: 100%;float: left;margin-left:5px;border: none;outline:none" placeholder="MENU">
         <i @click="clearquery">M</i>
     </div>
@@ -141,9 +141,7 @@
     }
 </script>
 <style lang="stylus" rel="stylesheet/stylus">
-.showallmenu{
-    transform translateX(0) !important
-}
+
 .menu_item:hover
     background-color: rgba(0, 0, 0, 0.42) !important
     box-shadow: 0 0  5px #57DCDF;
@@ -151,6 +149,7 @@
     /*font Monaco !important*/
     /*font-size 16px*/
 #slidermenu
+    transition all 1s
     position fixed
     left 0
     top 0px
@@ -170,7 +169,6 @@
         box-shadow: 0px 0px 15px  #69d2e7;
         color:#69d2e7
         transition all 1s
-        transform translateX(-80%)
 
 
 

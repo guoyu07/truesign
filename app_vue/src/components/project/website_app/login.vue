@@ -13,33 +13,33 @@
 
         <div class="signup-form-field" style="opacity: 0; ">
           <label for="id_name" style="opacity: 0;">Your Name</label>
-          <input type="text" v-model="website.name" name="name" id="id_name"  @focus="focusthis(1,$event)" @focusout="focusoutthis(1,$event)" placeholder="Enter Your Name" autocomplete="off" style="visibility: visible; opacity: 1;">
+          <input type="text" v-model="website_login_from.name" name="name" id="id_name"  @focus="focusthis(1,$event)" @focusout="focusoutthis(1,$event)" placeholder="Enter Your Name" autocomplete="off" style="visibility: visible; opacity: 1;">
           <div class="line topline"><div class="line-body"></div></div>
         </div>
         <div class="signup-form-field" style="opacity: 0; ">
           <label for="id_email" style="opacity: 0; ">Email</label>
-          <input type="text" v-model="website.email" name="email" id="id_email" @focus="focusthis(2,$event)" @focusout="focusoutthis(2,$event)" placeholder="Enter Your E-Mail Address" autocomplete="off">
+          <input type="text" v-model="website_login_from.email" name="email" id="id_email" @focus="focusthis(2,$event)" @focusout="focusoutthis(2,$event)" placeholder="Enter Your E-Mail Address" autocomplete="off">
           <div class="line secline"><div class="line-body"></div></div>
         </div>
         <div class="signup-form-field" style="opacity: 0;">
             <label for="id_pass" style="opacity: 0">PassWord</label>
-            <input type="text" v-model="website.pass" name="pass" id="id_pass"  @focus="focusthis(3,$event)" @focusout="focusoutthis(3,$event)" placeholder="Your Pass" autocomplete="off">
+            <input type="text" v-model="website_login_from.pass" name="pass" id="id_pass"  @focus="focusthis(3,$event)" @focusout="focusoutthis(3,$event)" placeholder="Your Pass" autocomplete="off">
             <span class="signup-form-success-message" style="visibility: hidden;"></span>
             <div class="line thirdline"><div class="line-body"></div></div>
         </div>
         <div class="signup-form-field" style="opacity: 0;">
           <label for="id_searching" style="opacity: 0">Searching For</label>
-          <input type="text" v-model="website.look_for" name="searching_for"  id="id_searching" @focus="focusthis(4,$event)" @focusout="focusoutthis(4,$event)" placeholder="What are you searching for?" autocomplete="off">
+          <input type="text" v-model="website_login_from.look_for" name="searching_for"  id="id_searching" @focus="focusthis(4,$event)" @focusout="focusoutthis(4,$event)" placeholder="What are you searching for?" autocomplete="off">
           <span class="signup-form-success-message" style="visibility: hidden;"></span>
           <div class="line forthline"><div class="line-body"></div></div>
         </div>
 
 
         <div class="signup-form-footer" style="opacity: 1;">
-            <div class="login_msg"  v-if="website.email && website.pass && website.name && error_msg" style="margin-bottom: 10px;font-weight: 600;font-size: 18px;color: white;" >
+            <div class="login_msg"  v-if="website_login_from.email && website_login_from.pass && website_login_from.name && error_msg" style="margin-bottom: 10px;font-weight: 600;font-size: 18px;color: white;" >
                 <!--{{error_msg}}-->
             </div>
-          <div class="signup-form-submit"  v-if="website.email && website.pass && website.name" style="display: inline-block">
+          <div class="signup-form-submit"  v-if="website_login_from.email && website_login_from.pass && website_login_from.name" style="display: inline-block">
             <a href="#" class="signup-form-submit-bttn" @click="submitthis" style="opacity: 1;">submit</a>
             <div class="line line-start line_animation_tip line-submit" ><div class="line-body"></div></div>
           </div>
@@ -66,12 +66,12 @@
     import { mapGetters,mapActions } from 'vuex'
     const ramjet = require('ramjet');
     import particles from './../../effect/particles.vue'
-    import LocalVoucher from '../../../api/LocalVoucher'
+//    import LocalVoucher from '../../../api/LocalVoucherTools'
     import { analysis_socket_response } from '../../../api/lib/helper/dataAnalysis'
-  	module.exports = {
-  		data: function () {
+  	export default {
+  		data () {
   			return {
-                website:{
+                website_login_from:{
                     name:'',
                     pass:'',
                     email:'',
@@ -167,10 +167,10 @@
                     to:null,
                     payload_type:'submit_form_login',
                     payload_data:{
-                        username:vm.website.name,
-                        pass:vm.website.pass,
-                        email:vm.website.email,
-                        look_for:vm.website.look_for,
+                        username:vm.website_login_from.name,
+                        pass:vm.website_login_from.pass,
+                        email:vm.website_login_from.email,
+                        look_for:vm.website_login_from.look_for,
                         ip:vm.sysinfo.ip
                     },
                     yaf:{

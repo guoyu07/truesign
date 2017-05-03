@@ -1,6 +1,6 @@
 <template>
     <div class="top_router_view" style="" >
-
+            website_index
 
         <transition name="fade-show">
             <effect_line v-if="show_loading" id="loading_page" style="position: absolute;z-index: 13" :effect_line_top="effect_line_top"></effect_line>
@@ -42,6 +42,13 @@
 
 
             }
+        },
+        components:{
+            login,
+            effect_line,
+            initsocket,
+            effectlogo
+
         },
         computed: {
             // 使用对象展开运算符将 getters 混入 computed 对象中
@@ -176,13 +183,7 @@
 
 
         },
-        components:{
-            login,
-            effect_line,
-            initsocket,
-            effectlogo
 
-        }
     }
 </script>
 <style>

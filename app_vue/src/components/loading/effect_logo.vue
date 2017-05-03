@@ -28,8 +28,9 @@
 
 <script>
 
-    module.exports = {
-  		data: function () {
+//    module.exports = {
+    export default {
+  		data () {
   			return {
                 screenWidth: window.innerWidth,   // 这里是给到了一个默认值 （这个很重要）
                 screenHeight:window.innerHeight,  // 这里是给到了一个默认值 （这个很重要）

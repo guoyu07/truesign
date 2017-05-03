@@ -466,4 +466,4 @@ class DrawCanvas {
 
 
 }
-module.exports = exports = DrawCanvas
+export default DrawCanvas

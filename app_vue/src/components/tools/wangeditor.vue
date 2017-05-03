@@ -8,8 +8,6 @@
 <script>
 require('wangeditor/dist/css/wangEditor.css')
 import wangeditor from 'wangeditor'
-import Qiniu from 'qiniu-js/dist/qiniu.js'
-
 export default {
     data() {
         return {
@@ -123,6 +121,16 @@ export default {
                     'redo',
                     'fullscreen'
                 ];
+            this.editor.config.fontsizes = {
+                // 格式：'value': 'title'
+                1: '10px',
+                2: '13px',
+                3: '16px',
+                4: '19px',
+                5: '22px',
+                6: '25px',
+                7: '28px'
+            };
             this.editor.config.uploadImgFns.onload = function (resultText, xhr) {
                 vm.uploadOnLoad(resultText, xhr)
             }

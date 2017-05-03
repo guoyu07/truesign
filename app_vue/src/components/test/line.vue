@@ -60,7 +60,7 @@
 <script>
     const ramjet = require('ramjet');
     import particles from './../effect/particles.vue'
-  	module.exports = {
+    export default {
   		data: function () {
   			return {
   			    name:'',

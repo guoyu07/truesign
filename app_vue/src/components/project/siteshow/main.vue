@@ -90,10 +90,16 @@
     const product_api = apihost+'product/'
     const aboutus_api  = apihost+'aboutus/'
     const account_api = apihost+'accounts/'
-    import localVoucher from '../../../api/localVoucher'
+    import localVoucher from '../../../api/localVoucherTools'
 
 
     export default {
+        components:{
+            navmenu,
+            card,
+            fullpage,
+            aboutus
+        },
         data () {
             var validateUsername = (rule, value, callback) => {
                 if (!value) {
@@ -414,12 +420,7 @@
             })
 
         },
-        components:{
-            navmenu,
-            card,
-            fullpage,
-            aboutus
-        },
+
         watch: {
             screenWidth (val) {
                 if (!this.timer) {

@@ -2,6 +2,7 @@
  * Created by ql-win on 2017/4/19.
  */
 export function analysis_socket_response(response) {
+
     var analysis_reponse = {
         response_type : response.type,
         base_response : response.data
@@ -9,9 +10,10 @@ export function analysis_socket_response(response) {
 
 
     }
+
     if(analysis_reponse.response_type !== 'c2c_msg' && analysis_reponse.response_type!== 'ping'  ){
          if(response.data.response){
-             var yaf_reponse = {
+             let yaf_reponse = {
                  error_response : 0,
                  response_init_data : response.data.response.response_data.data,
                  reponse_data:response.data.response.response_data.data.data,
@@ -24,12 +26,13 @@ export function analysis_socket_response(response) {
              }
              analysis_reponse = Object.assign(analysis_reponse,yaf_reponse)
          }
-        else{
-            var yaf_reponse = {
-                error_response : 1
-            }
-            analysis_reponse = Object.assign(analysis_reponse,yaf_reponse)
-        }
+         else{
+             let yaf_reponse = {
+                 error_response : 1
+             }
+             analysis_reponse = Object.assign(analysis_reponse,yaf_reponse)
+         }
+
     }
 
     if(analysis_reponse.response_oss_uri){

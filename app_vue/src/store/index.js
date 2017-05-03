@@ -3,7 +3,7 @@ import Vuex from 'vuex'
 import mutations from './mutations'
 import actions from './actions'
 import getters from './getters'
-import LocalVoucher from '../api/localVoucher.js'
+import LocalVoucher from '../api/localVoucherTools.js'
 LocalVoucher.checkStorageMode()
 LocalVoucher.initEngine()
 Vue.use(Vuex);

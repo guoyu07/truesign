@@ -49,7 +49,7 @@
     import { analysis_socket_response } from '../../../api/lib/helper/dataAnalysis'
     import axios from 'axios'
     import {axios_config} from '../../../api/axiosApi'
-    import LocalVoucher from '../../../api/LocalVoucher'
+//    import LocalVoucher from '../../../api/LocalVoucherTools'
     import chat from './apps/chat.vue'
 
 

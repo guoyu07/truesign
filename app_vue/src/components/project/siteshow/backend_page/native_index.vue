@@ -39,7 +39,7 @@
     import axios from 'axios'
     import {axios_config} from '../../../../api/axiosApi'
     const index_api = apihost+'index/'
-  	module.exports = {
+  	export default {
   		data: function () {
   			return {
                 page_list : [

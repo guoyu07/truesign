@@ -1,5 +1,4 @@
 <template>
-    无法定义工具栏（有问题暂且搁置 改用 vue2-editor）
     <div style="margin-top: 60px">
 
             <div class="quill-editor-example">
@@ -32,8 +31,6 @@
 </template>
 
 <script>
-    import Quill from 'quill'
-    import VueQuillEditor from 'vue-quill-editor'
     import { quillEditor } from 'vue-quill-editor'
     export default {
         data() {

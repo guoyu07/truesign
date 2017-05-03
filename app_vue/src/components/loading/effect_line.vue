@@ -54,8 +54,8 @@
 
 <script>
     import effectlogo from './effect_logo.vue'
-    module.exports = {
-  		data: function () {
+    export default  {
+  		data () {
   			return {
                 screenWidth: window.innerWidth,   // 这里是给到了一个默认值 （这个很重要）
                 screenHeight:window.innerHeight,  // 这里是给到了一个默认值 （这个很重要）

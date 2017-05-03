@@ -28,7 +28,7 @@
 
 
 <script>
-    import router_build from '../../app_config/router-build'
+//    import router_build from '../../app_config/router-build'
     import Velocity from 'velocity-animate'
     import Vue from 'vue'
 

@@ -1,5 +1,5 @@
 import * as types from './mutation-types'
-import LocalVoucher from '../api/localVoucher.js'
+import LocalVoucher from '../api/localVoucherTools.js'
 LocalVoucher.checkStorageMode()
 LocalVoucher.initEngine()
 // 对于vuex的用法，其实理解了流程就行

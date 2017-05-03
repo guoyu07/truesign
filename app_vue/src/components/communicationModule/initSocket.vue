@@ -99,11 +99,11 @@
 </template>
 <script>
     import SOCKET_CLIENT from '../../api/SOCKET_CLIENT'
-    import LocalVoucher from '../../api/LocalVoucher'
+//    import LocalVoucher from '../../api/LocalVoucherTools'
     import { mapGetters,mapActions } from 'vuex'
     import { analysis_socket_response } from '../../api/lib/helper/dataAnalysis'
 
-    SOCKET_CLIENT.data.this_vue = LocalVoucher.data.this_vue = this
+//    SOCKET_CLIENT.data.this_vue = LocalVoucher.data.this_vue = this
     const Waves  = require('node-waves');
     //    import AxiosApi from '../../../api/axiosApi'
     //    const axioxapi = new AxiosApi()
@@ -291,6 +291,7 @@
             
              */
 //
+            var i = 1;
             this.$root.eventHub.$on('socket_response',function (data) {
 //                console.log('initSocket->socket_reponse',data)
                 var socket_reponse = analysis_socket_response(data)
@@ -329,7 +330,8 @@
                     }
                 }
                 if(socket_reponse.response_type === 'ping'){
-//                    console.log('pong',vm.eventfactory)
+                    console.log('ping',i)
+                    i++
                     vm.updateWebSite({
 
                         conn_status:1,
@@ -585,8 +587,8 @@
                         this.action = 'demandLiveVideo'
                         this.payload_type = 'demandLiveVideo'
                         this.payload_data = {
-                            'unique_auth_code': LocalVoucher.getValue('unique_auth_code'),
-                            'encryption_key': LocalVoucher.getValue('encryption_key'),
+                            'unique_auth_code': vm.website.unique_auth_code,
+                            'encryption_key': vm.website.encryption_key,
                             'nickname':data.nickname,
                             'match_movie':match_movie,
                             'match_ticket':match_ticket,
