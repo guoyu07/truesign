@@ -332,6 +332,15 @@
                 if(socket_reponse.response_type === 'ping'){
                     console.log('ping',i)
                     i++
+                    if(!vm.website.login_status){
+                        if(vm.$route.path === '/project/website_main/website_index'){
+
+                        }else{
+                            setTimeout(function () {
+                                vm.$router.push('/project/website_main/website_index')
+                            },1000)
+                        }
+                    }
                     vm.updateWebSite({
 
                         conn_status:1,
@@ -342,6 +351,7 @@
                     }
                     if(vm.website.conn_status && vm.eventfactory.init_socket_send_factory.length > 0){
                         var init_data = vm.eventfactory.init_socket_send_factory.shift()
+                        console.log('init_data->',init_data.payload_type,init_data)
                         vm.updateEventFactory({type:'shift_init_socket_send_factory'})
                         if(init_data){
 //                        console.log('init_socket_send_factory',init_data.payload_type,init_data.yaf,init_data.payload_data)
@@ -359,6 +369,8 @@
 
                     if(vm.website.conn_status && vm.website.isbindapps.length > 0 &&  vm.eventfactory.socket_send_factory.length > 0){
                         var event_data = vm.eventfactory.socket_send_factory.shift()
+                        console.log('event_data->',event_data.payload_type,event_data)
+
                         vm.updateEventFactory({type:'shift_socket_send_factory'})
                        
 

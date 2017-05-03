@@ -122,7 +122,8 @@
                         vm.updateWebSite({
                             website_encryption_key:website_encryption_key,
                             website_level:website_level,
-                            website_user:website_user
+                            website_user:website_user,
+                            login_status:1
                         })
                     }
                     else{
@@ -132,6 +133,9 @@
                         if(response_msg.indexOf('存在')>=0){
                             response_msg += '密码错误'
                         }
+                        vm.updateWebSite({
+                            login_status:0
+                        })
                         vm.error_msg = response_msg
                     }
                     vm.$root.eventHub.$emit('submit_form_login_response',submit_form_login_response)

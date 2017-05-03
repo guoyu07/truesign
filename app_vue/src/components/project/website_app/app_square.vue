@@ -133,7 +133,7 @@
                         })
                 }
                 else if(analysis_response.response_type==='get_appCards'){
-                    console.log('getapprules->',analysis_response.reponse_data)
+//                    console.log('getapprules->',analysis_response.reponse_data)
                     vm.appCards = []
                     analysis_response.reponse_data.forEach(function (item) {
                         vm.appCards.push(item)

@@ -18,6 +18,7 @@ const state = {
         encryption_key:LocalVoucher.getValue('WebSite.encryption_key'),
         website_encryption_key:LocalVoucher.getValue('WebSite.website_encryption_key'),
         conn_status:0,
+        login_status:0,
         socket_id:0,
         apprules:[],
         access_user:(LocalVoucher.getValue('WebSite.access_user'))?(JSON.parse(LocalVoucher.getValue('WebSite.access_user'))):'',

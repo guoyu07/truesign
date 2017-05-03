@@ -10,8 +10,9 @@
         <initsocket   :style="{position:'absolute',zIndex: '20',visibility:show_conn,transition: 'all 1s'}" ></initsocket>
 
         <transition name="fade" mode="out-in">
-
+            <!--<keep-alive>-->
             <router-view></router-view>
+            <!--</keep-alive>-->
         </transition>
 
     </div>
@@ -56,15 +57,15 @@
 //
 //                }
                 if(socket_response.response_type === 'checkloginbykey'){
-//                    console.log('main->socket_reponse->checkloginbykey',socket_response)
+                    console.log('main->socket_reponse->checkloginbykey',socket_response)
 
                     if(!socket_response.error_response && socket_response.response_status){
 
                         var re_check_user = socket_response.response_init_data.user
-//                        vm.updateWebSite({
-//                            website_user:re_check_user
-//                        })
-//                        vm.$router.push('/project/website_main/website_app_square')
+                        vm.updateWebSite({
+                            website_user:re_check_user
+                        })
+
                         vm.$root.eventHub.$emit('init_website_status',1)
 
                         setTimeout(function () {
@@ -77,20 +78,18 @@
                         setTimeout(function () {
                             vm.$root.eventHub.$emit('init_login_status',0)
                         },1000)
-//                        if(vm.$route.path === '/project/website_main/website_index'){
-//                        }
-//                        else{
-//                            vm.$router.push('/project/website_main/website_index')
-//                        }
+
                     }
                 }
             })
+
+
         },
         mounted(){
 
             var vm = this
             this.$root.eventHub.$on('checkloginbykey',function (data) {
-
+                console.log('on->checkloginbykey')
                 vm.checkloginbykey()
             })
 
@@ -165,13 +164,13 @@
                     }
                 });
             },
-            loop_check_status_access(){
-                if(this.$route.path === '/project/website_main/website_index'){
-                }
-                else{
-                    this.$router.push('/project/website_main/website_index')
-                }
-            }
+//            loop_check_status_access(){
+//                if(this.$route.path === '/project/website_main/website_index'){
+//                }
+//                else{
+//                    this.$router.push('/project/website_main/website_index')
+//                }
+//            }
 
         },
         components:{

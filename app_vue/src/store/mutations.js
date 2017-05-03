@@ -36,6 +36,12 @@ export const mutations = {
         LocalVoucher.setKeyValue('WebSite.conn_status',state.WebSite.conn_status+'')
 
     }
+    if(data.login_status){
+      state.WebSite.login_status = data.login_status;
+    }
+    else if(data.login_status === 0){
+      state.WebSite.login_status = data.login_status;
+    }
     if(data.socket_id){
         state.WebSite.socket_id = data.socket_id;
     }

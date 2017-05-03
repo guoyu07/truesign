@@ -58,17 +58,31 @@
             ])
         },
         created(){
-            this.$root.eventHub.$on('socket_response',function (data) {
-                var socket_response = analysis_socket_response(data)
-                if(socket_response.response_type !== 'ping'){
-//                    console.log('index->socket_response','*** '+socket_response.response_type+' ***')
-//                    console.log(socket_response)
+            var vm = this
+//            vm.show_loading=true
+//            vm.show_login_log = true
+            this.$root.eventHub.$on('laoding',function (data) {
+                console.log('loading->',data)
+                if(data==='start'){
+                    vm.show_loading=true
+                    setTimeout(function () {
+                        $('#loading_page').css('z-index',13)
+//                        vm.effect_line_top = '100'
+
+                    },1000)
+
+
 
                 }
+                else if(data==='over'){
+                    $('#loading_page').css('z-index',-1)
+                    $('#effectlogo').css('z-index',10)
+                    vm.show_loading=false
+                    vm.effect_line_top = '0'
 
+
+                }
             })
-
-
         },
         mounted(){
             /*
@@ -77,47 +91,74 @@
             var vm = this
 
             vm.show_loading=true
+            vm.show_login_log = true
+
             if(vm.website.conn_status){
                 vm.init_conn = 'done'
-                vm.effect_line_top='10'
+                let top_num = (Math.random()*20).toFixed(1)
+                vm.effect_line_top=parseInt(vm.effect_line_top)>top_num?vm.effect_line_top:top_num+''
             }
             this.$root.eventHub.$on('conn_status',function (data) {
                 if(data){
                     vm.init_conn = 'done'
-                    vm.effect_line_top='10'
+                    let top_num = (Math.random()*20).toFixed(1)
+                    vm.effect_line_top=parseInt(vm.effect_line_top)>top_num?vm.effect_line_top:top_num+''
                 }
             })
 
             if(vm.website.isbindapps.length > 0){
                 vm.bind_app = vm.website.access_user.nickname
-                vm.effect_line_top='20'
+                let top_num = (Math.random()*10).toFixed(1)
+                vm.effect_line_top=parseInt(vm.effect_line_top)>top_num?vm.effect_line_top:top_num+''
             }
             this.$root.eventHub.$on('init_bind_apps',function (data) {
                 if(data){
                     vm.bind_app = data.nickname
-                    vm.effect_line_top='20'
+                    let top_num = (Math.random()*10).toFixed(1)
+                    vm.effect_line_top=parseInt(vm.effect_line_top)>top_num?vm.effect_line_top:top_num+''
                 }
             })
             this.$root.eventHub.$on('init_website_status',function (data) {
                 vm.website_status = 'done'
-                vm.effect_line_top= parseInt(vm.effect_line_top)>85?vm.effect_line_top:'85'
+                let top_num = (Math.random()*85).toFixed(1)
+                vm.effect_line_top=parseInt(vm.effect_line_top)>top_num?vm.effect_line_top:top_num+''
             })
             this.$root.eventHub.$on('init_login_status',function (data) {
-//                console.log('on->init_login_status')
                 if(data){
+                    vm.updateWebSite({
+                        login_status:1
+                    })
                     vm.login_status = data.username +' 即将进入主页面'
                     vm.effect_line_top='100'
-                    setTimeout(function () {
-                        vm.$router.push('/project/website_main/website_app_square')
-                    },2000)
+                    if(vm.$route.path === '/project/website_main/website_app_square'){
+
+                    }else{
+                        setTimeout(function () {
+//                            vm.effect_line_top='0'
+                            vm.$router.push('/project/website_main/website_app_square')
+                            vm.show_login_log = false
+
+                        },1200)
+                    }
+
                 }
                 else{
+                    vm.updateWebSite({
+                        login_status:0
+                    })
                     vm.login_status = '未登录'
                     vm.effect_line_top='100'
                     setTimeout(function () {
                         vm.show_login_log = false
+//                        vm.effect_line_top='0'
+                    },1500)
+                    if(vm.$route.path === '/project/website_main/website_index'){
 
-                    },2000)
+                    }else{
+                        setTimeout(function () {
+                            vm.$router.push('/project/website_main/website_index')
+                        },1500)
+                    }
 
                 }
 
@@ -143,28 +184,7 @@
 
             this.$root.eventHub.$emit('autoInit',1)
 
-            this.$root.eventHub.$on('laoding',function (data) {
-                console.log('loading->',data)
-                if(data==='start'){
-                    vm.show_loading=true
-                    setTimeout(function () {
-                        $('#loading_page').css('z-index',13)
-                        vm.effect_line_top = '100'
 
-                    },1000)
-
-
-
-                }
-                else if(data==='over'){
-                    $('#loading_page').css('z-index',-1)
-                    $('#effectlogo').css('z-index',10)
-                    vm.show_loading=false
-                    vm.effect_line_top = '0'
-
-
-                }
-            })
             this.$root.eventHub.$on('submit_form_login_response',function (data) {
                 if(data.status){
                     vm.$router.push('website_app_square')
@@ -177,6 +197,11 @@
 
         },
         methods:{
+            ...mapActions([
+                'updateWebSite',
+                'updateSysInfo',
+                'updateAppRules',
+            ]),
             keythis(n,e){
             },
 
