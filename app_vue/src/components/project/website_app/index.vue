@@ -1,6 +1,5 @@
 <template>
     <div class="top_router_view" style="" >
-            website_index
 
         <transition name="fade-show">
             <effect_line v-if="show_loading" id="loading_page" style="position: absolute;z-index: 13" :effect_line_top="effect_line_top"></effect_line>
@@ -104,7 +103,7 @@
                 vm.effect_line_top= parseInt(vm.effect_line_top)>85?vm.effect_line_top:'85'
             })
             this.$root.eventHub.$on('init_login_status',function (data) {
-                console.log('on->init_login_status')
+//                console.log('on->init_login_status')
                 if(data){
                     vm.login_status = data.username +' 即将进入主页面'
                     vm.effect_line_top='100'

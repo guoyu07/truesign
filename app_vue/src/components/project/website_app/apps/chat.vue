@@ -701,6 +701,7 @@ li {
 #chatapp
     background-color rgba(35, 35, 35, 0.95)
     position absolute
+    z-index 20
     right 5px
     min-width 300px
     width 550px

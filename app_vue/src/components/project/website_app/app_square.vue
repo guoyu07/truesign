@@ -1,5 +1,7 @@
 <template>
     <div class="top_router_view" style="overflow: hidden" >
+        <chat style="z-index:20"></chat>
+
         <p class="third_router_tip">青鸾峰</p>
         <effectlogo   logo_pos='left_top' style="position: absolute;z-index:-1"></effectlogo>
         <div id="searchBar"
@@ -31,7 +33,6 @@
             </transition-group>
 
         </div>
-        <chat></chat>
     </div>
 </template>
 
