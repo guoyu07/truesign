@@ -7,6 +7,16 @@
  * 这些方法, 都接受一个参数:Yaf_Dispatcher $dispatcher
  * 调用的次序, 和申明的次序相同
  */
+if (php_sapi_name() == 'cli') {
+    define('APPLICATION_PATH', realpath(__DIR__ . '/../../../'));
+     require(APPLICATION_PATH.'/vendor/phpmailer/phpmailer/PHPMailerAutoload.php');
+
+    $classLoader = require(APPLICATION_PATH . '/vendor/autoload.php');
+
+    $classLoader->setPsr4('ReInit\\', APPLICATION_PATH . '/library/ReInit/');
+    $classLoader->setPsr4('Royal\\', APPLICATION_PATH . '/library/Royal/');
+    $classLoader->setPsr4('Truesign\\', APPLICATION_PATH . '/common');
+}
 class Bootstrap extends Yaf_Bootstrap_Abstract{
 
     public function _initConfig() {

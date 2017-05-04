@@ -25,6 +25,9 @@
  * @author Andy Prevost (codeworxtech) <codeworxtech@users.sourceforge.net>
  * @author Brent R. Matzelle (original founder)
  */
+//require  realpath(__DIR__).'/class.smtp.php';
+//include_once realpath(__DIR__).'/class.smtp.php';
+
 class PHPMailer
 {
     /**

@@ -45,14 +45,14 @@ class WechatController extends  IAppBaseController
     }
     public function indexAction(){
 
-
-        $this->app->server->setMessageHandler(function ($message) {
-            return new \EasyWeChat\Message\Text(['content' => '您好！overtrue。']);
-
-        });
-        $response = $this->app->server->serve();
-        // 将响应输出
-        $response->send(); // Laravel 里请使用：return $response;
+        $mail = new PHPMailer;
+//        $this->app->server->setMessageHandler(function ($message) {
+//            return new \EasyWeChat\Message\Text(['content' => '您好！overtrue。']);
+//
+//        });
+//        $response = $this->app->server->serve();
+//        // 将响应输出
+//        $response->send(); // Laravel 里请使用：return $response;
 
     }
 

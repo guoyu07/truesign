@@ -221,7 +221,7 @@ class WebSiteController extends  OAppBaseController
         $doDao = new \Royal\Data\DAO(new \Truesign\Adapter\Apps\appWebSiteAdapter());
         $search_param = array();
         $this->setParam('socket_id','neq','',$search_param);
-        $db_reponse = $doDao->readSpecified(array(),array('document_id','username','website_level','socket_id'));
+        $db_reponse = $doDao->readSpecified($search_param,array('document_id','username','website_level','socket_id'));
 
         $this->setResponseBody($db_reponse);
     }
@@ -233,14 +233,39 @@ class WebSiteController extends  OAppBaseController
     public function dealCheckemailCodeAction(){
         $param = $this->getParams(array(),array('type','checkemailcode','email'));
 
-        if($param['type']){
+        if(!$param['type']){
             $generate_code = \Royal\Util\Decrypt::encryption($param['email'],$param['email'],0,10*60);
-
-
+            $send_response = $this->sendMail('137847127@qq.com','137847127@qq.com','测试',$generate_code);
+            $response['status'] = $send_response;
+            $response['msg'] = $param['email'].' 验证识别码'.($send_response?'发送成功':'发送失败');
         }
         else{
+            $decode_generate_code = \Royal\Util\Decrypt::encryption($param['checkemailcode'],$param['email'],1);
+            if(sizeof($decode_generate_code) == 2){
+                [0=>$email,1=>$limit_time]=$decode_generate_code;
+                if($limit_time>time()){
+                    if($email == $param['email']){
+                        $response['status'] = 1;
+                        $response['msg'] = '邮箱验证成功';
+                        $doDao = new \Royal\Data\DAO(new \Truesign\Adapter\Apps\appWebSiteAdapter());
+                        $doDao->updateByQuery(array('emailstatus'=>1),array('email'=>$email));
 
+                    }
+                    else{
+                        $response['status'] = 0;
+                        $response['msg'] = '识别码无法验证此邮箱';
+                    }
+                }
+                else{
+                    $response['status'] = 0;
+                    $response['msg'] = '识别码已经过期';
+                }
+            }
+            else{
+                $response['status'] = 0;
+                $response['msg'] = '识别码无法解码，违法操作';
+            }
         }
-        $this->setResponseBody($param);
+        $this->setResponseBody($response);
     }
 }

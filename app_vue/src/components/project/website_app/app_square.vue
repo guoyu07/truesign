@@ -35,15 +35,16 @@
 
             </div>
         </div>
-        <div v-else="website.login_status && website.emailstatus">
-            <effectlogo    :logo_pos='logo_pos' style="z-index:-1 !important;margin-left: -100px" ></effectlogo>
-            <div style="width: 300px;;position: absolute;left: 50%;top:45%;text-align: left;font-family: Monaco">
+        <div >
+            <effectlogo class="effectlogo"    :logo_pos='logo_pos' :style="effectlogostyle" ></effectlogo>
+            <div v-if="website.login_status && !website.website_user.emailstatus" style="width: 300px;;position: absolute;left: 50%;top:45%;text-align: left;font-family: Monaco">
                 <input style="border:none;padding: 10px 1px;width: 80%;font-family: Monaco" v-model="website.website_user.email"/>
                 <input style="text-align: center;border: 1px dotted;padding: 2px 1px;width: " v-model="checkemailcode" placeholder="输入邮箱验证码"/>
                 <i @click="send_checkemail_code" style="color: #57dcdf;cursor: pointer;font-size: 14px;padding: 0px 8px;border: 2px solid;font-family: Monaco">发送</i>
-                <i v-if="checkemailcode" style="color: #57dcdf;cursor: pointer;font-size: 14px;padding: 0px 8px;border: 2px solid;font-family: Monaco">验证</i>
+                <i @click="confirm_checkemail_code" v-if="checkemailcode"  style="color: #57dcdf;cursor: pointer;font-size: 14px;padding: 0px 8px;border: 2px solid;font-family: Monaco">验证</i>
             </div>
         </div>
+
         <!--<div v-else="website.login_status" style="text-align: center">-->
         <!--</div>-->
 
@@ -84,7 +85,8 @@
                 },
                 socket_ready:false,
                 logo_pos:'center',
-                checkemailcode:''
+                checkemailcode:'',
+                effectlogostyle:{}
             }
         },
         computed: {
@@ -221,6 +223,45 @@
                 }
                 else if(analysis_response.response_type === 'send_checkemail_code'){
                     console.log('send_checkemail_code',analysis_response)
+                    let msg = analysis_response.response_msg;
+                    vm.$root.eventHub.$emit('showtip',{
+                        content:msg,
+                        tipwidth:'800',
+                        tiptime:'3000'
+                    })
+
+                }
+                else if(analysis_response.response_type === 'confirm_checkemail_code'){
+                    console.log('confirm_checkemail_code',analysis_response)
+                    if(analysis_response.response_status){
+
+                        vm.$root.eventHub.$emit('checkloginbykey',1)
+                        setTimeout(function () {
+                            vm.effectlogostyle = {
+                                zIndex:'-1'
+                            }
+
+                        },500)
+                        setTimeout(function () {
+                            vm.logo_pos = 'left_top'
+
+                        },2000)
+                        setTimeout(function () {
+                            vm.getapprules()
+                        },100)
+
+                    }
+                    else{
+
+                    }
+                    let msg = analysis_response.response_msg;
+
+                    vm.$root.eventHub.$emit('showtip',{
+                        content:msg,
+                        tipwidth:'800',
+                        tiptime:'3000'
+                    })
+
                 }
 
             })
@@ -230,6 +271,13 @@
         },
         mounted(){
             var vm = this
+            if(this.website.login_status && !this.website.website_user.emailstatus){
+                this.effectlogostyle =
+                    {
+                        zIndex:'-1',
+                        marginLeft: '-100px'
+                    }
+            }
             if(this.website.login_status && this.website.website_user.emailstatus){
                 setTimeout(function () {
                     vm.logo_pos = 'left_top'
@@ -280,7 +328,26 @@
                     payload_type:'send_checkemail_code',
                     payload_data:{
                         type:0,
-                        email:this.website.website_user.email
+                        email:this.website.website_user.email,
+                    },
+                    yaf:{
+                        module:'index',
+                        controller:'website',
+                        action:'dealCheckemailCode'
+                    }
+                }
+//                console.log('getapprules')
+                vm.$root.eventHub.$emit('socket_send',params)
+            },
+            confirm_checkemail_code(){
+                var vm = this
+                var params = {
+                    to:null,
+                    payload_type:'confirm_checkemail_code',
+                    payload_data:{
+                        type:1,
+                        email:this.website.website_user.email,
+                        checkemailcode:vm.checkemailcode
                     },
                     yaf:{
                         module:'index',
@@ -391,6 +458,8 @@
     }
 </script>
 <style lang="stylus" rel="stylesheet/stylus">
+.effectlogo
+    transition all 1.5s
 #cards-show
     width 100%
     height 100%

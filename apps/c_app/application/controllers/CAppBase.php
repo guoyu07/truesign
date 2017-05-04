@@ -3,7 +3,7 @@
 use Royal\Validator\ParamValidator;
 use Royal\Validator\ParamRule;
 
-class oAppBaseController extends \ReInit\YafBase\Controller
+class CAppBaseController extends \ReInit\YafBase\Controller
 {
     public function init()
     {
