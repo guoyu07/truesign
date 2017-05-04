@@ -57,7 +57,7 @@
 //
 //                }
                 if(socket_response.response_type === 'checkloginbykey'){
-                    console.log('main->socket_reponse->checkloginbykey',socket_response)
+//                    console.log('main->socket_reponse->checkloginbykey',socket_response)
 
                     if(!socket_response.error_response && socket_response.response_status){
 
@@ -89,7 +89,7 @@
 
             var vm = this
             this.$root.eventHub.$on('checkloginbykey',function (data) {
-                console.log('on->checkloginbykey')
+//                console.log('on->checkloginbykey')
                 vm.checkloginbykey()
             })
 

@@ -5,6 +5,8 @@
               style="position: absolute;width: 320px;height: 180px;z-index:15;background-color: rgba(255,255,255,0.44);line-height: 180px;text-align: center;color: black">
             权限低于限定标准
         </div>
+
+
         <div   v-if="level>=itemData.applevel" class="enter-app" @click="enterapp($event)" :data-index="dataIndex" :data-id="itemData.document_id"
               style="">
             进入应用

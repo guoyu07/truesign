@@ -47,6 +47,7 @@ class appWebSiteAdapter extends DbLibraryAdapter
             ->def('username')->map('username')->varchar(100)->desc('用户名')
             ->def('pass')->map('pass')->varchar(100)->desc('密码')
             ->def('email')->map('email')->varchar(100)->desc('邮箱')
+            ->def('emailstatus')->map('emailstatus')->int()->desc('邮箱验证状态')
             ->def('look_for')->map('look_for')->varchar(1000)->desc('目的')
             ->def('headpic')->map('headpic')->varchar(1000)->desc('头像')
             ->def('reg_ip')->map('reg_ip')->varchar(100)->desc('注册ip')

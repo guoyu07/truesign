@@ -130,11 +130,13 @@
                     })
                     vm.login_status = data.username +' 即将进入主页面'
                     vm.effect_line_top='100'
+
                     if(vm.$route.path === '/project/website_main/website_app_square'){
 
                     }else{
                         setTimeout(function () {
-//                            vm.effect_line_top='0'
+                            vm.effect_line_top='0'
+
                             vm.$router.push('/project/website_main/website_app_square')
                             vm.show_login_log = false
 

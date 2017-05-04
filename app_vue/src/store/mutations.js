@@ -42,6 +42,7 @@ export const mutations = {
     else if(data.login_status === 0){
       state.WebSite.login_status = data.login_status;
     }
+
     if(data.socket_id){
         state.WebSite.socket_id = data.socket_id;
     }
@@ -96,12 +97,16 @@ export const mutations = {
         state.EventFactory.socket_send_factory.push(data.event)
 
     }
-    else if(data.type === 'shift_init_socket_send_factory'){
-        state.EventFactory.init_socket_send_factory.shift()
+    else if(data.type === 'unshift_socket_send_factory'){
+        state.EventFactory.socket_send_factory.unshift(data.event)
+
     }
-    else if(data.type === 'shift_socket_send_factory'){
-        state.EventFactory.socket_send_factory.shift()
-    }
+    // else if(data.type === 'shift_init_socket_send_factory'){
+    //     state.EventFactory.init_socket_send_factory.shift()
+    // }
+    // else if(data.type === 'shift_socket_send_factory'){
+    //     state.EventFactory.socket_send_factory.shift()
+    // }
   },
 
 }

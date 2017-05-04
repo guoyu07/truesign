@@ -458,7 +458,7 @@ class socket_server{
 //    public function onMessage(\swoole_websocket_server $serv, swoole_websocket_frame $request){
         $receive = json_decode($request->data,true);
 
-        echo "【s】onMessage=> ".$receive['payload_type'].PHP_EOL;
+//        echo "【s】onMessage=> ".$receive['payload_type'].PHP_EOL;
 //        var_dump($request);
         if($receive['payload_type'] == 'checkloginbykey'){
             var_dump($receive);
@@ -702,11 +702,18 @@ class socket_server{
     public function heartbeat($serv,$request)
     {
 //        echo 'pre heartbeat'.PHP_EOL;
+//        echo 'heartbeat'.PHP_EOL;
+
         if($request){
             $fd = $request->fd;
             if(!empty($fd)){
                 $serv->tick(1500, function() use ($fd, $serv) {
-                    $serv->push($fd,array('payload_type'=>'ping'),2);
+                    $chat_list = $this->getChatList();
+
+                    $ping_reponse = array();
+                    $ping_reponse['type'] = 'ping';
+                    $ping_reponse['chat_list'] = ($chat_list['response_data']->data);
+                    $serv->push($fd,json_encode($ping_reponse),2);
                 });
             }
         }
@@ -716,12 +723,26 @@ class socket_server{
             {
                 $serv->tick(1500, function() use ($fd, $serv) {
 //                    echo 'heartbeat->'.$fd.PHP_EOL;
-                    $serv->push($fd,json_encode(array('type'=>'ping')),2);
+                    $chat_list = $this->getChatList();
+//                    var_dump($chat_list);
+                    $ping_reponse = array();
+                    $ping_reponse['type'] = 'ping';
+                    $ping_reponse['chat_list'] = ($chat_list['response_data']->data);
+                    $serv->push($fd,json_encode($ping_reponse),2);
                 });
             }
 
 
         }
 
+    }
+
+    /*
+     * 获取聊天列表 并通过心跳发送
+     */
+    public function getChatList(){
+        $yaf_payload = self::buildYaf('index', 'website', 'getchatlist', array());
+        $db_response = $this->runYaf($yaf_payload);
+        return $db_response;
     }
 }

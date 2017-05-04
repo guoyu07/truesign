@@ -123,7 +123,8 @@
                             website_encryption_key:website_encryption_key,
                             website_level:website_level,
                             website_user:website_user,
-                            login_status:1
+                            login_status:1,
+                            emailstatus:website_user.emailstatus
                         })
                     }
                     else{

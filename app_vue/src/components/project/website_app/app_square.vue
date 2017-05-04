@@ -1,11 +1,12 @@
 <template>
-    <div class="top_router_view" style="overflow: hidden" >
-        <chat style="z-index:20"></chat>
+    <div  class="top_router_view" style="overflow: hidden" >
 
-        <p class="third_router_tip">青鸾峰</p>
-        <effectlogo   logo_pos='left_top' style="position: absolute;z-index:-1"></effectlogo>
-        <div id="searchBar"
-             style="
+        <div v-if="website.login_status && website.website_user.emailstatus" style="">
+            <chat style="z-index:20"></chat>
+
+            <p class="third_router_tip">青鸾峰</p>
+            <div  id="searchBar"
+                  style="
              display: inline-block;
              box-shadow: 0 0 10px #57DCDF;
              width: 30%;
@@ -16,29 +17,43 @@
              line-height:12px;
             ">
 
-            <input type="text" v-model="query" placeholder="快速查询" style="width: 100%;">
-            <input v-if="parseInt(website.website_level) >= 3" type="button" @click="addapp" value="APP+" style="width:80px;margin-top: -15px;text-align:center;position: absolute;right: 80PX;top:18px; ">
-            <input v-if="parseInt(website.website_level) >= 3" type="button" @click="touchctrl" value="CTRL" style="width:80px;margin-top: -15px;text-align:center;position: absolute;right: 0;top:18px; ">
-        </div>
-        <div id="cards-show"  style="height:90%;overflow-y:auto;position: absolute;margin-top:60px;width:100%;">
+                <input type="text" v-model="query" placeholder="快速查询" style="width: 100%;">
+                <input v-if="parseInt(website.website_level) >= 3" type="button" @click="addapp" value="APP+" style="width:80px;margin-top: -15px;text-align:center;position: absolute;right: 80PX;top:18px; ">
+                <input v-if="parseInt(website.website_level) >= 3" type="button" @click="touchctrl" value="CTRL" style="width:80px;margin-top: -15px;text-align:center;position: absolute;right: 0;top:18px; ">
+            </div>
+            <div id="cards-show"  style="height:90%;overflow-y:auto;position: absolute;margin-top:60px;width:100%;">
 
-            <transition-group id="card-list" name="card-list" tag="div" style="position:absolute;width:1400px;height:auto;left: 50%;margin-left: -700px;"
-                              v-on:before-enter="beforeEnter"
-                              v-on:enter="enter"
-                              v-on:after-enter="afterEnter"
-                              v-on:enter-cancelled="enterCancelled"
-                              v-on:leave="leave"
-                              v-bind:css="false">
-                <appCard  style="" class="card_item"  v-for="(item,index) in buildCards" :key="item" :data-index="index" :item-data="item" :level="website.website_level" :ctrl="ctrl"></appCard>
-            </transition-group>
+                <transition-group id="card-list" name="card-list" tag="div" style="position:absolute;width:1400px;height:auto;left: 50%;margin-left: -700px;"
+                                  v-on:before-enter="beforeEnter"
+                                  v-on:enter="enter"
+                                  v-on:after-enter="afterEnter"
+                                  v-on:enter-cancelled="enterCancelled"
+                                  v-on:leave="leave"
+                                  v-bind:css="false">
+                    <appCard  style="" class="card_item"  v-for="(item,index) in buildCards" :key="item" :data-index="index" :item-data="item" :level="website.website_level" :ctrl="ctrl"></appCard>
+                </transition-group>
 
+            </div>
         </div>
+        <div v-else="website.login_status && website.emailstatus">
+            <effectlogo    :logo_pos='logo_pos' style="z-index:-1 !important;margin-left: -100px" ></effectlogo>
+            <div style="width: 300px;;position: absolute;left: 50%;top:45%;text-align: left;font-family: Monaco">
+                <input style="border:none;padding: 10px 1px;width: 80%;font-family: Monaco" v-model="website.website_user.email"/>
+                <input style="text-align: center;border: 1px dotted;padding: 2px 1px;width: " v-model="checkemailcode" placeholder="输入邮箱验证码"/>
+                <i @click="send_checkemail_code" style="color: #57dcdf;cursor: pointer;font-size: 14px;padding: 0px 8px;border: 2px solid;font-family: Monaco">发送</i>
+                <i v-if="checkemailcode" style="color: #57dcdf;cursor: pointer;font-size: 14px;padding: 0px 8px;border: 2px solid;font-family: Monaco">验证</i>
+            </div>
+        </div>
+        <!--<div v-else="website.login_status" style="text-align: center">-->
+        <!--</div>-->
+
     </div>
 </template>
 
 
 
 <script>
+
     import { mapGetters,mapActions } from 'vuex'
     import effectlogo from '../../loading/effect_logo.vue'
     import login from './login.vue'
@@ -68,6 +83,8 @@
                     target_index:'',
                 },
                 socket_ready:false,
+                logo_pos:'center',
+                checkemailcode:''
             }
         },
         computed: {
@@ -104,8 +121,9 @@
                 vm.socket_ready = true
             })
             this.$root.eventHub.$on('socket_response',function (data) {
-//                console.log('socket_response',data)
                 var analysis_response = analysis_socket_response(data)
+//                console.log('app_square->socket_response',data)
+
                 if(analysis_response.response_type==='appCard_changeimg'){
                     var uri = analysis_response.response_oss_uri
                     var oss_config = analysis_response.response_oss_config
@@ -143,6 +161,7 @@
                     })
                 }
                 else if(analysis_response.response_type === 'updateAppRule'){
+                    console.log('updateAppRule',analysis_response)
                     if(analysis_response.response_status){
                         vm.$root.eventHub.$emit('showtip',{
                             content:'更新成功',
@@ -193,12 +212,15 @@
                     vm.getapprules()
                 }
                 else if(analysis_response.response_type === 'getWebSiteLevel'){
-                    console.log('getWebSiteLevel->',analysis_response)
+//                    console.log('getWebSiteLevel->',analysis_response)
                     if(analysis_response.response_status){
                         vm.updateWebSite({
                             website_level:analysis_response.response_website_level
                         })
                     }
+                }
+                else if(analysis_response.response_type === 'send_checkemail_code'){
+                    console.log('send_checkemail_code',analysis_response)
                 }
 
             })
@@ -208,6 +230,13 @@
         },
         mounted(){
             var vm = this
+            if(this.website.login_status && this.website.website_user.emailstatus){
+                setTimeout(function () {
+                    vm.logo_pos = 'left_top'
+                    vm.getapprules()
+                    vm.getWebSiteLevel()
+                },1000)
+            }
             this.$root.eventHub.$on('app_img_change_event',function (data) {
                 var target_index = data.target_index
                 var target_id = data.target_id
@@ -233,8 +262,10 @@
 
 
 
-            this.getapprules()
-            this.getWebSiteLevel()
+
+//            this.getWebSiteLevel()
+
+
         },
         methods:{
             ...mapActions([
@@ -242,6 +273,24 @@
                 'updateSysInfo',
                 'updateAppRules',
             ]),
+            send_checkemail_code(){
+                var vm = this
+                var params = {
+                    to:null,
+                    payload_type:'send_checkemail_code',
+                    payload_data:{
+                        type:0,
+                        email:this.website.website_user.email
+                    },
+                    yaf:{
+                        module:'index',
+                        controller:'website',
+                        action:'dealCheckemailCode'
+                    }
+                }
+//                console.log('getapprules')
+                vm.$root.eventHub.$emit('socket_send',params)
+            },
             touchctrl(){
                 this.ctrl  = this.ctrl===0?1:0
             },
@@ -269,10 +318,11 @@
                         action:'getAppRule'
                     }
                 }
-                console.log('getapprules')
+//                console.log('getapprules')
                 vm.$root.eventHub.$emit('socket_send',params)
             },
             getWebSiteLevel(){
+                var vm = this
                 var params = {
                     to:null,
                     payload_type:'getWebSiteLevel',
@@ -283,7 +333,7 @@
                         action:'getWebSiteLevel'
                     }
                 }
-                this.$root.eventHub.$emit('socket_send',params)
+                vm.$root.eventHub.$emit('socket_send',params)
             },
             beforeEnter(el) {
                 //console.log('beforeEnter')
@@ -335,7 +385,8 @@
         components:{
             effectlogo,
             appCard,
-            chat
+            chat,
+
         }
     }
 </script>

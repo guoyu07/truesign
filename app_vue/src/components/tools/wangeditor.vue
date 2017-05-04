@@ -1,6 +1,7 @@
 <template lang="html">
     <div :style="{width:editorShow_width+'px',backgroundColor:editorShow_color}">
         <div id="wangeditor" :style="{height: editorShow_height+'px',backgroundColor:editorShow_color}">
+
         </div>
     </div>
 </template>
@@ -12,6 +13,7 @@ export default {
     data() {
         return {
             editor:'',
+            editor2:'',
             content: '',
             updateImageParam:
             {
@@ -71,6 +73,8 @@ export default {
         this.editor =  new wangEditor('wangeditor');
         this.initEditorConfig()
         this.createEditor()
+
+
         $('.wangEditor-container').css('background-color',this.editorShow_color)
         $('.wangEditor-menu-container').css('background-color',this.editorShow_color)
 
@@ -145,19 +149,6 @@ export default {
         createEditor() {
 
             this.editor.create();
-
-
-        },
-        uploadInit(){
-            console.log('uploadInit')
-            // this 即 editor 对象
-            var editor = this.editor;
-            // 触发选择文件的按钮的id
-            var btnId = editor.customUploadBtnId;
-            // 触发选择文件的按钮的父容器的id
-            var containerId = editor.customUploadContainerId;
-
-            var uploader = Qiniu.uploader()
 
 
         },

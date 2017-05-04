@@ -23,15 +23,17 @@ class WebSiteController extends  OAppBaseController
         if(!empty($db_checkUsername_response['statistic']['count']) || !empty($db_checkEmail_response['statistic']['count'])){
             $db_Login_response = $doDao->readSpecified(array('username' => $params['username'], 'email' => $params['email'],'pass' => $params['pass']),array());
             if($db_Login_response['statistic']['count'] == 1){
-                $db_reponse['status']=1;
-                $db_reponse['msg']='登录成功';
-                $db_reponse['website_level']=$db_Login_response['data'][0]['website_level'];
-                unset($db_Login_response['data'][0]['pass']);
-                $db_reponse['website_user']=$db_Login_response['data'][0];
 
-                $doDao->updateByQuery(array('ip'=>$params['ip'],'look_for'=>$params['look_for'],'unique_auth_code'=>$params['unique_auth_code'],'socket_id'=>$params['socket_id']),array('username' => $params['username'], 'email' => $params['email'],'pass' => $params['pass']));
-                $website_encryption_key = \Royal\Util\Decrypt::encryption($params['unique_auth_code'],$db_Login_response['data'][0]['document_id'],0);
-                $db_reponse['website_encryption_key'] = $website_encryption_key;
+                    $db_reponse['status']=1;
+                    $db_reponse['msg']='登录成功';
+                    $db_reponse['website_level']=$db_Login_response['data'][0]['website_level'];
+                    unset($db_Login_response['data'][0]['pass']);
+                    $db_reponse['website_user']=$db_Login_response['data'][0];
+
+                    $doDao->updateByQuery(array('ip'=>$params['ip'],'look_for'=>$params['look_for'],'unique_auth_code'=>$params['unique_auth_code'],'socket_id'=>$params['socket_id']),array('username' => $params['username'], 'email' => $params['email'],'pass' => $params['pass']));
+                    $website_encryption_key = \Royal\Util\Decrypt::encryption($params['unique_auth_code'],$db_Login_response['data'][0]['document_id'],0);
+                    $db_reponse['website_encryption_key'] = $website_encryption_key;
+
             }
             elseif($db_Login_response['statistic']['count'] == 0){
                 $db_reponse['status']=0;
@@ -40,7 +42,7 @@ class WebSiteController extends  OAppBaseController
                     $msg .= '用户名存在;';
                 }
                 if(!empty($db_checkEmail_response['statistic']['count'])){
-                    $msg .= '邮箱存在';
+                    $msg .= '邮箱存在;';
                 }
                 $db_reponse['msg']=$msg;
             }
@@ -62,6 +64,16 @@ class WebSiteController extends  OAppBaseController
 
             }
             else{
+//                $db_check_unique_username = $doDao->readSpecified(array('username'=>$params['username']),array());
+//                if(!empty($db_check_unique_username['statistic']['count'])){
+//                    $db_reponse['status']=0;
+//                    $db_reponse['msg']='用户名 '.$params['username'].' 已存在';
+//                }
+//                $db_check_unique_email = $doDao->readSpecified(array('email'=>$params['email']),array());
+//                if(!empty($db_check_unique_email['statistic']['count'])){
+//                    $db_reponse['status']=0;
+//                    $db_reponse['msg']='邮箱 '.$params['email'].' 已存在';
+//                }
                 $website_level = 1;
                 $params['reg_ip'] = $params['ip'];
                 $params['website_level'] = $website_level;
@@ -85,6 +97,7 @@ class WebSiteController extends  OAppBaseController
                     $db_reponse['sys_msg'] = $db_reg_response;
 
                 }
+
             }
 
         }
@@ -148,7 +161,7 @@ class WebSiteController extends  OAppBaseController
         $this->setResponseBody($db_resposne);
     }
     public function checkLoginByKeyAction(){
-        $params = $this->getParams(array('unique_auth_code','website_encryption_key','ip'),array());
+        $params = $this->getParams(array('unique_auth_code','website_encryption_key','ip','socket_id'),array());
         $this->setResponseBody($params);
         $doDao = new \Royal\Data\DAO(new \Truesign\Adapter\Apps\appWebSiteAdapter());
         $needData = $doDao->readSpecified(array(
@@ -163,7 +176,7 @@ class WebSiteController extends  OAppBaseController
                 if($limit_time>time()){
                     if($tmp_unique_auth_code == $params['unique_auth_code']){
 
-                        $update_params = array('id'=>$needData['data'][0]['document_id'],'ip'=>$params['ip']);
+                        $update_params = array('id'=>$needData['data'][0]['document_id'],'ip'=>$params['ip'],'socket_id'=>$params['socket_id']);
                         $db_update_reponse = $doDao->update($update_params);
 //                        throw new Exception($db_update_reponse,-299);
                         if($db_update_reponse){
@@ -174,7 +187,7 @@ class WebSiteController extends  OAppBaseController
                         }
                         else{
                             $re_check['status'] = 0;
-                            $re_check['msg'] = 'ip信息更新失败';
+                            $re_check['msg'] = 'ip和socket_id信息更新失败';
                         }
                     }
                     else{
@@ -200,4 +213,34 @@ class WebSiteController extends  OAppBaseController
 
     }
 
+    /*
+     * 获取聊天人员列表
+     */
+    public function getchatlistAction()
+    {
+        $doDao = new \Royal\Data\DAO(new \Truesign\Adapter\Apps\appWebSiteAdapter());
+        $search_param = array();
+        $this->setParam('socket_id','neq','',$search_param);
+        $db_reponse = $doDao->readSpecified(array(),array('document_id','username','website_level','socket_id'));
+
+        $this->setResponseBody($db_reponse);
+    }
+
+    /*
+     * 处理邮箱验证
+     * type 为 0 则发送验证码，type 为 1 则验证
+     */
+    public function dealCheckemailCodeAction(){
+        $param = $this->getParams(array(),array('type','checkemailcode','email'));
+
+        if($param['type']){
+            $generate_code = \Royal\Util\Decrypt::encryption($param['email'],$param['email'],0,10*60);
+
+
+        }
+        else{
+
+        }
+        $this->setResponseBody($param);
+    }
 }

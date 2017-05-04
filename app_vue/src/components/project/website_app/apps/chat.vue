@@ -41,7 +41,7 @@
 
                     </li>
                 </transition-group>
-                <div id="send-chat" style="width: 100%;background-color: transparent;height: 10%;position: absolute;bottom: 0;border-top:2px solid white">
+                <div id="send-chat" style="width: 100%;background-color: transparent;height: 10%;position: absolute;bottom: 0;border-top:2px solid rgba(97,97,97,0.29)">
                     <!--<vue-editor v-model="msg" style="position: absolute;z-index:10;background-color: whitesmoke;width: 100%;height: 15%;overflow: auto"  :editorToolbar="customToolbar"-->
 
                     <!--&gt;</vue-editor>-->
@@ -69,8 +69,8 @@
                             <div class="menu" style="background: transparent !important;">
 
                                 <div class="item"  v-for="(item,index) in chat_user_list" style="color: white !important; background: transparent !important;"
-                                     :data-value="item['name']"
-                                     :data-level="item['website_level']"><i>{{ item['name'] }}#{{item['website_level']}}</i></div>
+                                     :data-value="item['username']"
+                                     :data-level="item['website_level']"><i>{{ item['username'] }}#{{item['website_level']}}</i></div>
 
 
                             </div>
@@ -78,16 +78,10 @@
                     </div>
                     <div id="show_user_list_bar">
                         <ol>
-                            <li>总人数 1 </li>
-                            <li><label>①</label> 1 </li>
-                            <li><label>②</label> 1 </li>
-                            <li><label>③</label> 1 </li>
-                            <li><label>④</label> 1 </li>
-                            <li><label>⑤</label> 1 </li>
-                            <li><label>⑥</label> 1 </li>
-                            <li><label>⑦</label> 1 </li>
-                            <li><label>⑧</label> 1 </li>
-                            <li><label>⑨</label> 1 </li>
+                            <li>总人数 {{chat_user_list_num}} </li>
+                            <li v-for="(item,index) in getCurrectLevelListNum">
+                                <label>{{item.label}}</label> {{item.num}}
+                            </li>
                         </ol>
                     </div>
                 </div>
@@ -193,8 +187,8 @@
                             <div class="menu" style="background: transparent !important;">
 
                                 <div class="item"  v-for="(item,index) in chat_user_list" style="color: white !important; background: transparent !important;"
-                                     :data-value="item['name']"
-                                     :data-level="item['website_level']"><i>{{ item['name'] }}#{{item['website_level']}}</i></div>
+                                     :data-value="item['username']"
+                                     :data-level="item['website_level']"><i>{{ item['username'] }}#{{item['website_level']}}</i></div>
 
 
                             </div>
@@ -203,15 +197,10 @@
                     <div id="show_user_list_bar">
                         <ol>
                             <li>总人数 1 </li>
-                            <li><label>①</label> 1 </li>
-                            <li><label>②</label> 1 </li>
-                            <li><label>③</label> 1 </li>
-                            <li><label>④</label> 1 </li>
-                            <li><label>⑤</label> 1 </li>
-                            <li><label>⑥</label> 1 </li>
-                            <li><label>⑦</label> 1 </li>
-                            <li><label>⑧</label> 1 </li>
-                            <li><label>⑨</label> 1 </li>
+                            <li v-for="(item,index) in getCurrectLevelListNum">
+                                <label>{{item.label}}</label> {{item.num}}
+                            </li>
+
                         </ol>
                     </div>
                 </div>
@@ -293,7 +282,8 @@
                         name:3,
                         website_level:3
                     },
-                ]
+                ],
+                chat_user_list_num:0
 
             }
         },
@@ -303,7 +293,92 @@
                 'apprules',
                 'website',
                 'sysinfo'
-            ])
+            ]),
+            getCurrectLevelListNum(n){
+                var level_num = []
+                var level_num_1 = {
+                    label:'①',
+                    num:0
+                }
+                var level_num_2 = {
+                    label:'②',
+                    num:0
+                }
+                var level_num_3 = {
+                    label:'③',
+                    num:0
+                }
+                var level_num_4 = {
+                    label:'④',
+                    num:0
+                }
+                var level_num_5 = {
+                    label:'⑤',
+                    num:0
+                }
+                var level_num_6 = {
+                    label:'⑥',
+                    num:0
+                }
+                var level_num_7 = {
+                    label:'⑦',
+                    num:0
+                }
+                var level_num_8 = {
+                    label:'⑧',
+                    num:0
+                }
+                var level_num_9 = {
+                    label:'⑨',
+                    num:0
+                }
+
+
+                this.chat_user_list.forEach(function (item) {
+                    switch(item.website_level){
+                        case 1:
+                            level_num_1.num += 1
+                            break
+                        case 2:
+                            level_num_2.num += 1
+                            break
+                        case 3:
+                            level_num_3.num += 1
+                            break
+                        case 4:
+                            level_num_4.num += 1
+                            break
+                        case 5:
+                            level_num_5.num += 1
+                            break
+                        case 6:
+                            level_num_6.num += 1
+                            break
+                        case 7:
+                            level_num_7.num += 1
+                            break
+                        case 8:
+                            level_num_8.num += 1
+                            break
+                        case 9:
+                            level_num_9.num += 1
+                            break
+
+                    }
+                })
+                level_num = [
+                    level_num_1,
+                    level_num_2,
+                    level_num_3,
+                    level_num_4,
+                    level_num_5,
+                    level_num_6,
+                    level_num_7,
+                    level_num_8,
+                    level_num_9,
+                ]
+                return level_num
+            }
         },
         mounted(){
             var vm = this
@@ -340,6 +415,12 @@
                         $('#chat-msg')[0].scrollTop = $('#chat-msg')[0].scrollHeight
 
                     })
+                }
+                else if(socket_response.response_type === 'ping'){
+                    console.log('chat->socket-response',data.chat_list)
+                    vm.chat_user_list = data.chat_list.data
+                    vm.chat_user_list_num = data.chat_list.statistic.count
+
                 }
             })
 
@@ -688,12 +769,16 @@ li {
 }
 #show_user_list_bar
     margin 50px 0px
-    text-align left
+    text-align center
 #show_user_list_bar  li
 
     height 30px;
     font-weight 800
     font-size 16px
+    color #52cbd6
+    text-shadow #000 1px 0 0,#000 0 1px 0,#000 -1px 0 0,#000 0 -1px 0;
+    filter saturate(0.5);
+　　　　　　　　　
 #show_user_list_bar  li label
 
     text-align left
@@ -769,7 +854,7 @@ li {
         .chat-msg-min
             min-height 90%
     .send-chat
-        width: 100%;background-color: whitesmoke;height: 200px;border-top:2px solid white; border: none
+        width: 100%;background-color: whitesmoke;height: 200px;
     #msg-ctrl-bar
         position absolute
         left:400px

@@ -233,8 +233,17 @@
                   vm.updateEventFactory({type:'init_socket_send_factory',event:data})
                 }
                 else{
-                  vm.updateEventFactory({type:'socket_send_factory',event:data})
+                  if(data.payload_type === 'submit_form_login'){
+                      vm.updateEventFactory({type:'unshift_socket_send_factory',event:data})
+
+                  }
+                  else{
+                      vm.updateEventFactory({type:'socket_send_factory',event:data})
+
+                  }
                 }
+                console.log(vm.website.socket_id)
+                console.log('on->socket_send',data.payload_type,data)
 
             })
 //
@@ -301,7 +310,7 @@
                     vm.updateWebSite({
                         unique_auth_code:socket_reponse.response_init_data.unique_auth_code,
                         conn_status:1,
-                        socket_id:socket_reponse.response_init_data.socket_id,
+                        socket_id:socket_reponse.response_init_data.socket_id
 
                     })
                     vm.updateSysInfo({
@@ -352,7 +361,7 @@
                     if(vm.website.conn_status && vm.eventfactory.init_socket_send_factory.length > 0){
                         var init_data = vm.eventfactory.init_socket_send_factory.shift()
                         console.log('init_data->',init_data.payload_type,init_data)
-                        vm.updateEventFactory({type:'shift_init_socket_send_factory'})
+//                        vm.updateEventFactory({type:'shift_init_socket_send_factory'})
                         if(init_data){
 //                        console.log('init_socket_send_factory',init_data.payload_type,init_data.yaf,init_data.payload_data)
 
@@ -371,8 +380,8 @@
                         var event_data = vm.eventfactory.socket_send_factory.shift()
                         console.log('event_data->',event_data.payload_type,event_data)
 
-                        vm.updateEventFactory({type:'shift_socket_send_factory'})
-                       
+//                        vm.updateEventFactory({type:'shift_socket_send_factory'})
+
 
                         if(event_data){
                             if(event_data.payload_type === 'c2c_msg'){

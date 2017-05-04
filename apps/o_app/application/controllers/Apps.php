@@ -138,7 +138,7 @@ class appsController extends  OAppBaseController
 
     public function updateAppRuleAction()
     {
-        $params = $this->getParams(array('document_id'),array('appname','applevel','appimg','apptitle'));
+        $params = $this->getParams(array('document_id'),array('appname','applevel','appimg','apptitle','apptable'));
         $params['id'] = $params['document_id'];
         $doDao = new \Royal\Data\DAO(new \Truesign\Adapter\Apps\appRuleAdapter());
         $db_reponse = $doDao->update($params);
