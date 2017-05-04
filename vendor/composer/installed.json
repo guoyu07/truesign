@@ -24,7 +24,7 @@
             "patchwork/utf8": "1.1.*",
             "phpunit/phpunit": "4.0.*"
         },
-        "time": "2014-05-30 16:22:08",
+        "time": "2014-05-30T16:22:08+00:00",
         "type": "library",
         "extra": {
             "branch-alias": {
@@ -75,7 +75,7 @@
         "require-dev": {
             "phpunit/phpunit": "4.0.*"
         },
-        "time": "2014-05-22 21:07:57",
+        "time": "2014-05-22T21:07:57+00:00",
         "type": "library",
         "extra": {
             "branch-alias": {
@@ -126,7 +126,7 @@
             "mockery/mockery": "0.9.*",
             "phpunit/phpunit": "4.0.*"
         },
-        "time": "2014-03-22 20:12:48",
+        "time": "2014-03-22T20:12:48+00:00",
         "type": "library",
         "extra": {
             "branch-alias": {
@@ -177,7 +177,7 @@
             "ext-curl": "Allows access to Webdis when paired with phpiredis",
             "ext-phpiredis": "Allows faster serialization and deserialization of the Redis protocol"
         },
-        "time": "2015-07-30 18:34:15",
+        "time": "2015-07-30T18:34:15+00:00",
         "type": "library",
         "installation-source": "dist",
         "autoload": {
@@ -227,7 +227,7 @@
             "phpunit/phpunit": "~4.0",
             "satooshi/php-coveralls": "dev-master"
         },
-        "time": "2015-12-02 12:06:23",
+        "time": "2015-12-02T12:06:23+00:00",
         "type": "library",
         "installation-source": "dist",
         "autoload": {
@@ -267,7 +267,7 @@
         "suggest": {
             "ext-mbstring": "For best performance"
         },
-        "time": "2016-05-18 14:26:46",
+        "time": "2016-05-18T14:26:46+00:00",
         "type": "library",
         "extra": {
             "branch-alias": {
@@ -340,7 +340,7 @@
             "symfony/config": "",
             "symfony/yaml": ""
         },
-        "time": "2016-08-05 08:37:39",
+        "time": "2016-08-05T08:37:39+00:00",
         "type": "library",
         "extra": {
             "branch-alias": {
@@ -395,7 +395,7 @@
         "require-dev": {
             "phpunit/phpunit": "~4.0|~5.0"
         },
-        "time": "2015-11-04 20:07:17",
+        "time": "2015-11-04T20:07:17+00:00",
         "type": "library",
         "installation-source": "dist",
         "autoload": {
@@ -454,7 +454,7 @@
             "mockery/mockery": "0.9.*",
             "phpunit/phpunit": "4.0.*"
         },
-        "time": "2014-06-01 01:57:51",
+        "time": "2014-06-01T01:57:51+00:00",
         "type": "library",
         "extra": {
             "branch-alias": {
@@ -507,7 +507,7 @@
             "php": ">5.4.0",
             "predis/predis": "1.0.3"
         },
-        "time": "2016-08-30 14:39:54",
+        "time": "2016-08-30T14:39:54+00:00",
         "type": "library",
         "installation-source": "dist",
         "autoload": {
@@ -549,7 +549,7 @@
         "require": {
             "php": ">=5.3.0"
         },
-        "time": "2016-10-10 12:19:37",
+        "time": "2016-10-10T12:19:37+00:00",
         "type": "library",
         "extra": {
             "branch-alias": {
@@ -628,7 +628,7 @@
             "ruflin/elastica": "Allow sending log messages to an Elastic Search server",
             "sentry/sentry": "Allow sending log messages to a Sentry server"
         },
-        "time": "2016-07-29 03:23:52",
+        "time": "2016-07-29T03:23:52+00:00",
         "type": "library",
         "extra": {
             "branch-alias": {
@@ -682,7 +682,7 @@
         "require-dev": {
             "symfony/expression-language": "~2.8|~3.0"
         },
-        "time": "2017-04-04 15:30:56",
+        "time": "2017-04-04T15:30:56+00:00",
         "type": "library",
         "extra": {
             "branch-alias": {
@@ -733,7 +733,7 @@
         "require": {
             "php": ">=5.3.0"
         },
-        "time": "2016-08-06 14:39:51",
+        "time": "2016-08-06T14:39:51+00:00",
         "type": "library",
         "extra": {
             "branch-alias": {
@@ -794,7 +794,7 @@
             "psr/http-message-implementation": "To use the HttpFoundation factory",
             "zendframework/zend-diactoros": "To use the Zend Diactoros factory"
         },
-        "time": "2016-09-14 18:37:20",
+        "time": "2016-09-14T18:37:20+00:00",
         "type": "symfony-bridge",
         "extra": {
             "branch-alias": {
@@ -850,7 +850,7 @@
         "require-dev": {
             "phpunit/phpunit": "^4.0"
         },
-        "time": "2016-12-20 10:07:11",
+        "time": "2016-12-20T10:07:11+00:00",
         "type": "library",
         "extra": {
             "branch-alias": {
@@ -907,7 +907,7 @@
         "require-dev": {
             "phpunit/phpunit": "~4.0"
         },
-        "time": "2017-03-20 17:10:46",
+        "time": "2017-03-20T17:10:46+00:00",
         "type": "library",
         "extra": {
             "branch-alias": {
@@ -974,7 +974,7 @@
             "phpunit/phpunit": "^4.0",
             "psr/log": "^1.0"
         },
-        "time": "2017-02-28 22:50:30",
+        "time": "2017-02-28T22:50:30+00:00",
         "type": "library",
         "extra": {
             "branch-alias": {
@@ -1039,7 +1039,7 @@
             "predis/predis": "~1.0",
             "satooshi/php-coveralls": "~0.6"
         },
-        "time": "2016-10-29 11:16:17",
+        "time": "2016-10-29T11:16:17+00:00",
         "type": "library",
         "extra": {
             "branch-alias": {
@@ -1109,7 +1109,7 @@
             "mockery/mockery": "~0.9",
             "phpunit/phpunit": "~4.0"
         },
-        "time": "2017-04-08 11:39:52",
+        "time": "2017-04-08T11:39:52+00:00",
         "type": "library",
         "installation-source": "dist",
         "autoload": {
@@ -1155,7 +1155,7 @@
         "require": {
             "php": ">=5.3.0"
         },
-        "time": "2015-09-11 15:10:35",
+        "time": "2015-09-11T15:10:35+00:00",
         "type": "library",
         "extra": {
             "branch-alias": {
@@ -1216,7 +1216,7 @@
             "overtrue/phplint": "dev-master",
             "phpunit/phpunit": "~4.0"
         },
-        "time": "2017-04-16 02:32:50",
+        "time": "2017-04-16T02:32:50+00:00",
         "type": "library",
         "installation-source": "dist",
         "autoload": {
@@ -1244,5 +1244,83 @@
             "weixin",
             "weixin-sdk"
         ]
+    },
+    {
+        "name": "phpmailer/phpmailer",
+        "version": "v5.2.23",
+        "version_normalized": "5.2.23.0",
+        "source": {
+            "type": "git",
+            "url": "https://github.com/PHPMailer/PHPMailer.git",
+            "reference": "7115df4a6f76281109ebe352900c42403b728bb4"
+        },
+        "dist": {
+            "type": "zip",
+            "url": "https://files.phpcomposer.com/files/PHPMailer/PHPMailer/7115df4a6f76281109ebe352900c42403b728bb4.zip",
+            "reference": "7115df4a6f76281109ebe352900c42403b728bb4",
+            "shasum": ""
+        },
+        "require": {
+            "php": ">=5.0.0"
+        },
+        "require-dev": {
+            "doctrine/annotations": "1.2.*",
+            "jms/serializer": "0.16.*",
+            "phpdocumentor/phpdocumentor": "2.*",
+            "phpunit/phpunit": "4.8.*",
+            "symfony/debug": "2.8.*",
+            "symfony/filesystem": "2.8.*",
+            "symfony/translation": "2.8.*",
+            "symfony/yaml": "2.8.*",
+            "zendframework/zend-cache": "2.5.1",
+            "zendframework/zend-config": "2.5.1",
+            "zendframework/zend-eventmanager": "2.5.1",
+            "zendframework/zend-filter": "2.5.1",
+            "zendframework/zend-i18n": "2.5.1",
+            "zendframework/zend-json": "2.5.1",
+            "zendframework/zend-math": "2.5.1",
+            "zendframework/zend-serializer": "2.5.*",
+            "zendframework/zend-servicemanager": "2.5.*",
+            "zendframework/zend-stdlib": "2.5.1"
+        },
+        "suggest": {
+            "league/oauth2-google": "Needed for Google XOAUTH2 authentication"
+        },
+        "time": "2017-03-15T19:32:56+00:00",
+        "type": "library",
+        "installation-source": "dist",
+        "autoload": {
+            "classmap": [
+                "class.phpmailer.php",
+                "class.phpmaileroauth.php",
+                "class.phpmaileroauthgoogle.php",
+                "class.smtp.php",
+                "class.pop3.php",
+                "extras/EasyPeasyICS.php",
+                "extras/ntlm_sasl_client.php"
+            ]
+        },
+        "notification-url": "https://packagist.org/downloads/",
+        "license": [
+            "LGPL-2.1"
+        ],
+        "authors": [
+            {
+                "name": "Jim Jagielski",
+                "email": "jimjag@gmail.com"
+            },
+            {
+                "name": "Marcus Bointon",
+                "email": "phpmailer@synchromedia.co.uk"
+            },
+            {
+                "name": "Andy Prevost",
+                "email": "codeworxtech@users.sourceforge.net"
+            },
+            {
+                "name": "Brent R. Matzelle"
+            }
+        ],
+        "description": "PHPMailer is a full-featured email creation and transfer class for PHP"
     }
 ]
