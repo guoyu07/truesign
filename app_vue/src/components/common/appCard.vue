@@ -102,7 +102,9 @@
                 var target_index = target.attr('data-index')
                 var target_id = target.attr('data-id')
                 var target_name = this.itemData.appname
-                this.$router.push('apps/'+target_name)
+                if(target_name==='shadowsocks'){
+                    this.$router.push('apps/'+target_name)
+                }
 //                this.$router.push('apps/shadowsocks')
             },
             delCard(e){

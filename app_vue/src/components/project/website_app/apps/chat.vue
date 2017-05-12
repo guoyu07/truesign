@@ -1,7 +1,8 @@
 <template>
-    <div >
-
-        <div id="chatapp" @mousedown="startdragthis($event)" @mouseup="overdragthis(false,$event)" :style="{top:chat_top}" @click="clickthis($event)" @mouseover="overthis($event)" @mouseout="outthis($event)">
+    <div style="position: absolute">
+            123aaaa
+        <div id="chatapp" @mousedown="startdragthis($event)" @mouseup="overdragthis(false,$event)"
+             :style="{top:'15px',height:sysinfo.screenHeight-30+'px',left:sysinfo.screenWidth-560+'px'}" @click="clickthis($event)" @mouseover="overthis($event)" @mouseout="outthis($event)">
         <div v-if="chat_box_mode===0">
             <div id="msg-div">
                 <transition-group id="chat-msg" class="chat-msg-min" name="chat-msg" tag="div"
@@ -41,12 +42,12 @@
 
                     </li>
                 </transition-group>
-                <div id="send-chat" style="width: 100%;background-color: transparent;height: 10%;position: absolute;bottom: 0;border-top:2px solid rgba(97,97,97,0.29)">
+                <div id="send-chat" style="width: 100%;background-color: transparent;height: 10%;position: absolute;bottom: 0;">
                     <!--<vue-editor v-model="msg" style="position: absolute;z-index:10;background-color: whitesmoke;width: 100%;height: 15%;overflow: auto"  :editorToolbar="customToolbar"-->
 
                     <!--&gt;</vue-editor>-->
                     <input type="text" v-model="msg" style="position: absolute;box-shadow: 0 0 10px #57DCDF;width: 80%;height:28px;bottom:0">
-                    <input type="button" value="发送" @click="send_msg" style="position: absolute;right: 0;bottom:0;height:28px;box-shadow: 0 0 10px #57DCDF;width: 20%;z-index:50">
+                    <input type="button" v-model="btn_send_info" @click="send_msg" style="background-color:rgba(133,133,133,0.54);position: absolute;right: 0;bottom:0;height:28px;box-shadow: 0 0 10px #57DCDF;width: 20%;z-index:50">
                 </div>
 
             </div>
@@ -85,9 +86,9 @@
                         </ol>
                     </div>
                 </div>
-                <div class="lock_top" @click="lock_top_bar" style="vertical-align: middle;text-align: center;padding-top: 10px">
-                    <img v-if="lock_top" src="http://truesign-app.oss-cn-beijing.aliyuncs.com/demo/timg.jpg" width="50px" height="50px"></img>
-                    <img v-else="lock_top" src="http://truesign-app.oss-cn-beijing.aliyuncs.com/demo/u=363288239,1143495983&fm=23&gp=0.jpg" width="50px" height="50px"></img>
+                <div class="lock_top" @click="lock_top_bar" style="text-align: center;cursor: pointer">
+                    <img v-if="lock_top" src="http://truesign-app.oss-cn-beijing.aliyuncs.com/app_img_logo/lock.png" width="50%" height="50%"></img>
+                    <img v-else="lock_top" src="http://truesign-app.oss-cn-beijing.aliyuncs.com/app_img_logo/unlock.png" width="50%" height="50%"></img>
                 </div>
             </div>
         </div>
@@ -205,8 +206,8 @@
                     </div>
                 </div>
                 <div class="lock_top" @click="lock_top_bar" style="vertical-align: middle;text-align: center;padding-top: 10px">
-                    <img v-if="lock_top" src="http://truesign-app.oss-cn-beijing.aliyuncs.com/demo/timg.jpg" width="50px" height="50px"></img>
-                    <img v-else="lock_top" src="http://truesign-app.oss-cn-beijing.aliyuncs.com/demo/u=363288239,1143495983&fm=23&gp=0.jpg" width="50px" height="50px"></img>
+                    <img v-if="lock_top" src="http://truesign-app.oss-cn-beijing.aliyuncs.com/app_img_logo/lock.png" width="50%" height="50%"></img>
+                    <img v-else="lock_top" src="http://truesign-app.oss-cn-beijing.aliyuncs.com/app_img_logo/unlock.png" width="50%" height="50%"></img>
                 </div>
             </div>
         </div>
@@ -236,7 +237,7 @@
                 btn_send_info:'提交',
                 base_editor_height:115,
                 editor_height:115,
-                chat_top:'96%',
+                chat_top:30,
                 lock:false,
                 top_lock:true,
                 msg_text:'',
@@ -283,7 +284,8 @@
                         website_level:3
                     },
                 ],
-                chat_user_list_num:0
+                chat_user_list_num:0,
+
 
             }
         },
@@ -380,8 +382,14 @@
                 return level_num
             }
         },
+        created(){
+            var vm = this
+
+        },
         mounted(){
             var vm = this
+
+
             this.$root.eventHub.$on('editor_content',function (data) {
                 //console.log('editor_content',data)
                 vm.msg = data.html
@@ -417,7 +425,7 @@
                     })
                 }
                 else if(socket_response.response_type === 'ping'){
-                    console.log('chat->socket-response',data.chat_list)
+//                    console.log('chat->socket-response',data.chat_list)
                     vm.chat_user_list = data.chat_list.data
                     vm.chat_user_list_num = data.chat_list.statistic.count
 
@@ -431,7 +439,7 @@
                 'updateSysInfo',
                 'updateAppRules',
             ]),
-            changeModeShow(mode=0){
+            changeModeShow(mode=0,autop=false){
                 if(mode===1){
                     let $chat_box_target = $('#chatapp')
                     let page_width = window.innerWidth
@@ -447,27 +455,24 @@
                     $('#msg-ctrl-bar').css('left',page_width-15-150+'px')
                     $('#msg-ctrl-bar').css('width','150px')
                     this.lock = true
-//                    Vue.nextTick(function () {
-//                        $('#quill-container').height(112)
-//                        $('.send-chat').height(150)
-//
-//                    })
+
 
                 }
                 else{
                     let $chat_box_target = $('#chatapp')
-                    let page_width = window.innerWidth
-                    var show_be_left = page_width-550
+//                    let page_width = window.innerWidth
+                    var show_be_left = this.sysinfo.screenWidth-550
                     $chat_box_target.css('left',show_be_left+'px')
+                    if(autop){
+                        $chat_box_target.css('top',this.sysinfo.screenHeight+'px')
+
+                    }
                     $chat_box_target.width(550)
                     $('#msg-div').width(400)
                     $('#msg-ctrl-bar').css('left','400px')
                     this.lock = false
                 }
-                Vue.nextTick(function () {
-                    $('#chat-msg')[0].scrollTop = $('#chat-msg')[0].scrollHeight
 
-                })
             },
             changeMode(){
                 this.chat_box_mode = (this.chat_box_mode===0)?1:0
@@ -659,16 +664,16 @@
 //                })
             },
             overthis(){
-                this.chat_top = '2%'
+                this.chat_top = '20px'
             },
             outthis(){
 //                if(!this.top_lock){
                 if(!this.lock_top){
-                    this.chat_top = '98%'
+                    this.chat_top = this.sysinfo.screenHeight-30
 
                 }
                 else{
-                    this.chat_top = '2%'
+                    this.chat_top = '20px'
                 }
 //
 //                }
@@ -750,6 +755,9 @@
     }
 </script>
 <style lang="stylus" rel="stylesheet/stylus">
+.lock_top{
+    display none
+}
 #wangeditor p{
     line-height 1.4
 }
@@ -790,10 +798,8 @@ li {
     right 5px
     min-width 300px
     width 550px
-    height 96%
-    top 10%
     box-shadow: 0 0 10px #fffefd
-    transition top 1.1s
+    /*transition top 1.1s*/
     #msg-div
         position absolute
         width 400px;

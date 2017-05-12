@@ -1,5 +1,7 @@
 import * as types from './mutation-types'
 import LocalVoucher from '../api/localVoucherTools.js'
+var _ = require('lodash');
+
 LocalVoucher.checkStorageMode()
 LocalVoucher.initEngine()
 // 对于vuex的用法，其实理解了流程就行
@@ -10,7 +12,7 @@ LocalVoucher.initEngine()
 export const mutations = {
   // 这里的data指提交时：
   // 从/api/login传回的user对象，其中包含name,messeage等信息
-  [types.WEBSITE](state, data) {
+    [types.WEBSITE](state, data) {
     if(data.unique_auth_code){
         state.WebSite.unique_auth_code = data.unique_auth_code;
 
@@ -68,6 +70,20 @@ export const mutations = {
     if(data.apprules){
         state.WebSite.apprules = data.apprules
     }
+    /*
+    处理app状态
+     */
+    if(data.appstatus){
+        if(data.type==='add'){
+            state.WebSite.appstatus.push(data.appstatus)
+            state.WebSite.appstatus = _.uniq(state.WebSite.appstatus)
+        }
+        else if(data.type === 'rm'){
+            state.WebSite.appstatus = _.remove(state.WebSite.appstatus,function (v) {
+                return v === data.appstatus
+            })
+        }
+    }
 
 
 
@@ -78,18 +94,24 @@ export const mutations = {
     // 一定要明白vuex这类库的本质作用，它极大的增加了前端逻辑处理的可能性
 
     // localStorage.setItem('session', data.session.user)
-  },
-  [types.APPRULES](state,data) {
+    },
+    [types.APPRULES](state,data) {
       if(data.apprules){
           state.AppRules = data.apprules
       }
-  },
-  [types.SYSINFO](state,data) {
+    },
+    [types.SYSINFO](state,data) {
       if(data.ip){
           state.SysInfo.ip = data.ip
       }
-  },
-  [types.EVENTFACTORY](state,data) {
+      if(data.screenHeight){
+          state.SysInfo.screenHeight = data.screenHeight
+      }
+      if(data.screenWidth){
+          state.SysInfo.screenWidth = data.screenWidth
+      }
+    },
+    [types.EVENTFACTORY](state,data) {
     if(data.type === 'init_socket_send_factory'){
         state.EventFactory.init_socket_send_factory.push(data.event)
     }
@@ -107,7 +129,21 @@ export const mutations = {
     // else if(data.type === 'shift_socket_send_factory'){
     //     state.EventFactory.socket_send_factory.shift()
     // }
-  },
+    },
+    [types.APPSHOW](state,data){
+        if(data.chat){
+            state.AppShow.chat = data.chat
+        }
+        else if(data.chat === false){
+            state.AppShow.chat = data.chat
+        }
+        if(data.music){
+            state.AppShow.music = data.music
+        }
+        else if(data.music === false){
+            state.AppShow.music = data.music
+        }
+    }
 
 }
 

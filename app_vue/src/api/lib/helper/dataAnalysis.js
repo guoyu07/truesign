@@ -11,7 +11,7 @@ export function analysis_socket_response(response) {
 
     }
 
-    if(analysis_reponse.response_type !== 'c2c_msg' && analysis_reponse.response_type!== 'ping'  ){
+    if(analysis_reponse.response_type !== 'c2c_msg' && analysis_reponse.response_type!== 'ping'  && analysis_reponse.response_type!== 'get_flow_data'){
          if(response.data.response){
              let yaf_reponse = {
                  error_response : 0,

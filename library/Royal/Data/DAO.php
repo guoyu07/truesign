@@ -259,11 +259,14 @@ class DAO
         return $table;
     }
 
-    public function readSpecified($params, $specified, $pager = array(), $sorter = array(), $ignoreEs = false)
+    public function readSpecified($params, $specified, $pager = array(), $sorter = array(), $ignoreEs = false,$ignoreDel = false)
     {
-        if(!isset($params['if_delete'])){
-            $params['if_delete'] = 0;
+        if(!$ignoreDel){
+            if(!isset($params['if_delete'])){
+                $params['if_delete'] = 0;
+            }
         }
+
         $eagle_or = '';
         $eagle_or_filed ='';
         if(isset($params['eagle_or'])) {
@@ -358,7 +361,6 @@ class DAO
 //                    var_dump($condition);
 
             }
-//print_r($condition);
             // db query.
             $db = $this->getDb();
 
@@ -408,7 +410,6 @@ class DAO
             'statistic' => $stat,
             'data' => $result
         );
-
         return $this->adapter->wrapListResult($retResult);
     }
 
@@ -1014,8 +1015,15 @@ class DAO
 
     public function dbCount($params,$field='1')
     {
-        return $this->getDb()->getCountByCondition($this->getTable($this->adapter->table()),
+        return $this->getDb()->getCountByCondition($this->getTable($this->adapter->table_Prefix().$this->adapter->table()),
             $this->paramsToCondition($params),$field);
+    }
+
+    public function dbSum($sum_field, $condition, $groupby_fields)
+    {
+        $condition = $this->paramsToCondition($condition);
+        $db_sum = $this->getDb()->getManualGroupSum($this->getTable($this->adapter->table_Prefix().$this->adapter->table()),$sum_field, $condition, $groupby_fields);
+        return $db_sum[0]['sum_file'];
     }
 
     public function increaseField($field, $query, $inc = 1)

@@ -74,11 +74,18 @@ const SOCKET_CLIENT  =  {
             reader.readAsText(event.data, 'utf-8');
             reader.onload = function (e) {
                 event.datastr = reader.result
-                var response_data  =  jQuery.parseJSON(event.datastr);
+                var response_data  =  JSON.parse(event.datastr)
                 let status = response_data.status
                 let type = response_data.type
-                // console.log('...............'+type+'...............')
+                if(type !== 'ping'){
+                    console.log('...............'+type+'...............')
+
+                }
+                // 提交所有消息给持续链接层initsocket 防止页面切换$off 掉 socket_response事件
+                that.data.this_vue.$root.eventHub.$emit('base_socket_response',response_data)
+                //    分发消息给各个分支层
                 that.data.this_vue.$root.eventHub.$emit('socket_response',response_data)
+
             }
 
 

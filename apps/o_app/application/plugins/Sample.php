@@ -34,6 +34,9 @@ class SamplePlugin extends Yaf_Plugin_Abstract {
         if($controller == 'website' && $action == 'dealcheckemailcode'){
             return;
         }
+        if($controller == 'shadowsocks'){
+            return;
+        }
         if($controller == 'common' || $controller == 'wechat'  ){
             return;
         }

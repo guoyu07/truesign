@@ -1,14 +1,14 @@
 <template>
   <div class="top_router_view "  >
         <!--<input v-model="on_logo_pos" style="position: absolute;z-index:100000;background-color: white;color: black!important;margin-left: 200px">-->
-        <div id="logo_scope" :class="{'logo_effect_center_out':on_logo_pos === 'center'}"
+        <div id="logo_scope" :class="{'logo_effect_center_out':on_logo_pos === 'center' || on_logo_pos==='relative_center'}"
              :style="{
             zIndex:'100',
             borderRadius:center_logo.borderRadius+'px',width:center_logo.width+15+'px',height:center_logo.height+15+'px',top:center_logo.top+'px',bottom:center_logo.bottom+'px',left:center_logo.left+'px',right:center_logo.right+'px'}">
             <div id="center_logo" :style="{transform:'rotate('+logo_angle+'deg)',width:center_logo.width+'px',height:center_logo.height+'px',
             borderRadius:center_logo.borderRadius+'px',
             borderWidth:(borderStyle.borderTop+'px ' + borderStyle.borderRight+'px ' + borderStyle.borderBottom+'px ' + borderStyle.borderLeft+'px')}">
-                <div :class="{'i_bar':always_class,'logo_effect_center_in':on_logo_pos === 'center','logo_effect_other':on_logo_pos === 'left_top'}"
+                <div :class="{'i_bar':always_class,'logo_effect_center_in':on_logo_pos === 'center' || on_logo_pos==='relative_center','logo_effect_other':on_logo_pos === 'left_top'}"
                      style="position: absolute;width: 100%;height: 100%;">
                     <div class="i_bar_content" :style="{backgroundColor:colorCtrl.i_bar_content}"></div>
                     <div class="i_bar_dot1" :style="{backgroundColor:colorCtrl.i_bar_dot1}"></div>
@@ -17,9 +17,9 @@
 
 
             </div>
-            <div v-if="parseInt(logo_width)<100" style="text-align: center;color: #00b000 !important;" class="i_bar logo_effect_center_in">
-                ●●●●●●
-           </div>
+            <!--<div v-if="parseInt(logo_width)<100" style="text-align: center;color: #00b000 !important;" class="i_bar logo_effect_center_in">-->
+                <!--●●●●●●-->
+           <!--</div>-->
 
         </div>
 
@@ -118,6 +118,20 @@
                 else if(this.on_logo_pos === 'center'){
                     this.center_logo.right = 0
                     this.center_logo.bottom = 0
+                    this.center_logo.left = vm.center.x-115/2
+                    this.center_logo.top = vm.center.y-115/2
+                    this.center_logo.borderRadius = 100
+                    this.center_logo.width = parseInt(vm.logo_width)
+                    this.center_logo.height = parseInt(vm.logo_width)
+
+                    this.borderStyle.borderLeft = 20
+                    this.borderStyle.borderRight = 20
+                    this.borderStyle.borderTop = 20
+                    this.borderStyle.borderBottom = 20
+                }
+                else if(this.on_logo_pos === 'relative_center'){
+                    this.center_logo.right = 0
+                    this.center_logo.bottom = 0
                     this.center_logo.left = 0
                     this.center_logo.top = 0
                     this.center_logo.borderRadius = 100
@@ -128,6 +142,7 @@
                     this.borderStyle.borderRight = 20
                     this.borderStyle.borderTop = 20
                     this.borderStyle.borderBottom = 20
+                    $('#logo_scope').css('margin','15px 75px')
                 }
 
             },
@@ -175,9 +190,9 @@
 <style lang="stylus" rel="stylesheet/stylus">
 
 #logo_scope
-    transition all 0.5s linear
+    transition all 1s linear
     position: absolute;
-    margin: auto;
+    /*margin: auto;*/
     z-index:11;
     box-shadow: 0 0 20px #57DCDF
     background-color: rgba(245, 245, 245, 0.33)

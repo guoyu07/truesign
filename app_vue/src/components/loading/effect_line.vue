@@ -1,31 +1,29 @@
 <template>
-  <div class="top_router_view "  style="">
+  <div class="top_router_view "  :style="{position: 'absolute','height': screenHeight+'px',overflow: 'hidden'}">
+      <!--<div-->
+              <!--style="border-bottom: 1000px solid red;-->
+                    <!--border-left: 1000px solid transparent;-->
+                    <!--width: 0;height: 0;-->
+                    <!--position: absolute;-->
+                    <!--margin-left: 100px;-->
+                    <!--margin-top: 10000px;-->
+<!--">-->
 
-      <!--<input v-model="effect_line_top" style="position: absolute;z-index: 11;background-color: white;color: black !important;left:50%">-->
-      <!--<div>-->
-          <!--v-on:before-enter="beforeEnter"-->
-          <!--v-on:enter="enter"-->
-          <!--v-on:after-enter="afterEnter"-->
-          <!--v-on:enter-cancelled="enterCancelled"-->
-          <!--v-on:before-leave="beforeLeave"-->
-          <!--v-on:leave="leave"-->
-          <!--v-on:after-leave="afterLeave"-->
-          <!--v-on:leave-cancelled="leaveCancelled"-->
       <!--</div>-->
-          <div class="triangle-bottomright animation_line"
-                :style="{
+      <div class="triangle-bottomright animation_line"
+           :style="{
                 position: 'absolute',
                 zIndex :2,
                 borderBottom:borderStyle.borderBottom*effect_line_rate +'px solid #3A4552',
                 borderLeft:borderStyle.borderLeft*effect_line_rate +'px solid transparent',
                 marginLeft:-(margin.x-parseInt(trim))+'px',
                 marginTop:-(margin.y-parseInt(trim))+'px',
-                transform:'rotate('+effect_rotate_deg+'deg)'
+                transform:'rotate('+effect_rotate_deg+'deg)',
                 }"
-          >
-          </div>
-        <div class="triangle-topleft animation_line"
-             :style="{
+      >
+      </div>
+      <div class="triangle-topleft animation_line"
+           :style="{
                 position: 'absolute',
                 zIndex :2,
                 borderTop:borderStyle.borderTop*effect_line_rate+'px solid #3A4552',
@@ -35,30 +33,29 @@
                 transform:'rotate('+effect_rotate_deg+'deg)'
                }">
 
-        </div>
-        <div id="effect_line_color" v-if="effect_line_top>0"
-             :style="{
+      </div>
+      <div id="effect_line_color" v-if="effect_line_top>0"
+           :style="{
                 width: '100%',
                 height: '100%',
                 backgroundColor: '#57DCDF',
                 position: 'absolute',
                 zIndex: 1,
                 top:(100-effect_line_top)+'%'
-    //            top:'100%'
+        //            top:'100%'
                 }" >
-        </div>
-         <!--<effectlogo  :logo_pos='logo_pos'></effectlogo>-->
+      </div>
 
   </div>
 </template>
 
 <script>
-    import effectlogo from './effect_logo.vue'
+//    import effectlogo from './effect_logo.vue'
     export default  {
   		data () {
   			return {
-                screenWidth: window.innerWidth,   // 这里是给到了一个默认值 （这个很重要）
-                screenHeight:window.innerHeight,  // 这里是给到了一个默认值 （这个很重要）
+//                screenWidth: window.innerWidth,   // 这里是给到了一个默认值 （这个很重要）
+//                screenHeight:window.innerHeight,  // 这里是给到了一个默认值 （这个很重要）
                 borderStyle:{
                     borderBottom:100,
                     borderRight:100,
@@ -94,9 +91,20 @@
                     height:100,
                     borderRadius:50
                 },
-                logo_pos:'center'
+                logo_pos:'center',
+                screenWidth:document.body.clientWidth,
+                screenHeight:document.body.clientHeight
   			}
   		},
+        created(){
+            var vm = this
+            this.$root.eventHub.$on('screenWidth2screenHeight',function (data) {
+                var width2height = data.split(",")
+                vm.screenWidth = parseInt(width2height[0])
+                vm.screenHeight = parseInt(width2height[1])
+
+            })
+        },
         props:{
             effect_line_top:{
                 type: String,
@@ -234,7 +242,7 @@
 //            console.log(this.screenHeight)
         },
         components:{
-            effectlogo
+//            effectlogo
 
         },
         watch:{

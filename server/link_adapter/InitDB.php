@@ -23,11 +23,10 @@ $adapters = array();
 
 $filesnames = scandir(APPLICATION_PATH.'/common/Adapter/');
 foreach ($filesnames as $k=>$dir){
-    if(in_array($dir,array('.','..','Base'))){
+    if(in_array($dir,array('.','..','Base','Sjtt'))){
         unset($filesnames[$k]);
     }
 }
-
 foreach ($filesnames as $name){
     $adapterFiles =APPLICATION_PATH.'/common/Adapter/'.$name.'/*Adapter.php';
     foreach (glob($adapterFiles) as $realfile) {
@@ -42,6 +41,8 @@ foreach ($filesnames as $name){
     }
 
 }
+
+
 
 $model = new DbConfig();
 //刷新库

@@ -13,23 +13,23 @@
 
         <div class="signup-form-field" style="opacity: 0; ">
           <label for="id_name" style="opacity: 0;">Your Name</label>
-          <input type="text" v-model="website_login_from.name" name="name" id="id_name"  @focus="focusthis(1,$event)" @focusout="focusoutthis(1,$event)" placeholder="Enter Your Name" autocomplete="off" style="visibility: visible; opacity: 1;">
+          <input type="text" @keyup="checkforminput('name',$event)" v-model="website_login_from.name" name="name" id="id_name"  @focus="focusthis(1,$event)" @focusout="focusoutthis(1,$event)" placeholder="Enter Your Name" autocomplete="off" style="visibility: visible; opacity: 1;">
           <div class="line topline"><div class="line-body"></div></div>
         </div>
         <div class="signup-form-field" style="opacity: 0; ">
           <label for="id_email" style="opacity: 0; ">Email</label>
-          <input type="text" v-model="website_login_from.email" name="email" id="id_email" @focus="focusthis(2,$event)" @focusout="focusoutthis(2,$event)" placeholder="Enter Your E-Mail Address" autocomplete="off">
+          <input type="text" @keyup="checkforminput('email',$event)" v-model="website_login_from.email" name="email" id="id_email" @focus="focusthis(2,$event)" @focusout="focusoutthis(2,$event)" placeholder="Enter Your E-Mail Address" autocomplete="off">
           <div class="line secline"><div class="line-body"></div></div>
         </div>
         <div class="signup-form-field" style="opacity: 0;">
             <label for="id_pass" style="opacity: 0">PassWord</label>
-            <input type="text" v-model="website_login_from.pass" name="pass" id="id_pass"  @focus="focusthis(3,$event)" @focusout="focusoutthis(3,$event)" placeholder="Your Pass" autocomplete="off">
+            <input type="text" @keyup="checkforminput('pass',$event)" v-model="website_login_from.pass" name="pass" id="id_pass"  @focus="focusthis(3,$event)" @focusout="focusoutthis(3,$event)" placeholder="Your Pass" autocomplete="off">
             <span class="signup-form-success-message" style="visibility: hidden;"></span>
             <div class="line thirdline"><div class="line-body"></div></div>
         </div>
         <div class="signup-form-field" style="opacity: 0;">
           <label for="id_searching" style="opacity: 0">Searching For</label>
-          <input type="text" v-model="website_login_from.look_for" name="searching_for"  id="id_searching" @focus="focusthis(4,$event)" @focusout="focusoutthis(4,$event)" placeholder="What are you searching for?" autocomplete="off">
+          <input type="text" @keyup="checkforminput('look_for',$event)" v-model="website_login_from.look_for" name="searching_for"  id="id_searching" @focus="focusthis(4,$event)" @focusout="focusoutthis(4,$event)" placeholder="What are you searching for?" autocomplete="off">
           <span class="signup-form-success-message" style="visibility: hidden;"></span>
           <div class="line forthline"><div class="line-body"></div></div>
         </div>
@@ -156,12 +156,20 @@
 
 
         },
+        beforeDestroy(){
+            this.$root.eventHub.$off('socket_response')
+        },
         methods:{
             ...mapActions([
                 'updateWebSite',
                 'updateSysInfo',
                 'updateAppRules',
             ]),
+            checkforminput(type,e){
+//                console.log('checkforminput')
+//                var word_str = this.website_login_from.name+this.website_login_from.pass+this.website_login_from.email+this.website_login_from.look_for
+//                this.$root.eventHub.$emit('change_login_form_words',word_str)
+            },
             change_signup_form(){
               alert(1)
             },
@@ -347,7 +355,7 @@
     input
         font-family: "Graphik Web", sans-serif !important
         word-spacing 3px
-        letter-spacing 3px
+        letter-spacing 1px
         transition all 1.5s
     input:hover
         color rgba(210, 204, 212, 0.33) !important

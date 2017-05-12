@@ -1,17 +1,26 @@
 <template>
 
     <div class="top_router_view" style="background-color: transparent;" >
+
+        <div v-if="website.login_status && website.website_user.emailstatus" style="" >
+            <chat v-if="appshow.chat"></chat>
+
+            <settingbar style="z-index:110"></settingbar>
+        </div>
         <div v-if="!server_status" style="line-height:40px;color:black !important; position: absolute;width: 100%;height: 100%;z-index:19;background-color: whitesmoke;text-align: center;font-weight: 800;font-size: 32px">
             <span style="position:absolute;top:20%;transform: translateX(-50%)" v-html="server_error_msg" > </span>
         </div>
         <p class="sec_router_tip">main</p>
-        <tipbar :show="show_tip" :content="tipcontent" :time="tiptime" :width="tipwidth"></tipbar>
+        <tipbar :show="show_tip" :content="tipcontent" :time="tiptime" :width="tipwidth" :bgcolor="bgcolor"></tipbar>
+        <keep-alive>
+            <initsocket   :style="{position:'absolute',zIndex: '20',visibility:show_conn,transition: 'all 1s'}" ></initsocket>
+        </keep-alive>
+        <transition  name="fade" mode="out-in" >
+            <!--暂时找不到方法阻止切换页面后eventhub.$on 多次触发的问题暂时使用keep-alive-->
+            <!--已经解决，$off 取消注册事件后新加载的页面$on 同一事件要放到mounted，否则无法重新注册 原因beforeDestroy 在新组建created之后执行-->
 
-        <initsocket   :style="{position:'absolute',zIndex: '20',visibility:show_conn,transition: 'all 1s'}" ></initsocket>
-
-        <transition name="fade" mode="out-in">
             <!--<keep-alive>-->
-            <router-view></router-view>
+                <router-view></router-view>
             <!--</keep-alive>-->
         </transition>
 
@@ -26,6 +35,8 @@
     import initsocket from '../../communicationModule/initSocket.vue'
     import tipbar from '../../common/tipbar.vue'
     import { analysis_socket_response } from '../../../api/lib/helper/dataAnalysis'
+    import chat from './apps/chat.vue'
+    import settingbar from '../../common/settingBar.vue'
 
     export default {
         data(){
@@ -35,8 +46,10 @@
                 tipcontent:'',
                 tiptime:'1500',
                 tipwidth:'300',
+                bgcolor:'rgba(73, 166, 169, 0.26)',
                 server_status:1,
                 server_error_msg:'',
+                now_path:'',
             }
         },
         computed: {
@@ -44,12 +57,20 @@
             ...mapGetters([
                 'apprules',
                 'website',
-                'sysinfo'
+                'sysinfo',
+                'appshow'
             ])
         },
         created(){
             var vm = this
-            this.$root.eventHub.$on('socket_response',function (data) {
+
+
+
+        },
+        mounted(){
+
+            var vm = this
+            this.$root.eventHub.$on('base_socket_response',function (data) {
                 var socket_response = analysis_socket_response(data)
 //                if(socket_response.response_type !== 'ping'){
 //                    console.log('main->socket_response','*** '+socket_response.response_type+' ***')
@@ -82,12 +103,6 @@
                     }
                 }
             })
-
-
-        },
-        mounted(){
-
-            var vm = this
             this.$root.eventHub.$on('checkloginbykey',function (data) {
 //                console.log('on->checkloginbykey')
                 vm.checkloginbykey()
@@ -101,6 +116,7 @@
                 vm.tipwidth = data.tipwidth
                 vm.tiptime = data.tiptime
                 vm.show_tip = true
+                vm.bgcolor = data.bgcolor
                 setTimeout(function () {
                     vm.show_tip = false
                     vm.tipwidth = '300'
@@ -130,6 +146,10 @@
 //                vm.loop_check_status()
 //            },2000)
 
+        },
+        beforeDestroy(){
+            console.log('shadowsocks->beforeDestory')
+            this.$root.eventHub.$off('socket_response')
         },
         methods:{
             ...mapActions([
@@ -176,7 +196,9 @@
         components:{
 
             initsocket,
-            tipbar
+            tipbar,
+            chat,
+            settingbar
 
         }
     }

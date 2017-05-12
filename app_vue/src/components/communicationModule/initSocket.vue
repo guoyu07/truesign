@@ -1,5 +1,5 @@
 <template>
-  <div class="top_router_view">
+  <div class="top_router_view" :style="{width: sysinfo.screenWidth,height:sysinfo.screenWidth,overflow:'hidden'}">>
     <div  id="live_ctrl_terminal">
       <div id="ctrl_conn">
         <div id="link_server" style="box-shadow: 0 0 10px #57DCDF">
@@ -167,6 +167,13 @@
 
             })
             this.autoInit()
+
+
+        },
+        mounted(){
+            var vm = this
+
+
             this.$root.eventHub.$on('conn_status',function (data) {
                 if(!data){
                     vm.updateWebSite({
@@ -182,9 +189,6 @@
 
             })
 
-        },
-        mounted(){
-            var vm = this
 
             $('.menu').css('background','transparent')
             $('.item').css('background','transparent')
@@ -225,7 +229,6 @@
             this.$root.eventHub.$on('socket_send',function (data) {
 
 
-
                 var payload_data_final = Object.assign(vm.website,data.payload_data)
                 data.payload_data = payload_data_final
 
@@ -242,8 +245,8 @@
 
                   }
                 }
-                console.log(vm.website.socket_id)
-                console.log('on->socket_send',data.payload_type,data)
+//                console.log(vm.website.socket_id)
+//                console.log('on->socket_send',data.payload_type,data)
 
             })
 //
@@ -301,9 +304,12 @@
              */
 //
             var i = 1;
-            this.$root.eventHub.$on('socket_response',function (data) {
+            this.$root.eventHub.$on('base_socket_response',function (data) {
 //                console.log('initSocket->socket_reponse',data)
                 var socket_reponse = analysis_socket_response(data)
+                if(socket_reponse.response_type === 'get_shadowsocks_node'){
+                    console.log('initsocket->get_shadowsocks_node')
+                }
                 if(socket_reponse.response_type === 'self_init' && socket_reponse.response_init_data.init_status){
 
 
@@ -339,7 +345,7 @@
                     }
                 }
                 if(socket_reponse.response_type === 'ping'){
-                    console.log('ping',i)
+//                    console.log('ping',i)
                     i++
                     if(!vm.website.login_status){
                         if(vm.$route.path === '/project/website_main/website_index'){
@@ -360,7 +366,7 @@
                     }
                     if(vm.website.conn_status && vm.eventfactory.init_socket_send_factory.length > 0){
                         var init_data = vm.eventfactory.init_socket_send_factory.shift()
-                        console.log('init_data->',init_data.payload_type,init_data)
+//                        console.log('init_data->',init_data.payload_type,init_data)
 //                        vm.updateEventFactory({type:'shift_init_socket_send_factory'})
                         if(init_data){
 //                        console.log('init_socket_send_factory',init_data.payload_type,init_data.yaf,init_data.payload_data)
@@ -378,7 +384,7 @@
 
                     if(vm.website.conn_status && vm.website.isbindapps.length > 0 &&  vm.eventfactory.socket_send_factory.length > 0){
                         var event_data = vm.eventfactory.socket_send_factory.shift()
-                        console.log('event_data->',event_data.payload_type,event_data)
+//                        console.log('event_data->',event_data.payload_type,event_data)
 
 //                        vm.updateEventFactory({type:'shift_socket_send_factory'})
 

@@ -24,6 +24,13 @@ class socket_server{
     public $packMaxLen;
     public $server_ip;
     public $res_mq_log;
+    public $config;
+    public $redis;
+    public $redis_host;
+    public $redis_port;
+
+
+    public $shadowsocks_client;
     public $ids=[];
     public function __construct(string $uname, string $configFile='/config/service.ini', string $env='websocket'){
         if (!defined('IS_CLI')) {
@@ -36,14 +43,20 @@ class socket_server{
         $this->env = $this->initEnv($env);
         $this->server_ip=current(swoole_get_local_ip());
         $config = $this->getConfig(APPLICATION_PATH . $configFile);
+        $this->config = $config;
 //        var_dump($config);
         $config['log_file']=sprintf($config['log_file'],$uname);
         $this->host = $config['host'];
         $this->port = (int)$config['port'];
+        $this->redis_host = $config['redis_host'];
+        $this->redis_port = (int)$config['redis_port'];
+
+
         unset($config['host'], $config['port']);
         $config['package_max_length'] = intval($config['package_max_length']);
         $this->packMaxLen=$config['package_max_length'];
         $this->sw = new \swoole_websocket_server($this->host, $this->port);
+
         var_dump($config);
         $this->sw->set($config);
         $this->bind($config);
@@ -56,6 +69,9 @@ class socket_server{
     public function run(){
 
         $this->sw->start();
+
+
+
     }
 
     /*
@@ -78,22 +94,13 @@ class socket_server{
         $this->sw->on('WorkerError',[$this,'onWorkerError']);
         $this->sw->on('ManagerStop',[$this,'onManagerStop']);
         $this->sw->on('ManagerStart',[$this,'onManagerStart']);
-        $this->sw->on("open",array($this,"onOpen"));
-//        $this->sw->on('open', function (\swoole_websocket_server $_server, $request) {
-//            $fd = $request->fd;
-//            $_server->tick(2000, function($id) use ($fd, $_server) {
-//                var_dump('tick');
-//                var_dump($fd);
-//                var_dump($id);
-//            });
-//        });
-        $this->sw->on("message",array($this,"onMessage"));
-//        $this->sw->on("Task",array($this,"onTask"));
-//        $this->sw->on("Finish",array($this,"onFinish"));
+        $this->sw->on("open",[$this,"onOpen"]);
+        $this->sw->on("message",[$this,"onMessage"]);
+
 
         if(isset($config['task_worker_num']) && boolval($config['task_worker_num'])){
             $this->sw->on('Task',[$this,'onTask']);
-            $this->sw->on("Finish",array($this,"onFinish"));
+            $this->sw->on("Finish",[$this,"onFinish"]);
 
         }
 //
@@ -296,56 +303,27 @@ class socket_server{
         $this->log("->[onStart] SERVER_TYPE=".$this->env." PHP=".PHP_VERSION." Yaf=".\YAF_VERSION." swoole=".SWOOLE_VERSION." Master-Pid={$this->sw->master_pid} Manager-Pid={$this->sw->manager_pid}");
         swoole_set_process_name("php-{$this->uname}:master");
     }
-    public function onTask(\swoole_server $serv, $task_id, $src_worker_id, $data){
-        echo "【s】onTask \n";
-
-//        echo "[s]task=>\n".json_encode($data,256)."\n";
-//        $clients = $serv->connections;
-//        var_dump($data['to']);
-        if (count($data['to']) > 0) {
-            $clients = $data['to'];
-            foreach ($clients as $fd) {
-                if (!in_array($fd, $data['except'])) {
-                    $serv->push($fd,$data['data'],2);
-                }
-            }
-        }
-        else{
-
-            echo "循环向所有人发送消息\n";
-
-            foreach($serv->connections as $fd)
-            {
-                echo "当前fd=>".$fd."\n";
-                $serv->push($fd,$data['data'],2);
-            }
-        }
-
-
-
-    }
     public function onWorkerStart($serv, $worker_id){
+            /*
+                 * 初始化 db yaf redis 等
+             */
 
 
-        $this->ids=[]; // reload时清空
-        if ($serv->taskworker) {
-            $type = 'task';
+            $this->ids=[]; // reload时清空
+            if ($serv->taskworker) {
+                $type = 'task';
 
-//            $configs = $this->initYaf();
-//            // 这里处理DB, REDIS, MQ等常驻资源
-//            $res = new resources($configs);
-//            \Yaf_Registry::set('res_db_ubuntu', $res->getDB('ubuntu'));
-            //\Yaf_Registry::set('res_redis_self', $res->getRedis('self'));
-            //$this->res_mq_log=$res->getMQexchange('ubuntu','Eapilogs');
-        } else {
-            $type = 'work';
+
+            } else {
+                $type = 'work';
             $loader=\Yaf_Loader::getInstance(APPLICATION_PATH.'/application/library');
             $loader::import('helper.php');
-
             if(empty($this->yaf)){
                 $this->initYaf();
             }
+
             $this->heartbeat($serv,'');
+
         }
         swoole_set_process_name("php-{$this->uname}:{$type}:" . $worker_id);
         $this->log("->[on<".$type.">Start] Type: {$type} WorkerId: {$worker_id} WorkerPid: {$serv->worker_pid}");
@@ -370,8 +348,6 @@ class socket_server{
         $this->log("->[onPipeMessage] FromWorkerId: {$from_worker_id} Message:".strlen($message));
     }
 
-
-
     /*
      * 业务层函数
      */
@@ -379,10 +355,7 @@ class socket_server{
         echo "【s】onOpen=> \n";
         echo "【s】server=> \n";
         echo "【s】request=> \n";
-
-
         $header_app = $request->server['path_info'];
-
         $query_string = $request->server['query_string'];
         parse_str($query_string,$query_arr);
 
@@ -412,8 +385,6 @@ class socket_server{
                 echo "生成唯一识别id->".$unique_auth_code.PHP_EOL;
 
             }
-////            var_dump($unique_auth_code);
-//
             $sysinfo = [];
             $sysinfo['fd']=$request->fd;
             $sysinfo['ua']=$request->data;
@@ -447,30 +418,18 @@ class socket_server{
     }
     public function onConnect(\swoole_server $serv, $fd, $from_id){
         echo '【onConnect】'."\n";
-//        $this->ids[$fd]=dk_get_next_id(); // 这里看情况上否要用个定时器做清理
-//        $this->log(implode('|',[$this->ids[$fd],'onConnect',$fd,$from_id]));
     }
     public function onReceive(\swoole_server $serv, $fd, $from_id, $data){
         echo "【s】onReceive \n";
 
     }
     public function onMessage( $serv , $request ){
-//    public function onMessage(\swoole_websocket_server $serv, swoole_websocket_frame $request){
+        echo '====================》【onmessage】'.PHP_EOL;
         $receive = json_decode($request->data,true);
-
-//        echo "【s】onMessage=> ".$receive['payload_type'].PHP_EOL;
-//        var_dump($request);
-        if($receive['payload_type'] == 'checkloginbykey'){
-            var_dump($receive);
-        }
         if($receive['payload_type'] == 'c2c_msg'){
-//            var_dump('c2c_msg');
             $payload_type = $receive['payload_type'];
             $to_id = $receive['to'];
-//            $connections = $serv->connection_list(0,100);
-//            var_dump($connections);
             $response_content = array('msg'=>$receive['msg'],'website_user'=>$receive['payload_data']['website_user'],'timestamp'=>$receive['timestamp'],'connections'=>$connections);
-//            $response_content = $receive['msg'];
         }
         else{
             if($receive['yaf'] != 'none'){
@@ -487,6 +446,7 @@ class socket_server{
                 ));
 
                 $response_content=$this->runYaf($yaf_payload);
+
                 $to_id = $receive['to']?$receive['to']:$request->fd;
 
             }
@@ -528,15 +488,8 @@ class socket_server{
                 else{
                     $response_content = $receive['payload_data'];
                 }
-
-
-
             }
         }
-
-
-
-
         $from = [
             'fd_type'=>'client',
             'fd'=>$request->fd,
@@ -578,14 +531,44 @@ class socket_server{
         }
 
 
-//        if ($receive['to'] != 0) {
-//            $task['to'] = [$receive['to']];
-//        }
 
         $serv->task($task);
 
 
+
     }
+    public function onTask(\swoole_server $serv, $task_id, $src_worker_id, $data){
+        echo "【s】onTask \n";
+
+
+        if (count($data['to']) > 0) {
+            $clients = $data['to'];
+            foreach ($clients as $fd) {
+                if (!in_array($fd, $data['except'])) {
+                    $serv->push($fd,$data['data'],2);
+                }
+            }
+        }
+        else{
+
+            echo "循环向所有人发送消息\n";
+
+            foreach($serv->connections as $fd)
+            {
+                echo "当前fd=>".$fd."\n";
+                $serv->push($fd,$data['data'],2);
+            }
+        }
+
+        /*
+         * 处理shadowsocks服务端通信
+         */
+
+        $this->sw->reload();
+
+
+    }
+
     public function onClose(\swoole_server $serv, $fd, $from_id){
         echo "【s】onCLose \n";
 //        $this->log(implode('|',[$this->ids[$fd],'onClose',$fd,$from_id]));
@@ -609,25 +592,6 @@ class socket_server{
             $this->yaf->bootstrap();
         }
 
-
-//        $this->yaf=new \Yaf_Application(array(
-//            'application' => array(
-//                'directory' => APPLICATION_PATH . '/Apps/'.$app.'/application',
-//                'system' => array(
-//                    'use_spl_autoload' => 1
-//                ),
-//                'dispatcher' => array(
-//                    'catchException' => true
-//                ),
-//            )
-//        ));
-//        $configs = self::loadConfig();
-//
-//        $this->yaf=new \Yaf_Application(['application'=>$configs->get('application')->toArray()]);
-//
-//        $this->yaf->bootstrap();
-//        $configs = self::loadConfig();
-//        return $configs;
     }
     private function buildYaf($moudle,$controller,$action,$payload_data,$s_task_id=1,$payload_type='未定义'){
         $yaf_payload = [];
@@ -662,15 +626,9 @@ class socket_server{
         $request->task_id=$taskId;
 
         $response = $this->yaf->getDispatcher()->returnResponse(true)->dispatch($request);
-//        if (!@property_exists($response, 'contentBody') || !is_array($response->contentBody)) {
-////            throw new \Exception('Not set or not an array: $response->body');
-//            var_dump($response);
-//        }
-//        $this->sw->reload($only_reload_taskworkrer = true);
-        $this->sw->reload();
-//        if(!$reload){
-//            $this->sw->reload();
-//        }
+
+//        $this->sw->reload();
+
         return $response->contentBody;
     }
 
@@ -701,15 +659,11 @@ class socket_server{
      */
     public function heartbeat($serv,$request)
     {
-//        echo 'pre heartbeat'.PHP_EOL;
-//        echo 'heartbeat'.PHP_EOL;
-
         if($request){
             $fd = $request->fd;
             if(!empty($fd)){
                 $serv->tick(1500, function() use ($fd, $serv) {
                     $chat_list = $this->getChatList();
-
                     $ping_reponse = array();
                     $ping_reponse['type'] = 'ping';
                     $ping_reponse['chat_list'] = ($chat_list['response_data']->data);
@@ -722,9 +676,7 @@ class socket_server{
             foreach($serv->connections as $fd)
             {
                 $serv->tick(1500, function() use ($fd, $serv) {
-//                    echo 'heartbeat->'.$fd.PHP_EOL;
                     $chat_list = $this->getChatList();
-//                    var_dump($chat_list);
                     $ping_reponse = array();
                     $ping_reponse['type'] = 'ping';
                     $ping_reponse['chat_list'] = ($chat_list['response_data']->data);

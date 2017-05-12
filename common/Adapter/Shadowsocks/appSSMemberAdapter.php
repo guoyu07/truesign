@@ -6,12 +6,12 @@
  * Time: 下午4:50
  */
 
-namespace Truesign\Adapter\Apps\app;
+namespace Truesign\Adapter\Shadowsocks;
 use Truesign\Adapter\Base\DbLibraryAdapter;
 use Royal\Data\Field;
 
 
-class appShadowsocksAdapter extends DbLibraryAdapter
+class appSSMemberAdapter extends DbLibraryAdapter
 {
     public function database()
     {
@@ -22,7 +22,7 @@ class appShadowsocksAdapter extends DbLibraryAdapter
     }
     public function table_Prefix()
     {
-        return 'app_';
+        return 'app_ss_';
     }
     public function tableAccess()
     {
@@ -31,13 +31,13 @@ class appShadowsocksAdapter extends DbLibraryAdapter
 
     public function table()
     {
-        return 'shadowsocks';
+        return 'ssmember';
 
     }
 
     public function tableDesc()
     {
-        return 'shadowsocks代理';
+        return 'ss用户';
     }
 
     public function tableInit()
@@ -46,15 +46,11 @@ class appShadowsocksAdapter extends DbLibraryAdapter
             ->def('document_id')->map('id')->int()->desc('id')
             ->def('userid')->map('userid')->int()->desc('用户id')
             ->def('username')->map('username')->varchar(100)->desc('用户名')
-            ->def('email')->map('email')->varchar(100)->desc('邮箱')
-            ->def('look_for')->map('look_for')->varchar(1000)->desc('目的')
-            ->def('headpic')->map('headpic')->varchar(1000)->desc('头像')
-            ->def('reg_ip')->map('reg_ip')->varchar(100)->desc('注册ip')
-            ->def('ip')->map('ip')->varchar(100)->desc('最新登录ip')
-            ->def('website_level')->map('website_level')->int()->desc('网站权限等级')
-            ->def('mark')->map('mark')->int()->desc('备注')
-            ->def('unique_auth_code')->map('unique_auth_code')->varchar(100)->desc('唯一识别码')
-            ->def('socket_id')->map('socket_id')->varchar(10000)->desc('socket 客户端id')
+            ->def('email')->map('email')->varchar(200)->desc('邮箱')
+            ->def('conn_pass')->map('conn_pass')->varchar(100)->desc('连接密码')
+            ->def('port')->map('port')->varchar(10)->desc('端口')->unique()
+            ->def('flow')->map('flow')->varchar(10)->desc('流量(M)')
+            ->def('status')->map('status')->int()->desc('状态')
             ->end();
     }
 

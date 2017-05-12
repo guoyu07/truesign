@@ -21,6 +21,7 @@ const state = {
         login_status:0,
         socket_id:0,
         apprules:[],
+        appstatus:[],
         access_user:(LocalVoucher.getValue('WebSite.access_user'))?(JSON.parse(LocalVoucher.getValue('WebSite.access_user'))):'',
         isbindapps:(LocalVoucher.getValue('WebSite.isbindapps'))?(JSON.parse(LocalVoucher.getValue('WebSite.isbindapps'))):'',
         website_user:(LocalVoucher.getValue('WebSite.website_user'))?(JSON.parse(LocalVoucher.getValue('WebSite.website_user'))):'',
@@ -28,8 +29,14 @@ const state = {
     },
     AppRules:[],
     SysInfo:{
-        ip:'0.0.0.0'
+        ip:'0.0.0.0',
+        screenWidth:0,
+        screenHeight:0,
     },
+    AppShow:{
+        chat:false,
+        music:false
+    }
 
 }
 

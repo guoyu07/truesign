@@ -1,0 +1,10 @@
+{
+  "service_port": 6001,
+  "address":"133.130.107.156",
+  "dsn":"mysql:host=127.0.0.1;dbname=truesign_app",
+  "db_user": "root",
+  "db_password": "zhuotong",
+  "interval_time": 1000,
+  "redis_ip":"120.24.54.208",
+  "redis_port":"6379"
+}

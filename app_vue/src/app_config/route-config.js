@@ -17,10 +17,12 @@ const awesome = resolve => require(['../components/test/awesome.vue'], resolve)
 const line = resolve => require(['../components/test/line.vue'], resolve)
 // const iview = resolve => require(['../components/project/iview.vue'], resolve)
 // const webgl = resolve => require(['../components/test/webgl.vue'], resolve)
-const echat = resolve => require(['../components/test/echat.vue'], resolve)
+const echart = resolve => require(['../components/common/echart.vue'], resolve)
 const element = resolve => require(['../components/project/element.vue'], resolve)
 // const spa = resolve => require(['../components/project/spa/spa.vue'], resolve)
 const test = resolve => require(['../components/test/test.vue'], resolve)
+const test_child1 = resolve => require(['../components/test/test_child1.vue'], resolve)
+const test_child2 = resolve => require(['../components/test/test_child2.vue'], resolve)
 
 
 
@@ -43,7 +45,7 @@ const gdmap = resolve => require(['../components/project/gdmap.vue'], resolve)
 // const router_effect_from = resolve => require(['../components/effect/router_effect_from.vue'], resolve)
 // const router_effect_to = resolve => require(['../components/effect/router_effect_to.vue'], resolve)
 // const dynamic_effect = resolve => require(['../components/effect/dynamic_effect.vue'], resolve)
-// const common = resolve => require(['../components/common/common.vue'], resolve)
+const common = resolve => require(['../components/common/common.vue'], resolve)
 // const slidermenu = resolve => require(['../components/common/slidermenu.vue'], resolve)
 // const mainpage = resolve => require(['../components/mainpage/mainpage.vue'], resolve)
 // const fullpage = resolve => require(['../components/mainpage/fullpage.vue'], resolve)
@@ -153,25 +155,25 @@ const routes = [
 
         ]
     },
-    // {
-    //     name: 'common',
-    //     path: '/common',
-    //     meta: {
-    //         title: 'common'
-    //     },
-    //     component: common,
-    //     children:[
-    //         {
-    //             name: 'slidermenu',
-    //             path: 'slidermenu',
-    //             meta: {
-    //                 title: 'slidermenu'
-    //             },
-    //             component: slidermenu
-    //         },
-    //
-    //     ]
-    // },
+    {
+        name: 'common',
+        path: '/common',
+        meta: {
+            title: 'common'
+        },
+        component: common,
+        children:[
+            {
+                name: 'echart',
+                path: 'echart',
+                meta: {
+                    title: 'echart'
+                },
+                component: echart
+            },
+
+        ]
+    },
     // {
     //     name: 'mainpage',
     //     path: '/mainpage',
@@ -200,6 +202,22 @@ const routes = [
         component:test,
         children:[
             {
+                name: 'test_child1',
+                path: 'test_child1',
+                meta: {
+                    title: 'test_child1'
+                },
+                component: test_child1
+            },
+            {
+                name: 'test_child2',
+                path: 'test_child2',
+                meta: {
+                    title: 'test_child2'
+                },
+                component: test_child2
+            },
+            {
                 name: 'line',
                 path: 'line',
                 meta: {
@@ -215,6 +233,7 @@ const routes = [
                 },
                 component: demo
             },
+
             {
                 name: 'semantic',
                 path: 'semantic',
@@ -401,10 +420,10 @@ const routes = [
                         component: wechat
                     },
                     {
-                        name: 'chat',
-                        path: 'chat',
+                        name: 'apps/chat',
+                        path: 'apps/chat',
                         meta: {
-                            title: 'chat'
+                            title: 'apps/chat'
                         },
                         component: chat
                     },

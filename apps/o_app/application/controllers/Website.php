@@ -235,7 +235,7 @@ class WebSiteController extends  OAppBaseController
 
         if(!$param['type']){
             $generate_code = \Royal\Util\Decrypt::encryption($param['email'],$param['email'],0,10*60);
-            $send_response = $this->sendMail('137847127@qq.com','137847127@qq.com','测试',$generate_code);
+            $send_response = $this->sendMail($param['email'],$param['email'],'邮箱识别码',$generate_code);
             $response['status'] = $send_response;
             $response['msg'] = $param['email'].' 验证识别码'.($send_response?'发送成功':'发送失败');
         }

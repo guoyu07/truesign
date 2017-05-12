@@ -54,7 +54,8 @@
     const  TWEEN = require('tween.js/src/tween.js')
     const TweenLite = require('gsap/TweenLite')
     // load the modern build
-    var _ = require('lodash-node');
+//    var _ = require('lodash-node');
+    var _ = require('lodash');
     // or the compatibility build
 //    var _ = require('lodash-node/compat');
     // or a method category

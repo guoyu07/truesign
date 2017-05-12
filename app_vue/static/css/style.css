@@ -5,7 +5,7 @@ html,body{
     background:rgba(0, 0, 0, 0.35)
 }
 body{
-    overflow:hidden
+    overflow:auto;
 }
 nav{
     display:none
@@ -55,10 +55,11 @@ nav{
 }
 
 .top_router_view{
-    position: fixed;
+    position: static;
     width: 100%;
     height: 100%;
-    z-index:10
+    /*background-color: red;*/
+    /*z-index:10*/
     /*border: red 2px solid;*/
 }
 .top_router_tip{

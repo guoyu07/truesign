@@ -1,6 +1,6 @@
 <template>
     <transition name="shifting-half-fade" v-if="show" mode="out-in">
-        <div id="tipbar"  :style="{width:width+'px'}">
+        <div id="tipbar"  :style="{width:width+'px',backgroundColor:bgcolor}">
 
             {{ content }}
 
@@ -46,6 +46,10 @@
                 required: false,
 
             },
+            bgcolor:{
+                default: 'rgba(73, 166, 169, 0.26)',
+                required: false,
+            }
 
         },
         mounted(){

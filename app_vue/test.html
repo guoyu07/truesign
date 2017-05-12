@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <script src="http://lib.sinaapp.com/js/jquery/1.9.1/jquery-1.9.1.min.js"></script>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<script>
+    var str = '{"status":200,"type":"get_shadowsocks_node","data":{"response":{"datatype":"object","response_data":{"code":200,"info":"","data":{"statistic":{"count":2},"data":[{"document_id":18,"server_ip":"0.0.0.0","location":"\u4e2d\u56fd\u9999\u6e2f1","encryption_way":"rc4-md5","load_number":0,"server_status":"","re_show_status":""},{"document_id":20,"server_ip":"0.0.0.01","location":"\u4e2d\u56fd\u9999\u6e2f","encryption_way":"rc4-md5","load_number":0,"server_status":"","re_show_status":""}]}}},"relation":{"from":{"fd_type":"client","fd":5},"to":{"id_type":"client","id":5},"me":{"id":5}}}}'
+    document.write(str)
+    document.write("<br>")
+    console.log(jQuery.parseJSON(str))
+</script>
+</body>
+</html>

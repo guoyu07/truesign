@@ -286,12 +286,21 @@ class MySQL {
         return $this->get_results($sql, array_merge($values2,$values1));
     }
 
-    public function getManualGroupSum($table,$sum_field, $condition, $fields) {
+    public function getManualGroupSum($table,$sum_field, $condition, $groupby_fields) {
+
         list($condition, $values) = $this->getConditionPair($condition);
-        if (empty($condition))
-            $sql = sprintf('SELECT %s,sum($s) as Fnum FROM %s group by %s', $fields,$sum_field, $table,$fields);
-        else
-            $sql = sprintf('SELECT %s,sum($s) as Fnum FROM %s  WHERE %s group by %s', $fields,$sum_field, $table,$condition,$fields);
+
+        if($groupby_fields){
+            if (empty($condition))
+                $sql = sprintf('SELECT %s,sum(%s) as Fnum FROM %s group by %s', $groupby_fields,$sum_field, $table,$groupby_fields);
+            else
+                $sql = sprintf('SELECT %s,sum(%s) as Fnum FROM %s  WHERE %s group by %s', $groupby_fields,$sum_field, $table,$condition,$groupby_fields);
+        }
+        else{
+            $sql = sprintf('SELECT sum(%s) as sum_file FROM %s  WHERE %s', $sum_field, $table,$condition);
+
+        }
+
         return $this->get_results($sql, $values);
     }
 

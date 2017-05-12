@@ -1,7 +1,8 @@
 <template>
     <div class="top_router_view">
         <p class="top_router_tip">COMMON</p>
-        <slidermenu ></slidermenu>
+        <!--<slidermenu ></slidermenu>-->
+        <router-view></router-view>
     </div>
 </template>
 

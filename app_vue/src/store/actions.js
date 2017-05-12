@@ -21,6 +21,9 @@ const actions = {
   updateEventFactory({commit}, data){
     commit(types.EVENTFACTORY,data);
   },
+  updateAppShow({commit}, data){
+      commit(types.APPSHOW,data);
+  },
 
 }
 

@@ -139,7 +139,7 @@ class Remote {
             return static::$connections['redis'][$prefixName] = $redis;
         }
 
-        $redis = new Redis();
+        $redis = new \Redis();
         if (empty($redisConfig)) {
             throw new Exception(sprintf('config of redis %s is not found', $name), -9998);
         }

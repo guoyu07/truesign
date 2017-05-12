@@ -2,6 +2,7 @@ import $ from 'jquery'
 
 require('../../static/css/reset.css')
 require('../../static/css/style.css')
+require('../../static/css/style.sass')
 require('../../static/css/fade.styl')
 require('../../static/css/line.styl')
 require('../../static/css/triangle.css')

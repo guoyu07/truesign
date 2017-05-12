@@ -2,9 +2,9 @@
     <div  class="top_router_view" style="overflow: hidden" >
 
         <div v-if="website.login_status && website.website_user.emailstatus" style="">
-            <chat style="z-index:20"></chat>
 
-            <p class="third_router_tip">青鸾峰</p>
+
+            <p class="third_router_tip">Beta</p>
             <div  id="searchBar"
                   style="
              display: inline-block;
@@ -21,9 +21,9 @@
                 <input v-if="parseInt(website.website_level) >= 3" type="button" @click="addapp" value="APP+" style="width:80px;margin-top: -15px;text-align:center;position: absolute;right: 80PX;top:18px; ">
                 <input v-if="parseInt(website.website_level) >= 3" type="button" @click="touchctrl" value="CTRL" style="width:80px;margin-top: -15px;text-align:center;position: absolute;right: 0;top:18px; ">
             </div>
-            <div id="cards-show"  style="height:90%;overflow-y:auto;position: absolute;margin-top:60px;width:100%;">
+            <div id="cards-show"  style="height:90%;overflow-y:auto;overflow-x:hidden;position: absolute;margin-top:60px;width:100%;">
 
-                <transition-group id="card-list" name="card-list" tag="div" style="position:absolute;width:1400px;height:auto;left: 50%;margin-left: -700px;"
+                <transition-group id="card-list" name="card-list" tag="div" style="position:absolute;min-width:600px;width:1400px;height:auto;left: 50%;margin-left: -700px;overflow: hidden"
                                   v-on:before-enter="beforeEnter"
                                   v-on:enter="enter"
                                   v-on:after-enter="afterEnter"
@@ -37,7 +37,8 @@
         </div>
         <div >
             <effectlogo class="effectlogo"    :logo_pos='logo_pos' :style="effectlogostyle" ></effectlogo>
-            <div v-if="website.login_status && !website.website_user.emailstatus" style="width: 300px;;position: absolute;left: 50%;top:45%;text-align: left;font-family: Monaco">
+            <div v-if="website.login_status && !website.website_user.emailstatus"
+                 style="width: 300px;;position: absolute;left: 50%;top:45%;text-align: left;font-family: Monaco;z-index:20">
                 <input style="border:none;padding: 10px 1px;width: 80%;font-family: Monaco" v-model="website.website_user.email"/>
                 <input style="text-align: center;border: 1px dotted;padding: 2px 1px;width: " v-model="checkemailcode" placeholder="输入邮箱验证码"/>
                 <i @click="send_checkemail_code" style="color: #57dcdf;cursor: pointer;font-size: 14px;padding: 0px 8px;border: 2px solid;font-family: Monaco">发送</i>
@@ -67,7 +68,6 @@
     import axios from 'axios'
     import {axios_config} from '../../../api/axiosApi'
 //    import LocalVoucher from '../../../api/LocalVoucherTools'
-    import chat from './apps/chat.vue'
 
 
     export default {
@@ -86,7 +86,9 @@
                 socket_ready:false,
                 logo_pos:'center',
                 checkemailcode:'',
-                effectlogostyle:{}
+                effectlogostyle:{
+                    zIndex:'-1'
+                }
             }
         },
         computed: {
@@ -117,6 +119,13 @@
             },
         },
         created(){
+
+            var vm = this
+
+
+
+        },
+        mounted(){
             var vm = this
 
             this.$root.eventHub.$on('socket_ready',function (data) {
@@ -124,7 +133,6 @@
             })
             this.$root.eventHub.$on('socket_response',function (data) {
                 var analysis_response = analysis_socket_response(data)
-//                console.log('app_square->socket_response',data)
 
                 if(analysis_response.response_type==='appCard_changeimg'){
                     var uri = analysis_response.response_oss_uri
@@ -153,7 +161,6 @@
                         })
                 }
                 else if(analysis_response.response_type==='get_appCards'){
-//                    console.log('getapprules->',analysis_response.reponse_data)
                     vm.appCards = []
                     analysis_response.reponse_data.forEach(function (item) {
                         vm.appCards.push(item)
@@ -267,17 +274,16 @@
             })
 
 
-
-        },
-        mounted(){
-            var vm = this
             if(this.website.login_status && !this.website.website_user.emailstatus){
                 this.effectlogostyle =
                     {
-                        zIndex:'-1',
-                        marginLeft: '-100px'
+                        zIndex:'10',
+                        position: 'absolute',
+                        left:'-100px'
+
                     }
             }
+
             if(this.website.login_status && this.website.website_user.emailstatus){
                 setTimeout(function () {
                     vm.logo_pos = 'left_top'
@@ -315,12 +321,16 @@
 
 
         },
+        beforeDestroy(){
+            this.$root.eventHub.$off('socket_response')
+        },
         methods:{
             ...mapActions([
                 'updateWebSite',
                 'updateSysInfo',
                 'updateAppRules',
             ]),
+
             send_checkemail_code(){
                 var vm = this
                 var params = {
@@ -385,7 +395,6 @@
                         action:'getAppRule'
                     }
                 }
-//                console.log('getapprules')
                 vm.$root.eventHub.$emit('socket_send',params)
             },
             getWebSiteLevel(){
@@ -452,7 +461,6 @@
         components:{
             effectlogo,
             appCard,
-            chat,
 
         }
     }

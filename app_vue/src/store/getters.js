@@ -14,6 +14,9 @@ const getters = {
     },
     eventfactory : state => {
         return state.EventFactory
+    },
+    appshow: state => {
+        return state.AppShow
     }
 }
 
