@@ -9,6 +9,7 @@ Vue.use(VueRouter)
 /* eslint-disable no-new */
 const router = new VueRouter({
   mode: 'history',
+  // mode: 'abstract',
   // mode: 'hash',
   // linkActiveClass: 'u-link--Active',
   // base: '/app/',

@@ -19,9 +19,10 @@ $saver = array();
 
 $client = new swoole_client(SWOOLE_SOCK_UDP, SWOOLE_SOCK_ASYNC);
 $client->on("connect", function(swoole_client $cli) use($dsn,$db_user,$db_password,$address,$redis) {
-    echo 'connect UDO to '.$address.PHP_EOL;
+    echo 'connect UDP to '.$address.PHP_EOL;
     $ss_member = json_decode($redis->get('ss_member'),true);
     if(sizeof($ss_member)>0){
+        echo '存在需要添加的端口数据:'.json_encode($ss_member).PHP_EOL;
         foreach($ss_member as $array){
             $attr = array(
                 'server_port' => (int)$array['port'],
@@ -29,15 +30,21 @@ $client->on("connect", function(swoole_client $cli) use($dsn,$db_user,$db_passwo
             );
             $jsonAttr = 'add:'.json_encode($attr);
             $cli->send($jsonAttr);
+
         }
+        $redis->del('ss_member');
+        echo '需要添加的端口数据发送完成，已清空redis -> ss_member'.PHP_EOL;
+    }
+    else{
+        echo '不存在需要添加的端口数据'.PHP_EOL;
     }
 
 });
-$client->on("receive", function(swoole_client $cli, $data){
-    echo "Receive: $data\n";
-    // stat: {"8001":11370}
-    sleep(1);
-});
+$client->on("receive", function(swoole_client $cli, $data)  use($dsn,$db_user,$db_password){
+        echo "base---------------->Receive: $data\n";
+//        updateData($data,$dsn,$db_user,$db_password);
+        sleep(1);
+    });
 $client->on("error", function(swoole_client $cli){
     echo "error\n";
 });
@@ -88,11 +95,11 @@ swoole_timer_tick($interval_time,function() use($service_port,$address,$dsn,$db_
         }
 
 
-        
+
 
     });
     $client->on("receive", function(swoole_client $cli, $data)  use($dsn,$db_user,$db_password){
-        echo "Receive: $data\n";
+        echo "loop---------------->Receive: : $data\n";
         updateData($data,$dsn,$db_user,$db_password);
         sleep(1);
     });

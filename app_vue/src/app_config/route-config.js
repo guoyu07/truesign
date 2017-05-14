@@ -39,7 +39,8 @@ const project = resolve => require(['../components/project/project.vue'], resolv
 const gdmap = resolve => require(['../components/project/gdmap.vue'], resolve)
 // const video = resolve => require(['../components/project/video.vue'], resolve)
 //
-// const effect = resolve => require(['../components/effect/effect.vue'], resolve)
+const effect = resolve => require(['../components/effect/effect.vue'], resolve)
+const threejs_wormhole = resolve => require(['../components/effect/threejs_wormhole.vue'], resolve)
 // const particles = resolve => require(['../components/effect/particles.vue'], resolve)
 // const blackhole = resolve => require(['../components/effect/blackhole.vue'], resolve)
 // const router_effect_from = resolve => require(['../components/effect/router_effect_from.vue'], resolve)
@@ -443,58 +444,24 @@ const routes = [
         ]
     },
     //
-    // {
-    //     name: 'effect',
-    //     path: '/effect',
-    //     meta: {
-    //         title: 'effect'
-    //     },
-    //     component: effect,
-    //     children:[
-    //         {
-    //             name: 'dynamic_effect',
-    //             path: 'dynamic_effect',
-    //             meta: {
-    //                 title: 'dynamic_effect'
-    //             },
-    //             component: dynamic_effect
-    //         },
-    //         {
-    //             name: 'particles',
-    //             path: 'particles',
-    //             meta: {
-    //                 title: 'particles'
-    //             },
-    //             component: particles
-    //         },
-    //         {
-    //             name: 'router_effect_from',
-    //             path: 'router_effect_from',
-    //             meta: {
-    //                 title: 'router_effect_from'
-    //             },
-    //             component: router_effect_from
-    //         },
-    //         {
-    //             name: 'router_effect_to',
-    //             path: 'router_effect_to',
-    //             meta: {
-    //                 title: 'router_effect_to'
-    //             },
-    //             component: router_effect_to
-    //         },
-    //         {
-    //             name: 'blackhole',
-    //             path: 'blackhole',
-    //             meta: {
-    //                 title: 'blackhole'
-    //             },
-    //             component: blackhole
-    //         },
-    //
-    //
-    //     ]
-    // },
+    {
+        name: 'effect',
+        path: '/effect',
+        meta: {
+            title: 'effect'
+        },
+        component: effect,
+        children:[
+            {
+                name: 'threejs_wormhole',
+                path: 'threejs_wormhole',
+                meta: {
+                    title: 'threejs_wormhole'
+                },
+                component: threejs_wormhole
+            },
+        ]
+    },
     {
         name: 'loading',
         path: '/loading',

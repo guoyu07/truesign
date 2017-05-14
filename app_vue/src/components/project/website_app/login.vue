@@ -1,6 +1,7 @@
 <template>
   <div class="top_router_view" style="background-color: transparent !important;">
-    <particles></particles>
+    <!--<particles></particles>-->
+      <threejs_wormhole></threejs_wormhole>
     <div id="welcombtn" style="z-index: 11; ">
 
       <input type="button" @mouseover="overthis($event)" @mouseleave="levelthis($event)" @click="clickthis($event)" value="SIGN UP OR SIGN IN FOR EARLY ACCESS"/>
@@ -66,6 +67,7 @@
     import { mapGetters,mapActions } from 'vuex'
     const ramjet = require('ramjet');
     import particles from './../../effect/particles.vue'
+    import threejs_wormhole from './../../effect/threejs_wormhole.vue'
 //    import LocalVoucher from '../../../api/LocalVoucherTools'
     import { analysis_socket_response } from '../../../api/lib/helper/dataAnalysis'
   	export default {
@@ -332,7 +334,8 @@
 
         components:{
             particles,
-            effectlogo
+            effectlogo,
+            threejs_wormhole
         }
   	}
 </script>
