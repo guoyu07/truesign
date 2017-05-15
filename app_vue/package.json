@@ -47,7 +47,8 @@
     "vue-router": "^2.3.1",
     "vue2-editor": "^2.0.24",
     "vuex": "^2.3.1",
-    "wangeditor": "^2.1.23"
+    "wangeditor": "^2.1.23",
+    "webpack-dev-server": "^2.4.5"
   },
   "devDependencies": {
     "autoprefixer": "^6.7.2",

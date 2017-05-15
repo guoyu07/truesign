@@ -25,7 +25,7 @@ export default {
   data () {
         return {
             show_nav: true,
-            show_menu:true,
+            show_menu:false,
             msg: 'hello world',
             transitionName: '',
             screenWidth:document.body.clientWidth,

@@ -4,39 +4,39 @@
 // import DemoVuexState from './components/DemoVuexState.vue'
 import {router_spa} from "../components/project/spa/router-spa"
 const home = resolve => require(['../components/Home.vue'], resolve)
-const demo = resolve => require(['../components/test/Demo.vue'], resolve)
+// const demo = resolve => require(['../components/test/Demo.vue'], resolve)
 //
-const semantic = resolve => require(['../components/test/semantic.vue'], resolve)
-const awesome = resolve => require(['../components/test/awesome.vue'], resolve)
+// const semantic = resolve => require(['../components/test/semantic.vue'], resolve)
+// const awesome = resolve => require(['../components/test/awesome.vue'], resolve)
 // const alert = resolve => require(['../components/test/alert.vue'], resolve)
 // const vuex = resolve => require(['../components/test/vuex.vue'], resolve)
 // const vuex2 = resolve => require(['../components/test/vuex2.vue'], resolve)
 // const mint_ui = resolve => require(['../components/project/mint-ui.vue'], resolve)
 // const websocket = resolve => require(['../components/test/websocket.vue'], resolve)
 // const socket_io = resolve => require(['../components/test/socket-io.vue'], resolve)
-const line = resolve => require(['../components/test/line.vue'], resolve)
+// const line = resolve => require(['../components/test/line.vue'], resolve)
 // const iview = resolve => require(['../components/project/iview.vue'], resolve)
 // const webgl = resolve => require(['../components/test/webgl.vue'], resolve)
 const echart = resolve => require(['../components/common/echart.vue'], resolve)
-const element = resolve => require(['../components/project/element.vue'], resolve)
+// const element = resolve => require(['../components/project/element.vue'], resolve)
 // const spa = resolve => require(['../components/project/spa/spa.vue'], resolve)
-const test = resolve => require(['../components/test/test.vue'], resolve)
-const test_child1 = resolve => require(['../components/test/test_child1.vue'], resolve)
-const test_child2 = resolve => require(['../components/test/test_child2.vue'], resolve)
+// const test = resolve => require(['../components/test/test.vue'], resolve)
+// const test_child1 = resolve => require(['../components/test/test_child1.vue'], resolve)
+// const test_child2 = resolve => require(['../components/test/test_child2.vue'], resolve)
 
 
 
-const canvas = resolve => require(['../components/project/canvas.vue'], resolve)
+// const canvas = resolve => require(['../components/project/canvas.vue'], resolve)
 // /*
 // 工具组件工作区
 //  */
-const tools = resolve => require(['../components/tools/tools.vue'], resolve)
-const VueQuillEditor = resolve => require(['../components/tools/VueQuillEditor.vue'], resolve)
+// const tools = resolve => require(['../components/tools/tools.vue'], resolve)
+// const VueQuillEditor = resolve => require(['../components/tools/VueQuillEditor.vue'], resolve)
 // const vue2editor = resolve => require(['../components/tools/vue2-editor.vue'], resolve)
-const wangeditor = resolve => require(['../components/tools/wangeditor.vue'], resolve)
+// const wangeditor = resolve => require(['../components/tools/wangeditor.vue'], resolve)
 
 const project = resolve => require(['../components/project/project.vue'], resolve)
-const gdmap = resolve => require(['../components/project/gdmap.vue'], resolve)
+// const gdmap = resolve => require(['../components/project/gdmap.vue'], resolve)
 // const video = resolve => require(['../components/project/video.vue'], resolve)
 //
 const effect = resolve => require(['../components/effect/effect.vue'], resolve)
@@ -46,35 +46,35 @@ const threejs_wormhole = resolve => require(['../components/effect/threejs_wormh
 // const router_effect_from = resolve => require(['../components/effect/router_effect_from.vue'], resolve)
 // const router_effect_to = resolve => require(['../components/effect/router_effect_to.vue'], resolve)
 // const dynamic_effect = resolve => require(['../components/effect/dynamic_effect.vue'], resolve)
-const common = resolve => require(['../components/common/common.vue'], resolve)
+// const common = resolve => require(['../components/common/common.vue'], resolve)
 // const slidermenu = resolve => require(['../components/common/slidermenu.vue'], resolve)
 // const mainpage = resolve => require(['../components/mainpage/mainpage.vue'], resolve)
 // const fullpage = resolve => require(['../components/mainpage/fullpage.vue'], resolve)
 // /*
 // loading 工作区
 //  */
-const loading = resolve => require(['../components/loading/loading.vue'], resolve)
-const effect_line = resolve => require(['../components/loading/effect_line.vue'], resolve)
-const effect_logo = resolve => require(['../components/loading/effect_logo.vue'], resolve)
-const svg = resolve => require(['../components/loading/svg.vue'], resolve)
+// const loading = resolve => require(['../components/loading/loading.vue'], resolve)
+// const effect_line = resolve => require(['../components/loading/effect_line.vue'], resolve)
+// const effect_logo = resolve => require(['../components/loading/effect_logo.vue'], resolve)
+// const svg = resolve => require(['../components/loading/svg.vue'], resolve)
 //
 // /*
 // help 工作区
 //  */
-const help_window_resize = resolve => require(['../components/help/window_resize.vue'], resolve)
+// const help_window_resize = resolve => require(['../components/help/window_resize.vue'], resolve)
 //
 //
 // /*
 // 数据通讯工作区
 //  */
 // const conn = resolve => require(['../components/communicationModule/conn.vue'], resolve)
-const initSocket = resolve => require(['../components/communicationModule/initSocket.vue'], resolve)
+// const initSocket = resolve => require(['../components/communicationModule/initSocket.vue'], resolve)
 //
 // /*
 // 世纪通泰公司项目
 //  */
-const siteshow_main = resolve => require(['../components/project/siteshow/main.vue'], resolve)
-const siteshow_backend = resolve => require(['../components/project/siteshow/backend.vue'], resolve)
+// const siteshow_main = resolve => require(['../components/project/siteshow/main.vue'], resolve)
+// const siteshow_backend = resolve => require(['../components/project/siteshow/backend.vue'], resolve)
 
 // /*
 // truesign-project 工作区
@@ -85,11 +85,16 @@ const siteshow_backend = resolve => require(['../components/project/siteshow/bac
 const website_main = resolve => require(['../components/project/website_app/main.vue'], resolve)
 const website_index = resolve => require(['../components/project/website_app/index.vue'], resolve)
 const website_app_square = resolve => require(['../components/project/website_app/app_square.vue'], resolve)
+
+//website手机端
+const m_website_main = resolve => require(['../components/project/m_website_app/main.vue'], resolve)
+const m_website_index = resolve => require(['../components/project/m_website_app/index.vue'], resolve)
+const m_website_app_square = resolve => require(['../components/project/m_website_app/app_square.vue'], resolve)
 //
 // const apps = resolve => require(['../components/project/website_app/apps/apps.vue'], resolve)
 const shadowsocks = resolve => require(['../components/project/website_app/apps/shadowsocks.vue'], resolve)
-const wechat = resolve => require(['../components/project/website_app/apps/wechat.vue'], resolve)
-const chat = resolve => require(['../components/project/website_app/apps/chat.vue'], resolve)
+// const wechat = resolve => require(['../components/project/website_app/apps/wechat.vue'], resolve)
+// const chat = resolve => require(['../components/project/website_app/apps/chat.vue'], resolve)
 
 
 
@@ -120,61 +125,61 @@ const routes = [
         },
         component: home
     },
-    {
-        name: 'tools',
-        path: '/tools',
-        meta: {
-            title: 'tools'
-        },
-        component: tools,
-        children:[
-            {
-                name: 'VueQuillEditor',
-                path: 'VueQuillEditor',
-                meta: {
-                    title: 'VueQuillEditor'
-                },
-                component: VueQuillEditor
-            },
-            // {
-            //     name: 'vue2editor',
-            //     path: 'vue2editor',
-            //     meta: {
-            //         title: 'vue2editor'
-            //     },
-            //     component: vue2editor
-            // },
-            {
-                name: 'wangeditor',
-                path: 'wangeditor',
-                meta: {
-                    title: 'wangeditor'
-                },
-                component: wangeditor
-
-            },
-
-        ]
-    },
-    {
-        name: 'common',
-        path: '/common',
-        meta: {
-            title: 'common'
-        },
-        component: common,
-        children:[
-            {
-                name: 'echart',
-                path: 'echart',
-                meta: {
-                    title: 'echart'
-                },
-                component: echart
-            },
-
-        ]
-    },
+    // {
+    //     name: 'tools',
+    //     path: '/tools',
+    //     meta: {
+    //         title: 'tools'
+    //     },
+    //     component: tools,
+    //     children:[
+    //         {
+    //             name: 'VueQuillEditor',
+    //             path: 'VueQuillEditor',
+    //             meta: {
+    //                 title: 'VueQuillEditor'
+    //             },
+    //             component: VueQuillEditor
+    //         },
+    //         // {
+    //         //     name: 'vue2editor',
+    //         //     path: 'vue2editor',
+    //         //     meta: {
+    //         //         title: 'vue2editor'
+    //         //     },
+    //         //     component: vue2editor
+    //         // },
+    //         {
+    //             name: 'wangeditor',
+    //             path: 'wangeditor',
+    //             meta: {
+    //                 title: 'wangeditor'
+    //             },
+    //             component: wangeditor
+    //
+    //         },
+    //
+    //     ]
+    // },
+    // {
+    //     name: 'common',
+    //     path: '/common',
+    //     meta: {
+    //         title: 'common'
+    //     },
+    //     component: common,
+    //     children:[
+    //         {
+    //             name: 'echart',
+    //             path: 'echart',
+    //             meta: {
+    //                 title: 'echart'
+    //             },
+    //             component: echart
+    //         },
+    //
+    //     ]
+    // },
     // {
     //     name: 'mainpage',
     //     path: '/mainpage',
@@ -194,63 +199,63 @@ const routes = [
     //     ]
     //
     // },
-    {
-        name: 'Test',
-        path: '/test',
-        meta: {
-            title: 'test'
-        },
-        component:test,
-        children:[
-            {
-                name: 'test_child1',
-                path: 'test_child1',
-                meta: {
-                    title: 'test_child1'
-                },
-                component: test_child1
-            },
-            {
-                name: 'test_child2',
-                path: 'test_child2',
-                meta: {
-                    title: 'test_child2'
-                },
-                component: test_child2
-            },
-            {
-                name: 'line',
-                path: 'line',
-                meta: {
-                    title: 'line'
-                },
-                component: line
-            },
-            {
-                name: 'Demo',
-                path: 'demo',
-                meta: {
-                    title: 'demo'
-                },
-                component: demo
-            },
-
-            {
-                name: 'semantic',
-                path: 'semantic',
-                meta: {
-                    title: 'semantic'
-                },
-                component: semantic
-            },
-            {
-                name: 'awesome',
-                path: 'awesome',
-                meta: {
-                    title: 'awesome'
-                },
-                component: awesome
-            },
+    // {
+    //     name: 'Test',
+    //     path: '/test',
+    //     meta: {
+    //         title: 'test'
+    //     },
+    //     component:test,
+    //     children:[
+    //         {
+    //             name: 'test_child1',
+    //             path: 'test_child1',
+    //             meta: {
+    //                 title: 'test_child1'
+    //             },
+    //             component: test_child1
+    //         },
+    //         {
+    //             name: 'test_child2',
+    //             path: 'test_child2',
+    //             meta: {
+    //                 title: 'test_child2'
+    //             },
+    //             component: test_child2
+    //         },
+    //         {
+    //             name: 'line',
+    //             path: 'line',
+    //             meta: {
+    //                 title: 'line'
+    //             },
+    //             component: line
+    //         },
+    //         {
+    //             name: 'Demo',
+    //             path: 'demo',
+    //             meta: {
+    //                 title: 'demo'
+    //             },
+    //             component: demo
+    //         },
+    //
+    //         {
+    //             name: 'semantic',
+    //             path: 'semantic',
+    //             meta: {
+    //                 title: 'semantic'
+    //             },
+    //             component: semantic
+    //         },
+    //         {
+    //             name: 'awesome',
+    //             path: 'awesome',
+    //             meta: {
+    //                 title: 'awesome'
+    //             },
+    //             component: awesome
+    //         },
             // {
             //     name: 'alert',
             //     path: 'alert',
@@ -320,9 +325,9 @@ const routes = [
             // },
 
 
-        ]
+        // ]
 
-    },
+    // },
     {
         name: 'project',
         path: '/project',
@@ -331,30 +336,30 @@ const routes = [
         },
         component: project,
         children:[
-            {
-                name: 'element',
-                path: 'element',
-                meta: {
-                    title: 'element'
-                },
-                component: element
-            },
-            {
-                name: 'siteshow_main',
-                path: 'siteshow_main',
-                meta: {
-                    title: '世纪通泰科技有限公司主页'
-                },
-                component: siteshow_main
-            },
-            {
-                name: 'siteshow_backend',
-                path: 'siteshow_backend',
-                meta: {
-                    title: '世纪通泰科技有限公司后台'
-                },
-                component: siteshow_backend
-            },
+            // {
+            //     name: 'element',
+            //     path: 'element',
+            //     meta: {
+            //         title: 'element'
+            //     },
+            //     component: element
+            // },
+            // {
+            //     name: 'siteshow_main',
+            //     path: 'siteshow_main',
+            //     meta: {
+            //         title: '世纪通泰科技有限公司主页'
+            //     },
+            //     component: siteshow_main
+            // },
+            // {
+            //     name: 'siteshow_backend',
+            //     path: 'siteshow_backend',
+            //     meta: {
+            //         title: '世纪通泰科技有限公司后台'
+            //     },
+            //     component: siteshow_backend
+            // },
             // {
             //   name: 'gdmap',
             //   path: 'gdmap',
@@ -380,14 +385,14 @@ const routes = [
             //     },
             //     component: mint_ui
             // },
-            {
-              name: 'canvas',
-              path: 'canvas',
-              meta: {
-                title: 'canvas'
-              },
-              component: canvas
-            },
+            // {
+            //   name: 'canvas',
+            //   path: 'canvas',
+            //   meta: {
+            //     title: 'canvas'
+            //   },
+            //   component: canvas
+            // },
             {
                 name: 'website_main',
                 path: 'website_main',
@@ -412,22 +417,22 @@ const routes = [
                         },
                         component: website_app_square,
                     },
-                    {
-                        name: 'wechat',
-                        path: 'wechat',
-                        meta: {
-                            title: 'wechat'
-                        },
-                        component: wechat
-                    },
-                    {
-                        name: 'apps/chat',
-                        path: 'apps/chat',
-                        meta: {
-                            title: 'apps/chat'
-                        },
-                        component: chat
-                    },
+                    // {
+                    //     name: 'wechat',
+                    //     path: 'wechat',
+                    //     meta: {
+                    //         title: 'wechat'
+                    //     },
+                    //     component: wechat
+                    // },
+                    // {
+                    //     name: 'apps/chat',
+                    //     path: 'apps/chat',
+                    //     meta: {
+                    //         title: 'apps/chat'
+                    //     },
+                    //     component: chat
+                    // },
                     {
                         name: 'apps/shadowsocks',
                         path: 'apps/shadowsocks',
@@ -438,65 +443,91 @@ const routes = [
                     },
                 ]
             },
+            {
+                name: 'm_website_main',
+                path: 'm_website_main',
+                meta: {
+                    title: 'm_website_main'
+                },
+                component: m_website_main,
+                children:[
+                    {
+                        name: 'm_website_index',
+                        path: 'm_website_index',
+                        meta: {
+                            title: 'm_website_index'
+                        },
+                        component: m_website_index
+                    },
+                    {
+                        name: 'm_website_app_square',
+                        path: 'm_website_app_square',
+                        meta: {
+                            title: 'm_website_app_square'
+                        },
+                        component: m_website_app_square,
+                    },
+                ]
+            },
 
 
             // router_spa
         ]
     },
     //
-    {
-        name: 'effect',
-        path: '/effect',
-        meta: {
-            title: 'effect'
-        },
-        component: effect,
-        children:[
-            {
-                name: 'threejs_wormhole',
-                path: 'threejs_wormhole',
-                meta: {
-                    title: 'threejs_wormhole'
-                },
-                component: threejs_wormhole
-            },
-        ]
-    },
-    {
-        name: 'loading',
-        path: '/loading',
-        meta: {
-            title: 'loading'
-        },
-        component: loading,
-        children:[
-            {
-                name: 'effect_line',
-                path: 'effect_line',
-                meta: {
-                    title: 'effect_line'
-                },
-                component: effect_line
-            },
-            {
-                name: 'effect_logo',
-                path: 'effect_logo',
-                meta: {
-                    title: 'effect_logo'
-                },
-                component: effect_logo
-            },
-            {
-                name: 'svg',
-                path: 'svg',
-                meta: {
-                    title: 'svg'
-                },
-                component: svg
-            },
-
-        ]
-    },
+    // {
+    //     name: 'effect',
+    //     path: '/effect',
+    //     meta: {
+    //         title: 'effect'
+    //     },
+    //     component: effect,
+    //     children:[
+    //         {
+    //             name: 'threejs_wormhole',
+    //             path: 'threejs_wormhole',
+    //             meta: {
+    //                 title: 'threejs_wormhole'
+    //             },
+    //             component: threejs_wormhole
+    //         },
+    //     ]
+    // },
+    // {
+    //     name: 'loading',
+    //     path: '/loading',
+    //     meta: {
+    //         title: 'loading'
+    //     },
+    //     component: loading,
+    //     children:[
+    //         {
+    //             name: 'effect_line',
+    //             path: 'effect_line',
+    //             meta: {
+    //                 title: 'effect_line'
+    //             },
+    //             component: effect_line
+    //         },
+    //         {
+    //             name: 'effect_logo',
+    //             path: 'effect_logo',
+    //             meta: {
+    //                 title: 'effect_logo'
+    //             },
+    //             component: effect_logo
+    //         },
+    //         {
+    //             name: 'svg',
+    //             path: 'svg',
+    //             meta: {
+    //                 title: 'svg'
+    //             },
+    //             component: svg
+    //         },
+    //
+    //     ]
+    // },
     // {
     //     name: 'conn',
     //     path: '/conn',

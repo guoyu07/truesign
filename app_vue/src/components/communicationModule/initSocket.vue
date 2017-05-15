@@ -236,7 +236,7 @@
                   vm.updateEventFactory({type:'init_socket_send_factory',event:data})
                 }
                 else{
-                  if(data.payload_type === 'submit_form_login'){
+                  if(data.payload_type === 'submit_form_login' || data.payload_type === 'get_appCards'){
                       vm.updateEventFactory({type:'unshift_socket_send_factory',event:data})
 
                   }

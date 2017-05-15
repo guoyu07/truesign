@@ -20,7 +20,7 @@ require('velocity-animate/velocity.js')
 require('velocity-animate/velocity.ui.js')
 require('node-waves/src/stylus/waves.styl')
 //视频依赖
-require('video.js/dist/video-js.css')
-const  TWEEN = require('tween.js/src/tween.js')
+// require('video.js/dist/video-js.css')
+// const  TWEEN = require('tween.js/src/tween.js')
 
 

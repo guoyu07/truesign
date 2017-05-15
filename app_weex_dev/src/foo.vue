@@ -13,9 +13,12 @@
 
 <script>
   export default {
-    data: {
-      logoUrl: 'https://alibaba.github.io/weex/img/weex_logo_blue@3x.png',
-      target: ''
+    data(){
+        return{
+            logoUrl: 'https://alibaba.github.io/weex/img/weex_logo_blue@3x.png',
+            target: '12345'
+        }
+
     },
     methods: {
       update: function (e) {

@@ -16,7 +16,7 @@
             }
         },
         mounted(){
-//            this.$router.push('/project/website_main/website_index')
+            this.$router.push('/project/website_main/website_index')
         },
         methods:{
 
