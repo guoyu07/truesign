@@ -117,6 +117,7 @@ export const mutations = {
     }
     else if(data.type === 'socket_send_factory'){
         state.EventFactory.socket_send_factory.push(data.event)
+        state.EventFactory.socket_send_factory = _.uniq(state.EventFactory.socket_send_factory)
 
     }
     else if(data.type === 'unshift_socket_send_factory'){

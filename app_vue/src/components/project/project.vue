@@ -1,6 +1,6 @@
 <template>
     <div class="top_router_view">
-        <p class="top_router_tip">PROJECT</p>
+        <!--<p class="top_router_tip">PROJECT</p>-->
       <router-view></router-view>
   </div>
 </template>

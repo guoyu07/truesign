@@ -11,6 +11,8 @@ $db_password = $config->db_password; //登录数据库的密码
 $interval_time = $config->interval_time; //向SSServer添加端口号的间隔时间
 $redis = new \Redis();
 $redis_reponse = $redis->pconnect($config->redis_ip,$config->redis_port);
+$auth = $redis->auth('zhuotong');
+var_dump($auth);
 if($redis_reponse){
     echo '连接到redis '.$config->redis_ip.' 服务器'.PHP_EOL;
 }

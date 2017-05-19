@@ -18,6 +18,8 @@ module.exports = {
             $: "jquery",
             jquery: "jquery",
             "window.jquery": "jquery",
+            "THREE":'three/build/three',
+            "Stats":'three/examples/js/libs/stats.min'
         })
     ],
   output: {

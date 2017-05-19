@@ -3,7 +3,7 @@
         <div id="app-shadowsocks">
             <div id="app-shadowsocks-header" style="padding-left:50px;color:#18b584;text-align:left;width: 100%;height: 60px;background-color:white;box-shadow: 0 0 20px black;font-family: 'Graphik Web', sans-serif !important;font-size: 25px;line-height: 60px">
                 SHADOWSOCKS
-                <input type="button" value="fresh" @click="get_shadowsocks_status">
+                <!--<input type="button" value="fresh" @click="get_shadowsocks_status">-->
                 <el-switch
                         v-model="appswitch"
                         on-color="#13ce66"

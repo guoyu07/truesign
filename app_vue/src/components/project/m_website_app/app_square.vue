@@ -1,10 +1,9 @@
 <template>
     <div  class="top_router_view" style="overflow: hidden" >
-
+        <p style="position: absolute;left:100px;top:100px;">Beta1</p>
         <div v-if="website.login_status && website.website_user.emailstatus" style="">
 
 
-            <p class="third_router_tip">Beta</p>
             <div  id="searchBar"
                   style="
              display: inline-block;
@@ -23,7 +22,7 @@
             </div>
             <div id="cards-show"  style="height:90%;overflow-y:auto;overflow-x:hidden;position: absolute;margin-top:60px;width:100%;">
 
-                <transition-group id="card-list" name="card-list" tag="div" style="position:absolute;min-width:600px;width:1400px;height:auto;left: 50%;margin-left: -700px;overflow: hidden"
+                <transition-group id="card-list" name="card-list" tag="div" style="position:absolute;min-width:600px;width:1400px;height:auto;left: 50%;margin-left: -700px;overflow: auto"
                                   v-on:before-enter="beforeEnter"
                                   v-on:enter="enter"
                                   v-on:after-enter="afterEnter"

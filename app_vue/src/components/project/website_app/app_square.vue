@@ -1,10 +1,10 @@
 <template>
     <div  class="top_router_view" style="overflow: hidden" >
+        <p style="position: absolute;left: 20px;top:10px;font-size: 14px;color: rgba(52,196,16,0.67)">Beta</p>
 
         <div v-if="website.login_status && website.website_user.emailstatus" style="">
 
 
-            <p class="third_router_tip">Beta</p>
             <div  id="searchBar"
                   style="
              display: inline-block;
@@ -23,7 +23,7 @@
             </div>
             <div id="cards-show"  style="height:90%;overflow-y:auto;overflow-x:hidden;position: absolute;margin-top:60px;width:100%;">
 
-                <transition-group id="card-list" name="card-list" tag="div" style="position:absolute;min-width:600px;width:1400px;height:auto;left: 50%;margin-left: -700px;overflow: hidden"
+                <transition-group id="card-list" name="card-list" tag="div" style="position:absolute;width: 1400px;left: 50%;margin-left: -700px"
                                   v-on:before-enter="beforeEnter"
                                   v-on:enter="enter"
                                   v-on:after-enter="afterEnter"
@@ -35,6 +35,7 @@
 
             </div>
         </div>
+        <div v-if="parseInt(effectlogostyle.zIndex) > 0" style="width: 100%;height: 100%;background-color: rgba(0,0,0,0.75);position: absolute;"></div>
         <div >
             <effectlogo class="effectlogo"    :logo_pos='logo_pos' :style="effectlogostyle" ></effectlogo>
             <div v-if="website.login_status && !website.website_user.emailstatus"
@@ -87,7 +88,7 @@
                 logo_pos:'center',
                 checkemailcode:'',
                 effectlogostyle:{
-                    zIndex:'-1'
+                    zIndex:'20'
                 }
             }
         },
@@ -223,6 +224,10 @@
                 else if(analysis_response.response_type === 'getWebSiteLevel'){
 //                    console.log('getWebSiteLevel->',analysis_response)
                     if(analysis_response.response_status){
+                        vm.logo_pos = 'left_top'
+                        vm.effectlogostyle = {
+                            zIndex:'-1'
+                        }
                         vm.updateWebSite({
                             website_level:analysis_response.response_website_level
                         })
@@ -245,7 +250,7 @@
                         vm.$root.eventHub.$emit('checkloginbykey',1)
                         setTimeout(function () {
                             vm.effectlogostyle = {
-                                zIndex:'-1'
+                                zIndex:'20'
                             }
 
                         },500)
@@ -277,7 +282,7 @@
             if(this.website.login_status && !this.website.website_user.emailstatus){
                 this.effectlogostyle =
                     {
-                        zIndex:'10',
+                        zIndex:'20',
                         position: 'absolute',
                         left:'-100px'
 
@@ -286,7 +291,7 @@
 
             if(this.website.login_status && this.website.website_user.emailstatus){
                 setTimeout(function () {
-                    vm.logo_pos = 'left_top'
+//                    vm.logo_pos = 'left_top'
                     vm.getapprules()
                     vm.getWebSiteLevel()
                 },1000)
