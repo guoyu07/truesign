@@ -1,7 +1,7 @@
 # truesign
 Front and rear separation of multiple spa application portfolio
 
-####采用前后端分离开发的一套网站系统
+    采用前后端分离开发的一套网站系统
     包括与python-shadowsocks 配合实现人员与流量管理和其他线上功能【聊天等等】
 <br>
 
