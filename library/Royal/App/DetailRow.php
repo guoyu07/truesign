@@ -3,7 +3,7 @@ namespace Royal\App;
 
 /**
  * Created by PhpStorm.
- * User: liuwei
+ * User: iamsee
  * Date: 16/8/13
  * Time: 上午7:23
  * 详细页面每一行的属性
