@@ -5,10 +5,13 @@
             <effect_line v-if="show_loading" id="loading_page" style="position: absolute;z-index: 13" :effect_line_top="effect_line_top"></effect_line>
 
         </transition>
-        <login  v-if="parseInt(effect_line_top) > 0 || !show_loading"   id="main_page" style="position:absolute;z-index: 12;transition: all 1s"></login>
+        <login  v-if="(parseInt(effect_line_top) > 0 || !show_loading) && platform==='pc'"   id="main_page" style="position:absolute;z-index: 12;transition: all 1s"></login>
 
         <effectlogo id="effectlogo"    style="position: absolute;z-index:15"></effectlogo>
-        <div v-if="show_login_log" id="loding_log_show" style="width: 50%;height: 100%;position: absolute;z-index:100;background-color: transparent;color:rgba(139,226,255,0.65);font-size: 16px;font-weight: 800;text-align: center;padding-top: 50px ">
+        <div v-if="platform !== 'pc'" style="text-align: center;color: white;left:50%;transform:translateX(-50%);top: 55%;position: absolute;font-size: 26px">
+            非PC平台,跳转中
+        </div>
+        <div v-if="show_login_log && platform ==='pc'" id="loding_log_show" style="width: 50%;height: 100%;position: absolute;z-index:100;background-color: transparent;color:rgba(139,226,255,0.65);font-size: 16px;font-weight: 800;text-align: center;padding-top: 50px ">
                <p>预加载:  {{effect_line_top}}%</p>
                <p>初始化服务器通讯:  {{init_conn}}</p>
                <p>初始化权限连接:  {{bind_app}}</p>
@@ -16,7 +19,7 @@
                <p>初始化网站状态:  {{website_status}}</p>
                <p>检测账户日志:  {{login_status}}</p>
         </div>
-        <div v-if="show_code_matrix"  style="opacity:0.3;width: 50%;left:70%;top:50%;height: 46%;position: absolute;z-index:100;background-color: transparent;color:rgba(139,226,255,0.65);font-size: 16px;font-weight: 800;text-align: center;padding-top: 50px ">
+        <div v-if="show_code_matrix && platform ==='pc'"  style="opacity:0.3;width: 50%;left:70%;top:50%;height: 46%;position: absolute;z-index:100;background-color: transparent;color:rgba(139,226,255,0.65);font-size: 16px;font-weight: 800;text-align: center;padding-top: 50px ">
             <p style="text-align: left;font-size: 18px;letter-spacing: 2px">矩阵识别唯一序列码中</p>
             <div id="code_matrix" style="">
                 <transition-group name="code_matrix_item" tag="div" class="code_matrix_container"
@@ -67,7 +70,8 @@
 //                            code: index % 9 + 1
 //                        }
 //                    })
-                code_matrix_list:[]
+                code_matrix_list:[],
+                platform:'pc'
             }
         },
 
@@ -89,7 +93,20 @@
         },
         created(){
             var vm = this
+            var os = this.sysinfo.os
+            console.log('os->',os)
+            if(os){
+                console.log('终端类型不为空，继续执行')
+                var os_type = os.family.toLocaleLowerCase()
+                if(os_type.indexOf('os x') > -1 || os_type.indexOf('window') > -1){
+                    console.log('电脑端',os_type)
+                }
+                else{
+                    console.log('手机端:',os_type)
+                    this.platform = 'mobile'
 
+                }
+            }
             this.build_code_matrix_list()
 
         },
@@ -119,6 +136,14 @@
                     vm.show_loading=false
                     vm.effect_line_top = '0'
                     vm.show_code_matrix = false
+                    if(vm.platform !== 'pc'){
+                        setTimeout(function () {
+                            vm.$router.push('/project/m_website_main')
+
+                        },1500)
+                    }
+
+
 
 
                 }
@@ -202,7 +227,7 @@
                         vm.show_login_log = false
 //                        vm.effect_line_top='0'
                     },1500)
-                    if(vm.$route.path === '/project/website_main/website_index'){
+                    if(vm.$route.path === '/project/website_main/website_index' || vm.$route.path.indexOf('m_website_main') > -1){
 
                     }else{
                         setTimeout(function () {

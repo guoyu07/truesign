@@ -13,77 +13,77 @@ export const mutations = {
   // 这里的data指提交时：
   // 从/api/login传回的user对象，其中包含name,messeage等信息
     [types.WEBSITE](state, data) {
-    if(data.unique_auth_code){
-        state.WebSite.unique_auth_code = data.unique_auth_code;
+        if(data.unique_auth_code){
+            state.WebSite.unique_auth_code = data.unique_auth_code;
 
-        LocalVoucher.setKeyValue('WebSite.unique_auth_code',state.WebSite.unique_auth_code)
-    }
-    if(data.encryption_key){
-        state.WebSite.encryption_key = data.encryption_key;
-
-        LocalVoucher.setKeyValue('WebSite.encryption_key',state.WebSite.encryption_key)
-    }
-    if(data.website_encryption_key){
-        state.WebSite.website_encryption_key = data.website_encryption_key;
-
-        LocalVoucher.setKeyValue('WebSite.website_encryption_key',state.WebSite.website_encryption_key)
-    }
-    if(data.conn_status){
-        state.WebSite.conn_status = data.conn_status;
-
-        LocalVoucher.setKeyValue('WebSite.conn_status',parseInt(state.WebSite.conn_status))
-    }
-    else if(data.conn_status === 0){
-        state.WebSite.conn_status = data.conn_status;
-        LocalVoucher.setKeyValue('WebSite.conn_status',state.WebSite.conn_status+'')
-
-    }
-    if(data.login_status){
-      state.WebSite.login_status = data.login_status;
-    }
-    else if(data.login_status === 0){
-      state.WebSite.login_status = data.login_status;
-    }
-
-    if(data.socket_id){
-        state.WebSite.socket_id = data.socket_id;
-    }
-    if(data.access_user){
-        state.WebSite.access_user = data.access_user;
-        LocalVoucher.setKeyValue('WebSite.access_user',JSON.stringify(state.WebSite.access_user))
-    }
-    else if(data.access_user === null){
-        state.WebSite.access_user = '';
-    }
-    if(data.isbindapps){
-        state.WebSite.isbindapps = data.isbindapps;
-        LocalVoucher.setKeyValue('WebSite.isbindapps',JSON.stringify(state.WebSite.isbindapps))
-    }
-    if(data.website_user){
-        state.WebSite.website_user = data.website_user;
-        LocalVoucher.setKeyValue('WebSite.website_user',JSON.stringify(state.WebSite.website_user))
-
-    }
-    if(data.website_level){
-        state.WebSite.website_level = data.website_level;
-    }
-    if(data.apprules){
-        state.WebSite.apprules = data.apprules
-    }
-    /*
-    处理app状态
-     */
-    if(data.appstatus){
-        if(data.type==='add'){
-            state.WebSite.appstatus.push(data.appstatus)
-            state.WebSite.appstatus = _.uniq(state.WebSite.appstatus)
+            LocalVoucher.setKeyValue('WebSite.unique_auth_code',state.WebSite.unique_auth_code)
         }
-        else if(data.type === 'rm'){
-            state.WebSite.appstatus = _.remove(state.WebSite.appstatus,function (v) {
-                return v === data.appstatus
-            })
+        if(data.encryption_key){
+            state.WebSite.encryption_key = data.encryption_key;
+
+            LocalVoucher.setKeyValue('WebSite.encryption_key',state.WebSite.encryption_key)
         }
-    }
+        if(data.website_encryption_key){
+            state.WebSite.website_encryption_key = data.website_encryption_key;
+
+            LocalVoucher.setKeyValue('WebSite.website_encryption_key',state.WebSite.website_encryption_key)
+        }
+        if(data.conn_status){
+            state.WebSite.conn_status = data.conn_status;
+
+            LocalVoucher.setKeyValue('WebSite.conn_status',parseInt(state.WebSite.conn_status))
+        }
+        else if(data.conn_status === 0){
+            state.WebSite.conn_status = data.conn_status;
+            LocalVoucher.setKeyValue('WebSite.conn_status',state.WebSite.conn_status+'')
+
+        }
+        if(data.login_status){
+          state.WebSite.login_status = data.login_status;
+        }
+        else if(data.login_status === 0){
+          state.WebSite.login_status = data.login_status;
+        }
+
+        if(data.socket_id){
+            state.WebSite.socket_id = data.socket_id;
+        }
+        if(data.access_user){
+            state.WebSite.access_user = data.access_user;
+            LocalVoucher.setKeyValue('WebSite.access_user',JSON.stringify(state.WebSite.access_user))
+        }
+        else if(data.access_user === null){
+            state.WebSite.access_user = '';
+        }
+        if(data.isbindapps){
+            state.WebSite.isbindapps = data.isbindapps;
+            LocalVoucher.setKeyValue('WebSite.isbindapps',JSON.stringify(state.WebSite.isbindapps))
+        }
+        if(data.website_user){
+            state.WebSite.website_user = data.website_user;
+            LocalVoucher.setKeyValue('WebSite.website_user',JSON.stringify(state.WebSite.website_user))
+
+        }
+        if(data.website_level){
+            state.WebSite.website_level = data.website_level;
+        }
+        if(data.apprules){
+            state.WebSite.apprules = data.apprules
+        }
+        /*
+        处理app状态
+         */
+        if(data.appstatus){
+            if(data.type==='add'){
+                state.WebSite.appstatus.push(data.appstatus)
+                state.WebSite.appstatus = _.uniq(state.WebSite.appstatus)
+            }
+            else if(data.type === 'rm'){
+                state.WebSite.appstatus = _.remove(state.WebSite.appstatus,function (v) {
+                    return v === data.appstatus
+                })
+            }
+        }
 
 
 
@@ -96,20 +96,26 @@ export const mutations = {
     // localStorage.setItem('session', data.session.user)
     },
     [types.APPRULES](state,data) {
-      if(data.apprules){
-          state.AppRules = data.apprules
-      }
+          if(data.apprules){
+              state.AppRules = data.apprules
+          }
     },
     [types.SYSINFO](state,data) {
-      if(data.ip){
-          state.SysInfo.ip = data.ip
-      }
-      if(data.screenHeight){
-          state.SysInfo.screenHeight = data.screenHeight
-      }
-      if(data.screenWidth){
-          state.SysInfo.screenWidth = data.screenWidth
-      }
+          if(data.ip){
+              state.SysInfo.ip = data.ip
+          }
+          if(data.screenHeight){
+              state.SysInfo.screenHeight = data.screenHeight
+          }
+          if(data.screenWidth){
+              state.SysInfo.screenWidth = data.screenWidth
+          }
+          if(data.os){
+              state.SysInfo.os = data.os
+          }
+          if(data.os_description){
+              state.SysInfo.os_description = data.os_description
+          }
     },
     [types.EVENTFACTORY](state,data) {
     if(data.type === 'init_socket_send_factory'){

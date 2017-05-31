@@ -17,10 +17,10 @@ const home = resolve => require(['../components/Home.vue'], resolve)
 // const line = resolve => require(['../components/test/line.vue'], resolve)
 // const iview = resolve => require(['../components/project/iview.vue'], resolve)
 // const webgl = resolve => require(['../components/test/webgl.vue'], resolve)
-const echart = resolve => require(['../components/common/echart.vue'], resolve)
+// const echart = resolve => require(['../components/common/echart.vue'], resolve)
 // const element = resolve => require(['../components/project/element.vue'], resolve)
 // const spa = resolve => require(['../components/project/spa/spa.vue'], resolve)
-const test = resolve => require(['../components/test/test.vue'], resolve)
+// const test = resolve => require(['../components/test/test.vue'], resolve)
 // const test_child1 = resolve => require(['../components/test/test_child1.vue'], resolve)
 // const test_child2 = resolve => require(['../components/test/test_child2.vue'], resolve)
 
@@ -39,11 +39,12 @@ const project = resolve => require(['../components/project/project.vue'], resolv
 // const gdmap = resolve => require(['../components/project/gdmap.vue'], resolve)
 // const video = resolve => require(['../components/project/video.vue'], resolve)
 //
-const effect = resolve => require(['../components/effect/effect.vue'], resolve)
-const threejs_wormhole = resolve => require(['../components/effect/threejs_wormhole.vue'], resolve)
-const css3d_periodictable = resolve => require(['../components/effect/css3d_periodictable.vue'], resolve)
-const canvas_materials_video = resolve => require(['../components/effect/canvas_materials_video.vue'], resolve)
-const threejs_dev = resolve => require(['../components/effect/threejs_dev.vue'], resolve)
+// const effect = resolve => require(['../components/effect/effect.vue'], resolve)
+// const threejs_wormhole = resolve => require(['../components/effect/threejs_wormhole.vue'], resolve)
+// const css3d_periodictable = resolve => require(['../components/effect/css3d_periodictable.vue'], resolve)
+// const canvas_materials_video = resolve => require(['../components/effect/canvas_materials_video.vue'], resolve)
+// const threejs_dev = resolve => require(['../components/effect/threejs_dev.vue'], resolve)
+// const threejs_dev_trackball = resolve => require(['../components/effect/threejs_dev_trackball.vue'], resolve)
 // const particles = resolve => require(['../components/effect/particles.vue'], resolve)
 // const blackhole = resolve => require(['../components/effect/blackhole.vue'], resolve)
 // const router_effect_from = resolve => require(['../components/effect/router_effect_from.vue'], resolve)
@@ -87,12 +88,13 @@ const threejs_dev = resolve => require(['../components/effect/threejs_dev.vue'],
 
 const website_main = resolve => require(['../components/project/website_app/main.vue'], resolve)
 const website_index = resolve => require(['../components/project/website_app/index.vue'], resolve)
+const website_ab0utme = resolve => require(['../components/project/website_app/ab0utme.vue'], resolve)
 const website_app_square = resolve => require(['../components/project/website_app/app_square.vue'], resolve)
 
 //website手机端
 const m_website_main = resolve => require(['../components/project/m_website_app/main.vue'], resolve)
-const m_website_index = resolve => require(['../components/project/m_website_app/index.vue'], resolve)
-const m_website_app_square = resolve => require(['../components/project/m_website_app/app_square.vue'], resolve)
+// const m_website_index = resolve => require(['../components/project/m_website_app/index.vue'], resolve)
+// const m_website_app_square = resolve => require(['../components/project/m_website_app/app_square.vue'], resolve)
 //
 // const apps = resolve => require(['../components/project/website_app/apps/apps.vue'], resolve)
 const shadowsocks = resolve => require(['../components/project/website_app/apps/shadowsocks.vue'], resolve)
@@ -202,14 +204,14 @@ const routes = [
     //     ]
     //
     // },
-    {
-        name: 'Test',
-        path: '/test',
-        meta: {
-            title: 'test'
-        },
-        component: test
-    },
+    // {
+    //     name: 'Test',
+    //     path: '/test',
+    //     meta: {
+    //         title: 'test'
+    //     },
+    //     component: test
+    // },
     //     children:[
     //         {
     //             name: 'test_child1',
@@ -448,30 +450,39 @@ const routes = [
                 ]
             },
             {
+                name: 'website_ab0utme',
+                path: 'website_ab0utme',
+                meta: {
+                    title: 'website_ab0utme'
+                },
+                component: website_ab0utme,
+
+            },
+            {
                 name: 'm_website_main',
                 path: 'm_website_main',
                 meta: {
                     title: 'm_website_main'
                 },
                 component: m_website_main,
-                children:[
-                    {
-                        name: 'm_website_index',
-                        path: 'm_website_index',
-                        meta: {
-                            title: 'm_website_index'
-                        },
-                        component: m_website_index
-                    },
-                    {
-                        name: 'm_website_app_square',
-                        path: 'm_website_app_square',
-                        meta: {
-                            title: 'm_website_app_square'
-                        },
-                        component: m_website_app_square,
-                    },
-                ]
+                // children:[
+                //     {
+                //         name: 'm_website_index',
+                //         path: 'm_website_index',
+                //         meta: {
+                //             title: 'm_website_index'
+                //         },
+                //         component: m_website_index
+                //     },
+                //     {
+                //         name: 'm_website_app_square',
+                //         path: 'm_website_app_square',
+                //         meta: {
+                //             title: 'm_website_app_square'
+                //         },
+                //         component: m_website_app_square,
+                //     },
+                // ]
             },
 
 
@@ -479,48 +490,56 @@ const routes = [
         ]
     },
 
-    {
-        name: 'effect',
-        path: '/effect',
-        meta: {
-            title: 'effect'
-        },
-        component: effect,
-        children:[
-            {
-                name: 'threejs_wormhole',
-                path: 'threejs_wormhole',
-                meta: {
-                    title: 'threejs_wormhole'
-                },
-                component: threejs_wormhole
-            },
-            {
-                name: 'css3d_periodictable',
-                path: 'css3d_periodictable',
-                meta: {
-                    title: 'css3d_periodictable'
-                },
-                component: css3d_periodictable
-            },
-            {
-                name: 'canvas_materials_video',
-                path: 'canvas_materials_video',
-                meta: {
-                    title: 'canvas_materials_video'
-                },
-                component: canvas_materials_video
-            },
-            {
-                name: 'threejs_dev',
-                path: 'threejs_dev',
-                meta: {
-                    title: 'threejs_dev'
-                },
-                component: threejs_dev
-            },
-        ]
-    },
+    // {
+    //     name: 'effect',
+    //     path: '/effect',
+    //     meta: {
+    //         title: 'effect'
+    //     },
+    //     component: effect,
+    //     children:[
+    //         {
+    //             name: 'threejs_wormhole',
+    //             path: 'threejs_wormhole',
+    //             meta: {
+    //                 title: 'threejs_wormhole'
+    //             },
+    //             component: threejs_wormhole
+    //         },
+    //         {
+    //             name: 'css3d_periodictable',
+    //             path: 'css3d_periodictable',
+    //             meta: {
+    //                 title: 'css3d_periodictable'
+    //             },
+    //             component: css3d_periodictable
+    //         },
+    //         {
+    //             name: 'canvas_materials_video',
+    //             path: 'canvas_materials_video',
+    //             meta: {
+    //                 title: 'canvas_materials_video'
+    //             },
+    //             component: canvas_materials_video
+    //         },
+    //         {
+    //             name: 'threejs_dev',
+    //             path: 'threejs_dev',
+    //             meta: {
+    //                 title: 'threejs_dev'
+    //             },
+    //             component: threejs_dev
+    //         },
+    //         {
+    //             name: 'threejs_dev_trackball',
+    //             path: 'threejs_dev_trackball',
+    //             meta: {
+    //                 title: 'threejs_dev_trackball'
+    //             },
+    //             component: threejs_dev_trackball
+    //         },
+    //     ]
+    // },
     // {
     //     name: 'loading',
     //     path: '/loading',

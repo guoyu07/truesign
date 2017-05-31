@@ -1,5 +1,5 @@
 <template>
-    <div class="common-footer">
+    <div class="common-footer" v-if="platform==='pc'">
         <div id="footerbar">
                 <div class="show-ip" style="">IP   {{ sysinfo.ip }}</div>
 
@@ -131,7 +131,9 @@
         </div>
 
     </div>
+    <div v-else="platform==='pc'" style="background-color: darkgray;z-index: 100;height: 80px">
 
+    </div>
 </template>
 
 
@@ -144,7 +146,7 @@
     export default {
         data() {
             return{
-
+                platform:'pc'
             }
         },
         computed: {
@@ -155,6 +157,18 @@
                 'sysinfo',
                 'appshow'
             ])
+        },
+        created(){
+            var os = this.sysinfo.os
+            console.log('footer->os',os)
+            if(os){
+                var os_type = os.family.toLocaleLowerCase()
+                if(os_type.indexOf('os x') > -1 || os_type.indexOf('window') > -1){
+                }
+                else{
+                    this.platform = 'mobile'
+                }
+            }
         },
         mounted(){
             var vm = this

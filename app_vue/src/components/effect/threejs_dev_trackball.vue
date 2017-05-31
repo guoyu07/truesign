@@ -1,6 +1,6 @@
 <template>
     <div id="threejs_dev" style="overflow: hidden;text-align: center;background-color: white">
-       
+        <input type="button" value="change" @click="do_change_render()">
     </div>
 </template>
 
@@ -45,9 +45,11 @@
             })
         },
         mounted(){
+            this.init_scene()
             this.init_renderer()
             this.init_container()
-            this.init_scene()
+            this.init_objects()
+            this.init_lights()
             this.init_camera()
             this.init_helper()
             this.init_controls()
@@ -60,15 +62,18 @@
         },
         methods:{
             do_change_render(){
-//                this.threejs_dev.renderer.setSize(500,500);
-
 
             },
             init_renderer(){
-                this.threejs_dev.renderer = new THREE.CanvasRenderer();
-                this.threejs_dev.renderer.setClearColor( 0xffffff,1 );
-//                this.threejs_dev.renderer.setPixelRatio( window.devicePixelRatio );
-                this.threejs_dev.renderer.setSize( this.screenWidth, this.screenHeight );
+//                 this.threejs_dev.renderer = new THREE.CanvasRenderer();
+//                 this.threejs_dev.renderer.setClearColor( 0xffffff,1 );
+// //                this.threejs_dev.renderer.setPixelRatio( window.devicePixelRatio );
+//                 this.threejs_dev.renderer.setSize( this.screenWidth, this.screenHeight );
+
+                this.threejs_dev.renderer = new THREE.WebGLRenderer( { antialias: false } );
+                this.threejs_dev.renderer.setClearColor( this.threejs_dev.scene.fog.color );
+                this.threejs_dev.renderer.setPixelRatio( window.devicePixelRatio );
+                this.threejs_dev.renderer.setSize( this.screenWidth,this.screenHeight  );
 
             },
             init_container(){
@@ -79,43 +84,16 @@
             },
             init_scene(){
                 this.threejs_dev.scene = new THREE.Scene();
+                this.threejs_dev.scene.fog = new THREE.FogExp2( 0xcccccc, 0.002 );
             },
             init_camera(){
-                this.threejs_dev.camera = new THREE.PerspectiveCamera( 55, this.screenWidth/this.screenHeight, 1, 10000 );
-                this.threejs_dev.camera.position.z = 1000;
+                // this.threejs_dev.camera = new THREE.PerspectiveCamera( 55, this.screenWidth/this.screenHeight, 1, 10000 );
+                // this.threejs_dev.camera.position.z = 1000;
+                this.threejs_dev.camera = new THREE.PerspectiveCamera( 60, window.innerWidth / window.innerHeight, 1, 1000 );
+                this.threejs_dev.camera.position.z = 500;
             },
             init_helper(){
-                var vm = this
-                var separation = 150;
-                var amountx = 10;
-                var amounty = 10;
-                var PI2 = Math.PI * 2;
-                var material = new THREE.SpriteCanvasMaterial( {
-
-                    color: 0x0808080,
-                    program: function ( context ) {
-
-                        context.beginPath();
-                        context.arc( 0, 0, 0.5, 0, PI2, true );
-                        context.fill();
-
-                    }
-
-                } );
-                for ( var ix = 0; ix < amountx; ix++ ) {
-
-                    for ( var iy = 0; iy < amounty; iy++ ) {
-
-                        var particle = new THREE.Sprite( material );
-                        particle.position.x = ix * separation - ( ( amountx * separation ) / 2 );
-                        particle.position.y = -153;
-                        particle.position.z = iy * separation - ( ( amounty * separation ) / 2 );
-                        particle.scale.x = particle.scale.y = 5;
-                        vm.threejs_dev.scene.add( particle );
-
-                    }
-
-                }
+                
             },
             init_controls(){
                 // this.threejs_dev.controls = new THREE.TrackballControls(this.threejs_dev.camera, this.threejs_dev.renderer.domElement);
@@ -136,7 +114,28 @@
 
             },
             init_objects(){
-                
+                var vm = this
+                var geometry = new THREE.CylinderGeometry( 0, 10, 30, 4, 1 );
+                var material =  new THREE.MeshPhongMaterial( { color:0xffffff, shading: THREE.FlatShading } );
+                for ( var i = 0; i < 500; i++ ) {
+                    var mesh = new THREE.Mesh( geometry, material );
+                    mesh.position.x = ( Math.random() - 0.5 ) * 1000;
+                    mesh.position.y = ( Math.random() - 0.5 ) * 1000;
+                    mesh.position.z = ( Math.random() - 0.5 ) * 1000;
+                    mesh.updateMatrix();
+                    mesh.matrixAutoUpdate = false;
+                    vm.threejs_dev.scene.add( mesh );
+                }
+            },
+            init_lights(){
+                this.threejs_dev.light = new THREE.DirectionalLight( 0xffffff );
+                this.threejs_dev.light.position.set( 1, 1, 1 );
+                this.threejs_dev.scene.add( this.threejs_dev.light );
+                this.threejs_dev.light = new THREE.DirectionalLight( 0x002288 );
+                this.threejs_dev.light.position.set( -1, -1, -1 );
+                this.threejs_dev.scene.add( this.threejs_dev.light );
+                this.threejs_dev.light = new THREE.AmbientLight( 0x222222 );
+                this.threejs_dev.scene.add( this.threejs_dev.light );
             },
             init_resize(){
                 var vm = this
@@ -158,7 +157,6 @@
                 // this.threejs_dev.camera.position.x += ( this.mouse_move.mouseX -this.threejs_dev.camera.position.x ) * 0.05;
                 // this.threejs_dev.camera.position.y += ( -this.mouse_move.mouseY - this.threejs_dev.camera.position.y ) * 0.05;
                 // this.threejs_dev.camera.lookAt( this.threejs_dev.scene.position );
-                
                 this.threejs_dev.renderer.render( this.threejs_dev.scene, this.threejs_dev.camera );
 
             },

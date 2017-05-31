@@ -15,6 +15,10 @@
         <keep-alive>
             <initsocket   :style="{position:'absolute',zIndex: '20',visibility:show_conn,transition: 'all 1s'}" ></initsocket>
         </keep-alive>
+        <!--<div style="text-align: center;color: white">-->
+            <!--{{ sysinfo }}-->
+        <!--</div>-->
+
         <transition  name="fade" mode="out-in" >
             <!--暂时找不到方法阻止切换页面后eventhub.$on 多次触发的问题暂时使用keep-alive-->
             <!--已经解决，$off 取消注册事件后新加载的页面$on 同一事件要放到mounted，否则无法重新注册 原因beforeDestroy 在新组建created之后执行-->
@@ -37,6 +41,7 @@
     import { analysis_socket_response } from '../../../api/lib/helper/dataAnalysis'
     import chat from './apps/chat.vue'
     import settingbar from '../../common/settingBar.vue'
+    import platform from 'platform';
 
     export default {
         data(){
@@ -50,6 +55,10 @@
                 server_status:1,
                 server_error_msg:'',
                 now_path:'',
+                loading_over:false,
+                platform:[],
+                os:'',
+
             }
         },
         computed: {
@@ -66,6 +75,7 @@
 
 
 
+
         },
         mounted(){
 
@@ -78,7 +88,6 @@
 //
 //                }
                 if(socket_response.response_type === 'checkloginbykey'){
-//                    console.log('main->socket_reponse->checkloginbykey',socket_response)
 
                     if(!socket_response.error_response && socket_response.response_status){
 

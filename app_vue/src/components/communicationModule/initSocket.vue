@@ -136,6 +136,7 @@
 
                 socket_send_factory:[],
                 init_socket_send_factory:[],
+                platform:'pc'
 
 
 
@@ -159,7 +160,19 @@
         },
         created(){
             var vm = this
+            var os = this.sysinfo.os
+            console.log('os->',os)
+            if(os){
+                var os_type = os.family.toLocaleLowerCase()
+                if(os_type.indexOf('os x') > -1 || os_type.indexOf('window') > -1){
+//                    console.log('电脑端',os_type)
+                }
+                else{
+//                    console.log('手机端:',os_type)
+                    this.platform = 'mobile'
 
+                }
+            }
             this.updateWebSite({
 
                 conn_status:0,
@@ -348,11 +361,17 @@
 //                    console.log('ping',i)
                     i++
                     if(!vm.website.login_status){
-                        if(vm.$route.path === '/project/website_main/website_index'){
+                        if(vm.$route.path === '/project/website_main/website_index' || vm.$route.path.indexOf('m_website_main') > -1){
 
                         }else{
+                            if(vm.platform === 'pc'){
+                                var to_path = '/project/m_website_main'
+                            }
+                            else{
+                                to_path = '/project/website_main/website_index'
+                            }
                             setTimeout(function () {
-                                vm.$router.push('/project/website_main/website_index')
+                                vm.$router.push(to_path)
                             },1000)
                         }
                     }

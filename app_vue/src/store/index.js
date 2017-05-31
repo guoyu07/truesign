@@ -32,6 +32,9 @@ const state = {
         ip:'0.0.0.0',
         screenWidth:0,
         screenHeight:0,
+        os:'',
+        os_description:''
+
     },
     AppShow:{
         chat:false,
