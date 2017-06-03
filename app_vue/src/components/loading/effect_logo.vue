@@ -4,22 +4,20 @@
         <div id="logo_scope" :class="{'logo_effect_center_out':on_logo_pos === 'center' || on_logo_pos==='relative_center'}"
              :style="{
             zIndex:'100',
-            borderRadius:center_logo.borderRadius+'px',width:center_logo.width+15+'px',height:center_logo.height+15+'px',top:center_logo.top+'px',bottom:center_logo.bottom+'px',left:center_logo.left+'px',right:center_logo.right+'px'}">
+            borderRadius:center_logo.borderRadius+'px',width:center_logo.width*1.2+'px',height:center_logo.height*1.2+'px',top:center_logo.top+'px',bottom:center_logo.bottom+'px',left:center_logo.left+'px',right:center_logo.right+'px'}">
             <div id="center_logo" :style="{transform:'rotate('+logo_angle+'deg)',width:center_logo.width+'px',height:center_logo.height+'px',
             borderRadius:center_logo.borderRadius+'px',
             borderWidth:(borderStyle.borderTop+'px ' + borderStyle.borderRight+'px ' + borderStyle.borderBottom+'px ' + borderStyle.borderLeft+'px')}">
                 <div :class="{'i_bar':always_class,'logo_effect_center_in':on_logo_pos === 'center' || on_logo_pos==='relative_center','logo_effect_other':on_logo_pos === 'left_top'}"
                      style="position: absolute;width: 100%;height: 100%;">
-                    <div class="i_bar_content" :style="{backgroundColor:colorCtrl.i_bar_content}"></div>
-                    <div class="i_bar_dot1" :style="{backgroundColor:colorCtrl.i_bar_dot1}"></div>
-                    <div class="i_bar_dot2" :style="{backgroundColor:colorCtrl.i_bar_dot2}"></div>
+                    <div class="i_bar_content" :style="{backgroundColor:colorCtrl.i_bar_content,borderRadius:'20px',height:'60%'}"></div>
+                    <div class="i_bar_dot1" :style="{backgroundColor:colorCtrl.i_bar_dot1,top:'-12%'}"></div>
+                    <div class="i_bar_dot2" :style="{backgroundColor:colorCtrl.i_bar_dot2,bottom:'-12%'}"></div>
                 </div>
 
 
             </div>
-            <!--<div v-if="parseInt(logo_width)<100" style="text-align: center;color: #00b000 !important;" class="i_bar logo_effect_center_in">-->
-                <!--●●●●●●-->
-           <!--</div>-->
+
 
         </div>
 
@@ -32,8 +30,8 @@
     export default {
   		data () {
   			return {
-                screenWidth: window.innerWidth,   // 这里是给到了一个默认值 （这个很重要）
-                screenHeight:window.innerHeight,  // 这里是给到了一个默认值 （这个很重要）
+                screenWidth: document.body.clientWidth,   // 这里是给到了一个默认值 （这个很重要）
+                screenHeight: document.body.clientHeight,  // 这里是给到了一个默认值 （这个很重要）
                 borderStyle:{
                     borderBottom:20,
                     borderRight:20,
@@ -94,12 +92,14 @@
 
 
 
+
         },
         methods:{
             resize_effect_logo(){
                 var vm = this
                 vm.center.x = vm.screenWidth/2
                 vm.center.y = vm.screenHeight/2
+
                 if(this.on_logo_pos === 'left_top'){
                     this.center_logo.left = 100
                     this.center_logo.top = 10
@@ -116,11 +116,14 @@
                     this.borderStyle.borderBottom = 10
                 }
                 else if(this.on_logo_pos === 'center'){
+                    console.log(vm.logo_width)
                     this.center_logo.right = 0
                     this.center_logo.bottom = 0
-                    this.center_logo.left = vm.center.x-115/2
+                    this.center_logo.left = vm.center.x-vm.logo_width*1.2/2
                     this.center_logo.top = vm.center.y-115/2
-                    this.center_logo.borderRadius = 100
+                    this.center_logo.borderRadius = parseInt(vm.logo_width)
+//                    this.center_logo.width = parseInt(vm.logo_width)
+//                    this.center_logo.height = parseInt(vm.logo_width)
                     this.center_logo.width = parseInt(vm.logo_width)
                     this.center_logo.height = parseInt(vm.logo_width)
 
@@ -166,7 +169,6 @@
             })
 
 
-
         },
         updated(){
 
@@ -203,8 +205,8 @@
         /*animation:rotatealways 5s linear  infinite normal*/
         transition all 0.5s linear
         position: absolute;
-        width: 100px;
-        height: 100px;
+        /*width: 100px;
+        height: 100px;*/
         border-radius:100px;
         margin: auto;
         top: 0;

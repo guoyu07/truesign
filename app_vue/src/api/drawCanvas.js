@@ -7,8 +7,10 @@ class DrawCanvas {
         this.canvas = document.getElementById(this.el)
         // this.CANVAS_Width = document.getElementById(this.el).offsetWidth
         // this.CANVAS_Height = document.getElementById(this.el).offsetHeight()
-        this.width = window.innerWidth;
-        this.height = window.innerHeight
+        // this.width = window.innerWidth;
+        // this.height = window.innerHeight
+        this.width = document.body.clientWidth
+        this.height = document.body.clientHeight
         this.canvas.width = this.width
         this.canvas.height = this.height
         this.ctx = this.canvas.getContext('2d')
@@ -171,7 +173,6 @@ class DrawCanvas {
 
             cls.dots[v].center.x = cls.dots[v].init_center.x * cls.dots[v].scale_fn;
             cls.dots[v].center.y = cls.dots[v].init_center.y * cls.dots[v].scale_fn;
-
             // console.log(cls.dots[v].scale)
             // console.log(cls.dots[v].center)
 

@@ -4,10 +4,10 @@
         <slidermenu v-if="show_menu" class="top_menu" style="z-index: 99999"></slidermenu>
         <!--<transition name="fade-top-down" mode="out-in">-->
         <div id="route-show" :style="{height:screenHeight+'px'}">
-            <router-view style="background-color: red"></router-view>
+            <router-view style=""></router-view>
         </div>
         <!--</transition>-->
-        <footerbar  v-if="platform==='pc'"  class="top_footer" :style="{position:'absolute',zIndex:footerZindex,width: '100%',bottom: 0}"></footerbar>
+        <footerbar  v-if="platform==='pc' && show_pc_footer"  class="top_footer" :style="{position:'absolute',zIndex:footerZindex,width: '100%',bottom: 0}"></footerbar>
         <transition name="fade-up">
             <footerbar  v-if="show_mobile_footer === true"  class="top_footer" style="position: absolute;width: 100%;z-index:100;bottom: 0"></footerbar>
         </transition>
@@ -37,7 +37,8 @@ export default {
                 platform:'pc',
                 footerZindex:10,
                 footertranslateY:100,
-                show_mobile_footer:false
+                show_mobile_footer:false,
+                show_pc_footer:true
             }
         },
         created(){
@@ -77,6 +78,11 @@ export default {
             this.$root.eventHub.$on('changeShowMobileFooter',function (data) {
                 console.log('data',data)
                 vm.show_mobile_footer = data
+
+            })
+            this.$root.eventHub.$on('changeShowPcFooter',function (data) {
+                console.log('data',data)
+                vm.show_pc_footer = data
 
             })
         },

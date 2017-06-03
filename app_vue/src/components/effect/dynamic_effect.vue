@@ -59,6 +59,7 @@
     // or the compatibility build
 //    var _ = require('lodash-node/compat');
     // or a method category
+
     var array = require('lodash-node/modern/array');
     // or a method
     var chunk = require('lodash-node/compat/array/chunk');

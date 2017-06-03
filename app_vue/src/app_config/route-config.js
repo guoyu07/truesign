@@ -26,7 +26,6 @@ const home = resolve => require(['../components/Home.vue'], resolve)
 
 
 
-// const canvas = resolve => require(['../components/project/canvas.vue'], resolve)
 // /*
 // 工具组件工作区
 //  */
@@ -39,22 +38,24 @@ const project = resolve => require(['../components/project/project.vue'], resolv
 // const gdmap = resolve => require(['../components/project/gdmap.vue'], resolve)
 // const video = resolve => require(['../components/project/video.vue'], resolve)
 //
-// const effect = resolve => require(['../components/effect/effect.vue'], resolve)
-// const threejs_wormhole = resolve => require(['../components/effect/threejs_wormhole.vue'], resolve)
-// const css3d_periodictable = resolve => require(['../components/effect/css3d_periodictable.vue'], resolve)
-// const canvas_materials_video = resolve => require(['../components/effect/canvas_materials_video.vue'], resolve)
-// const threejs_dev = resolve => require(['../components/effect/threejs_dev.vue'], resolve)
-// const threejs_dev_trackball = resolve => require(['../components/effect/threejs_dev_trackball.vue'], resolve)
-// const particles = resolve => require(['../components/effect/particles.vue'], resolve)
+const effect = resolve => require(['../components/effect/effect.vue'], resolve)
+const canvas = resolve => require(['../components/effect/canvas.vue'], resolve)
+
+const threejs_wormhole = resolve => require(['../components/effect/threejs_wormhole.vue'], resolve)
+const css3d_periodictable = resolve => require(['../components/effect/css3d_periodictable.vue'], resolve)
+const canvas_materials_video = resolve => require(['../components/effect/canvas_materials_video.vue'], resolve)
+const threejs_dev = resolve => require(['../components/effect/threejs_dev.vue'], resolve)
+const threejs_dev_trackball = resolve => require(['../components/effect/threejs_dev_trackball.vue'], resolve)
+const particles = resolve => require(['../components/effect/particles.vue'], resolve)
 // const blackhole = resolve => require(['../components/effect/blackhole.vue'], resolve)
-// const router_effect_from = resolve => require(['../components/effect/router_effect_from.vue'], resolve)
-// const router_effect_to = resolve => require(['../components/effect/router_effect_to.vue'], resolve)
-// const dynamic_effect = resolve => require(['../components/effect/dynamic_effect.vue'], resolve)
-// const common = resolve => require(['../components/common/common.vue'], resolve)
-// const slidermenu = resolve => require(['../components/common/slidermenu.vue'], resolve)
-// const mainpage = resolve => require(['../components/mainpage/mainpage.vue'], resolve)
-// const fullpage = resolve => require(['../components/mainpage/fullpage.vue'], resolve)
-// /*
+const router_effect_from = resolve => require(['../components/effect/router_effect_from.vue'], resolve)
+const router_effect_to = resolve => require(['../components/effect/router_effect_to.vue'], resolve)
+const dynamic_effect = resolve => require(['../components/effect/dynamic_effect.vue'], resolve)
+const common = resolve => require(['../components/common/common.vue'], resolve)
+const slidermenu = resolve => require(['../components/common/slidermenu.vue'], resolve)
+const mainpage = resolve => require(['../components/mainpage/mainpage.vue'], resolve)
+const fullpage = resolve => require(['../components/mainpage/fullpage.vue'], resolve)
+
 // loading 工作区
 //  */
 // const loading = resolve => require(['../components/loading/loading.vue'], resolve)
@@ -490,56 +491,65 @@ const routes = [
         ]
     },
 
-    // {
-    //     name: 'effect',
-    //     path: '/effect',
-    //     meta: {
-    //         title: 'effect'
-    //     },
-    //     component: effect,
-    //     children:[
-    //         {
-    //             name: 'threejs_wormhole',
-    //             path: 'threejs_wormhole',
-    //             meta: {
-    //                 title: 'threejs_wormhole'
-    //             },
-    //             component: threejs_wormhole
-    //         },
-    //         {
-    //             name: 'css3d_periodictable',
-    //             path: 'css3d_periodictable',
-    //             meta: {
-    //                 title: 'css3d_periodictable'
-    //             },
-    //             component: css3d_periodictable
-    //         },
-    //         {
-    //             name: 'canvas_materials_video',
-    //             path: 'canvas_materials_video',
-    //             meta: {
-    //                 title: 'canvas_materials_video'
-    //             },
-    //             component: canvas_materials_video
-    //         },
-    //         {
-    //             name: 'threejs_dev',
-    //             path: 'threejs_dev',
-    //             meta: {
-    //                 title: 'threejs_dev'
-    //             },
-    //             component: threejs_dev
-    //         },
-    //         {
-    //             name: 'threejs_dev_trackball',
-    //             path: 'threejs_dev_trackball',
-    //             meta: {
-    //                 title: 'threejs_dev_trackball'
-    //             },
-    //             component: threejs_dev_trackball
-    //         },
-    //     ]
-    // },
+    {
+        name: 'effect',
+        path: '/effect',
+        meta: {
+            title: 'effect'
+        },
+        component: effect,
+
+        children:[
+                {
+                    name: 'canvas',
+                    path: 'canvas',
+                    meta: {
+                        title: 'canvas'
+                    },
+                    component: canvas
+                },
+                {
+                    name: 'threejs_wormhole',
+                    path: 'threejs_wormhole',
+                    meta: {
+                        title: 'threejs_wormhole'
+                    },
+                    component: threejs_wormhole
+                },
+                {
+                    name: 'css3d_periodictable',
+                    path: 'css3d_periodictable',
+                    meta: {
+                        title: 'css3d_periodictable'
+                    },
+                    component: css3d_periodictable
+                },
+                {
+                    name: 'canvas_materials_video',
+                    path: 'canvas_materials_video',
+                    meta: {
+                        title: 'canvas_materials_video'
+                    },
+                    component: canvas_materials_video
+                },
+                {
+                    name: 'threejs_dev',
+                    path: 'threejs_dev',
+                    meta: {
+                        title: 'threejs_dev'
+                    },
+                    component: threejs_dev
+                },
+                {
+                    name: 'threejs_dev_trackball',
+                    path: 'threejs_dev_trackball',
+                    meta: {
+                        title: 'threejs_dev_trackball'
+                    },
+                    component: threejs_dev_trackball
+                },
+        ]
+    },
     // {
     //     name: 'loading',
     //     path: '/loading',
