@@ -7,8 +7,8 @@ require('../../static/css/fade.styl')
 require('../../static/css/line.styl')
 require('../../static/css/triangle.css')
 // require('mint-ui/lib/style.css')
-// require('element-ui/lib/theme-default/index.css')
-// require('font-awesome/css/font-awesome.css');// get font-awesome
+require('element-ui/lib/theme-default/index.css')
+require('font-awesome/css/font-awesome.css');// get font-awesome
 require('bootstrap/dist/css/bootstrap.css')
 require('bootstrap/dist/js/bootstrap.min')
 require('semantic-ui/dist/semantic.css')
