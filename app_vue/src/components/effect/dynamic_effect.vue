@@ -51,7 +51,7 @@
 </template>
 
 <script>
-    const  TWEEN = require('tween.js/src/tween.js')
+//    var  TWEEN = require('tween.js/src/tween.js')
     const TweenLite = require('gsap/TweenLite')
     // load the modern build
 //    var _ = require('lodash-node');

@@ -12,7 +12,7 @@
 
 
 <script>
-    var TWEEN =  require('tween')
+    import TWEEN  from 'tween'
     var THREE = require('three/build/three')
 
     var TrackballControls = require('three/examples/js/controls/TrackballControls')

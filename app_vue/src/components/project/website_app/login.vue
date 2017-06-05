@@ -1,5 +1,5 @@
 <template>
-  <div class="top_router_view" style="background-color: transparent !important;">
+  <div class="top_router_view" style="background-color: transparent !important;height: 100%">
     <!--<particles></particles>-->
       <threejs_wormhole></threejs_wormhole>
     <div id="welcombtn" style="z-index: 11; ">

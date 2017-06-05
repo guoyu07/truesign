@@ -3,7 +3,7 @@
         <window_resize style="display: none"></window_resize>
         <slidermenu v-if="show_menu" class="top_menu" style="z-index: 99999"></slidermenu>
         <!--<transition name="fade-top-down" mode="out-in">-->
-        <div id="route-show" :style="{height:screenHeight+'px'}">
+        <div id="route-show" :style="{height:screenHeight+'px',backgroundColor:'red'}">
             <router-view style=""></router-view>
         </div>
         <!--</transition>-->
@@ -61,7 +61,7 @@ export default {
           this.$root.eventHub.$on('screenWidth2screenHeight',function (data) {
               var width2height = data.split(",")
               vm.screenWidth = parseInt(width2height[0])
-              vm.screenHeight = parseInt(width2height[1])-25
+              vm.screenHeight = parseInt(width2height[1])
 
           })
         },

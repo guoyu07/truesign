@@ -6,7 +6,7 @@
 
 
 <script>
-    var TWEEN =  require('tween')
+//    var TWEEN =  require('tween')
     var THREE = require('three/build/three')
     var TrackballControls = require('three/examples/js/controls/TrackballControls')
     var CSS3DRenderer =  require('three/examples/js/renderers/CSS3DRenderer')
