@@ -3,7 +3,7 @@
         <window_resize style="display: none"></window_resize>
         <slidermenu v-if="show_menu" class="top_menu" style="z-index: 99999"></slidermenu>
         <!--<transition name="fade-top-down" mode="out-in">-->
-        <div id="route-show" :style="{height:screenHeight+'px',backgroundColor:'red'}">
+        <div id="route-show" :style="{height:screenHeight+'px'}">
             <router-view style=""></router-view>
         </div>
         <!--</transition>-->
