@@ -2,7 +2,7 @@
 
     <div class="top_router_view" id="m_page_main" style="background-color: transparent;" >
 
-        <effectlogo logo_pos="center" logo_width="200"></effectlogo>
+        <effectlogo logo_pos="center" logo_width="200" ></effectlogo>
         <div style="text-align: center;color: white">
                 m_website_main
             <input type="button" @click="changeme" value="doit"/>
@@ -45,7 +45,7 @@
         mounted(){
 
             var vm = this
-
+//            this.$root.eventHub.$emit('change_logo_box_shadow','0 0 20px red')
         },
         beforeDestroy(){
             console.log('beforeDestory')

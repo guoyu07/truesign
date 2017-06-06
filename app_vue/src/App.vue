@@ -38,7 +38,7 @@ export default {
                 footerZindex:10,
                 footertranslateY:100,
                 show_mobile_footer:false,
-                show_pc_footer:true
+                show_pc_footer:false
             }
         },
         created(){

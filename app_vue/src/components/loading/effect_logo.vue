@@ -1,10 +1,18 @@
 <template>
-  <div class="top_router_view "  >
+  <div class="top_router_view" style="height: 80%;position: absolute;z-index:10"  >
         <!--<input v-model="on_logo_pos" style="position: absolute;z-index:100000;background-color: white;color: black!important;margin-left: 200px">-->
         <div id="logo_scope" :class="{'logo_effect_center_out':on_logo_pos === 'center' || on_logo_pos==='relative_center'}"
              :style="{
             zIndex:'100',
-            borderRadius:center_logo.borderRadius+'px',width:center_logo.width*1.2+'px',height:center_logo.height*1.2+'px',top:center_logo.top+'px',bottom:center_logo.bottom+'px',left:center_logo.left+'px',right:center_logo.right+'px'}">
+            borderRadius:center_logo.borderRadius+'px',
+            width:center_logo.width*1.2+'px',
+            height:center_logo.height*1.2+'px',
+            top:center_logo.top+'px',
+            bottom:center_logo.bottom+'px',
+            left:center_logo.left+'px',
+            right:center_logo.right+'px',
+            boxShadow:logo_box_shadow
+            }">
             <div id="center_logo" :style="{transform:'rotate('+logo_angle+'deg)',width:center_logo.width+'px',height:center_logo.height+'px',
             borderRadius:center_logo.borderRadius+'px',
             borderWidth:(borderStyle.borderTop+'px ' + borderStyle.borderRight+'px ' + borderStyle.borderBottom+'px ' + borderStyle.borderLeft+'px')}">
@@ -74,6 +82,7 @@
 
                 },
                 on_logo_pos:'',
+                logo_box_shadow:'0 0 20px #57DCDF'
   			}
   		},
         props:{
@@ -89,6 +98,7 @@
                 required: false,
 
             },
+
 
 
 
@@ -168,7 +178,9 @@
 
             })
 
-
+            this.$root.eventHub.$on('change_logo_box_shadow',function (data) {
+                vm.logo_box_shadow = data
+            })
         },
         updated(){
 
