@@ -12,33 +12,49 @@
             <span v-else="formtype === 'login'">注册</span>
         </div>
         <div v-if="formtype==='login'"  class="wechat_marketing_form login_form" style="text-align: center;margin-right: 50px;margin-left: 20px;margin-top: 100px;">
+            <el-radio-group @change="radio_login_type_change" size="small"  v-model="radio_login_type" style="position: absolute;left:0;top:50px;">
+                <el-radio-button  v-for="(item,index) in login_type_list" :key="item" :label="item"></el-radio-button>
 
-            <el-form :label-position="labelPosition" label-width="60px" :model="form_param">
-                <el-form-item label="用户名">
-                    <el-input v-model="form_param.name"></el-input>
+            </el-radio-group>
+            <el-form :label-position="labelPosition" ref="login_form_rule" :rules="login_form_rule" label-width="100px" :model="login_form">
+                <transition name="el-zoom-in-top">
+                    <el-form-item v-if="radio_login_type==='员工'" label="商家识别码" prop="business_code">
+                        <el-input v-model="login_form.business_code"></el-input>
+                    </el-form-item>
+                </transition>
+
+                <el-form-item label="用户名" prop="username">
+                    <el-input v-model="login_form.username"></el-input>
                 </el-form-item>
                 <el-form-item label="密码"  prop="pass">
-                    <el-input type="password" v-model="form_param.pass"></el-input>
+                    <el-input type="password" v-model="login_form.pass"></el-input>
                 </el-form-item>
                 <el-form-item>
-                    <el-button type="primary" @click="">登陆</el-button>
+                    <el-button type="primary" @click="submitLoginForm('login_form_rule')">登陆</el-button>
                     <el-button @click="">重置</el-button>
                 </el-form-item>
             </el-form>
         </div>
         <div  v-else="formtype==='login'"  class="wechat_marketing_form reg_form" style="text-align: center;margin-right: 50px;margin-left: 20px;margin-top: 100px;">
-                <el-form :label-position="labelPosition" label-width="60px" :model="form_param">
-                    <el-form-item label="用户名">
-                        <el-input v-model="form_param.name"></el-input>
+                <el-form :label-position="labelPosition"  ref="reg_form_rule" :rules="reg_form_rule" label-width="100px" :model="reg_form">
+                    <el-form-item label="用户名" prop="username">
+                        <el-input v-model="reg_form.username"></el-input>
                     </el-form-item>
                     <el-form-item label="密码"  prop="pass">
-                        <el-input type="password" v-model="form_param.pass"></el-input>
+                        <el-input type="password" v-model="reg_form.pass"></el-input>
                     </el-form-item>
-                    <el-form-item label="邮箱" >
-                        <el-input  v-model="form_param.email"></el-input>
+                    <el-form-item label="邮箱"  prop="email">
+                        <el-input  v-model="reg_form.email"></el-input>
                     </el-form-item>
-                    <el-form-item label="手机号" >
-                        <el-input  v-model="form_param.phonenum"></el-input>
+                    <el-form-item label="手机号" prop="phonenum">
+                        <el-input  v-model="reg_form.phonenum">
+                            <el-button slot="append" icon="" value="">发送验证码</el-button>
+                        </el-input>
+                    </el-form-item>
+                    <el-form-item label="验证码" prop="phonenum_code">
+                        <el-input  v-model="reg_form.phonenum_code">
+
+                        </el-input>
                     </el-form-item>
                     <el-form-item>
                         <el-button type="primary" @click="">注册</el-button>
@@ -60,13 +76,54 @@
 
     export default {
         data() {
+
             return {
                 labelPosition: 'right',
-                form_param: {
-                    name: '',
+                login_form:{
+                    business_code:'',
+                    username: '',
+                    pass: '',
+                },
+                login_form_rule:{
+                    username: [
+                        { required: true, message: '请输入用户名', trigger: 'blur' },
+                    ],
+                    pass: [
+                        { required: true, message: '请输入密码', trigger: 'blur' },
+                    ],
+
+
+                },
+                reg_form: {
+                    username: '',
                     pass: '',
                     email: '',
                     phonenum:'',
+                    phonenum_code:''
+                },
+                reg_form_rule:{
+                    username: [
+                        { required: true, message: '请输入用户名', trigger: 'blur' },
+                    ],
+                    pass: [
+                        { required: true, message: '请输入密码', trigger: 'blur' },
+                    ],
+                    email: [
+                        { required: true, message: '请输入邮箱', trigger: 'blur' },
+                    ],
+                    phonenum: [
+                        { required: true, message: '请输入手机号', trigger: 'blur' },
+                    ],
+                    phonenum_code: [
+                        { required: true, message: '请输入验证码', trigger: 'blur' },
+                    ],
+
+                },
+                radio_login_type:'管理员',
+                login_type_list:{
+                    'admin':'管理员',
+                    'business':'商家',
+                    'worker':'员工'
                 }
 
             };
@@ -87,7 +144,19 @@
 
         },
         methods: {
-
+            radio_login_type_change(data){
+                this.radio_login_type = data
+            },
+            submitLoginForm(formName) {
+                this.$refs[formName].validate((valid) => {
+                    if (valid) {
+                        alert('submit!');
+                    } else {
+                        console.log('error submit!!');
+                        return false;
+                    }
+                });
+            },
         },
         mounted(){
 

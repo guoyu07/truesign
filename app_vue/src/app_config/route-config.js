@@ -107,6 +107,8 @@ const wechat_marketing = resolve => require(['../components/project/wechat_marke
 const form = resolve => require(['../components/project/wechat_marketing/form.vue'], resolve)
 const main_page = resolve => require(['../components/project/wechat_marketing/main_page.vue'], resolve)
 const marketing_product = resolve => require(['../components/project/wechat_marketing/product.vue'], resolve)
+const wechat_marketing_backend = resolve => require(['../components/project/wechat_marketing/pagebackend/index.vue'], resolve)
+const w_m_b_site_ctrl = resolve => require(['../components/project/wechat_marketing/pagebackend/site_ctrl.vue'], resolve)
 
 
 const routes = [
@@ -651,6 +653,25 @@ const routes = [
 
             ]
         },
+    {
+        name: 'wechat_marketing_backend',
+        path: '/wechat_marketing_backend',
+        meta: {
+            title: 'wechat_marketing_backend'
+        },
+        component: wechat_marketing_backend,
+        children:[
+            {
+                name: 'w_m_b_site_ctrl',
+                path: 'w_m_b_site_ctrl',
+                meta: {
+                    title: 'w_m_b_site_ctrl'
+                },
+                component: w_m_b_site_ctrl
+            },
+
+        ]
+    },
 
 
 

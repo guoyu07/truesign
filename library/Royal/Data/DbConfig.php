@@ -351,7 +351,7 @@ class DbConfig {
         }
         $columns = join(",\n", $columns);
 //        $sql = "CREATE TABLE `$table`(\n$columns\n) ENGINE=InnoDB DEFAULT CHARSET=utf8";
-        $sql = "CREATE TABLE `$table`(\n$columns\n) ENGINE=MyISAM DEFAULT CHARSET=utf8";
+        $sql = "CREATE TABLE `$table`(\n$columns\n) ENGINE=InnoDB DEFAULT CHARSET=utf8";
         return array($sql);
     }
 

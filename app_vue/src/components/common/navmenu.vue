@@ -1,19 +1,21 @@
 <template>
-    <div id="navmenu" style="z-index:9999;position: absolute;width: 100%;min-width: 1200px;">
-            <div
-                    style="position: absolute;width: 100%;height: 60px;hsla(0,0%,100%,.5);
-                    background-color: rgba(255,255,255,0.33);box-shadow: 0 0 20px black;
-                    border-radius: 2px;
-                    "></div>
+    <div id="navmenu" style="z-index:9999;position: fixed;width: 100%;min-width: 1300px;">
+            <div id="navmenu_bg"
+                    :style="{backgroundColor:navmenu_theme_color}"></div>
             <div id="navbar" style="height: 60px;position: absolute;background-color: transparent;">
                 <div style="display: inline-block; " id="logodiv" >
                     <img height="58px" :src="logo" />
                 </div>
             </div>
             <el-menu :default-active="activeIndex" class="" mode="horizontal" @select="handleSelect" :router="true" theme="light"
-                     style="background-color: rgba(255,255,255,0.0);width: 30%;right:0;position: absolute">
+                     style="background-color: rgba(255,255,255,0.0);width: auto;right:0;position: absolute;padding-right: 50px;">
 
-                <el-menu-item v-for="(item,index) in menulist" :key="item" :index="index+''">{{item}}</el-menu-item>
+                <el-menu-item :style="{color: menu_item_color}" v-for="(item,index) in menulist" :key="item" :index="index+''">{{item}}</el-menu-item>
+
+                <el-menu-item v-if='user_scope.name' :style="{color: menu_item_color}" index="append_user">
+                    <img style="border-radius: 200px" :src='user_scope.img'>
+                    <p style="display: inline">{{user_scope.name }}</p>
+                </el-menu-item>
 
             </el-menu>
 
@@ -28,8 +30,10 @@
 //    import router_build from '../../app_config/router-build'
     import Velocity from 'velocity-animate'
     import Vue from 'vue'
+import ElMenuItem from "../../../node_modules/element-ui/packages/menu/src/menu-item";
 
     export default {
+        components: {ElMenuItem},
         data() {
             return {
                 activeIndex:'1',
@@ -49,6 +53,25 @@
                 required: false,
 
             },
+            navmenu_theme_color:{
+                default: 'rgba(255,255,255,0.33)',
+                required: false,
+
+            },
+            menu_item_color:{
+                default: 'black',
+                required: false,
+            },
+            user_scope:{
+                type: Object,
+                default: function () {
+                    return {
+                        img:'',
+                        name:''
+                    }
+                },
+                required: false,
+            }
 
 
         },
@@ -71,6 +94,10 @@
     }
 </script>
 <style lang="stylus" rel="stylesheet/stylus">
+#navmenu_bg
+    position: absolute;width: 100%;height: 60px;hsla(0,0%,100%,.5);
+    background-color: rgba(255,255,255,0.33);box-shadow: 0 0 20px black;
+    border-radius: 2px;
 .slide-fade-out-in-enter{
     /*
     transition: all 1.5s

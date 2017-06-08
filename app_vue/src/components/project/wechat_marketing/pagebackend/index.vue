@@ -1,9 +1,11 @@
 <template>
     <div class="top_router_view" style="background-color: gainsboro;text-align: center;overflow: hidden;" >
-        <p class="top_router_tip" style="opacity: 0.2">wechat_marketing</p>
+        <p class="top_router_tip" style="opacity: 0.2">wechat_marketing pagebackend</p>
 
-        <navmenu :logo="logo" :menulist="menulist"></navmenu>
-        <div style="min-width: 1200px;width: 100%;background-color: transparent;height: 100%;margin: 0 auto;padding-top: 70px;">
+        <navmenu :logo="logo" :menulist="menulist" :navmenu_theme_color="navmenu_theme_color" :menu_item_color="'#cbcfe4'" :user_scope="user_scope"></navmenu>
+
+
+        <div style="min-width: 1200px;width: 100%;background-color: transparent;height: 100%;margin: 0 auto;padding-top: 65px;">
             <transition name="el-zoom-in-top">
             <router-view> </router-view>
             </transition>
@@ -15,22 +17,37 @@
 
 
 <script>
-    import navmenu from '../../common/navmenu.vue'
+    import navmenu from '../../../common/navmenu.vue'
+    import breadcrumb from '../../../common/breadcrumb .vue'
 
     export default {
         data(){
             return{
                 logo:'https://res.wx.qq.com/mpres/htmledition/images/bg/bg_logo318e8e.png',
                 menulist:{
-                    main_page:'首页',
-                    marketing_product:'产品',
-                    form:'登陆∞注册',
-                }
+                    site_ctrl:'站点管理',
+                    business_client_ctrl:'客户管理',
+                    weimob_ctrl:'微信公众号管理',
+                    wechat_content_ctrl:'内容管理',
+                    fun_ctrl:'功能管理',
+                    agent_ctrl:'代理商管理',
+                    extend_ctrl:'扩展管理'
+
+
+                },
+                navmenu_theme_color:'#324157',
+                user_scope:{
+                    img:'http://truesign-app.oss-cn-beijing.aliyuncs.com/logo/logo_min.png',
+                    name:'IAMSEE'
+                },
             }
         },
+        props: {
 
+        },
         components:{
             navmenu,
+            breadcrumb
 
         },
         computed: {

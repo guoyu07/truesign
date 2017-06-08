@@ -2,6 +2,7 @@
   "dependencies": {
     "lodash": "^4.17.4",
     "node-sass": "^4.5.2",
-    "sass-loader": "^6.0.3"
+    "sass-loader": "^6.0.3",
+    "vue-parallaxy": "^1.0.3"
   }
 }
