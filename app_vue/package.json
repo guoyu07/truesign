@@ -47,6 +47,7 @@
     "vue": "^2.3.2",
     "vue-quill-editor": "^2.1.6",
     "vue-router": "^2.3.1",
+    "vue-strap": "^1.1.37",
     "vue2-editor": "^2.0.24",
     "vuex": "^2.3.1",
     "wangeditor": "^2.1.23",

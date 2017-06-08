@@ -1,5 +1,9 @@
 import $ from 'jquery'
+var wWidth = $(window).width();
+var scale = 100*wWidth/750;
+console.log('scale',scale)
 
+$("html").css("font-size",scale);
 require('../../static/css/reset.css')
 require('../../static/css/style.css')
 // require('../../static/css/style.sass')

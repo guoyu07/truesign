@@ -14,7 +14,7 @@ define('APPLICATION_PATH', __DIR__.'/../../' );
 $classLoader = require(APPLICATION_PATH . '/vendor/autoload.php');
 $classLoader->setPsr4('Royal\\', APPLICATION_PATH . '/library/Royal/');
 $classLoader->setPsr4('Truesign\\', APPLICATION_PATH . '/common');
-\Royal\Bootstrap::run();
+\Royal\Bootstrap::run('wechat_marketing');
 
 /* *****************************************************************
  * 刷新数据库
@@ -23,7 +23,7 @@ $adapters = array();
 
 $filesnames = scandir(APPLICATION_PATH.'/common/Adapter/');
 foreach ($filesnames as $k=>$dir){
-    if(in_array($dir,array('.','..','Base','Sjtt'))){
+    if(in_array($dir,array('.','..','Base','Sjtt','Apps','DbServer','Shadowsocks','User','Volume'))){
         unset($filesnames[$k]);
     }
 }
@@ -41,9 +41,6 @@ foreach ($filesnames as $name){
     }
 
 }
-
-
-
 $model = new DbConfig();
 //刷新库
 

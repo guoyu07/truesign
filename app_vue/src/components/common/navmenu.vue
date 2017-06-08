@@ -1,23 +1,20 @@
 <template>
-    <div id="navmenu" style="z-index:9999;position: absolute;width: 100%;">
-            <div style="position: absolute;width: 100%;height: 60px;hsla(0,0%,100%,.5);background-color: rgba(255,255,255,0.33)"></div>
-            <div id="navbar" style="height: 60px;position: absolute;background-color: transparent;width: 100%">
-                <div style="display: inline-block; margin-left: 50px" id="logodiv" >
-                    <img width="60px" height="58px" src="http://truesign-app.oss-cn-beijing.aliyuncs.com/logo/sjtt_logo.png" />
+    <div id="navmenu" style="z-index:9999;position: absolute;width: 100%;min-width: 1200px;">
+            <div
+                    style="position: absolute;width: 100%;height: 60px;hsla(0,0%,100%,.5);
+                    background-color: rgba(255,255,255,0.33);box-shadow: 0 0 20px black;
+                    border-radius: 2px;
+                    "></div>
+            <div id="navbar" style="height: 60px;position: absolute;background-color: transparent;">
+                <div style="display: inline-block; " id="logodiv" >
+                    <img height="58px" :src="logo" />
                 </div>
             </div>
-            <el-menu :default-active="activeIndex" class="" mode="horizontal" @select="handleSelect" :router="false"
+            <el-menu :default-active="activeIndex" class="" mode="horizontal" @select="handleSelect" :router="true" theme="light"
                      style="background-color: rgba(255,255,255,0.0);width: 30%;right:0;position: absolute">
-                <el-menu-item index="1">首页</el-menu-item>
-                <el-menu-item index="2">产品
 
-                    <!--<template slot="title">产品</template>-->
-                    <!--<el-menu-item index="2-1">选项111111111</el-menu-item>-->
-                    <!--<el-menu-item index="2-2">选项232222</el-menu-item>-->
-                    <!--<el-menu-item index="2-3">选项3132</el-menu-item>-->
-                </el-menu-item>
-                <el-menu-item index="3">联系我们</el-menu-item>
-                <el-menu-item index="admin">管理登录</el-menu-item>
+                <el-menu-item v-for="(item,index) in menulist" :key="item" :index="index+''">{{item}}</el-menu-item>
+
             </el-menu>
 
 
@@ -39,6 +36,21 @@
                 navmenu_list:[],
 
             };
+        },
+        props:{
+            logo:{
+                type: String,
+                default: 'https://res.wx.qq.com/mpres/htmledition/images/bg/bg_logo318e8e.png', //left_top
+                required: false,
+
+            },
+            menulist:{
+                default: [1,2,3,4],
+                required: false,
+
+            },
+
+
         },
         methods: {
             handleSelect(key, keyPath) {

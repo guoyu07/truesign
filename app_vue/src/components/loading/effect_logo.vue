@@ -1,5 +1,5 @@
 <template>
-  <div class="top_router_view" style="height: 80%;position: absolute;z-index:10"  >
+  <div class="" style="height: 80%;position: absolute;z-index:10"  >
         <!--<input v-model="on_logo_pos" style="position: absolute;z-index:100000;background-color: white;color: black!important;margin-left: 200px">-->
         <div id="logo_scope" :class="{'logo_effect_center_out':on_logo_pos === 'center' || on_logo_pos==='relative_center'}"
              :style="{
@@ -98,6 +98,16 @@
                 required: false,
 
             },
+            custom_margin_left:{
+                type: String,
+                default: '0', //left_top
+                required: false,
+            },
+            custom_margin_top:{
+                type: String,
+                default: '0', //left_top
+                required: false,
+            }
 
 
 
@@ -126,11 +136,13 @@
                     this.borderStyle.borderBottom = 10
                 }
                 else if(this.on_logo_pos === 'center'){
-                    console.log(vm.logo_width)
+
+
                     this.center_logo.right = 0
                     this.center_logo.bottom = 0
-                    this.center_logo.left = vm.center.x-vm.logo_width*1.2/2
-                    this.center_logo.top = vm.center.y-115/2
+                    this.center_logo.left = vm.center.x-vm.logo_width*1.2/2 - parseInt(this.custom_margin_left)
+
+                    this.center_logo.top = vm.center.y-115 -parseInt(this.custom_margin_top)
                     this.center_logo.borderRadius = parseInt(vm.logo_width)
 //                    this.center_logo.width = parseInt(vm.logo_width)
 //                    this.center_logo.height = parseInt(vm.logo_width)

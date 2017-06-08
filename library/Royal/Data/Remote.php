@@ -23,8 +23,17 @@ class Remote {
         }
         $config = \Yaf_Registry::get('config');
         $dbConfig = $config->db->{$db};
+
         if (empty($dbConfig)) {
-            throw new Exception(sprintf('config of db %s is not found', $config_name), -9999);
+            $dbConfig = \Yaf_Registry::get('dbconfig')[$db];
+
+            if(empty($dbConfig)){
+                throw new Exception(sprintf('config of db %s is not found', $config_name), -9999);
+            }
+            else{
+                $dbConfig = (object)$dbConfig;
+            }
+
         }
 
         $db = new MySQL(array('host' => $dbConfig->host, 'port' => $dbConfig->port,

@@ -3,7 +3,7 @@
     <div class="top_router_view" id="m_page_main" style="background-color: transparent;" >
 
         <effectlogo logo_pos="center" logo_width="200" ></effectlogo>
-        <div style="text-align: center;color: white">
+        <div style="text-align: center;color: white;font-size: 1rem">
                 m_website_main
             <input type="button" @click="changeme" value="doit"/>
         </div>

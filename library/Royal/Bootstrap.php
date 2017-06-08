@@ -6,25 +6,34 @@ abstract class Bootstrap {
 
     static function loadConfig() {
         //配置节点
-        $section = 'dbserver';
+        $section = 'common';
         //如果在phpunit环境中，则加载phpunit的配置节点
         if(defined('IN_PHPUNIT') && IN_PHPUNIT == true){
             $section = 'phpunit';
         }
         $config = new \Yaf_Config_Ini(APPLICATION_PATH.'/config/business.ini', $section);
         \Yaf_Registry::set('config', $config);
+        $db_arr =  $config->get('db')->toArray();
+
+        $currect_config = new \Yaf_Config_Ini(CURRECT_APPLICATION_PATH.'/conf/application.ini','common');
+        $currect_db_arr = $currect_config->get('db')->toArray();
+
+        $dbconfig = array_merge($db_arr,$currect_db_arr);
+        \Yaf_Registry::set('dbconfig',$dbconfig);
+
         return $config;
     }
 
     static function run($app='o_app')
     {
+        define('CURRECT_APPLICATION_PATH', APPLICATION_PATH.DIRECTORY_SEPARATOR.'apps'.DIRECTORY_SEPARATOR.$app);
 
         static::loadConfig();
         if (php_sapi_name() != 'cli') {
             TimeStack::start();
             $application = new \Yaf_Application(array(
                 'application' => array(
-                    'directory' => APPLICATION_PATH . '/apps/'.$app.'/application',
+                    'directory' => CURRECT_APPLICATION_PATH.DIRECTORY_SEPARATOR.'application',
                     'system' => array(
                         'use_spl_autoload' => 1
                     ),
