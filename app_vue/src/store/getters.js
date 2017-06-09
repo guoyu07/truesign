@@ -17,6 +17,9 @@ const getters = {
     },
     appshow: state => {
         return state.AppShow
+    },
+    wechat_marketing_store: state => {
+        return state.wechat_marketing_store
     }
 }
 

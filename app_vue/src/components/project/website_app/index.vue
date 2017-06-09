@@ -7,7 +7,7 @@
         </transition>
         <login  v-if="(parseInt(effect_line_top) > 0 || !show_loading) && platform==='pc'"   id="main_page" style="position:absolute;z-index: 12;transition: all 1s"></login>
 
-        <effectlogo id="effectlogo"    style="position: absolute;z-index:15"></effectlogo>
+        <effectlogo id="effectlogo"    style="position: absolute;z-index:15" :custom_margin_top="-53"></effectlogo>
         <div v-if="platform !== 'pc'" style="text-align: center;color: white;left:50%;transform:translateX(-50%);top: 55%;position: absolute;font-size: 26px">
             非PC平台,跳转中
         </div>

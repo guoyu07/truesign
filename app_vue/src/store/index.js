@@ -39,6 +39,9 @@ const state = {
     AppShow:{
         chat:false,
         music:false
+    },
+    wechat_marketing_store:{
+        apihost:''
     }
 
 }

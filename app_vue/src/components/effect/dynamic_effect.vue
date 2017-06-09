@@ -60,9 +60,9 @@
 //    var _ = require('lodash-node/compat');
     // or a method category
 
-    var array = require('lodash-node/modern/array');
+    var array = require('lodash/array');
     // or a method
-    var chunk = require('lodash-node/compat/array/chunk');
+//    var chunk = require('lodash-node/compat/array/chunk');
     export default {
         data () {
             var defaultSides = 10

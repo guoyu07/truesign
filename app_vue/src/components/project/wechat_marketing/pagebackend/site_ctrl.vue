@@ -1,22 +1,14 @@
 <template>
-    <div class="top_router_view" >
+    <div class="top_router_view" style="overflow: scroll" >
         <el-tabs type="border-card" style="background-color: #dcdcdc;box-shadow: none" @tab-click="tabclick">
-            <el-tab-pane v-for="(item,index) in tab_menu_list" :key="item" :label="item.value" :name="item.name" >
-                        <div style="width: 100%;height: auto;min-height: 600px;text-align: left">
+            <el-tab-pane v-for="(item,index) in tab_menu_list" :key="item" :label="item.value" :data-name="item.name" :name="item.name" >
+                        <div style="width: 100%;height: auto;min-height: 600px;text-align: left;" v-if="item.name==='后台首页'">
 
-                            <span style="display: inline-block;font-size: 0.1rem;background-color: darkgray;padding: 10px;color: white;border-radius: 3px;cursor: pointer">
-                                {{item.title}}
-                            </span>
-                            <ol style="padding: 20px;">
-                                <li v-for="(iitem,iindex) in item.list_msg">
-                                    <label>{{ iitem.key }}:</label>
-                                    <label>{{ iitem.value }}</label>
-                                </li>
-                            </ol>
-                            <div style="padding: 20px">
-                                <label>{{item.cb_btn.des}}</label>
-                                <el-button size="small" :api="item.cb_btn.api">{{item.cb_btn.key}}</el-button>
-                            </div>
+                                <page_model style="width: 600px;display: inline-block;vertical-align: top" ></page_model>
+                                <page_model style="width: 600px;display: inline-block;vertical-align: top" ></page_model>
+                                {{ wechat_marketing_store }}
+
+
                         </div>
 
             </el-tab-pane>
@@ -28,7 +20,11 @@
 
 <script>
 
-
+    import page_model from '../../../common/page_model.vue'
+    import { mapGetters,mapActions } from 'vuex'
+    import axios from 'axios'
+    import {axios_config} from '../../../../api/axiosApi'
+    const index_api = apihost+'index/'
     export default {
         data(){
             return {
@@ -99,8 +95,14 @@
         props: {
 
         },
-        components: {},
-        computed: {},
+        components: {
+            page_model
+        },
+        computed: {
+            ...mapGetters([
+                'wechat_marketing_store',
+            ])
+        },
         created(){
 
         },
@@ -112,8 +114,10 @@
 
         },
         methods: {
-            tabclick(data){
-                console.log(data)
+            tabclick(e){
+                if(e.$el.dataset.name === '后台首页'){
+
+                }
             }
         },
 

@@ -103,6 +103,8 @@ const shadowsocks = resolve => require(['../components/project/website_app/apps/
 // const chat = resolve => require(['../components/project/website_app/apps/chat.vue'], resolve)
 
 
+const phone_model = resolve => require(['../components/common/phone_model.vue'], resolve)
+const page_model = resolve => require(['../components/common/page_model.vue'], resolve)
 const wechat_marketing = resolve => require(['../components/project/wechat_marketing/index.vue'], resolve)
 const form = resolve => require(['../components/project/wechat_marketing/form.vue'], resolve)
 const main_page = resolve => require(['../components/project/wechat_marketing/main_page.vue'], resolve)
@@ -618,6 +620,7 @@ const routes = [
     //
     //
     // },
+
     {
             name: 'wechat_marketing',
             path: '/wechat_marketing',
@@ -671,6 +674,22 @@ const routes = [
             },
 
         ]
+    },
+    {
+        name: 'phone_model',
+        path: '/phone_model',
+        meta: {
+            title: 'phone_model'
+        },
+        component: phone_model,
+    },
+    {
+        name: 'page_model',
+        path: '/page_model',
+        meta: {
+            title: 'page_model'
+        },
+        component: page_model,
     },
 
 

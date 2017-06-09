@@ -16,7 +16,8 @@
 
 <script>
     import navmenu from '../../common/navmenu.vue'
-
+    import {wechat_marketing_apihost} from '../../../app_config/base_config'
+    import { mapGetters,mapActions } from 'vuex'
     export default {
         data(){
             return{
@@ -34,13 +35,19 @@
 
         },
         computed: {
-
+            ...mapGetters([
+                'wechat_marketing_store',
+            ])
 
         },
         created(){
-
+            console.log('wechat_marketing_apihost',wechat_marketing_apihost)
+            this.updateWechat_marketing_store({
+                apihost:wechat_marketing_apihost
+            })
         },
         mounted(){
+
             var vm = this
             this.$root.eventHub.$on('changeNavMenu',function (data) {
                 switch (data){
@@ -73,7 +80,9 @@
         },
         methods:{
 
-
+            ...mapActions([
+                'updateWechat_marketing_store',
+            ]),
         },
 
     }

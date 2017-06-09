@@ -221,7 +221,7 @@
 
 
 <script>
-    import { VueEditor } from 'vue2-editor'
+//    import { VueEditor } from 'vue2-editor'
     import wangeditor from '../../../tools/wangeditor.vue'
     import Velocity from 'velocity-animate'
     import Vue from 'vue'
@@ -740,7 +740,7 @@
             },
         },
         components:{
-            VueEditor,
+//            VueEditor,
             effectlogo,
             wangeditor
         },

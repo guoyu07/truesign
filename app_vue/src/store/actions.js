@@ -24,6 +24,9 @@ const actions = {
   updateAppShow({commit}, data){
       commit(types.APPSHOW,data);
   },
+  updateWechat_marketing_store({commit}, data){
+      commit(types.wechat_marketing_store,data);
+  },
 
 }
 

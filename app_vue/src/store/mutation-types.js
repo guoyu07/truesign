@@ -9,4 +9,5 @@ export const APPRULES = 'APPRULES'
 export const SYSINFO = 'SYSINFO'
 export const EVENTFACTORY = 'EVENTFACTORY'
 export const APPSHOW = 'APPSHOW'
+export const wechat_marketing_store = 'wechat_marketing_store'
 

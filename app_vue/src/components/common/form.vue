@@ -180,10 +180,10 @@
     border-color #929292
 
 }
-    /*
-.reg_form
+
+.reg_form:hover
     transition  all 3s
     transform-origin:0% 50%;
     transform: rotateY(60deg);
-    */
+
 </style>

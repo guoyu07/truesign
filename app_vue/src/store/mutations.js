@@ -150,6 +150,11 @@ export const mutations = {
         else if(data.music === false){
             state.AppShow.music = data.music
         }
+    },
+    [types.wechat_marketing_store](state,data){
+        if(data.apihost){
+            state.wechat_marketing_store.apihost = data.apihost
+        }
     }
 
 }
