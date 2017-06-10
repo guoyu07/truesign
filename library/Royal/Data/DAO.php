@@ -238,7 +238,7 @@ class DAO
         }
     }
 
-    public function read($params, $pager = array(), $sorter = array(), $ignoreEs = false)
+    public function read($params=array(), $pager = array(), $sorter = array(), $ignoreEs = false)
     {
         return $this->readSpecified($params, $this->adapter->defaultReturnParamNames(),
             $pager, $sorter, $ignoreEs);
@@ -259,7 +259,7 @@ class DAO
         return $table;
     }
 
-    public function readSpecified($params, $specified, $pager = array(), $sorter = array(), $ignoreEs = false,$ignoreDel = false)
+    public function readSpecified($params=array(), $specified=array(), $pager = array(), $sorter = array(), $ignoreEs = false,$ignoreDel = false)
     {
         if(!$ignoreDel){
             if(!isset($params['if_delete'])){
@@ -292,7 +292,8 @@ class DAO
 
         if (!$ignoreEs && $es = $this->getEs()) {
             list($stat, $result) = $this->searchFromEs($es, $params, $specified, $pager, $sorter);
-        } else {
+        }
+        else {
             $condition = $this->paramsToCondition($params);
 
 
@@ -366,6 +367,9 @@ class DAO
 
             $count = $db->getCountByCondition($this->getTable($this->adapter->table_Prefix().$this->adapter->table()), $condition);
             $stat = array('count' => $count);
+
+
+
             $result = array();
 
             if ($count > 0) {
@@ -405,10 +409,11 @@ class DAO
         foreach ($result as $k => $v) {
             $result[$k] = $this->fieldPairsToParamPairs($v);
         }
-
+//        $table_column = $db->getColumn($this->getTable($this->adapter->table_Prefix().$this->adapter->table()));
         $retResult = array(
             'statistic' => $stat,
-            'data' => $result
+            'data' => $result,
+//            'column' => $table_column
         );
         return $this->adapter->wrapListResult($retResult);
     }

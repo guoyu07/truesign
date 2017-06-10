@@ -16,7 +16,8 @@ class Logger {
     static function getLogger () {
         if (!static::$logger) {
 
-            $logPath = APPLICATION_PATH.'/logs';
+//            $logPath = APPLICATION_PATH.'/logs';
+            $logPath = CURRECT_APPLICATION_PATH.'/logs';
             if (php_sapi_name() != 'cli') {
                 $fileName = 'web';
                 $formatter = new LineFormatter("[%datetime%][%level_name%][%extra.ip%][%extra.class%:%extra.line%]: %message% %context% %extra.url%\n", 'H:i:s', true, true);

@@ -41,7 +41,7 @@ class masterAdapter extends DbLibraryAdapter
         return Field::start()
             ->def('document_id')->map('id')->int()->desc('id')
             ->def('username')->map('username')->varchar(100)->desc('用户名')
-            ->def('pass')->map('pass')->varchar(100)->desc('密码')
+            ->def('password')->map('pass')->varchar(100)->desc('密码')
             ->def('note')->map('note')->varchar(500)->desc('备注')
             ->end();
     }

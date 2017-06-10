@@ -27,6 +27,10 @@ abstract class DAOAdapter {
     abstract public function tableModify();
     abstract public function tableDel();
 
+    public function getTableAccess()
+    {
+        return $this->tableAccess();
+    }
     public function redis(){
         return null;
     }

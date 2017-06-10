@@ -1,8 +1,10 @@
 <template>
-        <div  class="page_model" :style="page_design" >
+    <transition name="el-zoom-in-top">
+        <div v-if="page_data.title" key="haspagedata" class="page_model" :style="page_design" >
                 <div v-if="page_type==='list'">
+
                         <div class="page_title" :style="page_title_design">
-                                <span>{{page_data.title}}</span>
+                            <span>{{page_data.title}}</span>
                         </div>
 
                         <div class="page_content" :style="page_content_design">
@@ -10,23 +12,23 @@
                             <ol>
                                 <li v-for="(item,index) in page_data.content">
 
-                                        <label>{{page_data.content[index].label}}</label>
-                                        <input v-if="page_data.content[index].type === 'btn'" style="border: none;box-shadow: 0 0 3px #9c9c9c;border-radius: 5px" type="button" v-model="page_data.content[index].value" :readonly="!page_data.content[index].access" />
+                                    <label :style=" {borderBottom:page_data.content[index].access?'1px solid #f0f0f0':'none',backgroundColor:page_data.content[index].access?'rgba(150, 150, 150, 0.49)':''}">{{page_data.content[index].label}}</label>
+                                    <input v-if="page_data.content[index].type === 'btn'" style="border: none;box-shadow: 0 0 3px #9c9c9c;border-radius: 5px" type="button" v-model="page_data.content[index].value" :readonly="!page_data.content[index].access" />
 
-                                        <input v-if="page_data.content[index].type === 'upfile'" @click="upfile_click" :data-index="index" style="border: none;box-shadow: 0 0 3px #9c9c9c;border-radius: 5px" type="button" v-model="page_data.content[index].value" :readonly="!page_data.content[index].access" />
-                                        <input v-if="page_data.content[index].type === 'upfile'" :data-fileindex="index" v-on:change="upfile_change"  style="border: none;box-shadow: 0 0 3px #9c9c9c;border-radius: 5px;display: none" type="file"  />
-                                        <div v-if="page_data.content[index].type === 'time'" class="timepicker">
-                                            <el-date-picker
+                                    <input v-if="page_data.content[index].type === 'upfile'" @click="upfile_click" :data-index="index" style="border: none;box-shadow: 0 0 3px #9c9c9c;border-radius: 5px" type="button" v-model="page_data.content[index].value" :readonly="!page_data.content[index].access" />
+                                    <input v-if="page_data.content[index].type === 'upfile'" :data-fileindex="index" v-on:change="upfile_change"  style="border: none;box-shadow: 0 0 3px #9c9c9c;border-radius: 5px;display: none" type="file"  />
+                                    <div v-if="page_data.content[index].type === 'time'" class="timepicker">
+                                        <el-date-picker
 
-                                                             v-model="page_data.content[index].value"
-                                                             type="datetime"
-                                                             placeholder="选择日期时间"
-                                                             align="left"
-                                                             :picker-options="pickerOptions">
-                                            </el-date-picker>
-                                        </div>
-                                        <input v-if="page_data.content[index].type !== 'btn' && page_data.content[index].type !== 'upfile' && page_data.content[index].type !== 'time'" :style=" {borderBottom:page_data.content[index].access?'1px solid #f0f0f0':'none',backgroundColor:page_data.content[index].access?'#767676':''}"   v-model="page_data.content[index].value" :readonly="!page_data.content[index].access" />
-                                        <label ><input   @click='change_access($event)' :data-index="index" type="button" v-model="page_data.content[index].access"></label>
+                                                v-model="page_data.content[index].value"
+                                                type="datetime"
+                                                placeholder="选择日期时间"
+                                                align="left"
+                                                :picker-options="pickerOptions">
+                                        </el-date-picker>
+                                    </div>
+                                    <input v-if="page_data.content[index].type !== 'btn' && page_data.content[index].type !== 'upfile' && page_data.content[index].type !== 'time'" :style=" {borderBottom:page_data.content[index].access?'1px solid #f0f0f0':'none',backgroundColor:page_data.content[index].access?'rgba(150, 150, 150, 0.49)':''}"   v-model="page_data.content[index].value" :readonly="!page_data.content[index].access" />
+                                    <label style="width: 10%;min-width: 80px;"><input   @click='change_access($event)' :data-index="index" type="button" v-model="page_data.content[index].access"></label>
 
                                 </li>
 
@@ -37,8 +39,20 @@
                         </div>
                 </div>
 
+        </div>
+        <div v-else="page_data.title" key="nopagedata" style="text-align: center">
+            <div class="now_data_show" style="">
+                <span style="margin-top: 50px;display: block">暂无数据</span>
+                <div class="loader" style="position:absolute;width: 200px;height: 300px;overflow: hidden;left: 50%;margin-left: -100px;top:220px;">
+                    <div class="loading--1" style="display: none"></div>
+                    <div class="loading-0" style="margin-left: -100px;border: none"></div>
+                    <div class="loading-1" style="display: none"></div>
+                    <!--<div class="loading-2">{{ conn_info }}</div>-->
+                </div>
+            </div>
 
         </div>
+    </transition>
 
 </template>
 
@@ -130,7 +144,7 @@
                 },
                 required: false,
             },
-            page_data:{
+            page_data_demo:{
                 type: Object,
                 default: function () {
                     return {
@@ -199,6 +213,13 @@
                             }
                         ]
                     }
+                },
+                required: false,
+            },
+            page_data:{
+                type: Object,
+                default: function () {
+                    return ''
                 },
                 required: false,
             },
@@ -305,7 +326,7 @@
 
     }
 </script>
-<style>
+<style lang="stylus" rel="stylesheet/stylus">
 .page_model .page_content ol{
 
         width: 100%;
@@ -334,21 +355,26 @@
         line-height: 35px;
         color: black;
         width: 10%;
-        min-width: 80px;
+        min-width: 280px;
         display: inline-block;
-        text-align: right;
+        text-align: center;
         padding-left: 10px;
+        font-size: 13px;
+        letter-spacing: inherit;
+        color: #727272;
+        margin: 0;
 }
 .page_model .page_content li label input{
         width: 100%;
         min-width: 60px;
 }
 .page_model .page_content li input{
+        color:#727272 !important;
         background-color: transparent;
         height: 35px;
         line-height: 35px;
-        max-width: 75%;
-        width: 70%;
+        max-width: 70%;
+        width: 60%;
         min-width: 300px;
         text-align: center;
         background: 0 0;
@@ -363,9 +389,18 @@
         outline: 0;
 
 }
+.now_data_show{
+    position: absolute;
+    left: 50%;
+    margin-left: -300px;
+    top:100px;
+    padding: 30px;
+    border-radius: 15px;
+    letter-spacing: 5px;font-size: 20px;color: #5e667e;width: 600px;height: 300px;text-align: center;box-shadow: 0 0 5px #cbc8cb
+}
 .page_model .page_content li input:hover{
-        transition: all 1.5s;
-        background-color: rgba(0, 0, 0, 0.43);
+        transition: all 1s;
+        background-color: rgba(150, 150, 150, 0.49);
 
 
 }
@@ -401,5 +436,173 @@
 }
 .el-input__inner{
     color: black !important;
+}
+
+
+
+
+
+
+
+
+
+
+
+.loader {
+    width: loader_width
+    height 50px
+    margin: 0 auto;
+    position: absolute;
+    left 300px
+    margin-top -45px
+    margin-left 20px
+
+
+}
+.loader .loading-0 {
+    display inline-block
+    top 20px
+    position: absolute;
+    width: 100%;
+    height: 10px;
+    border: 1px solid #b6b6b6;
+    border-radius: 10px;
+    overflow hidden
+}
+.loader .loading-0:before {
+    content: "";
+    border-radius: 10px;
+    display: inline-block;
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    background: #b6b6b6;
+    box-shadow: 10px 0px 15px 0px #b6b6b6;
+    animation: load_def 3s linear infinite;
+}
+
+.loader .loading--1 {
+    display inline-block
+    top 35px
+    position: absolute;
+    width: 100%;
+    height: 10px;
+    border: 1px solid #b6b6b6;
+    background #b6b6b6
+    border-radius: 10px;
+    overflow hidden
+}
+.loader .loading--1:before {
+    content: "";
+    border-radius: -170px;
+    display: inline-block;
+    position: absolute;
+    width: 60%;
+    height: 100%;
+    background: #525B64;
+    box-shadow: 10px 0px 15px 0px #b6b6b6;
+    animation: load_def 2s linear infinite;
+}
+.loader .loading-1 {
+    display inline-block
+
+    position: relative;
+    width: 100%;
+    height: 10px;
+    border: 1px solid #b6b6b6;
+    border-radius: 10px;
+    animation: turn 4s linear 3.75s infinite;
+}
+
+.loader .loading-1:before {
+    content: "";
+    border-radius: 10px;
+    display: inline-block;
+    position: absolute;
+    width: 0%;
+    height: 100%;
+    background: #b6b6b6;
+    box-shadow: 10px 0px 15px 0px #b6b6b6;
+    animation: load 2s linear infinite;
+}
+.loader .loading-2 {
+    display inline-block
+
+    width: 100%;
+    position: absolute;
+    color: #b6b6b6;
+    left 100%
+    font-size: 20px;
+    text-align: center;
+    animation: bounce 2s  linear infinite;
+}
+.loader .loading-3 {
+    display inline-block
+
+    position: relative;
+    width: 100%;
+    height: 10px;
+    border: 1px solid #e79977;
+    border-radius: 10px;
+    animation: turn 4s linear 3.75s infinite;
+}
+.loader .loading-3:before {
+    content: "";
+    display: inline-block;
+    position: absolute;
+    width: 0%;
+    height: 100%;
+    background: #e79977;
+    box-shadow: 10px 0px 15px 0px #e79977;
+    animation: load 2s linear infinite;
+}
+.loader .loading-4 {
+    display inline-block
+
+    width: 100%;
+    position: absolute;
+    color: #e79977;
+    left 100%
+    font-size: 20px;
+    text-align: center;
+    animation: bounce 2s  linear infinite;
+}
+@keyframes load {
+    0% {
+        transform :translateX(-100%)
+        width: 0%;
+    }
+    87.5%, 100% {
+        width: 100%;
+    }
+}
+@keyframes load_def {
+    0% {
+        left: -300px;
+
+    }
+    87.5%, 100% {
+        left: 300px;
+    }
+}
+
+@keyframes turn {
+    0% {
+        transform: rotateY(0deg);
+    }
+    6.25%, 50% {
+        transform: rotateY(180deg);
+    }
+    56.25%, 100% {
+        transform: rotateY(360deg);
+    }
+}
+@keyframes bounce {
+    0%,100% {
+        top: -5px;
+    }
+    12.5% {
+        top: 5px;
+    }
 }
 </style>

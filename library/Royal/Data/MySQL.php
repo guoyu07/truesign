@@ -35,8 +35,8 @@ class MySQL {
     public function __construct($config) {
         $port = isset($config['port']) ? $config['port'] : 3306;
         $dsn = sprintf('mysql:host=%s;dbname=%s;port=%d', $config['host'], $config['dbname'], $port);
-
         TimeStack::start(TimeStack::TAG_CONNECTION, 'mysql');
+
         $this->dbh = new PDO($dsn, $config['user'], $config['pass'],
             array(
                 PDO::MYSQL_ATTR_INIT_COMMAND => 'SET NAMES \'utf8\'',
@@ -45,6 +45,7 @@ class MySQL {
                 PDO::ATTR_STRINGIFY_FETCHES => false,
                 PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
             ));
+
         TimeStack::end();
     }
 
@@ -70,6 +71,10 @@ class MySQL {
         return $ret;
     }
 
+    public function checkinTransaction()
+    {
+        return $this->dbh->inTransaction();
+    }
     public function beginTransaction() {
         if (!$this->transactionNestable() || $this->transLevel == 0) {
             $this->dbh->beginTransaction();
@@ -144,8 +149,14 @@ class MySQL {
                 $sql = sprintf('SELECT COUNT(%s) FROM %s WHERE %s', $countField, $table, $condition);
             }
         }
-
         return intval($this->get_var($sql, $values));
+    }
+    /*
+     * 获取表所有字段名称
+     */
+    public function getColumn($table){
+        $sql = 'DESC '.$table;
+        return $this->get_col($sql);
     }
 
     public function getDistinctByCondition($table, $condition, $distinct) {
@@ -507,9 +518,7 @@ class MySQL {
     }
 
     public function query($sql, $values = null,$ignore_error=false) {
-        /*echo '<pre>';
-        var_dump($sql);
-        var_dump($values);*/
+
         TimeStack::start(TimeStack::TAG_SQL, array('sql'=>$sql, 'values'=>$values));
         try {
             Logger::info('SQL_QUERY', array('sql'=>$sql, 'values'=>$values,'ip'=>$_SERVER['REMOTE_ADDR']));

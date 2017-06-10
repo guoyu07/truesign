@@ -43,13 +43,13 @@ class weimobAdapter extends DbLibraryAdapter
             ->def('uid')->map('uid')->int()->desc('用户id')
             ->def('weimo_type')->map('weimo_type')->int()->desc('公众号类型') //1->非认证订阅号;2->非认证服务号;3->认证订阅号;4->认证服务号
             ->def('weimo_name')->map('weimo_name')->varchar(300)->desc('公众号名称')
-            ->def('qr')->map('qr')->varchar(200)->desc('二维码图片地址')
+            ->def('appid')->map('appid')->varchar(100)->desc('appid')
+            ->def('appsecret')->map('appsecret')->varchar(100)->desc('appsecret')
+            ->def('qr_img')->map('qr_img')->varchar(200)->desc('二维码图片地址')
             ->def('aeskey')->map('aeskey')->varchar(100)->desc('aeskey')
             ->def('encode')->map('encode')->varchar(300)->desc('加密')
-            ->def('appid')->map('appid')->varchar(100)->desc('appid')
             ->def('base_id')->map('base_id')->varchar(100)->desc('原始id')
             ->def('wechat')->map('wechat')->varchar(100)->desc('微信号')
-            ->def('weimo_name')->map('weimo_name')->varchar(300)->desc('公众号名称')
             ->def('weimo_name')->map('weimo_name')->varchar(300)->desc('公众号名称')
             ->end();
     }

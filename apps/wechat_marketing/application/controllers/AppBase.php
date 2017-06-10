@@ -10,6 +10,60 @@ class AppBaseController extends \ReInit\YafBase\Controller
         $this->doInit();
     }
 
+    public function tableaccess_ctrl()
+    {
+        $config = Yaf_Registry::get('accessconfig');
+        return $config['wechat_marketing']['tableaccess'];
+    }
+
+    public function AuthTableAccess($access,$tableaccess,$way='both')
+    {
+        if('both' == $way){
+            if(intval($tableaccess['read'])>intval($access) || intval($tableaccess['write'])>intval($access)){
+                throw new Exception('无权限操作此表');
+            }
+        }
+        elseif ('read' == $way){
+            if(intval($tableaccess['read'])>intval($access)){
+                throw new Exception('无权限读取此表');
+            }
+        }
+        elseif ('write' == $way){
+            if(intval($tableaccess['write'])>intval($access)){
+                throw new Exception('无权更改此表');
+            }
+        }
+    }
+
+    public function filterRules(&$rules,$db_data_row,$rules_show=0)
+    {
+        $request_db_param = array();
+        if($db_data_row && !empty($rules_show)){
+            foreach ($db_data_row as $k=>$v){
+                $request_db_param[] = $k;
+            }
+            foreach ($rules as $k=>$v){
+                if(!in_array($k,$request_db_param)){
+                    unset($rules[$k]);
+                }
+            }
+        }
+        if(empty($db_data_row) && !empty($rules_show)){
+            return;
+        }
+        if(empty($rules_show)){
+            $rules = '';
+        }
+
+
+
+    }
+    public function getAccess(){
+        $params = $this->getParams(array('token'));
+        $token = $params['token'];
+        return $token;
+
+    }
     public function doInit()
     {
 
@@ -65,7 +119,7 @@ class AppBaseController extends \ReInit\YafBase\Controller
         $this->inputError($code, $desc);
     }
     protected  function output2json($result){
-        echo json_encode($result);
+        echo json_encode($result,JSON_ERROR_DEPTH );
     }
 
     protected function inputError($code, $msg)

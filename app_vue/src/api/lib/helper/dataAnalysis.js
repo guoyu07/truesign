@@ -1,6 +1,7 @@
 /**
  * Created by ql-win on 2017/4/19.
  */
+
 export function analysis_socket_response(response) {
 
     var analysis_reponse = {
@@ -52,3 +53,92 @@ export function analysis_socket_response(response) {
     return analysis_reponse
 }
 
+export function dbResponseAnalysis2WidgetData(dbResponse) {
+    if(dbResponse == null){
+
+        dbResponse = {
+            code: -1,
+            err_desc : '未获取到数值，可能后端并未返回json数据',
+            tip: convertCode2Tip('-1'),
+        }
+    }
+    else if(dbResponse != null && typeof dbResponse === 'object' &&  !dbResponse.code){
+        dbResponse = {
+            code: 0,
+            tip: convertCode2Tip('0'),
+            count : dbResponse.statistic.count,
+            data : dbResponse.data,
+            tableaccess: dbResponse.access_rules.tableaccess,
+            rules:dbResponse.access_rules.rules,
+        }
+
+        var widgetData = [];
+        if(dbResponse.rules && dbResponse.data){
+            for (var datarow of dbResponse.data){
+                var widgetData_item = []
+                for (var datakey in datarow){
+                    // console.log(datakey,datarow[datakey])
+                    var widgetData_item_attr = {}
+                    widgetData_item_attr.value = datarow[datakey]
+                    for (var rulekey in dbResponse.rules){
+                       if(datakey === rulekey){
+                           // widgetData_item_attr = dbResponse.rules[rulekey]
+                            var widget_type = judgeWidgetTypeByKeyAndKeyType(dbResponse.rules[rulekey].name,dbResponse.rules[rulekey].type)
+                           widgetData_item_attr.key = dbResponse.rules[rulekey].name
+                           widgetData_item_attr.label = dbResponse.rules[rulekey].title
+                           widgetData_item_attr.type = widget_type
+                           widgetData_item_attr.regex = dbResponse.rules[rulekey].regex
+                           widgetData_item_attr.access = false
+                       }
+                    }
+                    widgetData_item.push(widgetData_item_attr)
+                }
+                widgetData.push(widgetData_item);
+            }
+
+        }
+        dbResponse.widgetdata = widgetData
+    }
+    else if(typeof dbResponse === 'object' && dbResponse.code){
+        dbResponse = {
+            code : dbResponse.code,
+            err_desc : dbResponse.desc,
+            tip: convertCode2Tip(dbResponse.code)
+        }
+    }
+    console.log(dbResponse)
+    return dbResponse
+
+}
+function convertCode2Tip(code='0') {
+    var tips  = [
+        {code:'0',tip:'正常'},
+        {code:'-1',tip:'未获取到数据'},
+        {code:'2002',tip:'数据库连接出现问题'},
+    ]
+    var response_tip = ''
+    for (var k of tips){
+        if(k.code === code+''){
+
+            response_tip = k.tip
+        }
+    }
+    return response_tip === ''?'未定义code代码:'+code:response_tip
+
+}
+function judgeWidgetTypeByKeyAndKeyType(key,keytype){
+
+    if(key === 'document_id' || keytype === 'int' ||  key.substr(key.length-3) === 'num'){
+        return 'num'
+    }
+    else if(key.substr(key.length-4) === 'time'){
+        return 'time'
+    }
+    else if(key.substr(key.length-4) === 'file'){
+        return 'upfile'
+    }
+    else{
+        return 'str'
+    }
+
+}

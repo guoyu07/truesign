@@ -30,6 +30,7 @@ class Field {
     }
     public function getRule()
     {
+
         return $this->_rule;
     }
     public function noTrace() {
@@ -52,6 +53,10 @@ class Field {
     public function desc($desc) {
         $this->_desc[$this->_index] = $desc;
         $this->_rule[$this->_index]->title($desc);
+        return $this;
+    }
+    public function regex($regex) {
+        $this->_rule[$this->_index]->regex($regex);
         return $this;
     }
     public function key() {
