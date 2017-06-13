@@ -39,8 +39,8 @@ class siteBaseConfigAdapter extends DbLibraryAdapter
     public function tableInit()
     {
         return Field::start()
-            ->def('document_id')->map('id')->int()->desc('条目id')
-            ->def('site_name')->map('site_title')->varchar(30)->desc('网站名称')
+            ->def('document_id')->map('id')->int()->desc('id')
+            ->def('site_name')->map('site_name')->varchar(30)->desc('网站名称')
             ->def('site_title')->map('site_title')->varchar(30)->desc('网站标题')
             ->def('site_keywords')->map('site_keywords')->varchar(30)->desc('网站关键词')
             ->def('site_desc')->map('site_desc')->varchar(100)->desc('网站描述')
@@ -69,7 +69,7 @@ class siteBaseConfigAdapter extends DbLibraryAdapter
             ->def('oss_endpoint')->map('oss_endpoint')->varchar(100)->desc('阿里云  oss_endpoint')
             ->def('oss_bucket')->map('oss_bucket')->varchar(100)->desc('阿里云  oss_bucket')
             ->def('oss_buckethost')->map('oss_buckethost')->varchar(100)->desc('阿里云  oss_buckethost')
-            ->def('oss_callbackurl')->map('oss_callbackurl')->varchar(100)->desc('阿里云  oss_callbackurl')
+            ->def('oss_callbackurl_time')->map('oss_callbackurl')->varchar(100)->desc('阿里云  oss_callbackurl')
             ->def('oss_cdnurl')->map('oss_cdnurl')->varchar(100)->desc('阿里云  oss_cdnurl')
 
             ->end();

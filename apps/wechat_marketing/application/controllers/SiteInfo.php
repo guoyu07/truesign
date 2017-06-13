@@ -11,6 +11,12 @@ class SiteInfoController extends AppBaseController {
         echo '1231';
 	}
 
+    public function getOSSCfgAction()
+    {
+        $config = Yaf_Registry::get('config');
+        $oss =   $config->get('cdn')->toArray();
+        echo json_encode($oss);
+    }
     public function getEnvAction()
     {
         $params = $this->getParams(array(),array('rules'));
@@ -55,6 +61,20 @@ class SiteInfoController extends AppBaseController {
         $access_rules = array('tableaccess'=>$table_access,'rules'=>$rules);
         $db_resposne['access_rules'] = $access_rules;
         $this->output2json($db_resposne);
+    }
+
+    /*
+     * sitebaseconfig adapter 数据更新接口
+     */
+    public function updateBaseSiteConfigAction()
+    {
+        $params = $_POST;
+        $doAdapter = new siteBaseConfigAdapter();
+        $doDao = new DAO($doAdapter);
+        $condition['id'] = $params['document_id'];
+        unset($params['document_id']);
+        $db_response = $doDao->insertOrupdate($params,$condition);
+        $this->output2json($db_response);
     }
 
 

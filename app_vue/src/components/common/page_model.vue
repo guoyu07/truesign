@@ -1,43 +1,120 @@
 <template>
-    <transition name="el-zoom-in-top">
+    <transition name="el-zoom-in-top" >
         <div v-if="page_data.title" key="haspagedata" class="page_model" :style="page_design" >
-                <div v-if="page_type==='list'">
+            <div v-if="page_type==='list'">
 
-                        <div class="page_title" :style="page_title_design">
-                            <span>{{page_data.title}}</span>
-                        </div>
-
-                        <div class="page_content" :style="page_content_design">
-
-                            <ol>
-                                <li v-for="(item,index) in page_data.content">
-
-                                    <label :style=" {borderBottom:page_data.content[index].access?'1px solid #f0f0f0':'none',backgroundColor:page_data.content[index].access?'rgba(150, 150, 150, 0.49)':''}">{{page_data.content[index].label}}</label>
-                                    <input v-if="page_data.content[index].type === 'btn'" style="border: none;box-shadow: 0 0 3px #9c9c9c;border-radius: 5px" type="button" v-model="page_data.content[index].value" :readonly="!page_data.content[index].access" />
-
-                                    <input v-if="page_data.content[index].type === 'upfile'" @click="upfile_click" :data-index="index" style="border: none;box-shadow: 0 0 3px #9c9c9c;border-radius: 5px" type="button" v-model="page_data.content[index].value" :readonly="!page_data.content[index].access" />
-                                    <input v-if="page_data.content[index].type === 'upfile'" :data-fileindex="index" v-on:change="upfile_change"  style="border: none;box-shadow: 0 0 3px #9c9c9c;border-radius: 5px;display: none" type="file"  />
-                                    <div v-if="page_data.content[index].type === 'time'" class="timepicker">
-                                        <el-date-picker
-
-                                                v-model="page_data.content[index].value"
-                                                type="datetime"
-                                                placeholder="选择日期时间"
-                                                align="left"
-                                                :picker-options="pickerOptions">
-                                        </el-date-picker>
-                                    </div>
-                                    <input v-if="page_data.content[index].type !== 'btn' && page_data.content[index].type !== 'upfile' && page_data.content[index].type !== 'time'" :style=" {borderBottom:page_data.content[index].access?'1px solid #f0f0f0':'none',backgroundColor:page_data.content[index].access?'rgba(150, 150, 150, 0.49)':''}"   v-model="page_data.content[index].value" :readonly="!page_data.content[index].access" />
-                                    <label style="width: 10%;min-width: 80px;"><input   @click='change_access($event)' :data-index="index" type="button" v-model="page_data.content[index].access"></label>
-
-                                </li>
-
-
-                            </ol>
-
-
-                        </div>
+                <div class="page_title" :style="page_title_design" >
+                    <span>{{page_data.title}}</span>
                 </div>
+                <div class="fold_bar" @click="fold_content_footer" :style="{left:page_title_design.width}">
+
+                </div>
+                <div class="close_bar" @click="close_page_model" >
+
+                </div>
+                <transition name="fade-right">
+                    <div class="page_content" v-if="show_content_footer" :style="page_content_design">
+
+                    <ol>
+                        <li v-for="(item,index) in page_data.content">
+
+
+
+                            <label :style=" {borderBottom:page_data.content[index].access?'1px solid #f0f0f0':'none',backgroundColor:page_data.content[index].access?'rgba(150, 150, 150, 0.49)':'',verticalAlign: 'top'}">{{page_data.content[index].label}}</label>
+                            <!--<input v-if="page_data.content[index].type === 'btn'" style="border: none;box-shadow: 0 0 3px #9c9c9c;border-radius: 5px" type="button" v-model="page_data.content[index].value" :readonly="!page_data.content[index].access || page_data.content[index].key === 'document_id'" />-->
+                            <div v-if="page_data.content[index].type ==='upfile'" class="upfile">
+                                <input v-if="page_data.content[index].type === 'upfile'" @click="upfile_click" :data-index="index" style="border: none;box-shadow: 0 0 3px #9c9c9c;border-radius: 5px" type="button" v-model="page_data.content[index].value" :readonly="!page_data.content[index].access" />
+                                <input v-if="page_data.content[index].type === 'upfile'" :data-fileindex="index" v-on:change="upfile_change"  style="border: none;box-shadow: 0 0 3px #9c9c9c;border-radius: 5px;display: none" type="file"  />
+                                <!--<el-upload-->
+
+                                        <!--class="avatar-uploader"-->
+                                        <!--:data="upload_params.up_param"-->
+                                        <!--:action="upload_params.up_action"-->
+                                        <!--:name="''+upload_params.up_filename"-->
+                                        <!--:show-file-list="true"-->
+                                        <!--:drag=true-->
+                                        <!--:multiple=false-->
+                                        <!--:on-success="handleAvatarSuccess"-->
+                                        <!--:on-progress="handleAvatarProgress"-->
+
+                                <!--&gt;-->
+                                    <!--<i class="el-icon-upload"></i>-->
+                                    <!--<div class="el-upload__text">将文件拖到此处，或<em>点击上传</em></div>-->
+                                    <!--&lt;!&ndash;<div class="el-upload__tip" slot="tip">只能上传jpg/png文件，且不超过500kb</div>&ndash;&gt;-->
+                                <!--</el-upload>-->
+                            </div>
+                            <div v-else-if="page_data.content[index].type ==='upimg'" class="upimg">
+                                <el-upload
+
+                                        class="avatar-uploader"
+                                        :data="upload_params.up_param"
+                                        :action="upload_params.up_action"
+                                        :name="''+upload_params.up_filename"
+                                        :show-file-list="false"
+                                        :drag=false
+                                        :multiple=false
+                                        :on-success="handleAvatarSuccess"
+                                        :on-progress="handleAvatarProgress"
+                                        :before-upload="beforeAvatarUpload"
+
+                                >
+                                    <img  @click="upload_this_index($event,index)" v-if="page_data.content[index].value" :src="page_data.content[index].value" class="avatar">
+                                    <i  @click="upload_this_index($event,index)" v-else class="el-icon-plus avatar-uploader-icon"></i>
+                                </el-upload>
+                            </div>
+                            <div v-else-if="page_data.content[index].type ==='arr' || page_data.content[index].type ==='obj'" class="model_obj">
+                                <ol>
+                                    <li v-for="(iitem,iindex) in JSON.parse(page_data.content[index].value)">
+                                        <span>{{iindex}} : {{ iitem}}</span>
+                                    </li>
+                                </ol>
+                            </div>
+                            <div v-else-if="page_data.content[index].type === 'time'" class="timepicker" >
+                                <el-date-picker
+
+                                        v-model="page_data.content[index].value"
+                                        type="datetime"
+                                        placeholder="选择日期时间"
+                                        align="left"
+                                        @change="changetime"
+                                        :picker-options="pickerOptions">
+                                </el-date-picker>
+                                {{ page_data.content[index].value }}
+
+                            </div>
+                            <input v-if="
+                                page_data.content[index].type !== 'btn' &&
+                                page_data.content[index].type !== 'upfile' &&
+                                page_data.content[index].type !== 'upimg' &&
+                                page_data.content[index].type !== 'time' &&
+                                page_data.content[index].type !== 'obj'"
+                                   :style=" {borderBottom:page_data.content[index].access?'1px solid #f0f0f0':'none',backgroundColor:page_data.content[index].access?'rgba(150, 150, 150, 0.49)':''}"   v-model="page_data.content[index].value" :readonly="!page_data.content[index].access  || page_data.content[index].key === 'document_id'" />
+                            <label style="width: 10%;min-width: 80px;vertical-align: top">
+                                <input   @click='change_access($event)' :data-index="index" type="button" v-model="page_data.content[index].access">
+                            </label>
+
+                        </li>
+
+
+                    </ol>
+
+
+                </div>
+                </transition>
+
+                <div class="page_footer" v-if="show_content_footer">
+                    <transition name="shifting-half-fade">
+                        <div v-if="update_response !== '-1'  && update_response !== '0' " class="show_db_reponse"  key="update_ok"  style="width: 100px;height: 35px;border-radius: 5px;background-color: rgba(50,65,87,0.53);position: absolute;right: 100px;bottom: 3px;line-height: 35px;text-align: center;color: white;font-size: 18px">更新成功</div>
+                        <div v-else-if="update_response === '-1'" class="show_db_reponse"  key="update_err" style="width: 100px;height: 35px;border-radius: 5px;background-color: rgba(182,43,21,0.53);position: absolute;right: 100px;bottom: 3px;line-height: 35px;text-align: center;color: white;font-size: 18px">更新失败</div>
+                        <div v-else-if="update_response === '0'" class="show_db_reponse"  key="update_err" style="width: 100px;height: 35px;border-radius: 5px;background-color: rgba(182,82,64,0);position: absolute;right: 100px;bottom: 22px;"></div>
+                    </transition>
+                    <button @click="final_update_data"  :class="{ui:ClassisActive, inverted:ClassisActive, teal:ClassisActive, basic:ClassisActive,
+                   button:ClassisActive,loading:authing,    forminput:ClassisActive}" :disabled="authing"  style="background-color:rgba(132,132,132,0.54) !important;border-radius:3px;margin: 0px;font-size: 20px;padding: 10px;">
+                        {{final_update_btn_desc}}</button>
+                </div>
+
+
+            </div>
 
         </div>
         <div v-else="page_data.title" key="nopagedata" style="text-align: center">
@@ -59,7 +136,13 @@
 
 <script>
 
-
+    const Waves  = require('node-waves');
+    import Vue from 'vue'
+    import {resolveWidgetData2FormData}   from '../../api/lib/helper/dataAnalysis'
+    import axios from 'axios'
+    import {axios_config} from '../../api/axiosApi'
+    import { mapGetters,mapActions } from 'vuex'
+    import { Message } from 'element-ui';
     export default {
         data(){
             return {
@@ -85,6 +168,18 @@
                         }
                     }]
                 },
+                imageUrl:'',
+                ClassisActive: true,
+                authing:false,
+                update_response:'0',
+                report_api:'',
+                upload_params:{
+                    up_param:{},
+                    up_action:'http://truesign-app.oss-cn-beijing.aliyuncs.com/',
+                    up_filename:'',
+                    tmp_upload_index:''
+                },
+                show_content_footer:true
             }
         },
         props: {
@@ -98,11 +193,11 @@
                 default: function () {
                     return {
                         width:'100%',
-                        height:'100%',
+                        height:'auto',
                         backgroundColor:'#dcdcdc',
                         color:'#000000',
                         overflow:'hidden',
-                        paddingBottom:'20px',
+
                         boxShadow:'0 0 15px gray',
 
                     }
@@ -114,7 +209,7 @@
                 default: function () {
                     return {
                         width:'20%',
-                        minWidth:'120px',
+                        minWidth:'80px',
                         height:'30px',
                         lineHeight:'30px',
                         backgroundColor:'#b6b6b6',
@@ -229,7 +324,7 @@
                 default: function () {
                     return {
                         width:'20%',
-                        minWidth:'120px',
+                        minWidth:'80px',
                         height:'30px',
                         lineHeight:'30px',
                         backgroundColor:'#b6b6b6',
@@ -271,31 +366,61 @@
                 },
                 required: false,
             },
-
-
-
-
-
+            final_update_action:{
+                type: String,
+                default: 'SiteInfo/updateBaseSiteConfig',
+                required: false,
+            },
+            final_update_btn_desc:{
+                type:String,
+                default:'提交数据'
+            }
         },
         components: {},
         computed: {
-            compute_page_design_style(){
-                return {
+            ...mapGetters([
+                'wechat_marketing_store',
+            ]),
 
-                }
-            }
+
         },
         created(){
-
+            this.report_api = this.wechat_marketing_store.apihost
         },
         mounted(){
 
+
+
+
+
+        },
+        updated(){
+
+                let config = {
+                    // How long Waves effect duration
+                    // when it's clicked (in milliseconds)
+                    duration: 3000,
+                    // Delay showing Waves effect on touch
+                    // and hide the effect if user scrolls
+                    // (0 to disable delay) (in milliseconds)
+                    delay: 500
+                };
+                Waves.init(config)
+                Waves.attach('#update_btn', ['waves-button']);
+                Waves.attach('.page_model', ['waves-block']);
 
         },
         beforeDestroy(){
 
         },
         methods: {
+            changetime(data){
+                console.log('time',data,Date.parse(data)/1000)
+
+            },
+            upload_this_index(e,data){
+                this.upload_params.tmp_upload_index = data
+            },
             change_access(e){
                 var target_index = e.currentTarget.dataset.index
                 this.page_data.content[target_index].access = !this.page_data.content[target_index].access
@@ -310,17 +435,161 @@
                 var target_index = e.currentTarget.dataset.index
                 var $target = $(e.currentTarget)
                 $target.next().click()
-                console.log($target.next())
+
             },
             upfile_change(e){
+                var vm = this
                 var files = e.target.files || e.dataTransfer.files;
                 if (!files.length){
                     return;
                 }
                 var filename = files[0].name
                 var target_index = e.currentTarget.dataset.fileindex
-                console.log(filename,target_index)
                 this.page_data.content[target_index].value = filename
+                $.ajaxSetup({async : false});
+                $.post(this.report_api+'common/updateimg2ossByClient',{filename: Date.parse(new Date())/1000+'_._._'+target_index+'_._._'+filename,type:'website_file'},function (result) {
+                    var pre_up2oss_params = JSON.parse(result)
+                    var currect_uri = pre_up2oss_params.uri
+                    var currect_param = pre_up2oss_params.param
+                    vm.upload_params.up_action = currect_uri
+                    vm.upload_params.up_param = currect_param
+                    vm.upload_params.up_filename = 'file'
+
+                })
+                // xhr 上传
+                // 变量声明
+                var xhr = new XMLHttpRequest();
+                var formData = new FormData();
+                xhr.onload = function () {
+                    var responseText = JSON.parse(xhr.responseText)
+                    console.log(responseText)
+                    var currect_data_index = responseText.file_path.match(/_\._\._(.*?)_\._\._/)[1]
+                    vm.page_data.content[currect_data_index].value = responseText.file_path
+                    console.log(vm.page_data.content[currect_data_index].value)
+
+                }
+                // 添加参数
+                $.each(vm.upload_params.up_param , function (key, value) {
+                    formData.append(key, value);
+                });
+                // 填充数据
+                formData.append('file', files[0]);
+                // 开始上传
+                xhr.open('POST', vm.upload_params.up_action, true);
+                // xhr.setRequestHeader("Content-type","application/x-www-form-urlencoded");  // 将参数解析成传统form的方式上传
+
+
+
+                // 跨域上传时，传cookie
+                xhr.withCredentials =  false;
+
+                // 发送数据
+                xhr.send(formData);
+
+
+            },
+            handleAvatarSuccess(res, file) {
+
+                var currect_data_index = res.file_path.match(/_\._\._(.*?)_\._\._/)[1]
+                this.page_data.content[currect_data_index].value = file.file_path
+                this.page_data.content[parseInt(currect_data_index)].value=res.file_path
+
+//                this.imageUrl = URL.createObjectURL(file.raw);
+            },
+            handleAvatarProgress(event, file, fileList){
+//                console.log(event)
+            },
+            beforeAvatarUpload(file) {
+                var vm = this
+                $.ajaxSetup({async : false});
+                $.post(this.report_api+'common/updateimg2ossByClient',{filename: Date.parse(new Date())/1000+'_._._'+this.upload_params.tmp_upload_index+'_._._'+file.name,type:'business_logo'},function (result) {
+                    var pre_up2oss_params = JSON.parse(result)
+                    var currect_uri = pre_up2oss_params.uri
+                    var currect_param = pre_up2oss_params.param
+                    console.log(currect_uri)
+                    vm.upload_params.up_action = currect_uri
+                    vm.upload_params.up_param = currect_param
+                    vm.upload_params.up_filename = 'file'
+                })
+                $.ajaxSetup({async : true});
+
+                const isJPGOrPng = (file.type === 'image/jpeg' || file.type === 'image/png');
+                const isLt2M = file.size / 1024 / 1024 < 2;
+
+                if (!isJPGOrPng) {
+                    this.$alert('只允许上传jpeg或png格式图片', '格式錯誤', {
+                        confirmButtonText: '确定',
+                        callback: action => {
+                            this.$message({
+                                type: 'info',
+                                message:`action: ${action}`
+                            });
+                        }
+                    });
+                }
+                if (!isLt2M) {
+
+                    this.$alert('上传头像图片大小不能超过 2MB!', '图片大小错误', {
+                        confirmButtonText: '确定',
+                        callback: action => {
+                            this.$message({
+                                type: 'info',
+                                message:`action: ${action}`
+                            });
+                        }
+                    });
+                }
+                return isJPGOrPng && isLt2M;
+            },
+            build_page_data_to_timestamp(flag=true){
+
+                if(flag){
+
+                    for (let index in this.page_data.content){
+                        if(this.page_data.content[index].type === 'time'){
+                            this.page_data.content[index].value = Date.parse(this.page_data.content[index].value)/1000
+                        }
+
+                    }
+
+                }
+                else{
+                    for (let index in this.page_data.content){
+                        if(this.page_data.content[index].type === 'time'){
+                            this.page_data.content[index].value =new Date(this.page_data.content[index].value*1000)
+                        }
+
+                    }
+
+                }
+
+
+
+
+            },
+            final_update_data(){
+
+                this.build_page_data_to_timestamp()
+                var formdata = resolveWidgetData2FormData(this.page_data.content)
+                var vm = this
+                this.authing = true
+                axios.post(this.wechat_marketing_store.apihost+this.final_update_action,formdata,axios_config)
+                    .then((res) => {
+                        console.log('final-update->',res.data)
+                        vm.update_response = res.data+''
+                        this.authing = false
+                        setTimeout(function () {
+                            vm.update_response = '0'
+                        },2000)
+                        vm.build_page_data_to_timestamp(false)
+
+                    })
+            },
+            fold_content_footer(){
+                this.show_content_footer = !this.show_content_footer
+            },
+            close_page_model(){
+                this.$root.eventHub.$emit('close_page_model',1)
             }
         },
 
@@ -335,19 +604,27 @@
 .page_model .page_content li
 {
 
-        height: 35px;
-        line-height: 35px;
+        /*height: 35px;*/
+        /*line-height: 35px;*/
         width: 100%;
 }
 .page_model .page_content li .timepicker {
     display: inline-block;
-    margin-top:5px;
-    max-width: 75%;
-    width: 70%;
+    max-width: 50%;
+    width: 50%;
     min-width: 300px;
+    margin-top 5px
 }
 .page_model .page_content li .timepicker div{
-    width: 100%;
+    width: 300px;
+
+}
+.page_model .page_content li .timepicker div input{
+    border none
+    margin-top -20px
+    height 25px !important
+    padding 0
+
 }
 .page_model .page_content li  label{
         background-color: transparent;
@@ -437,15 +714,6 @@
 .el-input__inner{
     color: black !important;
 }
-
-
-
-
-
-
-
-
-
 
 
 .loader {
@@ -605,4 +873,108 @@
         top: 5px;
     }
 }
+.upimg{
+    width 120px
+    height 120px;
+    display inline-block
+
+}
+.upfile{
+    width 60%
+    height 60px;
+    display inline-block
+
+}
+.upfile input{
+    width 100% !important
+}
+.upfile .avatar-uploader{
+    width 900px
+}
+.upfile .el-upload.el-upload--text{
+    display inline-block
+}
+.upfile .el-upload__tip{
+    display inline-block
+}
+.upfile .el-upload-list.el-upload-list--text
+    display inline-block
+    width 350px
+    margin-left 50px
+
+.upfile .el-upload-list .el-icon-upload-success.el-icon-circle-check
+    position absolute
+    right: 15px
+    top:8px
+
+.model_obj{
+    max-width: 70%;
+    width: 60%;
+    min-width: 300px;
+    display inline-block
+    margin 0
+    text-align left
+    padding-left 100px
+}
+.avatar-uploader{
+    width 120px;
+    display: inline-block;
+
+}
+.avatar-uploader .el-upload {
+    border: 2px dashed #b6b6b6;
+    border-radius: 6px;
+    cursor: pointer;
+    overflow: hidden;
+}
+.avatar-uploader .el-upload:hover {
+    border-color: #20a0ff;
+}
+.avatar-uploader-icon {
+    font-size: 28px;
+    color: #8c939d;
+    width: 120px;
+    height: 120px;
+    line-height: 120px;
+    text-align: center;
+}
+.avatar {
+    width: 120px;
+    height: 120px;
+    display: inline-block;
+}
+.el-date-table th{
+    text-align center
+}
+.fold_bar{
+    position absolute
+    width 25px
+    height 25px
+    box-shadow 0 0 10px rgba(53, 53, 53, 0.53)
+    border-radius 5px
+    top 3px
+    margin-left 5px
+    background-color #e8e8e8
+    transition all 1.5s
+}
+.fold_bar:hover{
+    background-color #bcbcbc
+}
+.close_bar{
+    position absolute
+    width 25px
+    height 25px
+    box-shadow 0 0 10px rgba(53, 53, 53, 0.53)
+    border-radius 5px
+    top 3px
+    margin-left 5px
+    background-color #e8e1b5
+    transition all 1.5s
+    left:95%
+    cursor pointer
+}
+.close_bar:hover{
+    background-color rgba(188, 8, 10, 0.54)
+}
+
 </style>

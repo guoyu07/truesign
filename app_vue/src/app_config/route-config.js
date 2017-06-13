@@ -29,10 +29,11 @@ const home = resolve => require(['../components/Home.vue'], resolve)
 // /*
 // 工具组件工作区
 //  */
-// const tools = resolve => require(['../components/tools/tools.vue'], resolve)
+const tools = resolve => require(['../components/tools/tools.vue'], resolve)
 // const VueQuillEditor = resolve => require(['../components/tools/VueQuillEditor.vue'], resolve)
 // const vue2editor = resolve => require(['../components/tools/vue2-editor.vue'], resolve)
-// const wangeditor = resolve => require(['../components/tools/wangeditor.vue'], resolve)
+const wangeditor = resolve => require(['../components/tools/wangeditor.vue'], resolve)
+const table_model = resolve => require(['../components/common/table_model.vue'], resolve)
 
 const project = resolve => require(['../components/project/project.vue'], resolve)
 // const gdmap = resolve => require(['../components/project/gdmap.vue'], resolve)
@@ -111,6 +112,12 @@ const main_page = resolve => require(['../components/project/wechat_marketing/ma
 const marketing_product = resolve => require(['../components/project/wechat_marketing/product.vue'], resolve)
 const wechat_marketing_backend = resolve => require(['../components/project/wechat_marketing/pagebackend/index.vue'], resolve)
 const w_m_b_site_ctrl = resolve => require(['../components/project/wechat_marketing/pagebackend/site_ctrl.vue'], resolve)
+const w_m_b_business_client_ctrl = resolve => require(['../components/project/wechat_marketing/pagebackend/business_client_ctrl.vue'], resolve)
+const w_m_b_agent_ctrl = resolve => require(['../components/project/wechat_marketing/pagebackend/agent_ctrl.vue'], resolve)
+const w_m_b_extend_ctrl = resolve => require(['../components/project/wechat_marketing/pagebackend/extend_ctrl.vue'], resolve)
+const w_m_b_fun_ctrl = resolve => require(['../components/project/wechat_marketing/pagebackend/fun_ctrl.vue'], resolve)
+// const w_m_b_wechat_content_ctrl = resolve => require(['../components/project/wechat_marketing/pagebackend/wechat_content_ctrl.vue'], resolve)
+const w_m_b_weimob_ctrl = resolve => require(['../components/project/wechat_marketing/pagebackend/weimob_ctrl.vue'], resolve)
 
 
 const routes = [
@@ -138,42 +145,51 @@ const routes = [
         },
         component: home
     },
-    // {
-    //     name: 'tools',
-    //     path: '/tools',
-    //     meta: {
-    //         title: 'tools'
-    //     },
-    //     component: tools,
-    //     children:[
-    //         {
-    //             name: 'VueQuillEditor',
-    //             path: 'VueQuillEditor',
-    //             meta: {
-    //                 title: 'VueQuillEditor'
-    //             },
-    //             component: VueQuillEditor
-    //         },
-    //         // {
-    //         //     name: 'vue2editor',
-    //         //     path: 'vue2editor',
-    //         //     meta: {
-    //         //         title: 'vue2editor'
-    //         //     },
-    //         //     component: vue2editor
-    //         // },
-    //         {
-    //             name: 'wangeditor',
-    //             path: 'wangeditor',
-    //             meta: {
-    //                 title: 'wangeditor'
-    //             },
-    //             component: wangeditor
-    //
-    //         },
-    //
-    //     ]
-    // },
+    {
+        name: 'tools',
+        path: '/tools',
+        meta: {
+            title: 'tools'
+        },
+        component: tools,
+        children:[
+            // {
+            //     name: 'VueQuillEditor',
+            //     path: 'VueQuillEditor',
+            //     meta: {
+            //         title: 'VueQuillEditor'
+            //     },
+            //     component: VueQuillEditor
+            // },
+            // {
+            //     name: 'vue2editor',
+            //     path: 'vue2editor',
+            //     meta: {
+            //         title: 'vue2editor'
+            //     },
+            //     component: vue2editor
+            // },
+            {
+                name: 'wangeditor',
+                path: 'wangeditor',
+                meta: {
+                    title: 'wangeditor'
+                },
+                component: wangeditor
+
+            },
+            {
+                name: 'table_model',
+                path: 'table_model',
+                meta: {
+                    title: 'table_model'
+                },
+                component: table_model
+
+            },
+
+        ]
+    },
     // {
     //     name: 'common',
     //     path: '/common',
@@ -671,6 +687,54 @@ const routes = [
                     title: 'w_m_b_site_ctrl'
                 },
                 component: w_m_b_site_ctrl
+            },
+            {
+                name: 'w_m_b_business_client_ctrl',
+                path: 'w_m_b_business_client_ctrl',
+                meta: {
+                    title: 'w_m_b_business_client_ctrl'
+                },
+                component: w_m_b_business_client_ctrl
+            },
+            {
+                name: 'w_m_b_weimob_ctrl',
+                path: 'w_m_b_weimob_ctrl',
+                meta: {
+                    title: 'w_m_b_weimob_ctrl'
+                },
+                component: w_m_b_weimob_ctrl
+            },
+            // {
+            //     name: 'w_m_b_wechat_content_ctrl',
+            //     path: 'w_m_b_wechat_content_ctrl',
+            //     meta: {
+            //         title: 'w_m_b_wechat_content_ctrl'
+            //     },
+            //     component: w_m_b_wechat_content_ctrl
+            // },
+            {
+                name: 'w_m_b_fun_ctrl',
+                path: 'w_m_b_fun_ctrl',
+                meta: {
+                    title: 'w_m_b_fun_ctrl'
+                },
+                component: w_m_b_fun_ctrl
+            },
+            {
+                name: 'w_m_b_agent_ctrl',
+                path: 'w_m_b_agent_ctrl',
+                meta: {
+                    title: 'w_m_b_agent_ctrl'
+                },
+                component: w_m_b_agent_ctrl
+            },
+            {
+                name: 'w_m_b_extend_ctrl',
+                path: 'w_m_b_extend_ctrl',
+                meta: {
+                    title: 'w_m_b_extend_ctrl'
+                },
+                component: w_m_b_extend_ctrl
             },
 
         ]

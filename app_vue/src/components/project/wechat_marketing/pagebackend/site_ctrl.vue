@@ -1,10 +1,14 @@
 <template>
     <div class="top_router_view" style="overflow: scroll" >
-        <el-tabs type="border-card" style="background-color: #dcdcdc;box-shadow: none" @tab-click="tabclick">
+        <el-tabs type="border-card" style="background-color: #dcdcdc;box-shadow: none" @tab-click="tabclick" v-model="defaultTab" >
             <el-tab-pane v-for="(item,index) in tab_menu_list" :key="item" :label="item.value" :data-name="item.name" :name="item.name" >
                         <div style="width: 100%;height: auto;min-height: 600px;text-align: left;" v-if="item.name==='后台首页'" key="后台首页">
 
-                            <page_model :page_data="siteinfo" style="width: 100%;min-width:600px;display: inline-block;vertical-align: top" ></page_model>
+                            <page_model
+                                    :final_update_btn_desc="'刷新数据'"
+                                    :page_data="siteinfo"
+                                    :final_update_action="'SiteInfo/GetEnv'"
+                                    style="width: 100%;min-width:600px;display: inline-block;vertical-align: top" ></page_model>
 
 
                         </div>
@@ -36,6 +40,7 @@
         data(){
             return {
                 report_api : '',
+                defaultTab:'后台首页',
                 tab_menu_list:
                     [
                             {
@@ -96,6 +101,7 @@
         },
         created(){
             this.report_api = this.wechat_marketing_store.apihost+'siteinfo/'
+            this.getBaseInfo()
 
         },
         mounted(){
@@ -111,34 +117,45 @@
                 var vm = this
                 this.siteinfo = {}
                 if(e.$el.dataset.name === '站点设置'){
-                    axios.post(this.report_api+'getbasesiteconfig',{rules:1},axios_config)
-                        .then((res) => {
-                            let analysis_data = dbResponseAnalysis2WidgetData(res.data)
-                            if(analysis_data.code+'' === '0'){
-                                var siteinfo_content = analysis_data.widgetdata[0]
-                                vm.siteinfo = {
-                                    title:'列表页标题栏',
-                                    content:siteinfo_content
-                                }
-                            }
-
-                        })
+                    this.getSiteCfg()
                 }
                 if(e.$el.dataset.name === '后台首页'){
-                    axios.post(this.report_api+'getenv',{rules:1},axios_config)
-                        .then((res) => {
-                            let analysis_data = dbResponseAnalysis2WidgetData(res.data)
-                            if(analysis_data.code+'' === '0'){
-                                var siteinfo_content = analysis_data.widgetdata[0]
-                                vm.siteinfo = {
-                                    title:'列表页标题栏',
-                                    content:siteinfo_content
-                                }
-                            }
-
-                        })
+                   this.getBaseInfo()
                 }
+
+
+            },
+            getBaseInfo(){
+                var vm = this
+                axios.post(this.report_api+'getenv',{rules:1},axios_config)
+                    .then((res) => {
+                        let analysis_data = dbResponseAnalysis2WidgetData(res.data)
+                        if(analysis_data.code+'' === '0'){
+                            var siteinfo_content = analysis_data.widgetdata[0]
+                            vm.siteinfo = {
+                                title:'服务器信息',
+                                content:siteinfo_content
+                            }
+                        }
+
+                    })
+            },
+            getSiteCfg(){
+                var vm = this
+                axios.post(this.report_api+'getbasesiteconfig',{rules:1},axios_config)
+                    .then((res) => {
+                        let analysis_data = dbResponseAnalysis2WidgetData(res.data)
+                        if(analysis_data.code+'' === '0'){
+                            var siteinfo_content = analysis_data.widgetdata[0]
+                            vm.siteinfo = {
+                                title:'站点配置信息',
+                                content:siteinfo_content
+                            }
+                        }
+
+                    })
             }
+
         },
 
     }

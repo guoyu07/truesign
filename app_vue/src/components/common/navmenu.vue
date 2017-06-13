@@ -10,7 +10,7 @@
             <el-menu :default-active="activeIndex" class="" mode="horizontal" @select="handleSelect" :router="true" theme="light"
                      style="background-color: rgba(255,255,255,0.0);width: auto;right:0;position: absolute;padding-right: 50px;">
 
-                <el-menu-item :style="{color: menu_item_color}" v-for="(item,index) in menulist" :key="item" :index="index+''">{{item}}</el-menu-item>
+                <el-menu-item :style="{color: menu_item_color}" v-for="(item,index) in menulist" :key="item" :index="index">{{item}}</el-menu-item>
 
                 <el-menu-item v-if='user_scope.name' :style="{color: menu_item_color}" index="append_user">
                     <img style="border-radius: 200px" :src='user_scope.img'>
@@ -36,7 +36,7 @@ import ElMenuItem from "../../../node_modules/element-ui/packages/menu/src/menu-
         components: {ElMenuItem},
         data() {
             return {
-                activeIndex:'1',
+                activeIndex:'w_m_b_site_ctrl',
                 navmenu_list:[],
 
             };
@@ -77,11 +77,18 @@ import ElMenuItem from "../../../node_modules/element-ui/packages/menu/src/menu-
         },
         methods: {
             handleSelect(key, keyPath) {
-//                console.log(key, keyPath);
+                console.log(key, keyPath);
                 this.$root.eventHub.$emit('changeNavMenu',key)
-                this.$root.eventHub.$emit('destoryFullPage',key)
+
 
             }
+        },
+        created(){
+            var vm = this
+            this.$root.eventHub.$on('init_navmenu',(data) => {
+                console.log('on->init_navmemnu',data)
+                vm.activeIndex = data
+            })
         },
         mounted(){
 

@@ -60,6 +60,6 @@ class envAdapter extends DbLibraryAdapter
 
     }
     static function show(){
-        print('showme');
+        prin('showme');
     }
 }

@@ -21,18 +21,19 @@
     import breadcrumb from '../../../common/breadcrumb .vue'
     import {wechat_marketing_apihost} from '../../../../app_config/base_config'
     import { mapGetters,mapActions } from 'vuex'
+
     export default {
         data(){
             return{
                 logo:'https://res.wx.qq.com/mpres/htmledition/images/bg/bg_logo318e8e.png',
                 menulist:{
-                    site_ctrl:'站点管理',
-                    business_client_ctrl:'客户管理',
-                    weimob_ctrl:'微信公众号管理',
-                    wechat_content_ctrl:'内容管理',
-                    fun_ctrl:'功能管理',
-                    agent_ctrl:'代理商管理',
-                    extend_ctrl:'扩展管理'
+                    w_m_b_site_ctrl:'站点管理',
+                    w_m_b_business_client_ctrl:'客户管理',
+                    w_m_b_weimob_ctrl:'微信公众号管理',
+//                    w_m_b_wechat_content_ctrl:'内容管理',
+                    w_m_b_fun_ctrl:'功能管理',
+                    w_m_b_agent_ctrl:'代理商管理',
+                    w_m_b_extend_ctrl:'统计、日志、审核'
 
 
                 },
@@ -62,6 +63,7 @@
             this.updateWechat_marketing_store({
                 apihost:wechat_marketing_apihost
             })
+
         },
         mounted(){
             var vm = this
@@ -157,5 +159,14 @@
         opacity: 0;
 
 
+    }
+    .el-menu li:hover{
+        background-color: #9e9e9e !important;
+    }
+    .el-tabs__item.is-active{
+        background-color: #848484 !important;
+    }
+    #navmenu li.el-menu-item{
+        font-size: 16px!important;
     }
 </style>

@@ -1,7 +1,7 @@
 /**
  * Created by ql-win on 2017/4/19.
  */
-
+var timestamp = require('time-stamp');
 export function analysis_socket_response(response) {
 
     var analysis_reponse = {
@@ -84,6 +84,9 @@ export function dbResponseAnalysis2WidgetData(dbResponse) {
                        if(datakey === rulekey){
                            // widgetData_item_attr = dbResponse.rules[rulekey]
                             var widget_type = judgeWidgetTypeByKeyAndKeyType(dbResponse.rules[rulekey].name,dbResponse.rules[rulekey].type)
+                           if(widget_type === 'time'){
+                               widgetData_item_attr.value = new Date(datarow[datakey]*1000);
+                           }
                            widgetData_item_attr.key = dbResponse.rules[rulekey].name
                            widgetData_item_attr.label = dbResponse.rules[rulekey].title
                            widgetData_item_attr.type = widget_type
@@ -110,6 +113,17 @@ export function dbResponseAnalysis2WidgetData(dbResponse) {
     return dbResponse
 
 }
+
+export function  resolveWidgetData2FormData(WidgetData) {
+    console.log('resolveWidgetData2FormData',WidgetData)
+    var fordata = {}
+    for (var item of WidgetData){
+        fordata[item.key] = item.value
+    }
+    return fordata
+
+}
+
 function convertCode2Tip(code='0') {
     var tips  = [
         {code:'0',tip:'正常'},
@@ -126,19 +140,49 @@ function convertCode2Tip(code='0') {
     return response_tip === ''?'未定义code代码:'+code:response_tip
 
 }
-function judgeWidgetTypeByKeyAndKeyType(key,keytype){
+function judgeWidgetTypeByKeyAndKeyType(key,keytype,){
 
-    if(key === 'document_id' || keytype === 'int' ||  key.substr(key.length-3) === 'num'){
+    if(key === 'document_id' || (keytype === 'int'   && key.substr(key.length-4) !== 'time') || key.substr(key.length-3) === 'num'){
         return 'num'
     }
     else if(key.substr(key.length-4) === 'time'){
         return 'time'
     }
+    else if(key.substr(key.length-3) === 'img'){
+        return 'upimg'
+    }
     else if(key.substr(key.length-4) === 'file'){
         return 'upfile'
+    }
+    else if(key.substr(key.length-3) === 'obj'){
+        return 'obj'
     }
     else{
         return 'str'
     }
 
+}
+
+function isJSON (str, pass_object) {
+    console.log(str)
+    if (pass_object && isObject(str)) return true;
+
+    // if (!isString(str)) return false;
+
+    str = str.replace(/\s/g, '').replace(/\n|\r/, '');
+
+    if(/^\{(.*?)\}$/.test(str)){
+        return /"(.*?)":(.*?)/g.test(str);
+    }
+
+    if(/^\[(.*?)\]$/.test(str)){
+        return str.replace(/^\[/, '')
+            .replace(/\]$/, '')
+            .replace(/},{/g, '}\n{')
+            .split(/\n/)
+            .map(function (s) { return isJSON(s); })
+            .reduce(function (prev, curr) { return !!curr; });
+    }
+
+    return false;
 }
