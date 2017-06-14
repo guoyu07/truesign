@@ -71,7 +71,7 @@
                             </div>
                             <div v-else-if="page_data.content[index].type === 'time'" class="timepicker" >
                                 <el-date-picker
-
+                                        :readonly="!page_data.content[index].modifiable"
                                         v-model="page_data.content[index].value"
                                         type="datetime"
                                         placeholder="选择日期时间"
@@ -88,7 +88,13 @@
                                 page_data.content[index].type !== 'upimg' &&
                                 page_data.content[index].type !== 'time' &&
                                 page_data.content[index].type !== 'obj'"
-                                   :style=" {borderBottom:page_data.content[index].access?'1px solid #f0f0f0':'none',backgroundColor:page_data.content[index].access?'rgba(150, 150, 150, 0.49)':''}"   v-model="page_data.content[index].value" :readonly="!page_data.content[index].access  || page_data.content[index].key === 'document_id'" />
+                                   :style=" {
+                                    borderBottom:page_data.content[index].access?'1px solid #f0f0f0':'none',
+                                    backgroundColor:(page_data.content[index].access && page_data.content[index].modifiable)?'rgba(150, 150, 150, 0.49)':''
+                                    }"
+                                    :disabled="!page_data.content[index].modifiable"
+                                    v-model="page_data.content[index].value"
+                                    :readonly="!page_data.content[index].access  || page_data.content[index].key === 'document_id' || !page_data.content[index].modifiable" />
                             <label style="width: 10%;min-width: 80px;vertical-align: top">
                                 <input   @click='change_access($event)' :data-index="index" type="button" v-model="page_data.content[index].access">
                             </label>
@@ -570,17 +576,37 @@
             final_update_data(){
 
                 this.build_page_data_to_timestamp()
+                console.log('this.page_data.content->',this.page_data.content)
                 var formdata = resolveWidgetData2FormData(this.page_data.content)
+                console.log('formdata->',formdata)
                 var vm = this
                 this.authing = true
                 axios.post(this.wechat_marketing_store.apihost+this.final_update_action,formdata,axios_config)
                     .then((res) => {
                         console.log('final-update->',res.data)
-                        vm.update_response = res.data+''
+                        if((typeof res.data === 'object' && res.data.statistic.count>=1) || res.data>=1){
+                            vm.$notify.success({
+                                title: '成功',
+                                message: '操作成功',
+                                offset: 100,
+                                duration:'1000'
+                            });
+                        }
+                        else{
+                            vm.$notify.success({
+                                title: '失败',
+                                message: '操作失败',
+                                type:'error',
+                                offset: 100,
+                                duration:'1000'
+                            });
+
+                        }
                         this.authing = false
                         setTimeout(function () {
                             vm.update_response = '0'
-                        },2000)
+                            vm.$root.eventHub.$emit('page_model_update_response_done',res.data)
+                        },600)
                         vm.build_page_data_to_timestamp(false)
 
                     })

@@ -11,8 +11,6 @@
         <transition name="fade-up">
             <footerbar  v-if="show_mobile_footer === true"  class="top_footer" style="position: absolute;width: 100%;z-index:100;bottom: 0"></footerbar>
         </transition>
-
-
     </div>
 </template>
 

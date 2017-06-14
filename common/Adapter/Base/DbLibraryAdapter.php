@@ -66,6 +66,16 @@ abstract class DbLibraryAdapter extends \Royal\Data\DAOAdapter
     public function paramRules()
     {
         $rules = $this->getStaticFieldConstruct()->getRule();
+        $rules['update_time'] = array(
+            'name'=>'update_time',
+            'title'=>'更新时间',
+            'modifiable'=>false,
+        );
+        $rules['create_time'] = array(
+            'name'=>'create_time',
+            'title'=>'创建时间',
+            'modifiable'=>false,
+        );
         return $rules;
     }
     public function getStaticFieldConstruct()

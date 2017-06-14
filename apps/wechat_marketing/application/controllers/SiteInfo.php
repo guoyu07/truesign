@@ -21,7 +21,6 @@ class SiteInfoController extends AppBaseController {
     {
         $params = $this->getParams(array(),array('rules'));
         $helper = new \Royal\Util\helper();
-
         $doAdapter = new envAdapter();
         $table_access = $doAdapter->getTableAccess();
         $rules = $doAdapter->paramRules();
@@ -34,9 +33,8 @@ class SiteInfoController extends AppBaseController {
             }
         }
         $data['server_ip'] = $env['IP'];
-
         $doDao->insertOrupdate($data,array('server_ip'=>$env['IP']));
-        $db_resposne = $doDao->read();
+        $db_resposne = $doDao->read(array('server_ip'=>$env['IP']),array(),array(),false,false,true);
         $this->filterRules($rules,$db_resposne['data'][0],$params['rules']);
 
         $access_rules = array('tableaccess'=>$table_access,'rules'=>$rules);

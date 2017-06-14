@@ -316,9 +316,11 @@ class MySQL {
     }
 
     public function getResultsByCondition($table, $condition = '', $fields = '') {
+
         list($condition, $values) = $this->getConditionPair($condition);
         $fields = trim($fields);
         empty($fields) && $fields = '*';
+
 
         if (empty($condition)) {
             $sql = sprintf('SELECT %s FROM %s', $fields, $table);

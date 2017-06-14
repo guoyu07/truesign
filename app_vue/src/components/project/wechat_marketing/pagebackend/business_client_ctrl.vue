@@ -1,18 +1,28 @@
 <template>
-    <div class="top_router_view" style="overflow: auto" >
+    <div class="top_router_view" id="business_client_ctrl" style="overflow: auto" >
         <el-tabs type="border-card" style="background-color: #dcdcdc;box-shadow: none" @tab-click="tabclick"  v-model="defaultTab">
             <el-tab-pane v-for="(item,index) in tab_menu_list" :key="item" :label="item.value" :data-name="item.name" :name="item.name" >
 
                 <div style="width: 100%;height: auto;min-height: 600px;text-align: left;" v-if="item.name==='客户数据'" key="客户数据">
-                    <table_model>
+                    <!--<div class="ctrl_btn" style="position: absolute;right:10px;margin-top: -4px">-->
+                        <!--<el-button type="primary" @click="add_business_info">新增客户</el-button>-->
+                    <!--</div>-->
+                    <table_model :table_data="table_model_data" :table_field="table_model_field" :info_transfer_action="info_transfer_action">
 
                     </table_model>
+                    <!--<transition name="fade-up">-->
+                        <!--<page_model v-if="show_page_model_ctrl_by_table"-->
+                                <!--:final_update_action="'BusinessCtrl/UpdateBusinessInfo'"-->
+                                <!--:final_update_btn_desc="'提交数据'"-->
+                                <!--:page_data="page_model_data"-->
+                                <!--style="position:absolute;;width: 98%;z-index:100;text-align: center;bottom: 0px;" ></page_model>-->
+                    <!--</transition>-->
                     <transition name="fade-up">
-                        <page_model v-if="show_page_model_ctrl_by_table"
-                                :final_update_action="'BusinessCtrl/UpdateBusinessInfo'"
-                                :final_update_btn_desc="'提交数据'"
-                                :page_data="page_model_data"
-                                style="position:absolute;;width: 98%;z-index:100;text-align: center;bottom: 0px;" ></page_model>
+                        <page_model v-if="show_adddata_page_model_ctrl"
+                                    :final_update_action="'BusinessCtrl/UpdateBusinessInfo'"
+                                    :final_update_btn_desc="'新增数据'"
+                                    :page_data="adddata_page_model_data"
+                                    style="position:absolute;;width: 98%;z-index:100;text-align: center;bottom: 0px;" ></page_model>
                     </transition>
                 </div>
                 <div style="width: 100%;height: auto;min-height: 600px;text-align: left;" v-else="item.name==='级别套餐'" key="级别套餐">
@@ -51,8 +61,18 @@
                             value : '级别套餐',
                         },
                     ],
+                adddata_page_model_data:{},
                 page_model_data:{},
-                show_page_model_ctrl_by_table:false
+                table_model_data:[],
+                table_model_field:{},
+
+                show_page_model_ctrl_by_table:false,
+                show_adddata_page_model_ctrl:false,
+                info_transfer_action:{
+                    add:'BusinessCtrl/Getbusinesscolsinfo',
+                    get:'BusinessCtrl/getBusinessInfo',
+                    update:'BusinessCtrl/UpdateBusinessInfo'
+                }
             }
         },
         props: {
@@ -68,19 +88,22 @@
             ])
         },
         created(){
+            var vm = this
             this.report_api = this.wechat_marketing_store.apihost+'BusinessCtrl/'
             this.$root.eventHub.$emit('init_navmenu','w_m_b_business_client_ctrl')
             this.$root.eventHub.$on('currect_row_index',() => {
                 this.show_page_model_ctrl_by_table = !this.show_page_model_ctrl_by_table
             })
-            this.getBusinessInfo()
 
+            this.getBusinessInfo()
+            this.$root.eventHub.$on('refresh_businessinfo',function (data) {
+                console.log('refresh_businessinfo',data)
+                vm.getBusinessInfo(data)
+            })
         },
         mounted(){
             var vm = this
-            this.$root.eventHub.$on('close_page_model',() => {
-                this.show_page_model_ctrl_by_table = false
-            })
+
 
 
         },
@@ -92,7 +115,7 @@
             tabclick(e){
                 var vm = this
                 this.page_model_data = {}
-                this.siteinfo = {}
+                this.table_model_data = []
                 if(e.$el.dataset.name === '客户数据'){
                     this.getBusinessInfo()
                 }
@@ -101,17 +124,41 @@
                 }
 
             },
-            getBusinessInfo(){
+            getBusinessInfo(search_sort_by){
                 var vm = this
-                axios.post(this.report_api+'Getbusinessinfo',{rules:1},axios_config)
+                var search_param = {}
+                if(search_sort_by){
+                    search_param.search_sort_by = search_sort_by
+                }
+                search_param.rules = 1
+                axios.post(this.report_api+'Getbusinessinfo',search_param,axios_config)
                     .then((res) => {
                         let analysis_data = dbResponseAnalysis2WidgetData(res.data)
                         if(analysis_data.code+'' === '0'){
+//                            var content = analysis_data.widgetdata[0]
+//                            console.log(analysis_data)
+                            vm.table_model_field = analysis_data.rules
+                            vm.table_model_data = analysis_data.data
+
+                        }
+
+
+                    })
+            },
+            add_business_info(){
+                var vm = this
+                axios.post(this.report_api+'Getbusinesscolsinfo',{rules:1},axios_config)
+                    .then((res) => {
+                            console.log(res.data)
+                        let  analysis_data = dbResponseAnalysis2WidgetData(res.data)
+                        if(analysis_data.code+'' === '0'){
                             var content = analysis_data.widgetdata[0]
-                            vm.page_model_data = {
-                                title:'客户数据',
+                            vm.adddata_page_model_data = {
+                                title:'新增客户信息',
                                 content:content
                             }
+                            vm.show_adddata_page_model_ctrl=true
+
                         }
 
                     })
@@ -120,7 +167,8 @@
 
     }
 </script>
-<style>
+
+<style lang="stylus" rel="stylesheet/stylus">
     .el-tabs__header{
         box-shadow: 0 0 15px rgba(93, 100, 124, 0.38) !important;
 

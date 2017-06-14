@@ -16,7 +16,7 @@
 
                             <page_model :page_data="siteinfo" style="width: 100%;min-width:600px;display: inline-block;vertical-align: top" ></page_model>
 
-                            {{ wechat_marketing_store }}
+
 
 
                         </div>

@@ -55,6 +55,10 @@ class Field {
         $this->_rule[$this->_index]->title($desc);
         return $this;
     }
+    public function modifiable($modifiable=true) {
+        $this->_rule[$this->_index]->modifiable($modifiable);
+        return $this;
+    }
     public function regex($regex) {
         $this->_rule[$this->_index]->regex($regex);
         return $this;

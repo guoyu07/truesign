@@ -34,6 +34,7 @@ const tools = resolve => require(['../components/tools/tools.vue'], resolve)
 // const vue2editor = resolve => require(['../components/tools/vue2-editor.vue'], resolve)
 const wangeditor = resolve => require(['../components/tools/wangeditor.vue'], resolve)
 const table_model = resolve => require(['../components/common/table_model.vue'], resolve)
+const table_model_dev = resolve => require(['../components/common/table_model_dev.vue'], resolve)
 
 const project = resolve => require(['../components/project/project.vue'], resolve)
 // const gdmap = resolve => require(['../components/project/gdmap.vue'], resolve)
@@ -187,6 +188,15 @@ const routes = [
                 component: table_model
 
             },
+            {
+                name: 'table_model_dev',
+                path: 'table_model_dev',
+                meta: {
+                    title: 'table_model_dev'
+                },
+                component: table_model_dev
+
+            }
 
         ]
     },

@@ -141,8 +141,8 @@ a {
 
 ::-webkit-scrollbar
 {
-    width: 6px;
-    height: 6px;
+    width: 8px;
+    height: 8px;
 }
 ::-webkit-scrollbar-track-piece
 {
@@ -151,14 +151,14 @@ a {
 }
 ::-webkit-scrollbar-thumb:vertical
 {
-    height: 5px;
-    background-color: #57DCDF;
+    height: 8px;
+    background-color: #53dfd6;
     -webkit-border-radius: 6px;
 }
 ::-webkit-scrollbar-thumb:horizontal
 {
-    width: 5px;
-    background-color: rgba(215, 218, 223, 0.15);
+    width: 8px;
+    background-color: #53dfd6;
     -webkit-border-radius: 6px;
 }
 

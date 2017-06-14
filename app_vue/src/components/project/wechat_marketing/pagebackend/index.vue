@@ -5,7 +5,7 @@
         <navmenu :logo="logo" :menulist="menulist" :navmenu_theme_color="navmenu_theme_color" :menu_item_color="'#cbcfe4'" :user_scope="user_scope"></navmenu>
 
 
-        <div style="min-width: 1200px;width: 100%;background-color: transparent;height: 100%;margin: 0 auto;padding-top: 65px;">
+        <div style="min-width: 1200px;height:100%;width: 100%;background-color: transparent;margin: 0 auto;padding-top: 65px;">
             <transition name="el-zoom-in-top">
             <router-view> </router-view>
             </transition>

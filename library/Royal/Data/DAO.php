@@ -238,10 +238,18 @@ class DAO
         }
     }
 
-    public function read($params=array(), $pager = array(), $sorter = array(), $ignoreEs = false)
+    public function testtest($a=array(),$b=array(),$c=false){
+        echo '<pre>';
+        print_r($a);
+        print_r($b);
+        print_r($c);
+        exit();
+    }
+    public function read($params=array(), $pager = array(), $sorter = array(), $ignoreEs = false,$ignoreDel = false,$ignoreCreateUpdateTime = false)
     {
+
         return $this->readSpecified($params, $this->adapter->defaultReturnParamNames(),
-            $pager, $sorter, $ignoreEs);
+            $pager, $sorter, $ignoreEs,$ignoreDel,$ignoreCreateUpdateTime);
     }
 
     public function getGroup($params, $group) {
@@ -259,8 +267,9 @@ class DAO
         return $table;
     }
 
-    public function readSpecified($params=array(), $specified=array(), $pager = array(), $sorter = array(), $ignoreEs = false,$ignoreDel = false)
+    public function readSpecified($params=array(), $specified=array(), $pager = array(), $sorter = array(), $ignoreEs = false,$ignoreDel = false,$ignoreCreateUpdateTime=false)
     {
+
         if(!$ignoreDel){
             if(!isset($params['if_delete'])){
                 $params['if_delete'] = 0;
@@ -294,6 +303,7 @@ class DAO
             list($stat, $result) = $this->searchFromEs($es, $params, $specified, $pager, $sorter);
         }
         else {
+
             $condition = $this->paramsToCondition($params);
 
 
@@ -395,6 +405,7 @@ class DAO
                 }
 
                 $condition[0] = $whereClause;
+
                 if ($count > $offset) {
                     $fields = '';
                     if (!empty($specified)) {
@@ -402,13 +413,16 @@ class DAO
                         $fields = implode(',', $fields);
                     }
                     $result = $db->getResultsByCondition($this->getTable($this->adapter->table_Prefix().$this->adapter->table()), $condition, $fields);
+
                 }
             }
         }
 
+
         foreach ($result as $k => $v) {
-            $result[$k] = $this->fieldPairsToParamPairs($v);
+            $result[$k] = $this->fieldPairsToParamPairs($v,$ignoreCreateUpdateTime);
         }
+
 //        $table_column = $db->getColumn($this->getTable($this->adapter->table_Prefix().$this->adapter->table()));
         $retResult = array(
             'statistic' => $stat,
@@ -417,7 +431,11 @@ class DAO
         );
         return $this->adapter->wrapListResult($retResult);
     }
-
+    public function getColumn(){
+        $db = $this->getDb();
+        $table_column = $db->getColumn($this->getTable($this->adapter->table_Prefix().$this->adapter->table()));
+        return $table_column;
+    }
     private function eagleOrToCondition($eagle_or, $eagle_or_filed, &$condition){
 
 
@@ -1202,12 +1220,17 @@ class DAO
         return $fieldPairs;
     }
 
-    public function fieldPairsToParamPairs($filedPairs)
+    public function fieldPairsToParamPairs($filedPairs,$IgnoreCreateUpdateTime=false)
     {
         $paramPairs = array();
         $fieldPrefix = $this->adapter->fieldPrefix();
         $mapping = $this->adapter->paramsMapping();
         $mapping = array_flip($mapping);
+        if($IgnoreCreateUpdateTime){
+
+            $mapping['create_time'] = 'create_time';
+            $mapping['update_time'] = 'update_time';
+        }
         $prefixLength = strlen($fieldPrefix);
         foreach ($filedPairs as $k => $v) {
             if(is_null($v)) {

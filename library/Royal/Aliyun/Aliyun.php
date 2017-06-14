@@ -92,7 +92,7 @@ class Aliyun {
         $response = array();
         $response['expire'] = $end;
         //这个参数是设置用户上传指定的前缀
-        $response['name'] = '10.jpg';
+//        $response['name'] = '10.jpg';
         $response['key'] = $fileName;
         $response['policy'] = $base64_policy;
         $response['OSSAccessKeyId'] = $id;
@@ -102,6 +102,7 @@ class Aliyun {
         return array(
             'uri'=>$host,
             'param'=>$response
+
         );
 //        echo json_encode($response);
 

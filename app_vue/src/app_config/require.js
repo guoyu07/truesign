@@ -4,6 +4,7 @@ var scale = 100*wWidth/750;
 console.log('scale',scale)
 
 $("html").css("font-size",scale);
+require('normalize.css')
 require('../../static/css/reset.css')
 require('../../static/css/style.css')
 // require('../../static/css/style.sass')

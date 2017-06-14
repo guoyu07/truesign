@@ -73,6 +73,7 @@ export function dbResponseAnalysis2WidgetData(dbResponse) {
         }
 
         var widgetData = [];
+        var tableField = [];
         if(dbResponse.rules && dbResponse.data){
             for (var datarow of dbResponse.data){
                 var widgetData_item = []
@@ -91,12 +92,21 @@ export function dbResponseAnalysis2WidgetData(dbResponse) {
                            widgetData_item_attr.label = dbResponse.rules[rulekey].title
                            widgetData_item_attr.type = widget_type
                            widgetData_item_attr.regex = dbResponse.rules[rulekey].regex
-                           widgetData_item_attr.access = false
+                           widgetData_item_attr.modifiable = dbResponse.rules[rulekey].modifiable
+                           widgetData_item_attr.access = true
+
+                           var widget_width = judgeWidth(dbResponse.rules[rulekey].name,widget_type,datarow[datakey])
+                           dbResponse.rules[rulekey].width = 0
+                           dbResponse.rules[rulekey].width = widget_width>dbResponse.rules[rulekey].width?widget_width:dbResponse.rules[rulekey].width
                        }
                     }
                     widgetData_item.push(widgetData_item_attr)
                 }
                 widgetData.push(widgetData_item);
+                // 如果数据组长度大于一说明很可能是列表，为了适配table_model页面要进行
+                // if(dbResponse.data.length > 1){
+                //
+                // }
             }
 
         }
@@ -115,7 +125,6 @@ export function dbResponseAnalysis2WidgetData(dbResponse) {
 }
 
 export function  resolveWidgetData2FormData(WidgetData) {
-    console.log('resolveWidgetData2FormData',WidgetData)
     var fordata = {}
     for (var item of WidgetData){
         fordata[item.key] = item.value
@@ -140,13 +149,16 @@ function convertCode2Tip(code='0') {
     return response_tip === ''?'未定义code代码:'+code:response_tip
 
 }
-function judgeWidgetTypeByKeyAndKeyType(key,keytype,){
+function judgeWidgetTypeByKeyAndKeyType(key,keytype){
 
     if(key === 'document_id' || (keytype === 'int'   && key.substr(key.length-4) !== 'time') || key.substr(key.length-3) === 'num'){
         return 'num'
     }
     else if(key.substr(key.length-4) === 'time'){
         return 'time'
+    }
+    else if(key.substr(key.length-4) === 'mail'){
+        return 'mail'
     }
     else if(key.substr(key.length-3) === 'img'){
         return 'upimg'
@@ -162,9 +174,45 @@ function judgeWidgetTypeByKeyAndKeyType(key,keytype,){
     }
 
 }
+function judgeWidth(key,keytype,value) {
+    var base_width = 120;
+    switch (keytype){
+        case 'str':
+            base_width = 120
+            break
+        case 'time':
+            base_width = 120
+            break;
+        case 'file':
+            base_width = 150
+            break;
+        case 'img':
+            base_width = 80
+            break;
+        case 'obj':
+            base_width = 120
+            break
+        case 'mail':
+            base_width = 200
+            break
+        case 'num':
+            base_width = 130
+            break
+        default:
+            base_width = 120
+    }
+    var tmp_width = 0;
+    if(keytype === 'str' || keytype === 'mail'){
+        tmp_width = value.length*1.5;
+    }
+    if(keytype === 'num' || keytype === 'time'){
+        tmp_width = (value+'').length*10;
+    }
+    return base_width+tmp_width
+
+}
 
 function isJSON (str, pass_object) {
-    console.log(str)
     if (pass_object && isObject(str)) return true;
 
     // if (!isString(str)) return false;

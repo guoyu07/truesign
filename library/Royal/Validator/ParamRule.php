@@ -11,8 +11,9 @@ class ParamRule {
     public $type;
     public $required = false;
     public $delimiter = ',';
-    public $regex;
-    public $enumValues;
+    public $regex = false;
+    public $modifiable = true ;
+    public $enumValues = false;
     public $defaultValue = false;
     public $notEmpty = false;
     public $allowEmpty = true;
@@ -106,6 +107,14 @@ class ParamRule {
      */
     public function regex($regex) {
         $this->regex = $regex;
+        return $this;
+    }
+    /**
+     * @param $modifiable
+     * @return ParamRule
+     */
+    public function modifiable($modifiable) {
+        $this->modifiable = $modifiable;
         return $this;
     }
 
