@@ -1,7 +1,8 @@
 /**
  * Created by ql-win on 2017/4/19.
  */
-var timestamp = require('time-stamp');
+var timesTamp = require('time-stamp');
+const dateTime = require('date-time');
 export function analysis_socket_response(response) {
 
     var analysis_reponse = {
@@ -53,6 +54,9 @@ export function analysis_socket_response(response) {
     return analysis_reponse
 }
 
+/*
+用于处理yaf api 返回一会的数据格式，并附加打包完成的控件数据格式
+ */
 export function dbResponseAnalysis2WidgetData(dbResponse) {
     if(dbResponse == null){
 
@@ -73,7 +77,6 @@ export function dbResponseAnalysis2WidgetData(dbResponse) {
         }
 
         var widgetData = [];
-        var tableField = [];
         if(dbResponse.rules && dbResponse.data){
             for (var datarow of dbResponse.data){
                 var widgetData_item = []
@@ -87,10 +90,12 @@ export function dbResponseAnalysis2WidgetData(dbResponse) {
                             var widget_type = judgeWidgetTypeByKeyAndKeyType(dbResponse.rules[rulekey].name,dbResponse.rules[rulekey].type)
                            if(widget_type === 'time'){
                                widgetData_item_attr.value = new Date(datarow[datakey]*1000);
+                               datarow[datakey] = dateTime({date:new Date(datarow[datakey]*1000)})
                            }
                            widgetData_item_attr.key = dbResponse.rules[rulekey].name
                            widgetData_item_attr.label = dbResponse.rules[rulekey].title
                            widgetData_item_attr.type = widget_type
+                           widgetData_item_attr.issearch = dbResponse.rules[rulekey].issearch
                            widgetData_item_attr.regex = dbResponse.rules[rulekey].regex
                            widgetData_item_attr.modifiable = dbResponse.rules[rulekey].modifiable
                            widgetData_item_attr.access = true
@@ -119,17 +124,17 @@ export function dbResponseAnalysis2WidgetData(dbResponse) {
             tip: convertCode2Tip(dbResponse.code)
         }
     }
-    console.log(dbResponse)
+    // console.log(dbResponse)
     return dbResponse
 
 }
 
 export function  resolveWidgetData2FormData(WidgetData) {
-    var fordata = {}
+    var formdata = {}
     for (var item of WidgetData){
-        fordata[item.key] = item.value
+        formdata[item.key] = item.value
     }
-    return fordata
+    return formdata
 
 }
 
@@ -175,7 +180,7 @@ function judgeWidgetTypeByKeyAndKeyType(key,keytype){
 
 }
 function judgeWidth(key,keytype,value) {
-    var base_width = 120;
+    var base_width = 30;
     switch (keytype){
         case 'str':
             base_width = 120
@@ -199,7 +204,10 @@ function judgeWidth(key,keytype,value) {
             base_width = 130
             break
         default:
-            base_width = 120
+            base_width = 30
+    }
+    if(key === 'document_id'){
+        base_width = 60
     }
     var tmp_width = 0;
     if(keytype === 'str' || keytype === 'mail'){
@@ -234,3 +242,60 @@ function isJSON (str, pass_object) {
 
     return false;
 }
+
+
+
+//无论是空字符串、空整形、空对象都返回true
+function isEmpty(obj){
+    var _isEmpty = false;
+    if(typeof obj ==='string'||typeof obj ==='number'){
+        _isEmpty = !obj;
+    }else if(isPlainObj(obj)){
+        var value = "";
+        for(var i in obj){
+            //这里的递归解决{a:{b:{c:''}}}这样的情况
+            value = !value && isEmpty(obj[i]);
+        }
+        _isEmpty = value;
+    }
+
+    return _isEmpty;
+}
+
+//判断是否是字面量对象
+function isPlainObj(obj){
+    return (obj instanceof Object )&& (obj.constructor === Object);
+}
+
+export function deleteEmptyObj (key,container){
+    container = container||window;
+    if(isEmpty(container[key])){
+        delete container[key];
+    }else if(isPlainObj(container[key])){
+        for(var i in container[key]){
+            deleteEmptyObj(i,container[key]);
+        }
+    }
+}
+
+
+
+
+
+export function deleteEmptyString(test, recurse) {
+
+    for (var i in test) {
+        if (test[i] === '' ) {
+            delete test[i];
+        } else if (recurse && typeof test[i] === 'object') {
+            deleteEmptyString(test[i], recurse);
+        }
+    }
+
+}
+
+
+
+
+
+

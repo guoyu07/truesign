@@ -59,7 +59,7 @@
 
         },
         created(){
-            console.log('wechat_marketing_apihost',wechat_marketing_apihost)
+//            console.log('wechat_marketing_apihost',wechat_marketing_apihost)
             this.updateWechat_marketing_store({
                 apihost:wechat_marketing_apihost
             })

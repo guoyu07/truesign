@@ -27,7 +27,10 @@ class DrawCanvas {
         this.dots = []
 
     }
-
+    initWidthHeight(width,height){
+        this.width = width
+        this.height = height
+    }
     initDot({
         fl = 200,
         start_time=Date.parse(new Date()),

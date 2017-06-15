@@ -41,10 +41,10 @@ class businessAdapter extends DbLibraryAdapter
     {
         return Field::start()
             ->def('document_id')->map('id')->int()->desc('id')->modifiable(false)
-            ->def('username')->map('username')->varchar(100)->desc('用户名')
+            ->def('username')->map('username')->varchar(100)->desc('用户名')->issearch(true)
             ->def('password')->map('password')->varchar(100)->desc('密码')
-            ->def('phone_num')->map('phone_num')->varchar(15)->desc('手机号')
-            ->def('email')->map('email')->varchar(50)->desc('邮箱')
+            ->def('phone_num')->map('phone_num')->varchar(15)->desc('手机号')->issearch(true)
+            ->def('email')->map('email')->varchar(50)->desc('邮箱')->issearch(true)
             ->def('weimob_num')->map('weimob_num')->int()->desc('公众号数量')
             ->def('recharge')->map('recharge')->varchar(50)->desc('充值总额')
             ->def('remainder')->map('remainder')->varchar(50)->desc('余额')->modifiable(false)

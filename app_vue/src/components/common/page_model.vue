@@ -1,6 +1,7 @@
 <template>
     <transition name="el-zoom-in-top" >
-        <div v-if="page_data.title" key="haspagedata" class="page_model" :style="page_design" >
+        <div v-if="page_data.title" key="haspagedata" class="page_model" :style="page_design" v-loading="authing"
+             :element-loading-text="laoding_text">
             <div v-if="page_type==='list'">
 
                 <div class="page_title" :style="page_title_design" >
@@ -177,6 +178,7 @@
                 imageUrl:'',
                 ClassisActive: true,
                 authing:false,
+                laoding_text:'请求处理中',
                 update_response:'0',
                 report_api:'',
                 upload_params:{

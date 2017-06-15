@@ -59,6 +59,10 @@ class Field {
         $this->_rule[$this->_index]->modifiable($modifiable);
         return $this;
     }
+    public function issearch($issearch=false) {
+        $this->_rule[$this->_index]->issearch($issearch);
+        return $this;
+    }
     public function regex($regex) {
         $this->_rule[$this->_index]->regex($regex);
         return $this;

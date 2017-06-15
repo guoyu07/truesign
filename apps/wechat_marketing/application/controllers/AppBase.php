@@ -217,7 +217,18 @@ class AppBaseController extends \ReInit\YafBase\Controller
 //        echo json_encode(array('data' => $data, 'code' => 0));
 //        \Yaf_Dispatcher::getInstance()->autoRender(FALSE);
 //    }
-
+    public function setParam($key, $type, $value, &$param) {
+        if($type == 'in') {
+            if(empty($value)) {
+                $value = array('0');
+            }
+        }
+        //            $suffixMap = array('le'=>'以下', 'lt'=>'以下', 'ge'=>'以上', 'gt'=>'以上');
+        $param[$key] = array(
+            'operation' => $type,
+            'value' => $value
+        );
+    }
 
 
     protected function _forward($action, $controller = '', $parameters = array()) {

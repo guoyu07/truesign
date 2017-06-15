@@ -13,6 +13,7 @@ class ParamRule {
     public $delimiter = ',';
     public $regex = false;
     public $modifiable = true ;
+    public $issearch = false ;
     public $enumValues = false;
     public $defaultValue = false;
     public $notEmpty = false;
@@ -115,6 +116,14 @@ class ParamRule {
      */
     public function modifiable($modifiable) {
         $this->modifiable = $modifiable;
+        return $this;
+    }
+    /**
+     * @param $issearch
+     * @return ParamRule
+     */
+    public function issearch($issearch) {
+        $this->issearch = $issearch;
         return $this;
     }
 

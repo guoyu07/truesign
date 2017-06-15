@@ -1,18 +1,49 @@
 <template>
     <div style="overflow: hidden">
+        <div id="table_button_bar" style="text-align: left">
+            <transition name="fade-left" >
+            <el-button type="danger" v-if="all_data_count && multipleSelection.length>0"   @click="delSelectOption">删除选择项</el-button>
+            </transition>
+            <!--<el-select class="table_select_bar"  v-for="(item,index) in table_field" :key="item" v-if="item.issearch"-->
+            <!--:data-key="index"-->
+            <!--v-model="value9"-->
+            <!--multiple-->
+            <!--filterable-->
+            <!--remote-->
+            <!--:placeholder="'请输入'+item.title"-->
+            <!--:remote-method="remoteSearchMethod"-->
+            <!--:loading="loading">-->
+            <!--<el-option-->
+            <!--v-for="item in options4"-->
+            <!--:key="item.value"-->
+            <!--:label="item.label"-->
+            <!--:value="item.value">-->
+            <!--</el-option>-->
+            <!--</el-select>-->
+            <div style="display: inline-block"  >
+
+
+                <el-input   v-focus:currect_select="currect_select" :name="index" :data-key="index" style="display: inline-block;width: 180px;" v-for="(item,index) in table_field" :key="item"
+                           v-if="item.issearch "
+                           :placeholder="'请输入'+item.title"
+                           icon="search"
+                           v-model="search_sort_by[index]"
+
+                >
+
+                </el-input>
+                <el-button @click="resetSelect" size="small" type="success">重置检索</el-button>
+            </div>
+
+            <el-button type="primary" style="position: absolute;right: 15px"  @click="add_business_info">新增客户</el-button>
+
+        </div>
         <transition name="el-zoom-in-top" >
-            <div class="table_model" key="tabledata" style="" v-if="table_data[0]" >
-                <div id="table_button_bar" style="text-align: left">
-                    <el-button>操作</el-button>
-                    <el-button >操作</el-button>
-                    <el-button >操作</el-button>
-                    <el-button >操作</el-button>
-                    <el-button >操作</el-button>
+            <div class="table_model" key="tabledata" style="" v-if="all_data_count" >
 
-                    <el-button type="primary" style="position: absolute;right: 15px"  @click="add_business_info">新增客户</el-button>
-
-                </div>
                 <el-table
+                    v-loading="isloading"
+                    element-loading-text="数据加载中"
                         :stripe=false
                     ref="multipleTable"
                     :data="table_data"
@@ -67,18 +98,15 @@
 
                                    @size-change="handleSizeChange"
                                    @current-change="handleCurrentChange"
-                                   :current-page="currentPage4"
-                                   :page-sizes="[25, 35, 45, 55]"
-                                   :page-size="100"
+                                   :current-page="currentPage"
+                                   :page-sizes="[20, 35, 55, 70]"
+                                   :page-size="search_sort_by.page_size"
                                    layout="total, sizes, prev, pager, next, jumper"
-                                   :total="table_data.length">
+                                   :total="all_data_count">
                     </el-pagination>
                 </div>
             </div>
-
-
-
-            <div v-else="table_data[0]" key="notabledata" style="text-align: center">
+            <div v-else="all_data_count" key="notabledata" style="text-align: center">
                 <div class="now_data_show" style="">
                     <span style="margin-top: 50px;display: block">暂无数据</span>
                     <div class="loader" style="position:absolute;width: 200px;height: 300px;overflow: hidden;left: 50%;margin-left: -100px;top:220px;">
@@ -90,15 +118,16 @@
                 </div>
 
             </div>
-
-
         </transition>
         <transition name="fade-up">
-            <page_model v-if="show_page_model_ctrl_by_table"
+            <page_model  :element-loading-text="loading_text"  v-if="show_page_model_ctrl_by_table"
             :final_update_action="info_transfer_action.update"
             :final_update_btn_desc="'提交修改'"
             :page_data="detail_page_model_data"
-            style="position:absolute;;width: 98%;z-index:100;text-align: center;bottom: 10px; " ></page_model>
+            style="position:absolute;;z-index:100;width:99%;text-align: center;bottom: 10px; " >
+
+            </page_model>
+
         </transition>
 
     </div>
@@ -109,7 +138,10 @@
     import { mapGetters,mapActions } from 'vuex'
     import axios from 'axios'
     import {axios_config} from '../../api/axiosApi'
-    import {dbResponseAnalysis2WidgetData} from '../../api/lib/helper/dataAnalysis'
+    import {dbResponseAnalysis2WidgetData,deleteEmptyObj,deleteEmptyString} from '../../api/lib/helper/dataAnalysis'
+    import Vue from 'vue'
+    import { focus } from 'vue-focus';
+
     export default {
         data() {
             return {
@@ -293,22 +325,49 @@
         },
                 show_page_model_ctrl_by_table:true,
                 detail_page_model_data:{},
-                search_sort_by:{
-                    page_size:25,
-                    currect_page:1,
-                },
+                currentPage: 1,
+                isloading:false,
+                loading_text:'数据加载中',
+                currect_select:'',
 
-
-
-                currentPage1: 5,
-                currentPage2: 5,
-                currentPage3: 5,
-                currentPage4: 4
+                options4: [],
+                value9: [],
+                list: [],
+                loading: false,
+                states: ["Alabama", "Alaska", "Arizona",
+                    "Arkansas", "California", "Colorado",
+                    "Connecticut", "Delaware", "Florida",
+                    "Georgia", "Hawaii", "Idaho", "Illinois",
+                    "Indiana", "Iowa", "Kansas", "Kentucky",
+                    "Louisiana", "Maine", "Maryland",
+                    "Massachusetts", "Michigan", "Minnesota",
+                    "Mississippi", "Missouri", "Montana",
+                    "Nebraska", "Nevada", "New Hampshire",
+                    "New Jersey", "New Mexico", "New York",
+                    "North Carolina", "North Dakota", "Ohio",
+                    "Oklahoma", "Oregon", "Pennsylvania",
+                    "Rhode Island", "South Carolina",
+                    "South Dakota", "Tennessee", "Texas",
+                    "Utah", "Vermont", "Virginia",
+                    "Washington", "West Virginia", "Wisconsin",
+                    "Wyoming"],
+                focused: false,
 
             }
+
+
         },
         props: {
             test_props:'123',
+
+            search_sort_by:{
+                type:Object,
+                default:function() {
+                    return {
+
+                    }
+                }
+            },
             table_design:{
                 type: Object,
                 default: function () {
@@ -317,6 +376,10 @@
                     }
                 },
                 required: false,
+            },
+            all_data_count:{
+                default: 0
+
             },
             table_data:{
                 type: Array,
@@ -345,6 +408,26 @@
                 required: false,
             },
 
+
+        },
+        watch:{
+            search_sort_by: {
+                handler: function (val, oldVal) {
+//                    console.log('search_sort_by->change')
+                    for (var index in this.search_sort_by){
+                        if(typeof this.search_sort_by[index] ==='string'){
+                                    this.search_sort_by[index] = (this.search_sort_by[index]+'').trim()
+                        }
+                    }
+                    this.$root.eventHub.$emit('refresh_businessinfo',JSON.stringify(this.search_sort_by))
+//                    console.log('this.currect_select',this.currect_select)
+                },
+                deep: true
+            },
+            multipleSelection(val){
+                console.log('multipleSelection change')
+
+            }
         },
         computed: {
             ...mapGetters([
@@ -365,7 +448,35 @@
 //                vm.detail_page_model_data = {}
             })
         },
+        updated(){
+//            console.log('updated->props->search_sort_by->',this.search_sort_by)
+
+            Vue.nextTick( () => {
+
+            })
+            $(".table_select_bar>div.el-input>input").focus((e) => {
+
+                this.currect_select = e.currentTarget.parentNode.parentNode.dataset.key
+
+            })
+            $("#table_button_bar .el-input>input").focus((e) => {
+
+                var $div_node = e.currentTarget.parentNode
+                this.currect_select = $div_node.dataset.key
+
+
+            })
+
+        },
         mounted(){
+
+//            console.log('mounted->props->search_sort_by->',this.search_sort_by)
+//            this.watchSearchSortBy()
+
+
+            this.list = this.states.map(item => {
+                return { value: item, label: item };
+            });
             var vm = this
             this.$root.eventHub.$on('screenWidth2screenHeight',function (data) {
                 var width2height = data.split(",")
@@ -452,6 +563,7 @@
                 else{
                     show_title = '详细数据信息'
                 }
+                vm.isloading = true
                 axios.post(this.apihost+this.info_transfer_action.get,search_param,axios_config)
                     .then((res) => {
                         let analysis_data = dbResponseAnalysis2WidgetData(res.data)
@@ -461,8 +573,11 @@
                             content:content
                         }
                         vm.show_page_model_ctrl_by_table = true
-
+                        vm.isloading = false
                     })
+                    .catch((error) => {
+                        vm.isloading = error
+                    });
             },
             updateCurrectBusinessDetail(index,name,del=false){
                 var vm = this
@@ -477,6 +592,7 @@
                     update_params = this.table_data[index]
                     update_params.rules = 1
                 }
+                vm.isloading = true
                 axios.post(this.apihost+this.info_transfer_action.update,update_params,axios_config)
                     .then((res) => {
                         console.log('update_detail->',res.data)
@@ -498,23 +614,89 @@
                             });
 
                         }
-                        vm.$root.eventHub.$emit('refresh_businessinfo',1)
+                        vm.$root.eventHub.$emit('refresh_businessinfo',JSON.stringify(vm.search_sort_by))
+                        vm.isloading = false
                     })
+                    .catch((error) => {
+                        vm.isloading = error
+                    });
             },
             handleSizeChange(val) {
+
                 console.log(`每页 ${val} 条`);
                 this.search_sort_by.page_size = val
-                this.refresh_table_data()
-
+                this.handleCurrentChange(1)
+                $('li.number').eq(0).click()
             },
             handleCurrentChange(val) {
                 console.log(`当前页: ${val}`);
-                this.search_sort_by.currect_page = val
+                this.search_sort_by.page = val
                 this.refresh_table_data()
             },
             refresh_table_data(){
-                this.$root.eventHub.$emit('refresh_businessinfo',this.search_sort_by)
+                var vm = this
+                this.$root.eventHub.$emit('refresh_businessinfo',JSON.stringify(vm.search_sort_by))
+            },
+            clickCurrectSelect(e){
+//                alert(1)
+//                console.log(e.currentTarget.dataset.key)
+            },
+            remoteSearchMethod(query) {
+                this.search_sort_by[this.currect_select] = query
+//                console.log(this.search_sort_by)
+            },
+            focusCurrectSelect(e){
+//                console.log(e)
+            },
+            delSelectOption(){
+                var vm = this
+                var del_ids = []
+                for (var item of this.multipleSelection){
+                    del_ids.push(item.document_id)
+                }
+                console.log(del_ids)
+                axios.post(this.apihost+this.info_transfer_action.groupdel,{ids:del_ids},axios_config)
+                    .then((res) => {
+                        console.log('groupdel->',res.data)
+                            vm.$notify.success({
+                                title: '成功',
+                                message: '删除成功',
+                                offset: 100,
+                                duration:'2000'
+                            });
+                        vm.$root.eventHub.$emit('refresh_businessinfo',JSON.stringify(vm.search_sort_by))
+//                        if((typeof res.data === 'object' && res.data.statistic.count>=1) || res.data>=1){
+//                            vm.$notify.success({
+//                                title: '成功',
+//                                message: '删除成功',
+//                                offset: 100,
+//                                duration:'2000'
+//                            });
+//                        }
+//                        else{
+//                            vm.$notify.success({
+//                                title: '失败',
+//                                message: '删除失败',
+//                                type:'error',
+//                                offset: 100,
+//                                duration:'2000'
+//                            });
+//
+//                        }
+//                        vm.$root.eventHub.$emit('refresh_businessinfo',JSON.stringify(vm.search_sort_by))
+//                        vm.isloading = false
+                    })
+                    .catch((error) => {
+                        vm.isloading = error
+                    });
+
+            },
+            resetSelect(){
+
+                this.$root.eventHub.$emit('refresh_businessinfo','reset')
             }
+
+
 
         },
     }
@@ -532,5 +714,14 @@
     }
     .table_footer input {
         color black !important
+    }
+    .el-loading-mask{
+        background-color rgba(247, 250, 255, 0.79)
+    }
+    #table_button_bar input{
+        color black !important
+    }
+    .el-pagination__jump input.el-pagination__editor{
+        width 80px !important
     }
 </style>

@@ -336,6 +336,10 @@ class MySQL {
         return $this->get_results($sql, $values);
     }
 
+    public function groupUpdate($sql){
+        return $this->query($sql);
+    }
+
     public function insertTable($table, $data,$ignore_error=false) {
         if (!is_array($data))
             return false;
@@ -519,13 +523,16 @@ class MySQL {
         $this->query($sql);
     }
 
-    public function query($sql, $values = null,$ignore_error=false) {
+    public function query($sql, $values = null,$ignore_error=false ) {
 
         TimeStack::start(TimeStack::TAG_SQL, array('sql'=>$sql, 'values'=>$values));
         try {
             Logger::info('SQL_QUERY', array('sql'=>$sql, 'values'=>$values,'ip'=>$_SERVER['REMOTE_ADDR']));
-            $stmt = $this->dbh->prepare($sql);
-            $stmt->execute($values);
+
+                $stmt = $this->dbh->prepare($sql);
+                $stmt->execute($values);
+
+
             TimeStack::end();
                 return $stmt;
             } catch (Exception $e) {
@@ -534,6 +541,12 @@ class MySQL {
                     throw $e;
             }
         }
+    }
+
+    public function test($sql,$values)
+    {
+        $stmt = $this->dbh->prepare($sql);
+        $stmt->execute($values);
     }
 
     public function get_var($sql, $values = null) {

@@ -912,6 +912,22 @@ class DAO
         return $this->adapter->wrapListResult($result);
     }
 
+    public function groupUpdate($ids,$ids_val=array(),$field){
+//        $data = array(array('id' => 1, 'val' => 2), array('id' => 2, 'val' => 3));
+
+        $update_sql = 'UPDATE '.$this->getTable($this->adapter->table_Prefix().$this->adapter->table()).' SET '.$field.' = CASE id';
+        $values = [];
+        foreach($ids_val as $k => $item) {
+            $update_sql .= " WHEN " . $item['id'] . " THEN " . $item[$field] . " ";
+
+        }
+        $update_sql .= " END WHERE id IN (".$ids.")";
+
+        $db=$this->getDb();
+        return $db->groupUpdate($update_sql);
+
+//        TEST::execute($update_sql, $params);//此处会调用bindParam绑定参数
+    }
     //  两表关联查询
     public function relationRead($params,$fields,$col)
     {
