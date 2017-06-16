@@ -142,10 +142,14 @@
             },
             getSiteCfg(){
                 var vm = this
-                axios.post(this.report_api+'getbasesiteconfig',{rules:1},axios_config)
+                axios.post(this.report_api+'getsitebaseconfig',{rules:1},axios_config)
                     .then((res) => {
+                        console.log(res.data)
                         let analysis_data = dbResponseAnalysis2WidgetData(res.data)
+                        console.log(analysis_data.widgetdata)
+
                         if(analysis_data.code+'' === '0'){
+
                             var siteinfo_content = analysis_data.widgetdata[0]
                             vm.siteinfo = {
                                 title:'站点配置信息',

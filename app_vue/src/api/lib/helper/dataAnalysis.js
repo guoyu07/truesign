@@ -96,7 +96,7 @@ export function dbResponseAnalysis2WidgetData(dbResponse) {
                            widgetData_item_attr.label = dbResponse.rules[rulekey].title
                            widgetData_item_attr.type = widget_type
                            widgetData_item_attr.issearch = dbResponse.rules[rulekey].issearch
-                           widgetData_item_attr.regex = dbResponse.rules[rulekey].regex
+                           widgetData_item_attr.regex = dbResponse.rules[rulekey].regex===false?false:eval(dbResponse.rules[rulekey].regex)
                            widgetData_item_attr.modifiable = dbResponse.rules[rulekey].modifiable
                            widgetData_item_attr.access = true
 

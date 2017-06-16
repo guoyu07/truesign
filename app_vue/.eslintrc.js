@@ -48,7 +48,8 @@ module.exports = {
         'new-cap':0,
         'func-call-spacing':0,
         'no-unexpected-multiline':0,
-        'eol-last':0
+        'eol-last':0,
+        'no-eval': 0
 
     },
     env: {

@@ -1,21 +1,21 @@
 <template>
-  <div class="top_router_view"  >
+    <div class="top_router_view"  >
         <div style="text-align: center;color: white">
             <h1>{{screenWidth}},{{screenHeight}}</h1>
         </div>
-  </div>
+    </div>
 </template>
 
 <script>
     import { mapGetters,mapActions } from 'vuex'
 
     export default {
-  		data() {
-  			return {
+        data() {
+            return {
                 screenWidth: document.body.clientWidth,   // 这里是给到了一个默认值 （这个很重要）
                 screenHeight: document.body.clientHeight,  // 这里是给到了一个默认值 （这个很重要）
-  			}
-  		},
+            }
+        },
         methods:{
             ...mapActions([
                 'updateWebSite',
@@ -79,7 +79,7 @@
                 }
             }
         },
-  	}
+    }
 </script>
 
 <style lang="stylus" rel="stylesheet/stylus">

@@ -7,7 +7,7 @@ use Truesign\Adapter\Base\DbLibraryAdapter;
 use Royal\Data\Field;
 
 
-class envAdapter extends DbLibraryAdapter
+class businessLevelAdapter extends DbLibraryAdapter
 {
     public function database()
     {
@@ -27,23 +27,25 @@ class envAdapter extends DbLibraryAdapter
 
     public function table()
     {
-        return 'env';
+        return 'business_level';
 
     }
 
     public function tableDesc()
     {
-        return '项目系统运行环境';
+        return '商户/公司/客户 级别表';
     }
+
 
     public function tableInit()
     {
         return Field::start()
             ->def('document_id')->map('id')->int()->desc('id')->modifiable(false)
-            ->def('server_env')->map('server_env')->varchar(300)->desc('服务器运行环境')->modifiable(false)
-            ->def('server_ip')->map('server_ip')->varchar(100)->desc('服务器IP')->modifiable(false) //1->非认证订阅号;2->非认证服务号;3->认证订阅号;4->认证服务号
-            ->def('platform_version')->map('platform_version')->varchar(100)->desc('平台版本')->modifiable(false) //1->非认证订阅号;2->非认证服务号;3->认证订阅号;4->认证服务号
-            ->def('server_help')->map('server_help')->text()->desc('服务器配置与项目安装说明')->modifiable(false) //1->非认证订阅号;2->非认证服务号;3->认证订阅号;4->认证服务号
+            ->def('level_name')->map('level_name')->varchar(100)->desc('级别名称')->issearch(true)
+            ->def('hide_call_num')->map('hide_call_num')->int()->desc('隐号通话数量')->issearch(true)
+            ->def('sms_msg_num')->map('sms_msg_num')->int()->desc('短信数量')->issearch(true)
+            ->def('theme_ids')->map('theme_ids')->text()->desc('模板设定')
+            ->def('level_node_text')->map('level_node_text')->text()->desc('级别描述')
             ->end();
     }
 
@@ -61,6 +63,6 @@ class envAdapter extends DbLibraryAdapter
 
     }
     static function show(){
-        prin('showme');
+        print('showme');
     }
 }

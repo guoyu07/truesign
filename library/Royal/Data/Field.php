@@ -67,6 +67,29 @@ class Field {
         $this->_rule[$this->_index]->regex($regex);
         return $this;
     }
+    /**
+     * @return ParamRule
+     */
+    public function isPhone() {
+        $this->_rule[$this->_index]->isPhone();
+        return $this;
+    }
+
+    public function isEmail()
+    {
+        $this->_rule[$this->_index]->isEmail();
+        return $this;
+    }
+    public function isMoney()
+    {
+        $this->_rule[$this->_index]->isMoney();
+        return $this;
+    }
+    public function isDayTime()
+    {
+        $this->_rule[$this->_index]->isDayTime();
+        return $this;
+    }
     public function key() {
         $fields = func_get_args();
         array_unshift($fields, $this->_index);

@@ -207,3 +207,26 @@ input::-webkit-input-placeholder{
 
 }
 
+.rotate_self{
+    animation-delay: 0s;
+    animation-direction: normal;
+    animation-duration: 2s;
+    animation-fill-mode: none;
+    animation-iteration-count: infinite;
+    animation-name: spin;
+    animation-timing-function: linear;
+    font-smoothing: antialiased;
+}
+.rotate_aw{
+animation:rotatealways 5s   infinite
+}
+@keyframes rotatealways{
+    0%{
+        transform:rotate(0deg)
+
+    }
+    100%{
+        transform:rotate(360deg)
+    }
+}
+

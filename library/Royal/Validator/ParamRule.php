@@ -131,7 +131,33 @@ class ParamRule {
      * @return ParamRule
      */
     public function isPhone() {
+//        $this->regex = '/^(\+?86)?1[3578]\d{9}$/';
+//        $this->regex = '/(^(0{0,1}\d{3,}\-){0,1}\d{7,8}$)|(^[1][3,5,8,4,7][0-9]{9}$)/';
+        $this->regex = '/(^(0[0-9]{2,3}\-)?([2-9][0-9]{6,7})+(\-[0-9]{1,4})?$)|(^0?[1][3578][0-9]{9}$)/';
+        return $this;
+    }
+    /**
+     * @return ParamRule
+     */
+    public function isEmail() {
+        $this->regex = '/^[A-Za-z0-9\u4e00-\u9fa5]+@[a-zA-Z0-9_-]+(\.[a-zA-Z0-9_-]+)+$/';
+        return $this;
+    }
+
+    public function isNum(){
         $this->regex = '/^(\+?86)?1[3578]\d{9}$/';
+        return $this;
+    }
+
+    public function isMoney()
+    {
+        $this->regex = '/(^[1-9]([0-9]+)?(\.[0-9]{1,2})?$)|(^(0){1}$)|(^[0-9]\.[0-9]([0-9])?$)/';
+        return $this;
+    }
+
+    public function isDayTime()
+    {
+        $this->regex = '/^[1-9]\d{3}-(0[1-9]|1[0-2])-(0[1-9]|[1-2][0-9]|3[0-1])\s+(20|21|22|23|[0-1]\d):[0-5]\d:[0-5]\d$/';
         return $this;
     }
 
@@ -144,13 +170,7 @@ class ParamRule {
         return $this;
     }
 
-    /**
-     * @return ParamRule
-     */
-    public function isEmail() {
-        $this->regex = '/.+@[^@]+\.[^@]*[^\.]$/';
-        return $this;
-    }
+
 
     /**
      * @param $defaultValue

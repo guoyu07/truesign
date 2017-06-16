@@ -4,23 +4,7 @@
             <transition name="fade-left" >
             <el-button type="danger" v-if="all_data_count && multipleSelection.length>0"   @click="delSelectOption">删除选择项</el-button>
             </transition>
-            <!--<el-select class="table_select_bar"  v-for="(item,index) in table_field" :key="item" v-if="item.issearch"-->
-            <!--:data-key="index"-->
-            <!--v-model="value9"-->
-            <!--multiple-->
-            <!--filterable-->
-            <!--remote-->
-            <!--:placeholder="'请输入'+item.title"-->
-            <!--:remote-method="remoteSearchMethod"-->
-            <!--:loading="loading">-->
-            <!--<el-option-->
-            <!--v-for="item in options4"-->
-            <!--:key="item.value"-->
-            <!--:label="item.label"-->
-            <!--:value="item.value">-->
-            <!--</el-option>-->
-            <!--</el-select>-->
-            <div style="display: inline-block"  >
+            <div style="display: inline-block">
 
 
                 <el-input   v-focus:currect_select="currect_select" :name="index" :data-key="index" style="display: inline-block;width: 180px;" v-for="(item,index) in table_field" :key="item"
@@ -419,8 +403,8 @@
                                     this.search_sort_by[index] = (this.search_sort_by[index]+'').trim()
                         }
                     }
-                    this.$root.eventHub.$emit('refresh_businessinfo',JSON.stringify(this.search_sort_by))
-//                    console.log('this.currect_select',this.currect_select)
+                    this.refresh_table_data()
+                    console.log('search_sort_by->changed',val,oldVal)
                 },
                 deep: true
             },
@@ -531,7 +515,7 @@
                 var vm = this
                 axios.post(this.apihost+this.info_transfer_action.add,{rules:1},axios_config)
                     .then((res) => {
-                        console.log(res.data)
+//                        console.log(res.data)
                         let  analysis_data = dbResponseAnalysis2WidgetData(res.data)
                         if(analysis_data.code+'' === '0'){
                             var content = analysis_data.widgetdata[0]
@@ -595,7 +579,7 @@
                 vm.isloading = true
                 axios.post(this.apihost+this.info_transfer_action.update,update_params,axios_config)
                     .then((res) => {
-                        console.log('update_detail->',res.data)
+//                        console.log('update_detail->',res.data)
                         if((typeof res.data === 'object' && res.data.statistic.count>=1) || res.data>=1){
                             vm.$notify.success({
                                 title: '成功',
@@ -614,7 +598,7 @@
                             });
 
                         }
-                        vm.$root.eventHub.$emit('refresh_businessinfo',JSON.stringify(vm.search_sort_by))
+                        vm.refresh_table_data()
                         vm.isloading = false
                     })
                     .catch((error) => {
@@ -623,7 +607,7 @@
             },
             handleSizeChange(val) {
 
-                console.log(`每页 ${val} 条`);
+//                console.log(`每页 ${val} 条`);
                 this.search_sort_by.page_size = val
                 this.handleCurrentChange(1)
                 $('li.number').eq(0).click()
@@ -631,11 +615,10 @@
             handleCurrentChange(val) {
                 console.log(`当前页: ${val}`);
                 this.search_sort_by.page = val
-                this.refresh_table_data()
             },
             refresh_table_data(){
                 var vm = this
-                this.$root.eventHub.$emit('refresh_businessinfo',JSON.stringify(vm.search_sort_by))
+                this.$root.eventHub.$emit('refresh_table',JSON.stringify(vm.search_sort_by))
             },
             clickCurrectSelect(e){
 //                alert(1)
@@ -657,14 +640,14 @@
                 console.log(del_ids)
                 axios.post(this.apihost+this.info_transfer_action.groupdel,{ids:del_ids},axios_config)
                     .then((res) => {
-                        console.log('groupdel->',res.data)
+//                        console.log('groupdel->',res.data)
                             vm.$notify.success({
                                 title: '成功',
                                 message: '删除成功',
                                 offset: 100,
                                 duration:'2000'
                             });
-                        vm.$root.eventHub.$emit('refresh_businessinfo',JSON.stringify(vm.search_sort_by))
+                        vm.refresh_table_data()
 //                        if((typeof res.data === 'object' && res.data.statistic.count>=1) || res.data>=1){
 //                            vm.$notify.success({
 //                                title: '成功',
@@ -692,11 +675,17 @@
 
             },
             resetSelect(){
+                this.handleCurrentChange(1)
+                $('li.number').eq(0).click()
+                this.$root.eventHub.$emit('refresh_table','resetselect')
 
-                this.$root.eventHub.$emit('refresh_businessinfo','reset')
             }
 
 
+
+        },
+        beforeDestroy(){
+            this.$root.eventHub.$off('refresh_table')
 
         },
     }
