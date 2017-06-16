@@ -398,18 +398,21 @@
             search_sort_by: {
                 handler: function (val, oldVal) {
 //                    console.log('search_sort_by->change')
-                    for (var index in this.search_sort_by){
-                        if(typeof this.search_sort_by[index] ==='string'){
-                                    this.search_sort_by[index] = (this.search_sort_by[index]+'').trim()
-                        }
-                    }
-                    this.refresh_table_data()
-                    console.log('search_sort_by->changed',val,oldVal)
+//                    for (var index in this.search_sort_by){
+//                        if(typeof this.search_sort_by[index] ==='string'){
+//                                    this.search_sort_by[index] = (this.search_sort_by[index]+'').trim()
+//                        }
+//                    }
+//                    this.refresh_table_data()
+                    console.log('search_sort_by->changed')
+                    console.log(val,oldVal)
                 },
                 deep: true
             },
-            multipleSelection(val){
+            multipleSelection(val,oldVal){
                 console.log('multipleSelection change')
+                console.log(val.length,oldVal.length)
+
 
             }
         },
