@@ -67,8 +67,9 @@ class BusinessCtrlController extends AppBaseController {
         }
 
         foreach ($search_sort_by as $k=>$v){
-            if(empty($v)){
-                unset($search_sort_by);
+
+            if(empty($v) || $k=='vue_search_way'){
+                unset($search_sort_by[$k]);
             }
             else{
                 self::setParam($k,'prefix',$v,$search_param);
@@ -173,6 +174,7 @@ class BusinessCtrlController extends AppBaseController {
     public function getBusinessInfoLevelAction()
     {
         $params = $this->getParams(array(),array('rules','document_id','search_sort_by'));
+
         if(!empty($params['search_sort_by'])){
             $search_sort_by = json_decode($params['search_sort_by'],true);
             $page_param['page_size'] = $search_sort_by['page_size'];
@@ -201,7 +203,6 @@ class BusinessCtrlController extends AppBaseController {
             }
 
         }
-
         $doAdapter = new businessLevelAdapter();
         $table_access = $doAdapter->getTableAccess();
         $rules = $doAdapter->paramRules();

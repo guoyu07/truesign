@@ -7,8 +7,15 @@
                     <!--<div class="ctrl_btn" style="position: absolute;right:10px;margin-top: -4px">-->
                         <!--<el-button type="primary" @click="add_business_info">新增客户</el-button>-->
                     <!--</div>-->
-                        <table_model v-loading="isloading" :currect_select="table_currect_select"
-                                     :element-loading-text="loading_text" :search_sort_by="table_search_sort_by" :all_data_count="all_data_count" :table_data="table_model_data" :table_field="table_model_field" :info_transfer_action="info_transfer_action">
+                    <!--:search_sort_by="table_search_sort_by"-->
+                        <table_model v-loading="isloading"
+                                     :currect_select="table_currect_select"
+                                     :element-loading-text="loading_text"
+                                     :search_sort_by="table_search_sort_by"
+                                     :all_data_count="all_data_count"
+                                     :table_data="table_model_data"
+                                     :table_field="table_model_field"
+                                     :info_transfer_action="info_transfer_action">
 
                         </table_model>
 
@@ -77,8 +84,22 @@
 
             }
         },
-        props: {
+        watch:{
+            table_search_sort_by: {
+                handler: function (val, oldVal) {
+                    if(this.defaultTab === '客户数据'){
+                        this.getBusinessInfo(JSON.stringify(this.table_search_sort_by))
+                    }
+                    else if(this.defaultTab === '级别套餐'){
+                        this.getBusinessInfoLevel(JSON.stringify(this.table_search_sort_by))
+                    }
 
+
+                },
+                deep: true
+            },
+        },
+        props: {
         },
         components: {
             page_model,
@@ -147,10 +168,10 @@
                 this.table_model_data = []
                 this.table_model_field =  {}
                 this.all_data_count = 0
-//                this.table_search_sort_by = {
-//                    page_size:20,
-//                        page:1,
-//                }
+                this.table_search_sort_by = {
+                    page_size:20,
+                        page:1,
+                }
                     if(e.$el.dataset.name === '客户数据'){
                         vm.defaultTab = '客户数据'
                         vm.getBusinessInfo(JSON.stringify(this.table_search_sort_by))
@@ -164,10 +185,13 @@
 
             },
             getBusinessInfo(search_sort_by){
+
                 var vm = this
                 var search_param = {}
                 if(search_sort_by){
-                    search_param.search_sort_by = search_sort_by
+                    search_sort_by = JSON.parse(search_sort_by)
+
+                    search_param.search_sort_by = JSON.stringify(search_sort_by)
                 }
                 search_param.rules = 1
                 axios.post(this.report_api+'Getbusinessinfo',search_param,axios_config)
@@ -181,11 +205,11 @@
                                 if(analysis_data.rules[index].issearch){
 //                                      进行响应式set key
 //                                    console.log(vm.table_search_sort_by.hasOwnProperty(analysis_data.rules[index].name))
-//                                    if(!vm.table_search_sort_by.hasOwnProperty(analysis_data.rules[index].name)){
-//
-//                                        vm.$set(vm.table_search_sort_by,analysis_data.rules[index].name,'')
-//
-//                                    }
+                                    if(!vm.table_search_sort_by.hasOwnProperty(analysis_data.rules[index].name)){
+
+                                        vm.$set(vm.table_search_sort_by,analysis_data.rules[index].name,'')
+
+                                    }
                                 }
                             }
                             vm.info_transfer_action = {

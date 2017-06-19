@@ -647,12 +647,12 @@
                 this.show_content_footer = !this.show_content_footer
             },
             close_page_model(){
+                console.log('emit->close_page_model')
                 this.$root.eventHub.$emit('close_page_model',1)
             }
         },
         beforeDestroy(){
-            this.$root.eventHub.$off('close_page_model')
-            this.$root.eventHub.$off('page_model_update_response_done')
+//            this.$root.eventHub.$off('page_model_update_response_done')
 
         },
 

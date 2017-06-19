@@ -78,13 +78,13 @@
                 </el-table-column>
             </el-table>
                 <div class="table_footer" style="overflow: hidden;margin-top: 2px">
-                    <el-pagination style="float: right;box-shadow:  0 0 15px black;background-color:#ffffff"
 
+                    <el-pagination style="float: right;box-shadow:  0 0 15px black;background-color:#ffffff"
+                                   :current-page="parseInt(search_sort_by.page)"
+                                   :page-size="parseInt(search_sort_by.page_size)"
                                    @size-change="handleSizeChange"
                                    @current-change="handleCurrentChange"
-                                   :current-page="currentPage"
                                    :page-sizes="[20, 35, 55, 70]"
-                                   :page-size="search_sort_by.page_size"
                                    layout="total, sizes, prev, pager, next, jumper"
                                    :total="all_data_count">
                     </el-pagination>
@@ -309,7 +309,6 @@
         },
                 show_page_model_ctrl_by_table:true,
                 detail_page_model_data:{},
-                currentPage: 1,
                 isloading:false,
                 loading_text:'数据加载中',
                 currect_select:'',
@@ -336,6 +335,8 @@
                     "Washington", "West Virginia", "Wisconsin",
                     "Wyoming"],
                 focused: false,
+                ready_refresh:0,
+
 
             }
 
@@ -348,7 +349,9 @@
                 type:Object,
                 default:function() {
                     return {
-
+                        vue_search_way:'self',
+                        page:1,
+                        page_size:20,
                     }
                 }
             },
@@ -395,20 +398,18 @@
 
         },
         watch:{
-            search_sort_by: {
-                handler: function (val, oldVal) {
-//                    console.log('search_sort_by->change')
-//                    for (var index in this.search_sort_by){
-//                        if(typeof this.search_sort_by[index] ==='string'){
-//                                    this.search_sort_by[index] = (this.search_sort_by[index]+'').trim()
-//                        }
+//            search_sort_by: {
+//                handler: function (val, oldVal) {
+//
+//                    console.log('search_sort_by->changed')
+//                    console.log(val.vue_search_way)
+//                    if(val.vue_search_way ===  'self'){
+//                        this.refresh_table_data()
 //                    }
-//                    this.refresh_table_data()
-                    console.log('search_sort_by->changed')
-                    console.log(val,oldVal)
-                },
-                deep: true
-            },
+//
+//                },
+//                deep: true
+//            },
             multipleSelection(val,oldVal){
                 console.log('multipleSelection change')
                 console.log(val.length,oldVal.length)
@@ -419,7 +420,9 @@
         computed: {
             ...mapGetters([
                 'wechat_marketing_store',
-            ])
+            ]),
+
+
         },
         created(){
             var vm = this
@@ -431,6 +434,7 @@
                 vm.refresh_table_data()
             })
             this.$root.eventHub.$on('close_page_model',() => {
+                console.log('on->close_page_model')
                 this.show_page_model_ctrl_by_table = false
 //                vm.detail_page_model_data = {}
             })
@@ -469,8 +473,8 @@
                 var width2height = data.split(",")
                 vm.screenWidth = parseInt(width2height[0])
                 vm.screenHeight = parseInt(width2height[1])
-
             })
+
         },
         components: {
             page_model,
@@ -610,18 +614,34 @@
             },
             handleSizeChange(val) {
 
-//                console.log(`每页 ${val} 条`);
+                console.log(`每页 ${val} 条`);
+                this.search_sort_by.vue_search_way = 'self'
                 this.search_sort_by.page_size = val
                 this.handleCurrentChange(1)
-                $('li.number').eq(0).click()
+//                $('li.number').eq(0).click()
+//                this.search_sort_by.page = 1
+
+
             },
             handleCurrentChange(val) {
-                console.log(`当前页: ${val}`);
+//                console.log(`当前页: ${val}`);
+                this.search_sort_by.vue_search_way = 'self'
                 this.search_sort_by.page = val
+////                this.refresh_table_data()
+//                this.tmp_search_sort_by.page = 1
+//                this.refresh_table_data()
+
             },
-            refresh_table_data(){
+            refresh_table_data(add_note){
                 var vm = this
-                this.$root.eventHub.$emit('refresh_table',JSON.stringify(vm.search_sort_by))
+                console.log('refresh_table_data')
+                if(add_note === 'resetselect'){
+                    this.$root.eventHub.$emit('refresh_table','resetselect')
+                }
+                else{
+                    this.$root.eventHub.$emit('refresh_table',JSON.stringify(vm.search_sort_by))
+                }
+
             },
             clickCurrectSelect(e){
 //                alert(1)
@@ -679,8 +699,9 @@
             },
             resetSelect(){
                 this.handleCurrentChange(1)
-                $('li.number').eq(0).click()
-                this.$root.eventHub.$emit('refresh_table','resetselect')
+//                $('li.number').eq(0).click()
+//                this.$root.eventHub.$emit('refresh_table','resetselect')
+                this.refresh_table_data('resetselect')
 
             }
 
