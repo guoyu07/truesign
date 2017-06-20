@@ -13,11 +13,11 @@
                 <div class="close_bar" @click="close_page_model" >
 
                 </div>
-                <transition name="fade-right">
+                <transition name="fade-right" style="background-color: rgba(220,220,220,0.65)">
                     <div class="page_content" v-if="show_content_footer" :style="page_content_design">
                         <ol>
                             <li v-for="(item,index) in page_data.content">
-                                <label :style=" {borderBottom:page_data.content[index].access?'1px solid #f0f0f0':'none',backgroundColor:page_data.content[index].access?'rgba(150, 150, 150, 0.49)':'',verticalAlign: 'top'}">{{page_data.content[index].label}}</label>
+                                <label :style=" {borderBottom:page_data.content[index].access?'1px solid rgba(255,255,255,0.41)':'none',backgroundColor:page_data.content[index].access?'rgba(220,220,220,0.65)':'',verticalAlign: 'top'}">{{page_data.content[index].label}}</label>
                                 <div v-if="page_data.content[index].type ==='upfile'" class="upfile">
                                     <input v-if="page_data.content[index].type === 'upfile'" @click="upfile_click" :data-index="index" style="border: none;box-shadow: 0 0 3px #9c9c9c;border-radius: 5px" type="button" v-model="page_data.content[index].value" :readonly="!page_data.content[index].access" />
                                     <input v-if="page_data.content[index].type === 'upfile'" :data-fileindex="index" v-on:change="upfile_change"  style="border: none;box-shadow: 0 0 3px #9c9c9c;border-radius: 5px;display: none" type="file"  />
@@ -31,8 +31,8 @@
 
                                     />
                                 </div>
-                                <div v-else-if="page_data.content[index].type ==='upimg'" class="upimg">
-                                    <el-upload
+                                <div v-else-if="page_data.content[index].type ==='upimg'" class="upimg" style="height: 120px;">
+                                    <el-upload style="height: 120px"
 
                                             class="avatar-uploader"
                                             :data="upload_params.up_param"
@@ -101,8 +101,8 @@
                                        v-model="page_data.content[index].value"
                                        :readonly="!page_data.content[index].access  || page_data.content[index].key === 'document_id' || !page_data.content[index].modifiable"
                                        :style=" {
-                                    borderBottom:page_data.content[index].access?'1px solid #f0f0f0':'none',
-                                    backgroundColor:(page_data.content[index].access && page_data.content[index].modifiable)?'rgba(150, 150, 150, 0.49)':''
+                                    borderBottom:page_data.content[index].access?'1px solid rgba(255,255,255,0.41)':'none',
+                                    backgroundColor:(page_data.content[index].access && page_data.content[index].modifiable)?'rgba(150, 150, 150, 0.19)':''
                                     }"
                                        :name="page_data.content[index].label"
                                        type="text"
@@ -113,10 +113,10 @@
                                 <!--<input name="email" v-model="page_data.content[index].value" v-validate.initial="'required|email'" :class="{'input': true, 'is-danger': errors.has('email') }" type="text" placeholder="Email">-->
 
 
-                                <div style="width: auto;min-width: 180px;vertical-align: top;display: inline-block;padding-left: 10px;height: 32px;line-height: 32px" >
+                                <div style="" >
                                     <!--<input   @click='change_access($event)' :data-index="index" type="button" v-model="page_data.content[index].access">-->
 
-                                    <span style="display: inline-block;height: 32px" v-show="errors.has(page_data.content[index].label)" class="help is-danger">
+                                    <span style="" v-show="errors.has(page_data.content[index].label)" class="help is-danger">
                                     <i style=" color:rgba(205,52,25,0.91);margin-right: 10px" v-show="errors.has(page_data.content[index].label)" class="fa  fa-refresh rotate_aw"></i>{{ errors.first(page_data.content[index].label) }}</span>
                                 </div>
 
@@ -442,7 +442,7 @@
 
         methods: {
             changetime(data){
-                console.log('time',data,Date.parse(data)/1000)
+//                console.log('time',data,Date.parse(data)/1000)
 
             },
             upload_this_index(e,data){
@@ -453,10 +453,10 @@
                 this.page_data.content[target_index].access = !this.page_data.content[target_index].access
             },
             handleRemove(file, fileList) {
-                console.log(file, fileList);
+//                console.log(file, fileList);
             },
             handlePreview(file) {
-                console.log(file);
+//                console.log(file);
             },
             upfile_click(e){
                 var target_index = e.currentTarget.dataset.index
@@ -489,10 +489,10 @@
                 var formData = new FormData();
                 xhr.onload = function () {
                     var responseText = JSON.parse(xhr.responseText)
-                    console.log(responseText)
+//                    console.log(responseText)
                     var currect_data_index = responseText.file_path.match(/_\._\._(.*?)_\._\._/)[1]
                     vm.page_data.content[currect_data_index].value = responseText.file_path
-                    console.log(vm.page_data.content[currect_data_index].value)
+//                    console.log(vm.page_data.content[currect_data_index].value)
 
                 }
                 // 添加参数
@@ -533,7 +533,7 @@
                     var pre_up2oss_params = JSON.parse(result)
                     var currect_uri = pre_up2oss_params.uri
                     var currect_param = pre_up2oss_params.param
-                    console.log(currect_uri)
+//                    console.log(currect_uri)
                     vm.upload_params.up_action = currect_uri
                     vm.upload_params.up_param = currect_param
                     vm.upload_params.up_filename = 'file'
@@ -597,15 +597,13 @@
             final_update_data(){
 
                 this.build_page_data_to_timestamp()
-                console.log('this.page_data.content->',this.page_data.content)
                 var formdata = resolveWidgetData2FormData(this.page_data.content)
-                console.log('formdata->',formdata)
                 var vm = this
                 this.$validator.validateAll().then(() => {
                     vm.authing = true
                     axios.post(this.wechat_marketing_store.apihost+this.final_update_action,formdata,axios_config)
                         .then((res) => {
-                            console.log('final-update->',res.data)
+//                            console.log('final-update->',res.data)
                             if((typeof res.data === 'object' && res.data.statistic.count>=1) || res.data>=1){
                                 vm.$notify.success({
                                     title: '成功',
@@ -647,7 +645,6 @@
                 this.show_content_footer = !this.show_content_footer
             },
             close_page_model(){
-                console.log('emit->close_page_model')
                 this.$root.eventHub.$emit('close_page_model',1)
             }
         },
@@ -676,7 +673,6 @@
         max-width: 50%;
         width: 100%;
         min-width: 300px;
-        margin-top 5px
     }
     .page_model .page_content li .timepicker div{
         width: 300px;
@@ -691,8 +687,8 @@
     }
     .page_model .page_content li  label{
         background-color: transparent;
-        height: 35px;
-        line-height: 35px;
+        height: 22px;
+        line-height: 22px;
         color: black;
         width: 10%;
         min-width: 280px;
@@ -711,8 +707,8 @@
     .page_model .page_content li input{
         color:#727272 !important;
         background-color: transparent;
-        height: 35px;
-        line-height: 35px;
+        height: 22px;
+        line-height: 22px;
         max-width: 65%;
         width: 60%;
         min-width: 300px;
@@ -727,6 +723,13 @@
         -webkit-font-smoothing: antialiased;
         -moz-osx-font-smoothing: grayscale;
         outline: 0;
+
+    }
+    .page_model .page_content li div span{
+        display: inline-block;height: 22px
+    }
+    .page_model .page_content li div{
+        width: auto;min-width: 180px;vertical-align: top;display: inline-block;padding-left: 10px;height: 22px;line-height: 22px
 
     }
     .now_data_show{
@@ -989,6 +992,7 @@
         border-radius: 6px;
         cursor: pointer;
         overflow: hidden;
+        height 120px !important
     }
     .avatar-uploader .el-upload:hover {
         border-color: #20a0ff;

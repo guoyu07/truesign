@@ -121,6 +121,11 @@ const w_m_b_fun_ctrl = resolve => require(['../components/project/wechat_marketi
 const w_m_b_weimob_ctrl = resolve => require(['../components/project/wechat_marketing/pagebackend/weimob_ctrl.vue'], resolve)
 
 
+const wechat_marketing_fun = resolve => require(['../components/project/wechat_marketing/fun/fun.vue'], resolve)
+const wechat_marketing_fun_aboutus = resolve => require(['../components/project/wechat_marketing/fun/aboutus.vue'], resolve)
+const wechat_marketing_template = resolve => require(['../components/project/wechat_marketing/template/template.vue'], resolve)
+
+
 const routes = [
     // {
     //     name: '天津世纪通泰科技有限公司',
@@ -748,6 +753,32 @@ const routes = [
             },
 
         ]
+    },
+    {
+        name: 'wechat_marketing_fun',
+        path: '/wechat_marketing_fun',
+        meta: {
+            title: 'wechat_marketing_fun'
+        },
+        component: wechat_marketing_fun,
+        children:[
+            {
+                name: 'wechat_marketing_fun_aboutus',
+                path: 'wechat_marketing_fun_aboutus',
+                meta: {
+                    title: 'wechat_marketing_fun_aboutus'
+                },
+                component: wechat_marketing_fun_aboutus
+            },
+        ]
+    },
+    {
+        name: 'wechat_marketing_template',
+        path: '/wechat_marketing_template',
+        meta: {
+            title: 'wechat_marketing_template'
+        },
+        component: wechat_marketing_template
     },
     {
         name: 'phone_model',

@@ -3,10 +3,11 @@ import Vue from 'vue'
 import router from './app_config/router-init'
 import store from './store'
 import App from './App.vue'
-
+import MintUI from 'mint-ui'
+import 'mint-ui/lib/style.css'
+Vue.use(MintUI)
 import ElementUI from 'element-ui'
 Vue.use(ElementUI)
-
 // import VueValidator from 'vue-validator'
 // Vue.use(VueValidator)
 import VeeValidate, { Validator } from 'vee-validate';
@@ -48,12 +49,20 @@ Vue.directive('focus', {
 
     }
 })
-new Vue({
-  router,
-  store,
-  data: {
-    eventHub: new Vue()
-  },
-    // el: '#app',
-  render: h => h(App)
+// new Vue({
+//   router,
+//   store,
+//   data: {
+//     eventHub: new Vue()
+//   },
+//     // el: '#app',
+//   render: h => h(App)
+// }).$mount('#app')
+var vue_init = new Vue({
+      router,
+      store,
+      data: {
+        eventHub: new Vue()
+      },
+    render: h => h(App)
 }).$mount('#app')

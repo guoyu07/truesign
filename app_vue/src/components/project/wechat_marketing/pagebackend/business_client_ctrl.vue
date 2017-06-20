@@ -15,14 +15,18 @@
                                      :all_data_count="all_data_count"
                                      :table_data="table_model_data"
                                      :table_field="table_model_field"
-                                     :info_transfer_action="info_transfer_action">
+                                     :info_transfer_action="info_transfer_action"
+                                     :new_add_info="'新增客户'"
+                        >
 
                         </table_model>
 
                 </div>
-                <div style="width: 100%;height: auto;min-height: 600px;text-align: left;" v-else="item.name==='级别套餐'" key="级别套餐">
+                <div style="width: 100%;height: auto;min-height: 600px;text-align: left;" v-if="item.name==='级别套餐'" key="级别套餐">
                         <table_model v-loading="isloading" :currect_select="table_currect_select"
-                                     :element-loading-text="loading_text" :search_sort_by="table_search_sort_by" :all_data_count="all_data_count" :table_data="table_model_data" :table_field="table_model_field" :info_transfer_action="info_transfer_action">
+                                     :element-loading-text="loading_text" :search_sort_by="table_search_sort_by" :all_data_count="all_data_count" :table_data="table_model_data" :table_field="table_model_field"
+                                     :new_add_info="'新增套餐'"
+                                     :info_transfer_action="info_transfer_action">
 
                         </table_model>
                 </div>
@@ -120,7 +124,7 @@
 
             this.getBusinessInfo(JSON.stringify(this.table_search_sort_by))
             this.$root.eventHub.$on('refresh_table',function (data) {
-                console.log('on->refresh_table',data)
+//                console.log('on->refresh_table',data)
                 if(data === 'resetselect'){
                     vm.table_search_sort_by = {
                         page_size:20,

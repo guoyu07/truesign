@@ -1,5 +1,5 @@
 <template>
-    <div style="overflow: hidden">
+    <div style="overflow: auto">
         <div id="table_button_bar" style="text-align: left">
             <transition name="fade-left" >
             <el-button type="danger" v-if="all_data_count && multipleSelection.length>0"   @click="delSelectOption">删除选择项</el-button>
@@ -19,7 +19,7 @@
                 <el-button @click="resetSelect" size="small" type="success">重置检索</el-button>
             </div>
 
-            <el-button type="primary" style="position: absolute;right: 15px"  @click="add_business_info">新增客户</el-button>
+            <el-button v-if="new_add_info" type="primary" style="position: absolute;right: 15px"  @click="add_business_info" >{{ new_add_info }}</el-button>
 
         </div>
         <transition name="el-zoom-in-top" >
@@ -103,12 +103,12 @@
 
             </div>
         </transition>
-        <transition name="fade-up">
+        <transition name="fade-up" style="">
             <page_model  :element-loading-text="loading_text"  v-if="show_page_model_ctrl_by_table"
             :final_update_action="info_transfer_action.update"
             :final_update_btn_desc="'提交修改'"
             :page_data="detail_page_model_data"
-            style="position:absolute;;z-index:100;width:99%;text-align: center;bottom: 10px; " >
+            style="position:absolute;z-index:100;width:99%;text-align: center;bottom: 10px;height:auto;max-height: 600px;overflow: hidden" >
 
             </page_model>
 
@@ -337,14 +337,16 @@
                 focused: false,
                 ready_refresh:0,
 
-
             }
 
 
         },
         props: {
             test_props:'123',
-
+            new_add_info:{
+                type:String,
+                default:''
+            },
             search_sort_by:{
                 type:Object,
                 default:function() {
@@ -527,7 +529,7 @@
                         if(analysis_data.code+'' === '0'){
                             var content = analysis_data.widgetdata[0]
                             vm.detail_page_model_data = {
-                                title:'新增客户信息',
+                                title:vm.new_add_info+'信息',
                                 content:content
                             }
                             vm.show_page_model_ctrl_by_table = true
@@ -634,7 +636,7 @@
             },
             refresh_table_data(add_note){
                 var vm = this
-                console.log('refresh_table_data')
+//                console.log('refresh_table_data')
                 if(add_note === 'resetselect'){
                     this.$root.eventHub.$emit('refresh_table','resetselect')
                 }
