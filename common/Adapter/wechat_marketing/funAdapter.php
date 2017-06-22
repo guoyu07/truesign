@@ -7,7 +7,7 @@ use Truesign\Adapter\Base\DbLibraryAdapter;
 use Royal\Data\Field;
 
 
-class weimobContentAdapter extends DbLibraryAdapter
+class funAdapter extends DbLibraryAdapter
 {
     public function database()
     {
@@ -22,37 +22,33 @@ class weimobContentAdapter extends DbLibraryAdapter
     }
     public function tableAccess()
     {
-        return 1;
+        return array('read'=>9,'write'=>9);
     }
 
     public function table()
     {
-        return 'weimob_content';
+        return 'fun';
 
     }
 
     public function tableDesc()
     {
-        return '微信公众号发布内容存储库';
+        return '公众号功能表';
     }
 
     public function tableInit()
     {
         return Field::start()
             ->def('document_id')->map('id')->int()->desc('内容id')
-            ->def('b_id')->map('b_id')->int()->desc('发布人id')
-            ->def('busername')->map('busername')->varchar(300)->desc('发布人名称')
-            ->def('weimo_id')->map('weimo_id')->int()->desc('公众号id')
-            ->def('weimo_name')->map('weimo_name')->varchar(300)->desc('公众号名称')
-            ->def('content_keyword')->map('content_keyword')->varchar(200)->desc('内容关键词')
-            ->def('content_type')->map('content_type')->varchar(200)->desc('内容类型')
-            ->def('cover_img')->map('cover_img')->text()->desc('封面图片')
-            ->def('content')->map('content')->text()->desc('文章内容')
-            ->def('is_awards')->map('is_awards')->int()->desc('是否允许打赏') //0->不可以，1->可以
-            ->def('awards_count')->map('awards_count')->varchar(10)->desc('打赏数')->isMoney()
-            ->def('is_comment')->map('is_comment')->int()->desc('是否允许评论') //0->不可以，1->可以
-            ->def('comment_count')->map('comment_count')->int()->desc('评论数')
+            ->def('fun_keyword')->map('fun_keyword')->varchar(100)->desc('功能关键词')->regex('/^.{0,20}$/')
+            ->def('fun_title')->map('fun_title')->varchar(100)->desc('功能标题')->regex('/^.{0,20}$/')
+            ->def('fun_uri')->map('fun_uri')->varchar(1000)->desc('功能链接')->regex('/^.{0,500}$/')
+            ->def('fun_checked')->map('fun_checked')->int()->desc('处理/查看标志')->modifiable(false)->ableshow(false)
+            ->def('fun_desc')->map('fun_desc')->text()->desc('功能描述')
+            ->def('fun_usage')->map('fun_usage')->int()->desc('功能使用量')->modifiable(false)
+            ->def('fun_adapter')->map('fun_adapter')->int()->desc('功能对应表')->regex('/^.{0,50}$/')
             ->end();
+
     }
 
     public function tableAdd()

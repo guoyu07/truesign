@@ -11,8 +11,9 @@ namespace Truesign\Service\Wechat_marketing_service;
 
 use Royal\Data\DAO;
 use Truesign\Adapter\wechat_marketing\businessAdapter;
+use Truesign\Adapter\wechat_marketing\businessLevelAdapter;
 
-class BusinessService extends BaseService
+class BusinessLevelService extends BaseService
 {
     private $Adapter;
     private $Dao;
@@ -21,7 +22,7 @@ class BusinessService extends BaseService
 
     public function __construct()
     {
-        $this->Adapter = new businessAdapter();
+        $this->Adapter = new businessLevelAdapter();
         $this->Dao = new DAO($this->Adapter);
         $this->tableAccess = $this->Adapter->getTableAccess();
         $this->rules = $this->Adapter->paramRules();
@@ -58,11 +59,10 @@ class BusinessService extends BaseService
      * @for 获取客户信息接口
      *
      */
-    public function Get($params=array(),$search_params=array(),$page_params=array())
+    public function Get($params=array(),$search_params=array(),$page_params=array(),$sorter=array())
     {
 
-
-        $db_resposne = $this->Dao->read($search_params,$page_params);
+        $db_resposne = $this->Dao->read($search_params,$page_params,$sorter);
         $this->filterRules($this->rules,$db_resposne['data'][0],$params['rules']);
         $access_rules = array('tableaccess'=>$this->tableAccess,'rules'=>$this->rules);
         $db_resposne['access_rules'] = $access_rules;

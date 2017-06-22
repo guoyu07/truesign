@@ -1,8 +1,9 @@
 <template>
-    <transition name="el-zoom-in-top" >
-        <div v-if="page_data.title" key="haspagedata" class="page_model" :style="page_design" v-loading="authing"
+    <div>
+        <transition name="el-zoom-in-top" >
+        <div  v-if="page_data.title"  key="haspagedata" class="page_model" :style="page_design" v-loading="authing"
              :element-loading-text="laoding_text">
-            <div v-if="page_type==='list'" style="padding-left: 13%">
+            <div v-if="page_type==='list'" :style="{paddingLeft: page_model_padding_left}">
 
                 <div class="page_title" :style="page_title_design" >
                     <span>{{page_data.title}}</span>
@@ -17,11 +18,11 @@
                     <div class="page_content" v-if="show_content_footer" :style="page_content_design">
                         <ol>
                             <li v-for="(item,index) in page_data.content">
-                                <label :style=" {borderBottom:page_data.content[index].access?'1px solid rgba(255,255,255,0.41)':'none',backgroundColor:page_data.content[index].access?'rgba(220,220,220,0.65)':'',verticalAlign: 'top'}">{{page_data.content[index].label}}</label>
+                                <label class="filelabel" :style=" {borderBottom:page_data.content[index].access?'1px solid rgba(255,255,255,0.41)':'none',backgroundColor:page_data.content[index].access?'rgba(220,220,220,0.65)':'',verticalAlign: 'top'}">{{page_data.content[index].label}}</label>
                                 <div v-if="page_data.content[index].type ==='upfile'" class="upfile">
-                                    <input v-if="page_data.content[index].type === 'upfile'" @click="upfile_click" :data-index="index" style="border: none;box-shadow: 0 0 3px #9c9c9c;border-radius: 5px" type="button" v-model="page_data.content[index].value" :readonly="!page_data.content[index].access" />
-                                    <input v-if="page_data.content[index].type === 'upfile'" :data-fileindex="index" v-on:change="upfile_change"  style="border: none;box-shadow: 0 0 3px #9c9c9c;border-radius: 5px;display: none" type="file"  />
-                                    <input
+                                    <input class="fileinput" v-if="page_data.content[index].type === 'upfile'" @click="upfile_click" :data-index="index" style="border: none;box-shadow: 0 0 3px #9c9c9c;border-radius: 5px" type="button" v-model="page_data.content[index].value" :readonly="!page_data.content[index].access" />
+                                    <input class="fileinput" v-if="page_data.content[index].type === 'upfile'" :data-fileindex="index" v-on:change="upfile_change"  style="border: none;box-shadow: 0 0 3px #9c9c9c;border-radius: 5px;display: none" type="file"  />
+                                    <input class="fileinput"
                                             style="display: none"
                                             v-model="page_data.content[index].value"
                                             :name="page_data.content[index].label"
@@ -47,6 +48,7 @@
 
                                     >
                                         <input
+                                                class="fileinput"
                                                 style="display: none"
                                                 v-model="page_data.content[index].value"
                                                 :name="page_data.content[index].label"
@@ -90,13 +92,19 @@
 
 
                                 </div>
+                                <div v-if="page_data.content[index].type === 'text'"
+                                     style="height: auto;max-height: 300px;overflow-y: auto">
+                                    <wangeditor style="" :editor_content="page_data.content[index].value" :random_id="{index:random_key,random_key:'page_model'}"></wangeditor>
+
+                                </div>
                                 <input v-if="
                                 page_data.content[index].type !== 'btn' &&
                                 page_data.content[index].type !== 'upfile' &&
                                 page_data.content[index].type !== 'upimg' &&
                                 page_data.content[index].type !== 'time' &&
+                                page_data.content[index].type !== 'text' &&
                                 page_data.content[index].type !== 'obj' "
-
+                                        class="fileinput"
                                        :disabled="!page_data.content[index].modifiable"
                                        v-model="page_data.content[index].value"
                                        :readonly="!page_data.content[index].access  || page_data.content[index].key === 'document_id' || !page_data.content[index].modifiable"
@@ -113,10 +121,10 @@
                                 <!--<input name="email" v-model="page_data.content[index].value" v-validate.initial="'required|email'" :class="{'input': true, 'is-danger': errors.has('email') }" type="text" placeholder="Email">-->
 
 
-                                <div style="" >
+                                <div style="" class="filediv">
                                     <!--<input   @click='change_access($event)' :data-index="index" type="button" v-model="page_data.content[index].access">-->
 
-                                    <span style="" v-show="errors.has(page_data.content[index].label)" class="help is-danger">
+                                    <span  style="" v-show="errors.has(page_data.content[index].label)" class="help is-danger filespan">
                                     <i style=" color:rgba(205,52,25,0.91);margin-right: 10px" v-show="errors.has(page_data.content[index].label)" class="fa  fa-refresh rotate_aw"></i>{{ errors.first(page_data.content[index].label) }}</span>
                                 </div>
 
@@ -144,7 +152,7 @@
             </div>
 
         </div>
-        <div v-else="page_data.title" key="nopagedata" style="text-align: center">
+        <div  v-else="page_data.title" key="nopagedata" style="text-align: center;display: inline-block">
             <div class="now_data_show" style="">
                 <span style="margin-top: 50px;display: block">暂无数据</span>
                 <div class="loader" style="position:absolute;width: 200px;height: 300px;overflow: hidden;left: 50%;margin-left: -100px;top:220px;">
@@ -156,14 +164,25 @@
             </div>
 
         </div>
-    </transition>
+        </transition>
+        <transition name="fade-right">
+
+            <phone_model  v-if="page_data.title && show_phone_model"
+                           style="display: inline-block;  float: right "
+                           :mobile_show_uri="mobile_show_uri"
+            ></phone_model>
+
+        </transition>
+
+    </div>
 
 </template>
 
 
 <script>
-
+    import phone_model from '../common/phone_model.vue'
     const Waves  = require('node-waves');
+    import wangeditor from '../tools/wangeditor.vue'
     import Vue from 'vue'
     import {resolveWidgetData2FormData}   from '../../api/lib/helper/dataAnalysis'
     import axios from 'axios'
@@ -173,6 +192,7 @@
     export default {
         data(){
             return {
+
                 pickerOptions: {
                     shortcuts: [{
                         text: '今天',
@@ -208,10 +228,14 @@
                     tmp_upload_index:''
                 },
                 show_content_footer:true,
-                is_key:'server_help'
+                is_key:'server_help',
+                mobile_show_uri:'http://wap.baidu.com'
             }
         },
         props: {
+            show_phone_model:{
+                default:false
+            },
             page_type:{
                 type: String,
                 default: 'list',
@@ -221,17 +245,20 @@
                 type: Object,
                 default: function () {
                     return {
-                        width:'100%',
+                        width:this.show_phone_model === true?'60%':'100%',
                         height:'auto',
                         backgroundColor:'#dcdcdc',
                         color:'#000000',
                         overflow:'hidden',
-
+                        display:'inline-block',
                         boxShadow:'0 0 15px gray',
 
                     }
                 },
                 required: false,
+            },
+            page_model_padding_left:{
+                default:'13%'
             },
             page_title_design:{
                 type: Object,
@@ -405,23 +432,58 @@
                 default:'提交数据'
             }
         },
-        components: {},
+        components: {
+            wangeditor,
+            phone_model
+        },
         computed: {
             ...mapGetters([
                 'wechat_marketing_store',
             ]),
+            random_key(n=1,m=10){
+
+                var r = Math.random()*10000000000;
+                var re = Math.floor(r)
+                return re
+            }
+
 
 
         },
         created(){
+            var vm = this
+//            var currect_width = this.show_phone_model === true?'60%':'100%'
+//            this.page_design.width = currect_width
             this.report_api = this.wechat_marketing_store.apihost
+            this.$root.eventHub.$on('editor_content',function (data) {
+                console.log('editor_content->',data)
+                for (var item in vm.page_data.content){
+                    if(vm.page_data.content[item].type === 'text'){
+
+                        vm.page_data.content[item].value = data.html
+                    }
+                }
+            })
         },
         mounted(){
 
 
 
 
+        },
+        watch:{
+            page_data: {
+                handler: function (val, oldVal) {
 
+                    for (var index in this.page_data.content){
+
+                        if(this.page_data.content[index].key === 'fun_uri'){
+                            this.mobile_show_uri = 'http://'+this.page_data.content[index].value
+                        }
+                    }
+                },
+                deep: true
+            },
         },
         updated(){
 
@@ -611,6 +673,9 @@
                                     offset: 100,
                                     duration:'1000'
                                 });
+                                if(vm.page_data.content[0].key !== 'document_id'){
+                                    vm.$root.eventHub.$emit('refresh_page_model',1)
+                                }
                             }
                             else{
                                 vm.$notify.success({
@@ -650,7 +715,7 @@
         },
         beforeDestroy(){
 //            this.$root.eventHub.$off('page_model_update_response_done')
-
+//            this.$root.eventHub.$off('editor_content');
         },
 
     }
@@ -691,7 +756,7 @@
         line-height: 22px;
         color: black;
         width: 10%;
-        min-width: 280px;
+        min-width: 100px;
         display: inline-block;
         text-align: center;
         padding-left: 10px;
@@ -700,18 +765,18 @@
         color: #727272;
         margin: 0;
     }
-    .page_model .page_content li label input{
+    .page_model .page_content li .filelabel input{
         width: 100%;
         min-width: 60px;
     }
-    .page_model .page_content li input{
+    .page_model .page_content li .fileinput{
         color:#727272 !important;
         background-color: transparent;
         height: 22px;
         line-height: 22px;
-        max-width: 65%;
-        width: 60%;
-        min-width: 300px;
+        max-width: 55%;
+        width: 100%;
+        min-width: 100px;
         text-align: center;
         background: 0 0;
         font-family: 'Graphik Web',sans-serif;
@@ -725,10 +790,10 @@
         outline: 0;
 
     }
-    .page_model .page_content li div span{
+    .page_model .page_content li .filediv .filespan{
         display: inline-block;height: 22px
     }
-    .page_model .page_content li div{
+    .page_model .page_content li .filediv{
         width: auto;min-width: 180px;vertical-align: top;display: inline-block;padding-left: 10px;height: 22px;line-height: 22px
 
     }
@@ -741,7 +806,7 @@
         border-radius: 15px;
         letter-spacing: 5px;font-size: 20px;color: #5e667e;width: 600px;height: 300px;text-align: center;box-shadow: 0 0 5px #cbc8cb
     }
-    .page_model .page_content li input:hover{
+    .page_model .page_content li .fileinput:hover{
         transition: all 1s;
         background-color: rgba(150, 150, 150, 0.49);
 

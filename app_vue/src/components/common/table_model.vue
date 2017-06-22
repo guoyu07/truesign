@@ -7,11 +7,11 @@
             <div style="display: inline-block">
 
 
-                <el-input   v-focus:currect_select="currect_select" :name="index" :data-key="index" style="display: inline-block;width: 180px;" v-for="(item,index) in table_field" :key="item"
-                           v-if="item.issearch "
-                           :placeholder="'请输入'+item.title"
+                <el-input   v-focus:currect_select="currect_select" :name="item.search_title" :data-key="item.search_key" style="display: inline-block;width: 180px;" v-for="(item,index) in search_sort_by.search" :key="item"
+
+                           :placeholder="'请输入'+item.search_title"
                            icon="search"
-                           v-model="search_sort_by[index]"
+                           v-model="item.search_value"
 
                 >
 
@@ -34,10 +34,11 @@
                     tooltip-effect="dark"
                     style="width: 100%;overflow: auto"
                     :height="screenHeight-208"
-                    :default-sort = "{prop: 'date', order: 'descending'}"
+
                     :highlight-current-row="true"
                     @selection-change="handleSelectionChange"
                     @row-click="rowClick"
+                    @sort-change="sortChange"
                 >
                 <el-table-column
                         fixed
@@ -48,7 +49,7 @@
 
                 <el-table-column v-for="(item,index) in table_field"  v-if="index !=='tag'"  :key="item"
                          :fixed="index === 'document_id' || index === 'username'"
-                        :sortable="index==='date'"
+                        :sortable="is_sortable(index)"
                         :prop="index"
                         :label="item.title "
                         :width="item.width"
@@ -108,7 +109,8 @@
             :final_update_action="info_transfer_action.update"
             :final_update_btn_desc="'提交修改'"
             :page_data="detail_page_model_data"
-            style="position:absolute;z-index:100;width:99%;text-align: center;bottom: 10px;height:auto;max-height: 600px;overflow: hidden" >
+            style="position:absolute;z-index:100;
+            width:98.5%;text-align: center;bottom: 10px;height:auto;max-height: 600px;overflow-y: auto;overflow-x: hidden" >
 
             </page_model>
 
@@ -400,18 +402,20 @@
 
         },
         watch:{
-//            search_sort_by: {
-//                handler: function (val, oldVal) {
-//
-//                    console.log('search_sort_by->changed')
-//                    console.log(val.vue_search_way)
-//                    if(val.vue_search_way ===  'self'){
-//                        this.refresh_table_data()
-//                    }
-//
-//                },
-//                deep: true
-//            },
+            search_sort_by: {
+                handler: function (val, oldVal) {
+                    this.isloading = true
+
+                },
+                deep: true
+            },
+            table_data: {
+                handler: function (val, oldVal) {
+                    this.isloading = false
+
+                },
+                deep: true
+            },
             multipleSelection(val,oldVal){
                 console.log('multipleSelection change')
                 console.log(val.length,oldVal.length)
@@ -423,8 +427,13 @@
             ...mapGetters([
                 'wechat_marketing_store',
             ]),
-
-
+            get_sorter_arr(){
+                var sorter_arr =  []
+                for (var index in this.search_sort_by.sorter){
+                    sorter_arr.push(index)
+                }
+                return sorter_arr
+            }
         },
         created(){
             var vm = this
@@ -436,7 +445,6 @@
                 vm.refresh_table_data()
             })
             this.$root.eventHub.$on('close_page_model',() => {
-                console.log('on->close_page_model')
                 this.show_page_model_ctrl_by_table = false
 //                vm.detail_page_model_data = {}
             })
@@ -445,7 +453,7 @@
 //            console.log('updated->props->search_sort_by->',this.search_sort_by)
 
             Vue.nextTick( () => {
-
+//                console.log('this.table_data',this.table_data)
             })
             $(".table_select_bar>div.el-input>input").focus((e) => {
 
@@ -456,8 +464,6 @@
 
                 var $div_node = e.currentTarget.parentNode
                 this.currect_select = $div_node.dataset.key
-
-
             })
 
         },
@@ -615,32 +621,30 @@
                     });
             },
             handleSizeChange(val) {
-
+                this.isloading = true
                 console.log(`每页 ${val} 条`);
                 this.search_sort_by.vue_search_way = 'self'
                 this.search_sort_by.page_size = val
                 this.handleCurrentChange(1)
-//                $('li.number').eq(0).click()
-//                this.search_sort_by.page = 1
+
 
 
             },
             handleCurrentChange(val) {
-//                console.log(`当前页: ${val}`);
+                this.isloading = true
                 this.search_sort_by.vue_search_way = 'self'
                 this.search_sort_by.page = val
-////                this.refresh_table_data()
-//                this.tmp_search_sort_by.page = 1
-//                this.refresh_table_data()
+
 
             },
             refresh_table_data(add_note){
                 var vm = this
-//                console.log('refresh_table_data')
                 if(add_note === 'resetselect'){
                     this.$root.eventHub.$emit('refresh_table','resetselect')
                 }
                 else{
+
+                    console.log('emit->refresh_table')
                     this.$root.eventHub.$emit('refresh_table',JSON.stringify(vm.search_sort_by))
                 }
 
@@ -672,7 +676,7 @@
                                 offset: 100,
                                 duration:'2000'
                             });
-                        vm.refresh_table_data()
+                            vm.refresh_table_data()
 //                        if((typeof res.data === 'object' && res.data.statistic.count>=1) || res.data>=1){
 //                            vm.$notify.success({
 //                                title: '成功',
@@ -705,8 +709,23 @@
 //                this.$root.eventHub.$emit('refresh_table','resetselect')
                 this.refresh_table_data('resetselect')
 
-            }
+            },
+            sortChange(column){
+                var default_sorter = this.search_sort_by.sorter
+                for (var index in default_sorter){
+                    default_sorter[index] = ''
+                }
+                default_sorter[column.prop] = column.order
+                console.log(default_sorter)
 
+            },
+            is_sortable(key,e){
+
+                if(this.search_sort_by.sorter.hasOwnProperty(key)){
+                    return 'custom'
+                }
+
+            }
 
 
         },

@@ -32,7 +32,8 @@ const test = resolve => require(['../components/test/test.vue'], resolve)
 const tools = resolve => require(['../components/tools/tools.vue'], resolve)
 // const VueQuillEditor = resolve => require(['../components/tools/VueQuillEditor.vue'], resolve)
 // const vue2editor = resolve => require(['../components/tools/vue2-editor.vue'], resolve)
-const wangeditor = resolve => require(['../components/tools/wangeditor.vue'], resolve)
+// const wangeditor = resolve => require(['../components/tools/wangeditor.vue'], resolve)
+const wangeditor_new = resolve => require(['../components/tools/wangeditor_new.vue'], resolve)
 const table_model = resolve => require(['../components/common/table_model.vue'], resolve)
 const table_model_dev = resolve => require(['../components/common/table_model_dev.vue'], resolve)
 
@@ -175,13 +176,22 @@ const routes = [
             //     },
             //     component: vue2editor
             // },
+            // {
+            //     name: 'wangeditor',
+            //     path: 'wangeditor',
+            //     meta: {
+            //         title: 'wangeditor'
+            //     },
+            //     component: wangeditor
+            //
+            // },
             {
-                name: 'wangeditor',
-                path: 'wangeditor',
+                name: 'wangeditor_new',
+                path: 'wangeditor_new',
                 meta: {
-                    title: 'wangeditor'
+                    title: 'wangeditor_new'
                 },
-                component: wangeditor
+                component: wangeditor_new
 
             },
             {

@@ -7,7 +7,7 @@ use Truesign\Adapter\Base\DbLibraryAdapter;
 use Royal\Data\Field;
 
 
-class funAdapter extends DbLibraryAdapter
+class funUseageAdapter extends DbLibraryAdapter
 {
     public function database()
     {
@@ -22,29 +22,28 @@ class funAdapter extends DbLibraryAdapter
     }
     public function tableAccess()
     {
-        return 1;
+        return array('read'=>9,'write'=>9);
     }
 
     public function table()
     {
-        return 'fun';
+        return 'fun_useage';
 
     }
 
     public function tableDesc()
     {
-        return '公众号功能表';
+        return '公众号功能使用记录表';
     }
 
     public function tableInit()
     {
         return Field::start()
             ->def('document_id')->map('id')->int()->desc('内容id')
-            ->def('fun_keyword')->map('fun_keyword')->varchar(20)->desc('功能关键词')
-            ->def('fun_uri')->map('fun_uri')->varchar(1000)->desc('功能链接')->modifiable(false)
-            ->def('fun_desc')->map('fun_desc')->varchar(1000)->desc('功能描述')
-            ->def('fun_usage')->map('fun_usage')->int()->desc('功能使用量')
-            ->def('fun_adapter')->map('fun_adapter')->int()->desc('功能对应表')
+            ->def('fun_id')->map('fun_id')->varchar(100)->desc('功能关键词')
+            ->def('fun_title')->map('fun_title')->varchar(100)->desc('功能关键词')
+            ->def('wechat_id')->map('wechat_id')->varchar(100)->desc('微信号')->modifiable(false)->ableshow(false)
+            ->def('interaction_content_json')->map('interaction_content_json')->text()->desc('交互内容')
             ->end();
 
     }

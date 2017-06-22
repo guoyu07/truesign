@@ -22,7 +22,7 @@ class weimobAdapter extends DbLibraryAdapter
     }
     public function tableAccess()
     {
-        return 1;
+        return array('read'=>9,'write'=>9);
     }
 
     public function table()
@@ -40,9 +40,9 @@ class weimobAdapter extends DbLibraryAdapter
     {
         return Field::start()
             ->def('document_id')->map('id')->int()->desc('公众号id')
-            ->def('uid')->map('uid')->int()->desc('用户id')
+            ->def('b_id')->map('b_id')->int()->desc('客户id')->modifiable(false)
             ->def('weimo_type')->map('weimo_type')->int()->desc('公众号类型') //1->非认证订阅号;2->非认证服务号;3->认证订阅号;4->认证服务号
-            ->def('weimo_name')->map('weimo_name')->varchar(300)->desc('公众号名称')
+            ->def('weimo_name')->map('weimo_name')->varchar(300)->desc('公众号名称')->issearch(true)
             ->def('appid')->map('appid')->varchar(100)->desc('appid')
             ->def('appsecret')->map('appsecret')->varchar(100)->desc('appsecret')
             ->def('qr_img')->map('qr_img')->varchar(200)->desc('二维码图片地址')

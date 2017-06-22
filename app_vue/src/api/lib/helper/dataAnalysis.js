@@ -80,6 +80,8 @@ export function dbResponseAnalysis2WidgetData(dbResponse) {
         if(dbResponse.rules && dbResponse.data){
             for (var datarow of dbResponse.data){
                 var widgetData_item = []
+                var searchWidget = []
+                var sorterWidget = []
                 for (var datakey in datarow){
                     // console.log(datakey,datarow[datakey])
                     var widgetData_item_attr = {}
@@ -96,8 +98,33 @@ export function dbResponseAnalysis2WidgetData(dbResponse) {
                            widgetData_item_attr.label = dbResponse.rules[rulekey].title
                            widgetData_item_attr.type = widget_type
                            widgetData_item_attr.issearch = dbResponse.rules[rulekey].issearch
+                           if(dbResponse.rules[rulekey].issearch){
+                               searchWidget.push({
+                                   search_value:'',
+                                   search_key:dbResponse.rules[rulekey].name,
+                                   search_title:dbResponse.rules[rulekey].title
+
+                               })
+                           }
+                           widgetData_item_attr.issorter = dbResponse.rules[rulekey].issorter
+                           if(dbResponse.rules[rulekey].issorter){
+                               let sorter_item = {}
+                               sorter_item.key = dbResponse.rules[rulekey].name
+                               switch(dbResponse.rules[rulekey].issorter === 'asc'){
+                                   case 'asc':
+                                       sorter_item.way = 'ascending'
+                                       break;
+                                   case 'desc':
+                                       sorter_item.way = 'descending'
+                                       break;
+                                   default:
+                                       sorter_item.way = 'ascending'
+                               }
+                               sorterWidget.push(sorter_item)
+
+                           }
                            widgetData_item_attr.regex = dbResponse.rules[rulekey].regex===false?false:eval(dbResponse.rules[rulekey].regex)
-                           widgetData_item_attr.modifiable = dbResponse.rules[rulekey].modifiable
+                           widgetData_item_attr.modifiable = dbResponse.rules[rulekey].name==='document_id'?false:dbResponse.rules[rulekey].modifiable
                            widgetData_item_attr.access = true
 
                            var widget_width = judgeWidth(dbResponse.rules[rulekey].name,widget_type,datarow[datakey])
@@ -116,6 +143,9 @@ export function dbResponseAnalysis2WidgetData(dbResponse) {
 
         }
         dbResponse.widgetdata = widgetData
+        dbResponse.sorterWidget = sorterWidget
+        dbResponse.searchWidget = searchWidget
+
     }
     else if(typeof dbResponse === 'object' && dbResponse.code){
         dbResponse = {
@@ -155,8 +185,10 @@ function convertCode2Tip(code='0') {
 
 }
 function judgeWidgetTypeByKeyAndKeyType(key,keytype){
-
-    if(key === 'document_id' || (keytype === 'int'   && key.substr(key.length-4) !== 'time') || key.substr(key.length-3) === 'num'){
+    if(keytype==='text'){
+        return 'text'
+    }
+    else if(key === 'document_id' || (keytype === 'int'   && key.substr(key.length-4) !== 'time') || key.substr(key.length-3) === 'num'){
         return 'num'
     }
     else if(key.substr(key.length-4) === 'time'){
@@ -214,7 +246,7 @@ function judgeWidth(key,keytype,value) {
         tmp_width = value.length*1.5;
     }
     if(keytype === 'num' || keytype === 'time'){
-        tmp_width = (value+'').length*10;
+        tmp_width = (value+'').length*10>key.length*4?(value+'').length*10:key.length*4
     }
     return base_width+tmp_width
 
@@ -226,7 +258,7 @@ function isJSON (str, pass_object) {
     // if (!isString(str)) return false;
 
     str = str.replace(/\s/g, '').replace(/\n|\r/, '');
-
+cd
     if(/^\{(.*?)\}$/.test(str)){
         return /"(.*?)":(.*?)/g.test(str);
     }

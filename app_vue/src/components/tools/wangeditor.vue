@@ -1,19 +1,22 @@
 <template lang="html">
     <div :style="{width:editorShow_width+'px',backgroundColor:editorShow_color}">
-        <div id="wangeditor" :style="{height: editorShow_height+'px',backgroundColor:editorShow_color}">
+        <div :id="'wangeditor_'+ random_id.random_key + '_' + random_id.index" class="is_wangeditor" :style="{height: editorShow_height+'px',backgroundColor:editorShow_color}">
 
         </div>
     </div>
 </template>
 
 <script>
+require('../../../static/css/reset.css')
 require('wangeditor/dist/css/wangEditor.css')
-import wangeditor from 'wangeditor'
+import wangEditor  from 'wangeditor'
+import Vue from 'vue'
 export default {
     data() {
         return {
             editor:'',
             editor2:'',
+            editors:[],
             content: '',
             updateImageParam:
             {
@@ -42,6 +45,7 @@ export default {
                 bucket:'truesign-app'
 
             },
+
         }
     },
     props:{
@@ -50,6 +54,14 @@ export default {
             default: '100%',
             required: false,
 
+        },
+        random_id:{
+
+            default: {
+                index:'1',
+                random_key:Math.random()
+            },
+            required:false
         },
         editorShow_height:{
             type: String,
@@ -63,30 +75,60 @@ export default {
             required: false,
 
         },
+        editor_content:{
+            type: String,
+            default: '等待录入',
+            required: false,
+        }
 
 
     },
     computed: {
     },
+    watch:{
+        random_id:{
+            handler: function (val, oldVal) {
+//                console.log('change',val)
+
+
+            },
+            deep: true
+        }
+    },
 
     mounted() {
-        this.editor =  new wangEditor('wangeditor');
-        this.initEditorConfig()
-        this.createEditor()
+        var vm = this
+        Vue.nextTick( () => {
+            var editor_id = 'wangeditor_'+this.random_id.random_key +'_'+this.random_id.index
+
+            this.editor =  new wangEditor(editor_id);
+            this.initEditorConfig()
+            this.createEditor()
 
 
-        $('.wangEditor-container').css('background-color',this.editorShow_color)
-        $('.wangEditor-menu-container').css('background-color',this.editorShow_color)
+            $('.wangEditor-container').css('background-color',this.editorShow_color)
+            $('.wangEditor-menu-container').css('background-color',this.editorShow_color)
+        })
+
+//        Vue.nextTick( () => {
+//            var currect_wangeditor_id = this.editor.$txt[0].getAttribute('id')
+////            console.log(currect_wangeditor_id)
+//            $('.is_wangeditor').each(function (k,v) {
+//                if(v.getAttribute('id') !== currect_wangeditor_id){
+//                }
+//
+//            })
+//        })
 
     },
     methods: {
         initEditorConfig(){
             var vm = this
+
             this.editor.config.withCredentials = false;
 
             this.editor.config.uploadImgUrl = this.updateImageParam.uri
-//            this.editor.config.uploadImgUrl = 'http://www.baidu.com'
-            this.editor.config.uploadParams = this.updateImageParam.param
+            this.editor.config.uploadParams = JSON.stringify(this.updateImageParam.param)
             this.editor.config.uploadImgFileName = 'file'
 
             this.editor.config.menus =
@@ -104,7 +146,7 @@ export default {
                     'quote',
                     'fontfamily',
                     'fontsize',
-                    'head',
+//                    'head',
                     'unorderlist',
                     'orderlist',
                     'alignleft',
@@ -114,11 +156,10 @@ export default {
                     'link',
                     'unlink',
                     'table',
-                    'emotion',
+//                    'emotion',
                     '|',
                     'img',
                     'video',
-                    'location',
                     'insertcode',
                     '|',
                     'undo',
@@ -136,36 +177,36 @@ export default {
                 7: '28px'
             };
             this.editor.config.uploadImgFns.onload = function (resultText, xhr) {
-                vm.uploadOnLoad(resultText, xhr)
+//                console.log('上传完成进行回掉->',this,vm.editor)
+                vm.uploadOnLoad(this,resultText, xhr)
             }
             // 配置 onchange 事件
             this.editor.onchange = function () {
                 // 编辑区域内容变化时，实时打印出当前内容
+                vm.random_id.index = Math.random()
                 vm.editorchange()
             };
 //            this.editor.config.customUpload = true;  // 设置自定义上传的开关
 //            this.editor.config.customUploadInit = this.uploadInit  // 配置自定义上传初始化事件，uploadInit方法在上面定义了
         },
         createEditor() {
-
-            this.editor.create();
-
-
+            var vm = this
+            vm.editor.create();
+            vm.editor.$txt.html(vm.editor_content)
         },
-        uploadOnLoad(resultText, xhr){
+        uploadOnLoad(editor,resultText, xhr){
             resultText = JSON.parse(resultText)
             let file_path = resultText.file_path
             let originalName = this.editor.uploadImgOriginalName || '';
-            this.editor.command(null, 'insertHtml', '<div><img src="' + file_path + '" alt="' + originalName + '" style="width:30%;"/></div>');
+            editor.command(null, 'insertHtml', '<div><img src="' + file_path + '" alt="' + originalName + '" style="width:30%;"/></div>');
         },
         editorchange(){
-//            console.log('this.editor.$txt.html()',this.editor.$txt.html());
-//            console.log('this.editor.$txt.text()',this.editor.$txt.text());
             var editor_content = {
                 text:this.editor.$txt.text(),
                 html:this.editor.$txt.html()
             }
             this.$root.eventHub.$emit('editor_content',editor_content)
+
         },
         formatContent(content) {
             // handle
@@ -177,12 +218,23 @@ export default {
             this.$emit('input', this.content)
         }
     },
-    components: {}
+    components: {},
+    beforeDestroy(){
+
+    },
 }
 </script>
 
 <style>
     p{
-        line-height:1.4
+        line-height: 100%;
+        font-size: 15px;
+        margin:0 !important;
+    }
+    .clearfix input{
+        color: black !important;
+    }
+    .txt-toolbar input{
+        color:black !important;
     }
 </style>

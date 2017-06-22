@@ -63,13 +63,13 @@ class siteBaseConfigAdapter extends DbLibraryAdapter
             ->def('mail_userpass')->map('mail_userpass')->varchar(200)->desc('网站邮件账户密码')
 
             ->def('upload_method')->map('upload_method')->int()->desc('文件上传方式')  //0->本地;1->阿里云
-            ->def('oss_accesskeyid')->map('oss_accesskeyid')->varchar(100)->desc('阿里云 oss_accesskeyid')
-            ->def('oss_accesskeysecret')->map('oss_accesskeysecret')->varchar(100)->desc('阿里云  oss_accesskeysecret')
-            ->def('oss_endpoint')->map('oss_endpoint')->varchar(100)->desc('阿里云  oss_endpoint')
-            ->def('oss_bucket')->map('oss_bucket')->varchar(100)->desc('阿里云  oss_bucket')
-            ->def('oss_buckethost')->map('oss_buckethost')->varchar(100)->desc('阿里云  oss_buckethost')
-            ->def('oss_callbackurl')->map('oss_callbackurl')->varchar(100)->desc('阿里云  oss_callbackurl')
-            ->def('oss_cdnurl')->map('oss_cdnurl')->varchar(100)->desc('阿里云  oss_cdnurl')
+            ->def('oss_accesskeyid')->map('oss_accesskeyid')->varchar(100)->desc('oss_accesskeyid')
+            ->def('oss_accesskeysecret')->map('oss_accesskeysecret')->varchar(100)->desc('oss_accesskeysecret')
+            ->def('oss_endpoint')->map('oss_endpoint')->varchar(100)->desc('oss_endpoint')
+            ->def('oss_bucket')->map('oss_bucket')->varchar(100)->desc('oss_bucket')
+            ->def('oss_buckethost')->map('oss_buckethost')->varchar(100)->desc('oss_buckethost')
+            ->def('oss_callbackurl')->map('oss_callbackurl')->varchar(100)->desc('oss_callbackurl')
+            ->def('oss_cdnurl')->map('oss_cdnurl')->varchar(100)->desc('oss_cdnurl')
 
             ->end();
     }

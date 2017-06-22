@@ -11,8 +11,10 @@ namespace Truesign\Service\Wechat_marketing_service;
 
 use Royal\Data\DAO;
 use Truesign\Adapter\wechat_marketing\businessAdapter;
+use Truesign\Adapter\wechat_marketing\funAdapter;
+use Truesign\Adapter\wechat_marketing\weimobAdapter;
 
-class BusinessService extends BaseService
+class FunService extends BaseService
 {
     private $Adapter;
     private $Dao;
@@ -21,7 +23,7 @@ class BusinessService extends BaseService
 
     public function __construct()
     {
-        $this->Adapter = new businessAdapter();
+        $this->Adapter = new funAdapter();
         $this->Dao = new DAO($this->Adapter);
         $this->tableAccess = $this->Adapter->getTableAccess();
         $this->rules = $this->Adapter->paramRules();
@@ -49,6 +51,7 @@ class BusinessService extends BaseService
             $db_resposne['data'][0][$k] = '';
         }
 
+
         $this->filterRules($this->rules,$db_resposne['data'][0],$params['rules']);
         $access_rules = array('tableaccess'=>$this->tableAccess,'rules'=>$this->rules);
         $db_resposne['access_rules'] = $access_rules;
@@ -61,13 +64,12 @@ class BusinessService extends BaseService
     public function Get($params=array(),$search_params=array(),$page_params=array(),$sorter=array())
     {
 
-        $db_resposne = $this->Dao->readSpecified($search_params,array(),$page_params,$sorter);
 
+        $db_resposne = $this->Dao->read($search_params,$page_params,$sorter);
         $this->filterRules($this->rules,$db_resposne['data'][0],$params['rules']);
         $access_rules = array('tableaccess'=>$this->tableAccess,'rules'=>$this->rules);
         $db_resposne['access_rules'] = $access_rules;
-        echo json_encode($db_resposne);
-        exit();
+
         return $db_resposne;
 
 
@@ -78,10 +80,16 @@ class BusinessService extends BaseService
          */
     public function Update($params=array(),$search_params=array(),$page_params=array()){
 
-        $search_params['id'] = $params['document_id'];
-        unset($search_params['document_id']);
-        $db_response = $this->Dao->insertOrupdate($params,$search_params);
-        return $db_response;
+        $judge_param = array('fun_keyword'=>$params['fun_keyword']);
+        $judge_response = $this->Dao->count($judge_param);
+//        if($judge_response>0){
+//            return array('code'=>1000,'msg'=>'关键词已经存在，且不允许重复');
+//        }
+//        else{
+            $db_response = $this->Dao->insertOrupdate($params,$search_params);
+            return $db_response;
+//        }
+
     }
 
     /*

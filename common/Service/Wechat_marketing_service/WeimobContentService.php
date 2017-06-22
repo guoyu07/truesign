@@ -12,8 +12,9 @@ namespace Truesign\Service\Wechat_marketing_service;
 use Royal\Data\DAO;
 use Truesign\Adapter\wechat_marketing\businessAdapter;
 use Truesign\Adapter\wechat_marketing\weimobAdapter;
+use Truesign\Adapter\wechat_marketing\weimobContentAdapter;
 
-class WeimobService extends BaseService
+class WeimobContentService extends BaseService
 {
     private $Adapter;
     private $Dao;
@@ -22,7 +23,7 @@ class WeimobService extends BaseService
 
     public function __construct()
     {
-        $this->Adapter = new weimobAdapter();
+        $this->Adapter = new weimobContentAdapter();
         $this->Dao = new DAO($this->Adapter);
         $this->tableAccess = $this->Adapter->getTableAccess();
         $this->rules = $this->Adapter->paramRules();
@@ -59,11 +60,11 @@ class WeimobService extends BaseService
      * @for 获取客户信息接口
      *
      */
-    public function Get($params=array(),$search_params=array(),$page_params=array())
+    public function Get($params=array(),$search_params=array(),$page_params=array(),$sorter=array())
     {
 
 
-        $db_resposne = $this->Dao->read($search_params,$page_params);
+        $db_resposne = $this->Dao->read($search_params,$page_params,$sorter);
         $this->filterRules($this->rules,$db_resposne['data'][0],$params['rules']);
         $access_rules = array('tableaccess'=>$this->tableAccess,'rules'=>$this->rules);
         $db_resposne['access_rules'] = $access_rules;

@@ -1,19 +1,64 @@
 <?php
 namespace Truesign\Service;
 
-use Eagle\Service\Bank\FinanceLog;
-use Halo\Data\DAO;
 
-class Base {
-    //通过 已经查询到到结果 已key为关联 从某张表 中 跟进某个字段查询，获取某些值 返回到 原来到结果集中
-    public static function getCityIdFromName($city_name) {
-        $array = array(
-            '天津'=>74,
-            '北京'=>2,
-            '上海'=>6,
-            '青岛'=>289,
-        );
-        return $array[$city_name];
+use Royal\Data\DAO;
+
+class AppBaseService {
+//    表权限控制
+    public function tableaccess_ctrl()
+    {
+        $config = \Yaf_Registry::get('accessconfig');
+        return $config['wechat_marketing']['tableaccess'];
+    }
+
+    public function AuthTableAccess($access,$tableaccess,$way='both')
+    {
+        if('both' == $way){
+            if(intval($tableaccess['read'])>intval($access) || intval($tableaccess['write'])>intval($access)){
+                throw new Exception('无权限操作此表');
+            }
+        }
+        elseif ('read' == $way){
+            if(intval($tableaccess['read'])>intval($access)){
+                throw new Exception('无权限读取此表');
+            }
+        }
+        elseif ('write' == $way){
+            if(intval($tableaccess['write'])>intval($access)){
+                throw new Exception('无权更改此表');
+            }
+        }
+    }
+
+    public function filterRules(&$rules,$db_data_row,$rules_show=0)
+    {
+        $request_db_param = array();
+        if($db_data_row && !empty($rules_show)){
+            foreach ($db_data_row as $k=>$v){
+                $request_db_param[] = $k;
+            }
+            foreach ($rules as $k=>$v){
+                if(!in_array($k,$request_db_param)){
+                    unset($rules[$k]);
+                }
+            }
+        }
+        if(empty($db_data_row) && !empty($rules_show)){
+            return;
+        }
+        if(empty($rules_show)){
+            $rules = '';
+        }
+
+
+
+    }
+    public function getAccess(){
+        $params = $this->getParams(array('token'));
+        $token = $params['token'];
+        return $token;
+
     }
 
     /**
@@ -137,90 +182,7 @@ class Base {
         return $data;
     }
 
-    public function apiGetInputRule($result, $res = array()) {
-        foreach ($result as &$val) {
-            if ($res) {
-                if ($val['erpid']) {
-                    if (strpos($val['erpid'], '$') === false) {
-                        $val['current_value'] = strval($res[$val['erpid']]);
-                    } else {
-                        $erpId = explode('$', $val['erpid']);
-                        $val['current_value'] = $res[$erpId[0]] . '-' . $res[$erpId[1]];
-                    }
-                }
-            }else{  //新增，添加上redis中设置的楼层，总楼层，梯，户
-                $login = new \Eagle\Service\LoginInfo();
-                $user_id = $login->getUserId();
 
-                $select_params = \Eagle\Service\BaseRedis::get('block_params_'.$user_id);
-
-                if($select_params){ //如果设置的redis没有过期
-                    $select_params = json_decode( $select_params, true );
-
-                    switch ($val['erpid'])
-                    {
-                        case 'floor':
-                            $val['current_value'] = $select_params['extra_floor'];
-                            $val['cannot_edit'] = true;
-                            break;
-                        case 'top_floor':
-                            $val['current_value'] = $select_params['extra_total_floor_num'];
-                            $val['cannot_edit'] = true;
-                            break;
-                        case 'ladder':
-                            $val['current_value'] = $select_params['extra_lists'];
-                            $val['cannot_edit'] = true;
-                            break;
-                        case 'family':
-                            $val['current_value'] = $select_params['extra_rooms'];
-                            $val['cannot_edit'] = true;
-                            break;
-                        default:
-                            break;
-                    }
-                }
-            }
-            if ($val['field_type'] == 'number') {
-                $val['type'] = 'input';
-                $val['input_type'] = 'number';
-                $val['reg'] = '[\\d]+';
-            } elseif ($val['field_type'] == 'float') {
-                $val['type'] = 'input';
-                $val['input_type'] = 'number';
-                $val['reg'] = '[\\d]+[\\.]?[\\d]*';
-            } elseif ($val['field_type'] == 'input') {
-                $val['type'] = 'input';
-            } elseif ($val['field_type'] == 'select') {
-                $val['type'] = 'select';
-            } elseif ($val['field_type'] == 'multi') {
-                $val['type'] = 'multi_select';
-            } elseif ($val['field_type'] == 'range_float') {
-                $val['type'] = 'range';
-                $val['input_type'] = 'number';
-                $val['reg'] = '[\\d]+[\\.]?[\\d]*';
-            } elseif ($val['field_type'] == 'range_number') {
-                $val['type'] = 'range';
-                $val['input_type'] = 'number';
-                $val['reg'] = '[\\d]+';
-            } elseif ($val['field_type'] == 'email') {
-                $val['type'] = 'range';
-                $val['input_type'] = 'email';
-            } elseif ($val['field_type'] == 'no_region') {
-                $val['type'] = 'region';
-                $val['count'] = 0;
-            } elseif ($val['field_type'] == 'region') {
-                $val['type'] = 'region';
-                $val['count'] = 1;
-            } elseif ($val['field_type'] == 'mul_region') {
-                $val['type'] = 'region';
-                $val['count'] = 10;
-            } else {
-                $val['type'] = $val['field_type'];
-            }
-            unset($val['field_type']);
-        }
-        return $result;
-    }
 
     public function setParam($key, $type, $value, &$param) {
         if($type == 'in') {
@@ -273,12 +235,12 @@ class Base {
         return $new_array;
     }
 
-    //增加管理后台财务日志
-    public static function addFinanceLog($id, $type, $sub_type, $content)
-    {
-        $finance_log = new FinanceLog();
-        $finance_log->add($type,$sub_type,$id,$content);
-    }
+//    //增加管理后台财务日志
+//    public static function addFinanceLog($id, $type, $sub_type, $content)
+//    {
+//        $finance_log = new FinanceLog();
+//        $finance_log->add($type,$sub_type,$id,$content);
+//    }
 
     //阿里云图片缩放（2016-11-28 最新API）
     /*

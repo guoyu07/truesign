@@ -1,8 +1,9 @@
 <?php
-use \Truesign\Adapter\wechat_marketing\siteBaseConfigAdapter;
-use Truesign\Adapter\wechat_marketing\businessAdapter;
-use \Truesign\Adapter\wechat_marketing\businessLevelAdapter;
 use Royal\Data\DAO;
+use Truesign\Adapter\wechat_marketing\businessAdapter;
+use Truesign\Adapter\wechat_marketing\businessLevelAdapter;
+use \Truesign\Service\Wechat_marketing_service\BusinessService;
+use \Truesign\Service\Wechat_marketing_service\BusinessLevelService;
 
 class BusinessCtrlController extends AppBaseController {
 
@@ -19,27 +20,8 @@ class BusinessCtrlController extends AppBaseController {
     public function descBusinessinfoAction()
     {
         $params = $this->getParams(array(),array('rules'));
-
-        $doAdapter = new businessAdapter();
-        $table_access = $doAdapter->getTableAccess();
-        $rules = $doAdapter->paramRules();
-        $doDao = new DAO($doAdapter);
-
-
-        $db_resposne['statistic']['count'] = 1;
-        $db_resposne['data'][] = array_flip($doDao->getColumn());
-        unset($db_resposne['data'][0]['id']);
-        unset($db_resposne['data'][0]['update_time']);
-        unset($db_resposne['data'][0]['create_time']);
-        unset($db_resposne['data'][0]['if_delete']);
-        foreach ($db_resposne['data'][0] as $k=>$v){
-            $db_resposne['data'][0][$k] = '';
-        }
-
-        $this->filterRules($rules,$db_resposne['data'][0],$params['rules']);
-        $access_rules = array('tableaccess'=>$table_access,'rules'=>$rules);
-        $db_resposne['access_rules'] = $access_rules;
-        $this->output2json($db_resposne);
+        $doService = new BusinessService();
+        $this->output2json($doService->desc($params));
 	}
     /*
      * @for 获取客户信息接口
@@ -48,50 +30,21 @@ class BusinessCtrlController extends AppBaseController {
     public function getBusinessInfoAction()
     {
         $params = $this->getParams(array(),array('rules','document_id','search_sort_by'));
-        if(!empty($params['search_sort_by'])){
-            $search_sort_by = json_decode($params['search_sort_by'],true);
-            $page_param['page_size'] = $search_sort_by['page_size'];
-            $page_param['page'] = $search_sort_by['page'];
-            unset($search_sort_by['page_size']);
-            unset($search_sort_by['page']);
+        $search_sort_by = $this->analysis_search_sort_by($params['search_sort_by']);
+        if(!empty($search_sort_by)){
+            $page_params = $search_sort_by['page_params'];
+            $search_params = $search_sort_by['search_params'];
+            $sorter_params = $search_sort_by['sorter_params'];
         }
-        else{
-            $page_param = array();
-        }
+
+
         if($params['document_id']){
-            $search_param = array('document_id'=>$params['document_id']);
-
-        }
-        else{
-            $search_param = array();
-        }
-
-        foreach ($search_sort_by as $k=>$v){
-
-            if(empty($v) || $k=='vue_search_way'){
-                unset($search_sort_by[$k]);
-            }
-            else{
-                self::setParam($k,'prefix',$v,$search_param);
-
-            }
+            $search_params['document_id'] = $params['document_id'];
 
         }
 
-        $doAdapter = new businessAdapter();
-        $table_access = $doAdapter->getTableAccess();
-        $rules = $doAdapter->paramRules();
-        $doDao = new DAO($doAdapter);
-
-
-        $db_resposne = $doDao->read($search_param,$page_param);
-
-
-        $this->filterRules($rules,$db_resposne['data'][0],$params['rules']);
-
-        $access_rules = array('tableaccess'=>$table_access,'rules'=>$rules);
-        $db_resposne['access_rules'] = $access_rules;
-        $this->output2json($db_resposne);
+        $doService = new BusinessService();
+        $this->output2json($doService->get($params,$search_params,$page_params,$sorter_params));
 
 
     }
@@ -104,9 +57,8 @@ class BusinessCtrlController extends AppBaseController {
         $doAdapter = new businessAdapter();
         $doDao = new DAO($doAdapter);
         $condition['id'] = $params['document_id'];
-        unset($params['document_id']);
-        $db_response = $doDao->insertOrupdate($params,$condition);
-        $this->output2json($db_response);
+        $doService = new BusinessService();
+        $this->output2json($doService->Update($params,$condition));
     }
 
     /*
@@ -130,10 +82,9 @@ class BusinessCtrlController extends AppBaseController {
             $updatedata_item['if_delete'] = 1;
             $updatedata[] = $updatedata_item;
         }
+        $doService = new BusinessService();
 
-        $db_reponse = $doDao->groupUpdate($params['ids'],$updatedata,'if_delete');
-        echo json_encode($db_reponse);
-        exit();
+        $this->output2json($doService->GroupDel($params));
 
     }
 
@@ -146,26 +97,8 @@ class BusinessCtrlController extends AppBaseController {
     {
         $params = $this->getParams(array(),array('rules'));
 
-        $doAdapter = new businessLevelAdapter();
-        $table_access = $doAdapter->getTableAccess();
-        $rules = $doAdapter->paramRules();
-        $doDao = new DAO($doAdapter);
-
-
-        $db_resposne['statistic']['count'] = 1;
-        $db_resposne['data'][] = array_flip($doDao->getColumn());
-        unset($db_resposne['data'][0]['id']);
-        unset($db_resposne['data'][0]['update_time']);
-        unset($db_resposne['data'][0]['create_time']);
-        unset($db_resposne['data'][0]['if_delete']);
-        foreach ($db_resposne['data'][0] as $k=>$v){
-            $db_resposne['data'][0][$k] = '';
-        }
-
-        $this->filterRules($rules,$db_resposne['data'][0],$params['rules']);
-        $access_rules = array('tableaccess'=>$table_access,'rules'=>$rules);
-        $db_resposne['access_rules'] = $access_rules;
-        $this->output2json($db_resposne);
+        $doService = new BusinessLevelService();
+        $this->output2json($doService->Desc($params));
     }
     /*
      * @for 客户级别信息获取接口
@@ -203,20 +136,8 @@ class BusinessCtrlController extends AppBaseController {
             }
 
         }
-        $doAdapter = new businessLevelAdapter();
-        $table_access = $doAdapter->getTableAccess();
-        $rules = $doAdapter->paramRules();
-        $doDao = new DAO($doAdapter);
-
-
-        $db_resposne = $doDao->read($search_param,$page_param);
-
-
-        $this->filterRules($rules,$db_resposne['data'][0],$params['rules']);
-
-        $access_rules = array('tableaccess'=>$table_access,'rules'=>$rules);
-        $db_resposne['access_rules'] = $access_rules;
-        $this->output2json($db_resposne);
+        $doService = new BusinessLevelService();
+        $this->output2json($doService->Get($params,$search_param,$page_param));
 
 
     }
@@ -230,7 +151,7 @@ class BusinessCtrlController extends AppBaseController {
         $doDao = new DAO($doAdapter);
         $condition['id'] = $params['document_id'];
         unset($params['document_id']);
-        $db_response = $doDao->insertOrupdate($params,$condition);
-        $this->output2json($db_response);
+        $doService = new BusinessLevelService();
+        $this->output2json($doService->Update($params,$condition));
     }
 }

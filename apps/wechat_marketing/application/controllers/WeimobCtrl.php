@@ -1,51 +1,32 @@
 <?php
-use \Truesign\Adapter\wechat_marketing\siteBaseConfigAdapter;
-use Truesign\Adapter\wechat_marketing\businessAdapter;
-use \Truesign\Adapter\wechat_marketing\businessLevelAdapter;
 use Royal\Data\DAO;
+use Truesign\Adapter\wechat_marketing\businessAdapter;
+use Truesign\Service\Wechat_marketing_service\WeimobService;
+use \Truesign\Service\Wechat_marketing_service\WeimobContentService;
 
-class BusinessCtrlController extends AppBaseController {
-
+class WeimobCtrlController extends AppBaseController {
 
     public function indexAction()
     {
-        echo '客户数据';
-	}
+        echo '微信公众号数据';
+    }
 
 
-	/*
-	 * @for客户信息新增字段获取接口
-	 */
-    public function descBusinessinfoAction()
-    {
-        $params = $this->getParams(array(),array('rules'));
-
-        $doAdapter = new businessAdapter();
-        $table_access = $doAdapter->getTableAccess();
-        $rules = $doAdapter->paramRules();
-        $doDao = new DAO($doAdapter);
-
-
-        $db_resposne['statistic']['count'] = 1;
-        $db_resposne['data'][] = array_flip($doDao->getColumn());
-        unset($db_resposne['data'][0]['id']);
-        unset($db_resposne['data'][0]['update_time']);
-        unset($db_resposne['data'][0]['create_time']);
-        unset($db_resposne['data'][0]['if_delete']);
-        foreach ($db_resposne['data'][0] as $k=>$v){
-            $db_resposne['data'][0][$k] = '';
-        }
-
-        $this->filterRules($rules,$db_resposne['data'][0],$params['rules']);
-        $access_rules = array('tableaccess'=>$table_access,'rules'=>$rules);
-        $db_resposne['access_rules'] = $access_rules;
-        $this->output2json($db_resposne);
-	}
     /*
-     * @for 获取客户信息接口
+     * @for
+     */
+    public function descWeimobAction()
+    {
+
+        $params = $this->getParams(array(),array('rules'));
+        $doService = new WeimobService();
+        $this->output2json($doService->desc($params));
+    }
+    /*
+     * @for
      *
      */
-    public function getBusinessInfoAction()
+    public function getWeimobAction()
     {
         $params = $this->getParams(array(),array('rules','document_id','search_sort_by'));
         if(!empty($params['search_sort_by'])){
@@ -77,21 +58,8 @@ class BusinessCtrlController extends AppBaseController {
             }
 
         }
-
-        $doAdapter = new businessAdapter();
-        $table_access = $doAdapter->getTableAccess();
-        $rules = $doAdapter->paramRules();
-        $doDao = new DAO($doAdapter);
-
-
-        $db_resposne = $doDao->read($search_param,$page_param);
-
-
-        $this->filterRules($rules,$db_resposne['data'][0],$params['rules']);
-
-        $access_rules = array('tableaccess'=>$table_access,'rules'=>$rules);
-        $db_resposne['access_rules'] = $access_rules;
-        $this->output2json($db_resposne);
+        $doService = new WeimobService();
+        $this->output2json($doService->get($params,$search_param,$page_param));
 
 
     }
@@ -99,14 +67,14 @@ class BusinessCtrlController extends AppBaseController {
          * @for 客户信息更新、软删除接口
          *
          */
-    public function UpdateBusinessInfoAction(){
+    public function UpdateWeimobAction(){
         $params = $_POST;
         $doAdapter = new businessAdapter();
         $doDao = new DAO($doAdapter);
         $condition['id'] = $params['document_id'];
         unset($params['document_id']);
-        $db_response = $doDao->insertOrupdate($params,$condition);
-        $this->output2json($db_response);
+        $doService = new WeimobService();
+        $this->output2json($doService->Update($params,$condition));
     }
 
     /*
@@ -114,6 +82,7 @@ class BusinessCtrlController extends AppBaseController {
      */
     public function GroupDelBusinessInfoAction()
     {
+        die(print_r('未开放接口'));
         $params = $this->getParams(array('ids'));
 
         if(!empty($params['ids'])){
@@ -130,10 +99,9 @@ class BusinessCtrlController extends AppBaseController {
             $updatedata_item['if_delete'] = 1;
             $updatedata[] = $updatedata_item;
         }
+        $doService = new BusinessService();
 
-        $db_reponse = $doDao->groupUpdate($params['ids'],$updatedata,'if_delete');
-        echo json_encode($db_reponse);
-        exit();
+        $this->output2json($doService->GroupDel($params));
 
     }
 
@@ -142,36 +110,19 @@ class BusinessCtrlController extends AppBaseController {
      * @for 客户级别信息 字段获取 新增接口
      *
      */
-    public function descBusinessinfoLevelAction()
+    public function descWeimobContentAction()
     {
-        $params = $this->getParams(array(),array('rules'));
+        die(print_r('未开放接口'));
+        $params = $this->getParams(array('document_id'),array('rules'));
 
-        $doAdapter = new businessLevelAdapter();
-        $table_access = $doAdapter->getTableAccess();
-        $rules = $doAdapter->paramRules();
-        $doDao = new DAO($doAdapter);
-
-
-        $db_resposne['statistic']['count'] = 1;
-        $db_resposne['data'][] = array_flip($doDao->getColumn());
-        unset($db_resposne['data'][0]['id']);
-        unset($db_resposne['data'][0]['update_time']);
-        unset($db_resposne['data'][0]['create_time']);
-        unset($db_resposne['data'][0]['if_delete']);
-        foreach ($db_resposne['data'][0] as $k=>$v){
-            $db_resposne['data'][0][$k] = '';
-        }
-
-        $this->filterRules($rules,$db_resposne['data'][0],$params['rules']);
-        $access_rules = array('tableaccess'=>$table_access,'rules'=>$rules);
-        $db_resposne['access_rules'] = $access_rules;
-        $this->output2json($db_resposne);
+        $doService = new WeimobContentService();
+        $this->output2json($doService->Desc($params));
     }
     /*
      * @for 客户级别信息获取接口
      *
      */
-    public function getBusinessInfoLevelAction()
+    public function getWeimobContentAction()
     {
         $params = $this->getParams(array(),array('rules','document_id','search_sort_by'));
 
@@ -203,34 +154,23 @@ class BusinessCtrlController extends AppBaseController {
             }
 
         }
-        $doAdapter = new businessLevelAdapter();
-        $table_access = $doAdapter->getTableAccess();
-        $rules = $doAdapter->paramRules();
-        $doDao = new DAO($doAdapter);
-
-
-        $db_resposne = $doDao->read($search_param,$page_param);
-
-
-        $this->filterRules($rules,$db_resposne['data'][0],$params['rules']);
-
-        $access_rules = array('tableaccess'=>$table_access,'rules'=>$rules);
-        $db_resposne['access_rules'] = $access_rules;
-        $this->output2json($db_resposne);
+        $doService = new WeimobContentService();
+        $this->output2json($doService->Get($params,$search_param,$page_param));
 
 
     }
     /*
-     * @for 客户级别信息 更新 软删除接口
+     * @for
      *
      */
-    public function UpdateBusinessInfoLevelAction(){
+    public function UpdateWeimobContentAction(){
+        die(print_r('未开放接口'));
         $params = $_POST;
         $doAdapter = new businessLevelAdapter();
         $doDao = new DAO($doAdapter);
         $condition['id'] = $params['document_id'];
         unset($params['document_id']);
-        $db_response = $doDao->insertOrupdate($params,$condition);
-        $this->output2json($db_response);
+        $doService = new WeimobContentService();
+        $this->output2json($doService->Update($params,$condition));
     }
 }

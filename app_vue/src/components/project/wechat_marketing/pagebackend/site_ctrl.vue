@@ -5,6 +5,7 @@
                         <div style="width: 100%;height: auto;min-height: 600px;text-align: left;" v-if="item.name==='后台首页'" key="后台首页">
 
                             <page_model
+                                    :show_phone_model="false"
                                     :final_update_btn_desc="'刷新数据'"
                                     :page_data="siteinfo"
                                     :final_update_action="'SiteInfo/GetEnv'"
@@ -100,8 +101,17 @@
             ])
         },
         created(){
+            var vm = this
             this.report_api = this.wechat_marketing_store.apihost+'siteinfo/'
             this.getBaseInfo()
+            this.$root.eventHub.$on('refresh_page_model',function () {
+                if(vm.defaultTab === '站点设置'){
+                    vm.getSiteCfg()
+                }
+                if(vm.defaultTab === '后台首页'){
+                    vm.getBaseInfo()
+                }
+            })
 
         },
         mounted(){
@@ -110,6 +120,7 @@
 
         },
         beforeDestroy(){
+            this.$root.eventHub.$off('refresh_page_model')
 
         },
         methods: {
@@ -117,10 +128,12 @@
                 var vm = this
                 this.siteinfo = {}
                 if(e.$el.dataset.name === '站点设置'){
+                    this.defaultTab = '站点设置'
                     this.getSiteCfg()
                 }
                 if(e.$el.dataset.name === '后台首页'){
-                   this.getBaseInfo()
+                    this.defaultTab = '后台首页'
+                    this.getBaseInfo()
                 }
 
 

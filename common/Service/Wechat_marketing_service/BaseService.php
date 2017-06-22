@@ -13,7 +13,7 @@ namespace Truesign\Service\Wechat_marketing_service;
 
 use Truesign\Service\AppBaseService;
 
-class WmBaseService extends AppBaseService
+class BaseService extends AppBaseService
 {
 
 

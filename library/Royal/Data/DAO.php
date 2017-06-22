@@ -298,7 +298,11 @@ class DAO
             );
         }
         empty($sorter) && ($sorter = $this->adapter->defaultSort());
+        if(empty($sorter)){
+            $sorter['update_time'] = 'desc';
+//            $sorter['id'] = 'asc';
 
+        }
         if (!$ignoreEs && $es = $this->getEs()) {
             list($stat, $result) = $this->searchFromEs($es, $params, $specified, $pager, $sorter);
         }
@@ -387,7 +391,10 @@ class DAO
                 if (!empty($sorter)) {
                     $sorters = array();
                     foreach ($sorter as $s => $o) {
-                        $sorters[] = sprintf('%s %s', $this->paramNameToField($s), $o);
+                        /*
+                         * is_tip:+0 是为了给数字字符串排序
+                         */
+                        $sorters[] = sprintf('%s %s', $this->paramNameToField($s.'+  CONVERT(0,SIGNED)'), $o);
                     }
                     $whereClause .= sprintf(' ORDER BY %s', implode(',', $sorters));
                 }
@@ -516,7 +523,7 @@ class DAO
         $condition = $this->paramsToCondition($params);
 
         $db = $this->getDb();
-        return $db->getCountByCondition($this->getTable($this->adapter->table()), $condition);
+        return $db->getCountByCondition($this->getTable($this->adapter->table_Prefix().$this->adapter->table()), $condition);
     }
     // yjy
     // group by 并且只返回 count

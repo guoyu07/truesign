@@ -79,6 +79,8 @@
                 table_search_sort_by:{
                     page_size:20,
                     page:1,
+                    search:{},
+                    sorter:{},
                 },
                 table_search_sort_by_status:false,
                 isloading:false,
@@ -91,6 +93,8 @@
         watch:{
             table_search_sort_by: {
                 handler: function (val, oldVal) {
+                    console.log('change->',val)
+
                     if(this.defaultTab === '客户数据'){
                         this.getBusinessInfo(JSON.stringify(this.table_search_sort_by))
                     }
@@ -124,12 +128,9 @@
 
             this.getBusinessInfo(JSON.stringify(this.table_search_sort_by))
             this.$root.eventHub.$on('refresh_table',function (data) {
-//                console.log('on->refresh_table',data)
+                console.log('on->refresh_table',data)
                 if(data === 'resetselect'){
-                    vm.table_search_sort_by = {
-                        page_size:20,
-                            page:1,
-                    }
+                    vm.reset_search_sort_by()
                 }
                 else{
                     if(vm.defaultTab === '客户数据'){
@@ -172,18 +173,15 @@
                 this.table_model_data = []
                 this.table_model_field =  {}
                 this.all_data_count = 0
-                this.table_search_sort_by = {
-                    page_size:20,
-                        page:1,
+                this.reset_search_sort_by()
+                if(e.$el.dataset.name === '客户数据'){
+                    vm.defaultTab = '客户数据'
+                    vm.getBusinessInfo(JSON.stringify(this.table_search_sort_by))
                 }
-                    if(e.$el.dataset.name === '客户数据'){
-                        vm.defaultTab = '客户数据'
-                        vm.getBusinessInfo(JSON.stringify(this.table_search_sort_by))
-                    }
-                    else if(e.$el.dataset.name === '级别套餐'){
-                        vm.defaultTab = '级别套餐'
-                        vm.getBusinessInfoLevel(JSON.stringify(this.table_search_sort_by))
-                    }
+                else if(e.$el.dataset.name === '级别套餐'){
+                    vm.defaultTab = '级别套餐'
+                    vm.getBusinessInfoLevel(JSON.stringify(this.table_search_sort_by))
+                }
 
 
 
@@ -202,18 +200,23 @@
                     .then((res) => {
                         let analysis_data = dbResponseAnalysis2WidgetData(res.data)
                         if(analysis_data.code+'' === '0'){
-                            vm.table_model_field = analysis_data.rules
-                            vm.table_model_data = analysis_data.data
-                            vm.all_data_count =analysis_data.count
-                            for (var index in analysis_data.rules){
-                                if(analysis_data.rules[index].issearch){
+
+
+                            for (let index in analysis_data.searchWidget){
 //                                      进行响应式set key
-//                                    console.log(vm.table_search_sort_by.hasOwnProperty(analysis_data.rules[index].name))
-                                    if(!vm.table_search_sort_by.hasOwnProperty(analysis_data.rules[index].name)){
+                                //1.0版本
+                                if(!vm.table_search_sort_by.search.hasOwnProperty(analysis_data.searchWidget[index].search_key)){
 
-                                        vm.$set(vm.table_search_sort_by,analysis_data.rules[index].name,'')
+                                    vm.$set(vm.table_search_sort_by.search,analysis_data.searchWidget[index].search_key,analysis_data.searchWidget[index])
 
-                                    }
+                                }
+                            }
+                            for (let index in analysis_data.sorterWidget){
+//                                      进行响应式set key
+                                //1.0版本
+                                if(!vm.table_search_sort_by.sorter.hasOwnProperty(analysis_data.sorterWidget[index].key)){
+                                    vm.$set(vm.table_search_sort_by.sorter,analysis_data.sorterWidget[index].key,analysis_data.sorterWidget[index].way)
+
                                 }
                             }
                             vm.info_transfer_action = {
@@ -222,6 +225,9 @@
                                     update:'BusinessCtrl/UpdateBusinessInfo',
                                     groupdel:'BusinessCtrl/GroupDelBusinessInfo'
                             }
+                            vm.table_model_field = analysis_data.rules
+                            vm.table_model_data = analysis_data.data
+                            vm.all_data_count =analysis_data.count
 
 //                            console.log(vm.table_search_sort_by)
                         }
@@ -249,9 +255,14 @@
                                 if(analysis_data.rules[index].issearch){
 //                                      进行响应式set key
 //                                    console.log(vm.table_search_sort_by.hasOwnProperty(analysis_data.rules[index].name))
-                                    if(!vm.table_search_sort_by.hasOwnProperty(analysis_data.rules[index].name)){
+                                    if(!vm.table_search_sort_by.search.hasOwnProperty(analysis_data.rules[index].name)){
 
-                                        vm.$set(vm.table_search_sort_by,analysis_data.rules[index].name,'')
+                                        vm.$set(vm.table_search_sort_by.search,analysis_data.rules[index].name,'')
+
+                                    }
+                                    if(!vm.table_search_sort_by.sort.hasOwnProperty(analysis_data.rules[index].name)){
+
+                                        vm.$set(vm.table_search_sort_by.search,analysis_data.rules[index].name,'')
 
                                     }
                                 }
@@ -270,6 +281,14 @@
 
                     })
 
+            },
+            reset_search_sort_by(){
+                this.table_search_sort_by = {
+                    page_size:20,
+                        page:1,
+                        search:{},
+                    sorter:{},
+                }
             }
 
         },

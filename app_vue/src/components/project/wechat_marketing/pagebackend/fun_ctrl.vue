@@ -4,28 +4,29 @@
         <el-tabs type="border-card" style="background-color: #dcdcdc;box-shadow: none" @tab-click="tabclick"  v-model="defaultTab">
             <el-tab-pane v-for="(item,index) in tab_menu_list" :key="item" :label="item.value" :data-name="item.name" :name="item.name" >
 
-                <div style="width: 100%;height: auto;min-height: 600px;text-align: left;" v-if="item.name==='关于我们模块'" key="关于我们模块">
-                    <p>关于我们模块</p>
+                <div class="tab_content"  v-if="item.name==='关于我们模块'" key="关于我们模块">
+                    <page_model
+                            :show_phone_model="true"
+                            :final_update_btn_desc="'更新数据'"
+                            :page_data="page_model_data"
+                            :final_update_action="'FunCtrl/UpdateFun'"
+                            :page_model_padding_left="'0'"
+
+                            style="width: 100%;min-width:600px;display: inline-block;vertical-align: top" ></page_model>
                 </div>
-                <div style="width: 100%;height: auto;min-height: 600px;text-align: left;" v-if="item.name==='留言板模块'" key="留言板模块">
-                    <p>留言板模块</p>
+                <div class="tab_content" v-if="item.name==='留言板模块'" key="留言板模块">
+                    <page_model
+                                :show_phone_model="true"
+                                :final_update_btn_desc="'更新数据'"
+                                :page_data="page_model_data"
+                                :final_update_action="'FunCtrl/UpdateFun'"
+                                :page_model_padding_left="'0'"
+                                style="width: 100%;min-width:600px;display: inline-block;vertical-align: top" ></page_model>
 
                 </div>
-
-                <div style="width: 100%;height: auto;min-height: 600px;text-align: left;" v-if="item.name==='其他功能模块'" key="其他功能模块">
-                    <table_model v-loading="isloading"
-                                 :currect_select="table_currect_select"
-                                 :element-loading-text="loading_text"
-                                 :search_sort_by="table_search_sort_by"
-                                 :all_data_count="all_data_count"
-                                 :table_data="table_model_data"
-                                 :table_field="table_model_field"
-                                 :info_transfer_action="info_transfer_action"
-
-                    >
-
-                    </table_model>
+                <div class="tab_content" style="" v-if="item.name==='留言板模块'" key="留言板模块">
                 </div>
+
             </el-tab-pane>
         </el-tabs>
 
@@ -42,6 +43,7 @@
     import axios from 'axios'
     import {axios_config} from '../../../../api/axiosApi'
     import {dbResponseAnalysis2WidgetData} from '../../../../api/lib/helper/dataAnalysis'
+    import phone_model from '../../../common/phone_model.vue'
     export default {
         data(){
             return {
@@ -70,7 +72,7 @@
                 show_adddata_page_model_ctrl:false,
                 info_transfer_action:{
                     add:'WeimobCtrl/DescWeimob',
-                    get:'WeimobCtrl/getWeimob',
+                    get:'FunCtrl/getFun',
                     update:'WeimobCtrl/updateweimob',
                     groupdel:'WeimobCtrl/GroupDelWeimob'
                 },
@@ -82,18 +84,21 @@
                 isloading:false,
                 loading_text:'数据加载中',
                 table_currect_select:'',
-                email: ''
+                email: '',
+
 
             }
         },
         watch:{
             table_search_sort_by: {
                 handler: function (val, oldVal) {
-                    if(this.defaultTab === '公众号数据'){
-                        this.getTableInfo(JSON.stringify(this.table_search_sort_by))
+                    if(this.defaultTab === '关于我们模块'){
+
                     }
-                    else if(this.defaultTab === '内容管理'){
-                        this.getTableInfoLevel(JSON.stringify(this.table_search_sort_by))
+                    else if(this.defaultTab === '留言板模块'){
+                    }
+                    else if(this.defaultTab === '其他功能模块'){
+
                     }
 
 
@@ -105,7 +110,8 @@
         },
         components: {
             page_model,
-            table_model
+            table_model,
+            phone_model
         },
         computed: {
             ...mapGetters([
@@ -115,12 +121,11 @@
         created(){
             var vm = this
             this.report_api = this.wechat_marketing_store.apihost+'/'
-            this.$root.eventHub.$emit('init_navmenu','w_m_b_weimob_ctrl')
+            this.$root.eventHub.$emit('init_navmenu','w_m_b_fun_ctrl')
             this.$root.eventHub.$on('currect_row_index',() => {
                 this.show_page_model_ctrl_by_table = !this.show_page_model_ctrl_by_table
             })
-
-            this.getTableInfo(JSON.stringify(this.table_search_sort_by))
+            this.getAboutus()
             this.$root.eventHub.$on('refresh_table',function (data) {
 //                console.log('on->refresh_table',data)
                 if(data === 'resetselect'){
@@ -139,6 +144,9 @@
                 }
 
 
+            })
+            this.$root.eventHub.$on('refresh_page_model',function () {
+                vm.refresh_data()
             })
         },
         mounted(){
@@ -174,20 +182,19 @@
                     page_size:20,
                     page:1,
                 }
-                console.log(e.$el.dataset.name)
-                if(e.$el.dataset.name === '公众号数据'){
-                    vm.defaultTab = '公众号数据'
-                    vm.getTableInfo(JSON.stringify(this.table_search_sort_by))
+                this.page_model_data = {}
+                vm.defaultTab = e.$el.dataset.name
+                if(e.$el.dataset.name === '关于我们模块'){
+                    vm.getAboutus()
                 }
-                else if(e.$el.dataset.name === '内容管理'){
-                    vm.defaultTab = '内容管理'
-                    vm.getTableInfoLevel(JSON.stringify(this.table_search_sort_by))
+                else if(e.$el.dataset.name === '留言板模块'){
+                    vm.getMessageBoard()
                 }
 
 
 
             },
-            getTableInfo(search_sort_by){
+            getAboutus(search_sort_by){
 
                 var vm = this
                 var search_param = {}
@@ -197,31 +204,28 @@
                     search_param.search_sort_by = JSON.stringify(search_sort_by)
                 }
                 search_param.rules = 1
+                search_param.fun_keyword = 'aboutus'
                 axios.post(this.report_api+this.info_transfer_action.get,search_param,axios_config)
                     .then((res) => {
                         let analysis_data = dbResponseAnalysis2WidgetData(res.data)
                         if(analysis_data.code+'' === '0'){
-                            vm.table_model_field = analysis_data.rules
-                            vm.table_model_data = analysis_data.data
-                            vm.all_data_count =analysis_data.count
-                            for (var index in analysis_data.rules){
-                                if(analysis_data.rules[index].issearch){
-//                                      进行响应式set key
-//                                    console.log(vm.table_search_sort_by.hasOwnProperty(analysis_data.rules[index].name))
-                                    if(!vm.table_search_sort_by.hasOwnProperty(analysis_data.rules[index].name)){
-
-                                        vm.$set(vm.table_search_sort_by,analysis_data.rules[index].name,'')
-
+                                var siteinfo_content = analysis_data.widgetdata[0]
+//
+                            for (var index in siteinfo_content){
+                                    if(siteinfo_content[index].key  === 'fun_keyword'){
+                                        siteinfo_content[index].value = 'aboutus'
+                                        siteinfo_content[index].modifiable = false
                                     }
+                                if(siteinfo_content[index].key  === 'fun_title'){
+                                    siteinfo_content[index].value = '关于我们'
+                                    siteinfo_content[index].modifiable = false
                                 }
                             }
-                            vm.info_transfer_action = {
-                                add:'WeimobCtrl/DescWeimob',
-                                get:'WeimobCtrl/getWeimob',
-                                update:'WeimobCtrl/updateweimob',
-                                groupdel:'WeimobCtrl/GroupDelWeimob'
-                            }
-
+                            console.log('content',siteinfo_content)
+                                vm.page_model_data = {
+                                    title:'关于我们配置',
+                                    content:siteinfo_content
+                                }
 //                            console.log(vm.table_search_sort_by)
                         }
 //                        vm.isloading = false
@@ -230,38 +234,35 @@
                     })
 
             },
-            getTableInfoLevel(search_sort_by){
+            getMessageBoard(search_sort_by){
                 var vm = this
                 var search_param = {}
                 if(search_sort_by){
                     search_param.search_sort_by = search_sort_by
                 }
                 search_param.rules = 1
-                axios.post(this.report_api+'getTableInfoLevel',search_param,axios_config)
+                search_param.fun_keyword = 'messageboard'
+                axios.post(this.report_api+this.info_transfer_action.get,search_param,axios_config)
                     .then((res) => {
                         let analysis_data = dbResponseAnalysis2WidgetData(res.data)
                         if(analysis_data.code+'' === '0'){
-                            vm.table_model_field = analysis_data.rules
-                            vm.table_model_data = analysis_data.data
-                            vm.all_data_count =analysis_data.count
-                            for (var index in analysis_data.rules){
-                                if(analysis_data.rules[index].issearch){
-//                                      进行响应式set key
-//                                    console.log(vm.table_search_sort_by.hasOwnProperty(analysis_data.rules[index].name))
-                                    if(!vm.table_search_sort_by.hasOwnProperty(analysis_data.rules[index].name)){
-
-                                        vm.$set(vm.table_search_sort_by,analysis_data.rules[index].name,'')
-
-                                    }
+                            var siteinfo_content = analysis_data.widgetdata[0]
+//
+                            for (var index in siteinfo_content){
+                                if(siteinfo_content[index].key  === 'fun_keyword'){
+                                    siteinfo_content[index].value = 'messageboard'
+                                    siteinfo_content[index].modifiable = false
+                                }
+                                if(siteinfo_content[index].key  === 'fun_title'){
+                                    siteinfo_content[index].value = '留言板'
+                                    siteinfo_content[index].modifiable = false
                                 }
                             }
-                            vm.info_transfer_action = {
-                                add:'BusinessCtrl/DescbusinessinfoLevel',
-                                get:'BusinessCtrl/getTableInfoLevel',
-                                update:'BusinessCtrl/UpdateBusinessInfoLevel',
-                                groupdel:'BusinessCtrl/GroupDelBusinessInfoLevel'
+                            console.log('content',siteinfo_content)
+                            vm.page_model_data = {
+                                title:'关于我们配置',
+                                content:siteinfo_content
                             }
-
 //                            console.log(vm.table_search_sort_by)
                         }
 //                        vm.isloading = false
@@ -269,6 +270,15 @@
 
                     })
 
+            },
+            refresh_data(){
+                var vm = this
+                if(vm.defaultTab === '关于我们模块'){
+                    vm.getAboutus()
+                }
+                if(vm.defaultTab === '留言板模块'){
+                    vm.getMessageBoard()
+                }
             }
 
         },
@@ -280,6 +290,10 @@
     .el-tabs__header{
         box-shadow: 0 0 15px rgba(93, 100, 124, 0.38) !important;
 
+    }
+    .tab_content{
+        width: 100%;height: auto;min-height: 600px;text-align: left;
+        overflow-y scroll
     }
 
 </style>

@@ -13,7 +13,9 @@ class ParamRule {
     public $delimiter = ',';
     public $regex = false;
     public $modifiable = true ;
+    public $ableshow = true ;
     public $issearch = false ;
+    public $issorter = false ;
     public $enumValues = false;
     public $defaultValue = false;
     public $notEmpty = false;
@@ -119,11 +121,27 @@ class ParamRule {
         return $this;
     }
     /**
+     * @param $ableshow
+     * @return ParamRule
+     */
+    public function ableshow($ableshow) {
+        $this->modifiable = $ableshow;
+        return $this;
+    }
+    /**
      * @param $issearch
      * @return ParamRule
      */
     public function issearch($issearch) {
         $this->issearch = $issearch;
+        return $this;
+    }
+    /**
+     * @param $issearch
+     * @return ParamRule
+     */
+    public function issorter($issorter) {
+        $this->issorter = $issorter;
         return $this;
     }
 

@@ -22,7 +22,7 @@ class masterAdapter extends DbLibraryAdapter
     }
     public function tableAccess()
     {
-        return 1;
+        return array('read'=>9,'write'=>9);
     }
 
     public function table()
