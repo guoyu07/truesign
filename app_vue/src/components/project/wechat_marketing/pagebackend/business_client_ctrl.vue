@@ -128,7 +128,7 @@
 
             this.getBusinessInfo(JSON.stringify(this.table_search_sort_by))
             this.$root.eventHub.$on('refresh_table',function (data) {
-                console.log('on->refresh_table',data)
+//                console.log('on->refresh_table',data)
                 if(data === 'resetselect'){
                     vm.reset_search_sort_by()
                 }
@@ -285,8 +285,8 @@
             reset_search_sort_by(){
                 this.table_search_sort_by = {
                     page_size:20,
-                        page:1,
-                        search:{},
+                    page:1,
+                    search:{},
                     sorter:{},
                 }
             }

@@ -24,7 +24,22 @@
                                 style="width: 100%;min-width:600px;display: inline-block;vertical-align: top" ></page_model>
 
                 </div>
-                <div class="tab_content" style="" v-if="item.name==='留言板模块'" key="留言板模块">
+                <div class="tab_content" style="" v-if="item.name==='其他功能模块'" key="其他功能模块">
+                    <table_model v-loading="isloading"
+                                 :currect_select="table_currect_select"
+                                 :element-loading-text="loading_text"
+                                 :search_sort_by="table_search_sort_by"
+                                 :all_data_count="all_data_count"
+                                 :table_data="table_model_data"
+                                 :table_field="table_model_field"
+                                 :info_transfer_action="info_transfer_action"
+                                 :new_add_info="'新增功能'"
+                                 :groupdelable="false"
+                                 :show_phone_model="true"
+                                 :show_phone_model_key="'fun_uri'"
+                    >
+
+                    </table_model>
                 </div>
 
             </el-tab-pane>
@@ -71,16 +86,17 @@
                 show_page_model_ctrl_by_table:false,
                 show_adddata_page_model_ctrl:false,
                 info_transfer_action:{
-                    add:'WeimobCtrl/DescWeimob',
+                    add:'FunCtrl/DescFun',
                     get:'FunCtrl/getFun',
-                    update:'WeimobCtrl/updateweimob',
+                    update:'FunCtrl/UpdateFun',
                     groupdel:'WeimobCtrl/GroupDelWeimob'
                 },
                 table_search_sort_by:{
                     page_size:20,
                     page:1,
+                    search:{},
+                    sorter:{},
                 },
-                table_search_sort_by_status:false,
                 isloading:false,
                 loading_text:'数据加载中',
                 table_currect_select:'',
@@ -92,14 +108,8 @@
         watch:{
             table_search_sort_by: {
                 handler: function (val, oldVal) {
-                    if(this.defaultTab === '关于我们模块'){
 
-                    }
-                    else if(this.defaultTab === '留言板模块'){
-                    }
-                    else if(this.defaultTab === '其他功能模块'){
-
-                    }
+                    this.refresh_data()
 
 
                 },
@@ -129,18 +139,10 @@
             this.$root.eventHub.$on('refresh_table',function (data) {
 //                console.log('on->refresh_table',data)
                 if(data === 'resetselect'){
-                    vm.table_search_sort_by = {
-                        page_size:20,
-                        page:1,
-                    }
+                    vm.reset_search_sort_by()
                 }
                 else{
-                    if(vm.defaultTab === '客户数据'){
-                        vm.getTableInfo(data)
-                    }
-                    else if(vm.defaultTab === '级别套餐'){
-                        vm.getTableInfoLevel(data)
-                    }
+                    vm.refresh_data()
                 }
 
 
@@ -178,18 +180,10 @@
                 this.table_model_data = []
                 this.table_model_field =  {}
                 this.all_data_count = 0
-                this.table_search_sort_by = {
-                    page_size:20,
-                    page:1,
-                }
+                this.reset_search_sort_by()
                 this.page_model_data = {}
                 vm.defaultTab = e.$el.dataset.name
-                if(e.$el.dataset.name === '关于我们模块'){
-                    vm.getAboutus()
-                }
-                else if(e.$el.dataset.name === '留言板模块'){
-                    vm.getMessageBoard()
-                }
+                this.refresh_data
 
 
 
@@ -214,11 +208,11 @@
                             for (var index in siteinfo_content){
                                     if(siteinfo_content[index].key  === 'fun_keyword'){
                                         siteinfo_content[index].value = 'aboutus'
-                                        siteinfo_content[index].modifiable = false
+                                        siteinfo_content[index].able_modify = false
                                     }
                                 if(siteinfo_content[index].key  === 'fun_title'){
                                     siteinfo_content[index].value = '关于我们'
-                                    siteinfo_content[index].modifiable = false
+                                    siteinfo_content[index].able_modify = false
                                 }
                             }
                             console.log('content',siteinfo_content)
@@ -236,7 +230,9 @@
             },
             getMessageBoard(search_sort_by){
                 var vm = this
+
                 var search_param = {}
+
                 if(search_sort_by){
                     search_param.search_sort_by = search_sort_by
                 }
@@ -251,11 +247,11 @@
                             for (var index in siteinfo_content){
                                 if(siteinfo_content[index].key  === 'fun_keyword'){
                                     siteinfo_content[index].value = 'messageboard'
-                                    siteinfo_content[index].modifiable = false
+                                    siteinfo_content[index].able_modify = false
                                 }
                                 if(siteinfo_content[index].key  === 'fun_title'){
                                     siteinfo_content[index].value = '留言板'
-                                    siteinfo_content[index].modifiable = false
+                                    siteinfo_content[index].able_modify = false
                                 }
                             }
                             console.log('content',siteinfo_content)
@@ -271,13 +267,73 @@
                     })
 
             },
+            getOtherFun(search_sort_by){
+                var vm = this
+                var search_param = {}
+                if(search_sort_by){
+                    search_param.search_sort_by = search_sort_by
+                }
+                search_param.rules = 1
+                axios.post(this.report_api+this.info_transfer_action.get,search_param,axios_config)
+                    .then((res) => {
+                        let analysis_data = dbResponseAnalysis2WidgetData(res.data)
+                        if(analysis_data.code+'' === '0'){
+
+//                            console.log('analysis_data.searchWidget',analysis_data.searchWidget)
+                            for (let index in analysis_data.searchWidget){
+//                                      进行响应式set key
+                                //1.0版本
+                                if(!vm.table_search_sort_by.search.hasOwnProperty(analysis_data.searchWidget[index].search_key)){
+
+                                    vm.$set(vm.table_search_sort_by.search,analysis_data.searchWidget[index].search_key,analysis_data.searchWidget[index])
+
+                                }
+                            }
+                            for (let index in analysis_data.sorterWidget){
+//                                      进行响应式set key
+                                //1.0版本
+                                if(!vm.table_search_sort_by.sorter.hasOwnProperty(analysis_data.sorterWidget[index].key)){
+                                    vm.$set(vm.table_search_sort_by.sorter,analysis_data.sorterWidget[index].key,analysis_data.sorterWidget[index].way)
+
+                                }
+                            }
+                            vm.info_transfer_action = {
+                                add:'FunCtrl/DescFun',
+                                get:'FunCtrl/getFun',
+                                update:'FunCtrl/UpdateFun',
+                                groupdel:'false'
+                            }
+                            vm.table_model_field = analysis_data.rules
+                            vm.table_model_data = analysis_data.data
+                            vm.all_data_count =analysis_data.count
+
+//                            console.log(vm.table_search_sort_by)
+                        }
+
+                    })
+
+            },
             refresh_data(){
                 var vm = this
                 if(vm.defaultTab === '关于我们模块'){
-                    vm.getAboutus()
+                    this.table_search_sort_by.search['fun_keyword']={ search_value:'aboutus' }
+                    vm.getAboutus(JSON.stringify(this.table_search_sort_by))
                 }
-                if(vm.defaultTab === '留言板模块'){
-                    vm.getMessageBoard()
+                else if(vm.defaultTab === '留言板模块'){
+                    this.table_search_sort_by.search['fun_keyword']={ search_value:'messageboard' }
+                    vm.getMessageBoard(JSON.stringify(this.table_search_sort_by))
+                }
+
+                else if(this.defaultTab === '其他功能模块'){
+                    vm.getOtherFun(JSON.stringify(this.table_search_sort_by))
+                }
+            },
+            reset_search_sort_by(){
+                this.table_search_sort_by = {
+                    page_size:20,
+                    page:1,
+                    search:{},
+                    sorter:{},
                 }
             }
 

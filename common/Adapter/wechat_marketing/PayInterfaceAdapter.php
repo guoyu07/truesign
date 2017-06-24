@@ -40,7 +40,7 @@ class PayInterfaceAdapter extends DbLibraryAdapter
     {
         return Field::start()
             ->def('document_id')->map('id')->int()->desc('条目id')
-            ->def('bid')->map('bid')->int()->desc('商户账户ID')
+            ->def('b_id')->map('b_id')->int()->desc('商户账户ID')
             ->def('pay_way_code')->map('pay_way_code')->varchar(300)->desc('支付方式代号')
             ->def('pay_way_name')->map('pay_way_name')->varchar(300)->desc('支付方式名称')
             ->def('pay_acount')->map('pay_acount')->varchar(300)->desc('支付权限账户账号')

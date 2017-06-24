@@ -29,41 +29,19 @@ class FunCtrlController extends AppBaseController {
      */
     public function getFunAction()
     {
-        $params = $this->getParams(array(),array('rules','document_id','fun_keyword','search_sort_by'));
-        if(!empty($params['search_sort_by'])){
-            $search_sort_by = json_decode($params['search_sort_by'],true);
-            $page_param['page_size'] = $search_sort_by['page_size'];
-            $page_param['page'] = $search_sort_by['page'];
-            unset($search_sort_by['page_size']);
-            unset($search_sort_by['page']);
-        }
-        else{
-            $page_param = array();
+        $params = $this->getParams(array(),array('rules','document_id','search_sort_by'));
+        $search_sort_by = $this->analysis_search_sort_by($params['search_sort_by']);
+        if(!empty($search_sort_by)){
+            $page_params = $search_sort_by['page_params'];
+            $search_params = $search_sort_by['search_params'];
+            $sorter_params = $search_sort_by['sorter_params'];
         }
         if($params['document_id']){
-            $search_param = array('document_id'=>$params['document_id']);
+            $search_params['document_id'] = $params['document_id'];
 
         }
-        else{
-            $search_param = array();
-        }
-
-        foreach ($search_sort_by as $k=>$v){
-
-            if(empty($v) || $k=='vue_search_way'){
-                unset($search_sort_by[$k]);
-            }
-            else{
-                self::setParam($k,'prefix',$v,$search_param);
-
-            }
-
-        }
-        $search_param['fun_keyword'] = $params['fun_keyword'];
-        $page_param['page_size']=1;
-
         $doService = new FunService();
-        $db_response = $doService->get($params,$search_param,$page_param);
+        $db_response = $doService->get($params,$search_params,$page_params,$sorter_params);
 
         if(empty($db_response['statistic']['count'])){
             $this->DescFunAction(1);

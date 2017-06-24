@@ -42,7 +42,7 @@ class funUseageAdapter extends DbLibraryAdapter
             ->def('document_id')->map('id')->int()->desc('内容id')
             ->def('fun_id')->map('fun_id')->varchar(100)->desc('功能关键词')
             ->def('fun_title')->map('fun_title')->varchar(100)->desc('功能关键词')
-            ->def('wechat_id')->map('wechat_id')->varchar(100)->desc('微信号')->modifiable(false)->ableshow(false)
+            ->def('wechat_id')->map('wechat_id')->varchar(100)->desc('微信号')->able_modify(false)->able_show(false)
             ->def('interaction_content_json')->map('interaction_content_json')->text()->desc('交互内容')
             ->end();
 

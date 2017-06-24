@@ -17,13 +17,14 @@ menu, nav, output, ruby, section, summary,
 time, mark, audio, video
 /*i*/
  {
-    margin: 0;
+    margin: 0 !important;
     padding: 0;
     border: 0;
     font-size: 100%;
     /*font: inherit;*/
     vertical-align: baseline;
-    font-family:"Source Code Pro", Courier, monospace !important
+    font-family:  "Helvetica Neue",Helvetica,Arial,"Microsoft Yahei","Hiragino Sans GB","Heiti SC","WenQuanYi Micro Hei",sans-serif !important;
+    /*font-family: "lucida grande", "lucida sans unicode", lucida, helvetica, "Hiragino Sans GB", "Microsoft YaHei", "WenQuanYi Micro Hei", sans-serif !important;*/
 }
 body, div, table, tbody, tfoot, thead, tr, th, td ,span,dl, dt, dd, ol, ul, li{
 
@@ -40,7 +41,7 @@ footer, header, hgroup, menu, nav, section {
     display: block;
 }
 body {
-    background-color: #3D4D5C !important;
+    background-color: rgba(162, 180, 197, 0.64) !important;
     /*background: linear-gradient(to right, rgba(61, 77, 92, 0.78), #3D4D5C,#3D4D5C,#3D4D5C,#3D4D5C,#3D4D5C,#3D4D5C,  rgba(61, 77, 92, 0.78)) !important; !* 标准的语法（必须放在最后） *!*/
 }
 a{text-decoration:none}

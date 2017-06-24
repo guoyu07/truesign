@@ -2,15 +2,15 @@ require("./lib/canvas/utils")
 const utils =  window.utils
 const requestAnimationFrame = window.requestAnimationFrame
 class DrawCanvas {
-    constructor(el) {
+    constructor(el,width,height) {
         this.el = el
         this.canvas = document.getElementById(this.el)
         // this.CANVAS_Width = document.getElementById(this.el).offsetWidth
         // this.CANVAS_Height = document.getElementById(this.el).offsetHeight()
         // this.width = window.innerWidth;
         // this.height = window.innerHeight
-        this.width = document.body.clientWidth
-        this.height = document.body.clientHeight
+        this.width = width
+        this.height = height
         this.canvas.width = this.width
         this.canvas.height = this.height
         this.ctx = this.canvas.getContext('2d')
@@ -136,13 +136,13 @@ class DrawCanvas {
         dot.v = v
         this.dots.push(dot)
     }
-    move(){
+    move_3D(){
 
         var cls = this
         this.dots.forEach(function (k,v) {
             cls.dots[v].ctrl_v.c_x += cls.ctrl_mode.mode_x
             cls.dots[v].ctrl_v.c_y += cls.ctrl_mode.mode_y
-            cls.dots[v].ctrl_v.c_y -= cls.dots[v].friction.y * 0.5
+            cls.dots[v].ctrl_v.c_y -= cls.dots[v].friction.y * 0.0
             cls.dots[v].ctrl_v.c_z += cls.ctrl_mode.mode_z
             // cls.dots[v].ctrl_v.c_x = cls.ctrl_mode.mode_x
             // cls.dots[v].ctrl_v.c_y = cls.ctrl_mode.mode_y
@@ -186,6 +186,7 @@ class DrawCanvas {
         });
 
     }
+    move_line(type='left_right_center'){}
 
     fixDotCenter(new_dot) {
         this.dots.forEach(function (k, v) {
@@ -316,6 +317,7 @@ class DrawCanvas {
             return (a.z - b.z);
         }
     }
+
 
     initCtrl(){
         const cls = this

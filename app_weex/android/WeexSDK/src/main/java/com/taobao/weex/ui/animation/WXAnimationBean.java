@@ -274,7 +274,7 @@ public class WXAnimationBean {
       wxToAndroidMap.put(WX_SCALE, Arrays.asList(View.SCALE_X, View.SCALE_Y));
       wxToAndroidMap.put(WX_SCALE_X, Collections.singletonList(View.SCALE_X));
       wxToAndroidMap.put(WX_SCALE_Y, Collections.singletonList(View.SCALE_Y));
-      wxToAndroidMap = Collections.unmodifiableMap(wxToAndroidMap);
+      wxToAndroidMap = Collections.unable_modifyMap(wxToAndroidMap);
     }
 
     public String opacity;

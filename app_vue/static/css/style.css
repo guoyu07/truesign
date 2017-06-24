@@ -163,9 +163,10 @@ a {
 }
 
 .top_router_view{
-    position: static;
+    /*position: static;*/
     width: 100%;
     height: 100%;
+    overflow:auto;
     /*background-color: red;*/
     /*z-index:10*/
     /*border: red 2px solid;*/

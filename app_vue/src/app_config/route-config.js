@@ -43,6 +43,7 @@ const project = resolve => require(['../components/project/project.vue'], resolv
 //
 const effect = resolve => require(['../components/effect/effect.vue'], resolve)
 const canvas = resolve => require(['../components/effect/canvas.vue'], resolve)
+const loading_canvas = resolve => require(['../components/effect/loading_canvas.vue'], resolve)
 
 const threejs_wormhole = resolve => require(['../components/effect/threejs_wormhole.vue'], resolve)
 const css3d_periodictable = resolve => require(['../components/effect/css3d_periodictable.vue'], resolve)
@@ -548,6 +549,14 @@ const routes = [
         component: effect,
 
         children:[
+            {
+                name: 'loading_canvas',
+                path: 'loading_canvas',
+                meta: {
+                    title: 'loading_canvas'
+                },
+                component: loading_canvas
+            },
                 {
                     name: 'canvas',
                     path: 'canvas',

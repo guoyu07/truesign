@@ -80,15 +80,15 @@ const webpackConfig = {
 
 
 module.exports = webpackConfig
-const merge = require('webpack-merge')
-const vuxLoader = require('vux-loader')
-module.exports = vuxLoader.merge(webpackConfig, {
-    plugins: [
-        {
-            name: 'vux-ui'
-        },
-        {
-            name: 'duplicate-style'
-        }
-    ]
-})
+// const merge = require('webpack-merge')
+// const vuxLoader = require('vux-loader')
+// module.exports = vuxLoader.merge(webpackConfig, {
+//     plugins: [
+//         {
+//             name: 'vux-ui'
+//         },
+//         {
+//             name: 'duplicate-style'
+//         }
+//     ]
+// })

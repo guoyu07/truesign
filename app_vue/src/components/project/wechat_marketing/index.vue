@@ -1,9 +1,9 @@
 <template>
-    <div class="top_router_view" style="background-color: gainsboro;text-align: center;overflow: hidden;" >
+    <div class="top_router_view" style="background-color: gainsboro;text-align: center;overflow: auto;" >
         <p class="top_router_tip" style="opacity: 0.2">wechat_marketing</p>
 
         <navmenu :logo="logo" :menulist="menulist"></navmenu>
-        <div style="min-width: 1200px;width: 100%;background-color: transparent;height: 100%;margin: 0 auto;padding-top: 70px;">
+        <div style="min-width: 1200px;width: 100%;background-color: transparent;height: 100%;margin: 0 auto;marigin-top: 70px;">
             <transition name="el-zoom-in-top">
             <router-view> </router-view>
             </transition>

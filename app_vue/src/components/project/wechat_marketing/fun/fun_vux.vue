@@ -13,7 +13,6 @@
     require('../../../../../static/css/mobile_style.css')
     const FastClick = require('fastclick')
     FastClick.attach(document.body)
-    import { Divider } from 'vux'
 
     export default {
         data(){

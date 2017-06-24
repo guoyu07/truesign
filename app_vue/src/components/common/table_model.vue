@@ -12,7 +12,6 @@
                            :placeholder="'请输入'+item.search_title"
                            icon="search"
                            v-model="item.search_value"
-
                 >
 
                 </el-input>
@@ -33,28 +32,45 @@
                     :data="table_data"
                     tooltip-effect="dark"
                     style="width: 100%;overflow: auto"
+                    :header-align="'center'"
                     :height="screenHeight-208"
-
+                    :tooltip-effect="'light'"
+                    :show-summary="true"
+                    :sum-text="'汇总'"
+                    :border="true"
+                    :resizable="true"
+                    @summary-method="summaryfunction"
                     :highlight-current-row="true"
                     @selection-change="handleSelectionChange"
                     @row-click="rowClick"
+                    @row-dblclick="rowDblClick"
                     @sort-change="sortChange"
                 >
-                <el-table-column
+                <el-table-column v-if="groupdelable"
+
                         fixed
                     type="selection"
                     width="55">
                 </el-table-column>
 
 
-                <el-table-column v-for="(item,index) in table_field"  v-if="index !=='tag'"  :key="item"
+                <el-table-column v-for="(item,index) in table_field"  v-if="item.type !== 'text'"  :key="item"
+                         :show-overflow-tooltip="true"
                          :fixed="index === 'document_id' || index === 'username'"
                         :sortable="is_sortable(index)"
                         :prop="index"
-                        :label="item.title "
+                        :label="item.title"
                         :width="item.width"
+
                     >
 
+                </el-table-column>
+                <el-table-column v-for="(item,index) in table_field"  v-if="item.type === 'text'"  :key="item"
+                                 :label="item.title"
+                                 width="200">
+                    <template scope="scope">
+                        <div v-html="scope.row[item.name]"></div>
+                    </template>
                 </el-table-column>
                 <el-table-column v-for="(item,index) in table_field" v-if="index==='tag'"  :key="item"
                                  prop="tag" label="标签" width="120" fixed="right"
@@ -109,18 +125,23 @@
             :final_update_action="info_transfer_action.update"
             :final_update_btn_desc="'提交修改'"
             :page_data="detail_page_model_data"
+
             style="position:absolute;z-index:100;
             width:98.5%;text-align: center;bottom: 10px;height:auto;max-height: 600px;overflow-y: auto;overflow-x: hidden" >
 
             </page_model>
 
         </transition>
-
+        <phone_model  v-if="show_phone_model"
+                      style="float: right ;margin-bottom: 100px;position: fixed;top:100px;z-index:2000"
+                      :mobile_show_uri="show_phone_model_uri"
+        ></phone_model>
     </div>
 </template>
 
 <script>
     import page_model from './page_model.vue'
+    import phone_model from './phone_model.vue'
     import { mapGetters,mapActions } from 'vuex'
     import axios from 'axios'
     import {axios_config} from '../../api/axiosApi'
@@ -338,12 +359,21 @@
                     "Wyoming"],
                 focused: false,
                 ready_refresh:0,
-
+                show_phone_model_uri:'http://wap.baidu.com'
             }
 
 
         },
         props: {
+            show_phone_model_key:{
+                defult:'uri'
+            },
+            groupdelable:{
+                default:true
+            },
+            show_phone_model:{
+                default:false
+            },
             test_props:'123',
             new_add_info:{
                 type:String,
@@ -450,6 +480,7 @@
             })
         },
         updated(){
+
 //            console.log('updated->props->search_sort_by->',this.search_sort_by)
 
             Vue.nextTick( () => {
@@ -486,27 +517,35 @@
         },
         components: {
             page_model,
-
+            phone_model,
         },
         methods: {
             handleViewDetailClick(index, rows) {
                 this.show_page_model_ctrl_by_table = false
-                var currect_row = rows.slice(index, index+1);
+                var currect_row = rows[index]
+                var document_id = currect_row.document_id
+                var username = ''
+                if(currect_row.hasOwnProperty('username')){
+                    username = currect_row.username
+                }
 
-                var document_id = currect_row[0].document_id
-                var username = currect_row[0].username
                 this.getCurrectBusinessDetail(document_id,username)
 //                this.$root.eventHub.$emit('currect_row_index',row)
             },
             handleDelRowClick(index, rows) {
                 var currect_row = rows.slice(index, index+1);
-                var document_id = currect_row[0].document_id
-                var username = currect_row[0].username
+                var document_id = currect_row.document_id
+                var username = currect_row.username
                 this.updateCurrectBusinessDetail(index,username,true)
 //                this.$root.eventHub.$emit('currect_row_index',row)
             },
             rowClick(row, event, column){
-
+                if(this.show_phone_model){
+                    this.show_phone_model_uri = 'http://'+row[this.show_phone_model_key]
+                }
+            },
+            rowDblClick(row, event, column){
+                this.show_page_model_ctrl_by_table=false
             },
             toggleSelection(rows) {
                 if (rows) {
@@ -725,6 +764,9 @@
                     return 'custom'
                 }
 
+            },
+            summaryfunction(columns,data){
+                console.log(columns,data)
             }
 
 
@@ -757,5 +799,8 @@
     }
     .el-pagination__jump input.el-pagination__editor{
         width 80px !important
+    }
+    .el-table__footer tbody tr td div{
+        text-align center
     }
 </style>

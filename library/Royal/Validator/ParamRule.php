@@ -11,11 +11,15 @@ class ParamRule {
     public $type;
     public $required = false;
     public $delimiter = ',';
+
     public $regex = false;
-    public $modifiable = true ;
-    public $ableshow = true ;
+    public $able_modify = true ;
+    public $able_show = true ;
     public $issearch = false ;
     public $issorter = false ;
+    public $isRadio = false;
+    public $isCheckbox = false;
+
     public $enumValues = false;
     public $defaultValue = false;
     public $notEmpty = false;
@@ -112,20 +116,29 @@ class ParamRule {
         $this->regex = $regex;
         return $this;
     }
-    /**
-     * @param $modifiable
-     * @return ParamRule
-     */
-    public function modifiable($modifiable) {
-        $this->modifiable = $modifiable;
+
+    public function isRadio($isRadio) {
+        $this->isRadio = $isRadio;
+        return $this;
+    }
+    public function isCheckbox($isCheckbox) {
+        $this->isCheckbox = $isCheckbox;
         return $this;
     }
     /**
-     * @param $ableshow
+     * @param $able_modify
      * @return ParamRule
      */
-    public function ableshow($ableshow) {
-        $this->modifiable = $ableshow;
+    public function able_modify($able_modify) {
+        $this->able_modify = $able_modify;
+        return $this;
+    }
+    /**
+     * @param $able_show
+     * @return ParamRule
+     */
+    public function able_show($able_show) {
+        $this->able_modify = $able_show;
         return $this;
     }
     /**

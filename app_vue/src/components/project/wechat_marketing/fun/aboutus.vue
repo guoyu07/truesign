@@ -1,58 +1,15 @@
 <template>
     <div class="mobile_aboutus">
-        <group>
-            <x-switch :title="('Basic Usage')" v-model="show1"></x-switch>
-            <x-switch :title="('Android Theme')" v-model="show7"></x-switch>
-            <x-switch :title="('Show cancel menu')" v-model="show2"></x-switch>
-            <x-switch :title="('Array menu')" v-model="show5"></x-switch>
-        </group>
 
-        <group :title="('prevent closing when clicking mask')">
-            <x-switch :title="('Basic Usage')" v-model="show4"></x-switch>
-        </group>
-
-        <group>
-            <x-switch :title="('menu as tips')" v-model="show3"></x-switch>
-            <x-switch :title="('slot:header')" v-model="show6"></x-switch>
-            <x-switch :title="('Prevent auto closing')" v-model="show8"></x-switch>
-        </group>
-
-        <actionsheet v-model="show4" :menus="menus1" :close-on-clicking-mask="false" show-cancel @on-click-mask="console('on click mask')"></actionsheet>
-
-        <actionsheet v-model="show1" :menus="menus1" @on-click-menu="click"></actionsheet>
-
-        <actionsheet v-model="show2" :menus="menus2" @on-click-menu="click" show-cancel></actionsheet>
-
-        <actionsheet v-model="show3" :menus="menus3" @on-click-menu="click" @on-click-menu-delete="onDelete" show-cancel></actionsheet>
-
-        <actionsheet v-model="show5" :menus="menus5" show-cancel @on-click-menu="click"></actionsheet>
-
-        <actionsheet v-model="show6" :menus="menus1">
-            <p slot="header" v-html="('actionsheet header')"></p>
-        </actionsheet>
-
-        <actionsheet v-model="show7" :menus="menu7" theme="android" @on-click-menu="click">
-        </actionsheet>
-
-        <toast v-model="showSuccess">{{ ('Deleted~') }}</toast>
-
-        <div v-transfer-dom>
-            <actionsheet v-model="show8" :menus="menus8" @on-click-menu="demo8doClose" :close-on-clicking-mask="false" :close-on-clicking-menu="false">
-            </actionsheet>
-        </div>
     </div>
 
 </template>
 
 
 <script>
-    import { TransferDom, Actionsheet, Group, XSwitch, Toast } from 'vux'
     export default {
         components: {
-            Actionsheet,
-            Group,
-            XSwitch,
-            Toast
+
         },
         directives: {
             TransferDom

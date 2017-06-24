@@ -40,7 +40,7 @@ class weimobAdapter extends DbLibraryAdapter
     {
         return Field::start()
             ->def('document_id')->map('id')->int()->desc('公众号id')
-            ->def('b_id')->map('b_id')->int()->desc('客户id')->modifiable(false)
+            ->def('b_id')->map('b_id')->int()->desc('客户id')->able_modify(false)
             ->def('weimo_type')->map('weimo_type')->int()->desc('公众号类型') //1->非认证订阅号;2->非认证服务号;3->认证订阅号;4->认证服务号
             ->def('weimo_name')->map('weimo_name')->varchar(300)->desc('公众号名称')->issearch(true)
             ->def('appid')->map('appid')->varchar(100)->desc('appid')
@@ -51,6 +51,7 @@ class weimobAdapter extends DbLibraryAdapter
             ->def('base_id')->map('base_id')->varchar(100)->desc('原始id')
             ->def('wechat')->map('wechat')->varchar(100)->desc('微信号')
             ->def('weimo_name')->map('weimo_name')->varchar(300)->desc('公众号名称')
+            ->def('weimo_focus_num')->map('weimo_focus_num')->int()->desc('公众号关注人数')->able_modify(false)
             ->end();
     }
 

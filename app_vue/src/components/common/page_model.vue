@@ -27,7 +27,7 @@
                                             v-model="page_data.content[index].value"
                                             :name="page_data.content[index].label"
                                             type="text"
-                                            v-validate.initial="{ rules: { required:(page_data.content[index].regex && page_data.content[index].modifiable )?true:false,regex:page_data.content[index].modifiable?page_data.content[index].regex:false } }" :class="{'input': true, 'is-danger': errors.has(page_data.content[index].label) }"
+                                            v-validate.initial="{ rules: { required:(page_data.content[index].regex && page_data.content[index].able_modify )?true:false,regex:page_data.content[index].able_modify?page_data.content[index].regex:false } }" :class="{'input': true, 'is-danger': errors.has(page_data.content[index].label) }"
 
 
                                     />
@@ -53,7 +53,7 @@
                                                 v-model="page_data.content[index].value"
                                                 :name="page_data.content[index].label"
                                                 type="text"
-                                                v-validate.initial="{ rules: { required:(page_data.content[index].regex && page_data.content[index].modifiable )?true:false,regex:page_data.content[index].modifiable?page_data.content[index].regex:false } }" :class="{'input': true, 'is-danger': errors.has(page_data.content[index].label) }"
+                                                v-validate.initial="{ rules: { required:(page_data.content[index].regex && page_data.content[index].able_modify )?true:false,regex:page_data.content[index].able_modify?page_data.content[index].regex:false } }" :class="{'input': true, 'is-danger': errors.has(page_data.content[index].label) }"
 
 
                                         />
@@ -70,7 +70,7 @@
                                 </div>
                                 <div v-else-if="page_data.content[index].type === 'time'" class="timepicker" >
                                     <el-date-picker style="display: inline-block;width: 300px"
-                                            :readonly="!page_data.content[index].modifiable"
+                                            :readonly="!page_data.content[index].able_modify"
                                             v-model="page_data.content[index].value"
                                             type="datetime"
                                             placeholder="选择日期时间"
@@ -85,7 +85,7 @@
                                             v-model="page_data.content[index].value"
                                             :name="page_data.content[index].label"
                                             type="text"
-                                            v-validate.initial="{ rules: { required:(page_data.content[index].regex && page_data.content[index].modifiable )?true:false,regex:page_data.content[index].modifiable?page_data.content[index].regex:false } }" :class="{'input': true, 'is-danger': errors.has(page_data.content[index].label) }"
+                                            v-validate.initial="{ rules: { required:(page_data.content[index].regex && page_data.content[index].able_modify )?true:false,regex:page_data.content[index].able_modify?page_data.content[index].regex:false } }" :class="{'input': true, 'is-danger': errors.has(page_data.content[index].label) }"
 
 
                                     />
@@ -105,16 +105,16 @@
                                 page_data.content[index].type !== 'text' &&
                                 page_data.content[index].type !== 'obj' "
                                         class="fileinput"
-                                       :disabled="!page_data.content[index].modifiable"
+                                       :disabled="!page_data.content[index].able_modify"
                                        v-model="page_data.content[index].value"
-                                       :readonly="!page_data.content[index].access  || page_data.content[index].key === 'document_id' || !page_data.content[index].modifiable"
+                                       :readonly="!page_data.content[index].access  || page_data.content[index].key === 'document_id' || !page_data.content[index].able_modify"
                                        :style=" {
                                     borderBottom:page_data.content[index].access?'1px solid rgba(255,255,255,0.41)':'none',
-                                    backgroundColor:(page_data.content[index].access && page_data.content[index].modifiable)?'rgba(150, 150, 150, 0.19)':''
+                                    backgroundColor:(page_data.content[index].access && page_data.content[index].able_modify)?'rgba(150, 150, 150, 0.19)':''
                                     }"
                                        :name="page_data.content[index].label"
                                        type="text"
-                                       v-validate.initial="{ rules: { required:(page_data.content[index].regex && page_data.content[index].modifiable )?true:false,regex:page_data.content[index].modifiable?page_data.content[index].regex:false } }" :class="{'input': true, 'is-danger': errors.has(page_data.content[index].label) }"
+                                       v-validate.initial="{ rules: { required:(page_data.content[index].regex && page_data.content[index].able_modify )?true:false,regex:page_data.content[index].able_modify?page_data.content[index].regex:false } }" :class="{'input': true, 'is-danger': errors.has(page_data.content[index].label) }"
 
 
                                 />
@@ -456,7 +456,7 @@
 //            this.page_design.width = currect_width
             this.report_api = this.wechat_marketing_store.apihost
             this.$root.eventHub.$on('editor_content',function (data) {
-                console.log('editor_content->',data)
+//                console.log('editor_content->',data)
                 for (var item in vm.page_data.content){
                     if(vm.page_data.content[item].type === 'text'){
 

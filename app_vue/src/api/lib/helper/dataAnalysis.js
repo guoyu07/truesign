@@ -124,12 +124,13 @@ export function dbResponseAnalysis2WidgetData(dbResponse) {
 
                            }
                            widgetData_item_attr.regex = dbResponse.rules[rulekey].regex===false?false:eval(dbResponse.rules[rulekey].regex)
-                           widgetData_item_attr.modifiable = dbResponse.rules[rulekey].name==='document_id'?false:dbResponse.rules[rulekey].modifiable
+                           widgetData_item_attr.able_modify = dbResponse.rules[rulekey].name==='document_id'?false:dbResponse.rules[rulekey].able_modify
                            widgetData_item_attr.access = true
 
                            var widget_width = judgeWidth(dbResponse.rules[rulekey].name,widget_type,datarow[datakey])
                            dbResponse.rules[rulekey].width = 0
-                           dbResponse.rules[rulekey].width = widget_width>dbResponse.rules[rulekey].width?widget_width:dbResponse.rules[rulekey].width
+                           // dbResponse.rules[rulekey].width = widget_width>dbResponse.rules[rulekey].width?widget_width:dbResponse.rules[rulekey].width
+                           dbResponse.rules[rulekey].width = widget_width
                        }
                     }
                     widgetData_item.push(widgetData_item_attr)
@@ -212,43 +213,51 @@ function judgeWidgetTypeByKeyAndKeyType(key,keytype){
 
 }
 function judgeWidth(key,keytype,value) {
-    var base_width = 30;
+    var base_width = 130;
     switch (keytype){
         case 'str':
-            base_width = 120
+            base_width = 130
             break
         case 'time':
             base_width = 120
             break;
+        case 'text':
+            base_width = 200
+            break;
         case 'file':
-            base_width = 150
+            base_width = 170
             break;
         case 'img':
             base_width = 80
             break;
         case 'obj':
-            base_width = 120
+            base_width = 150
             break
         case 'mail':
             base_width = 200
             break
         case 'num':
-            base_width = 130
+            base_width = 100
             break
         default:
-            base_width = 30
+            base_width = 120
     }
-    if(key === 'document_id'){
-        base_width = 60
-    }
+
     var tmp_width = 0;
-    if(keytype === 'str' || keytype === 'mail'){
-        tmp_width = value.length*1.5;
+    tmp_width = key.length * 6
+    if(key === 'document_id'){
+        return 90
+
     }
-    if(keytype === 'num' || keytype === 'time'){
-        tmp_width = (value+'').length*10>key.length*4?(value+'').length*10:key.length*4
+    else{
+        return base_width+tmp_width
     }
-    return base_width+tmp_width
+    // if(keytype === 'str' || keytype === 'mail'){
+    //     tmp_width = (value+'').length*10>key.length*10?(value+'').length*10:length*10;
+    // }
+    // if(keytype === 'num' || keytype === 'time'){
+    //     tmp_width = (value+'').length*10>key.length*4?(value+'').length*10:key.length*4
+    // }
 
 }
 

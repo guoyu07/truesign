@@ -7,9 +7,4 @@ $baseDir = dirname($vendorDir);
 
 return array(
     'Pimple' => array($vendorDir . '/pimple/pimple/src'),
-    'Kafka\\' => array($vendorDir . '/nmred/kafka-php/src'),
-    'Illuminate\\Support' => array($vendorDir . '/illuminate/support'),
-    'Illuminate\\Events' => array($vendorDir . '/illuminate/events'),
-    'Illuminate\\Database' => array($vendorDir . '/illuminate/database'),
-    'Illuminate\\Container' => array($vendorDir . '/illuminate/container'),
 );

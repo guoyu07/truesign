@@ -55,12 +55,20 @@ class Field {
         $this->_rule[$this->_index]->title($desc);
         return $this;
     }
-    public function modifiable($modifiable=true) {
-        $this->_rule[$this->_index]->modifiable($modifiable);
+    public function able_modify($able_modify=true) {
+        $this->_rule[$this->_index]->able_modify($able_modify);
         return $this;
     }
-    public function ableshow($ableshow=true) {
-        $this->_rule[$this->_index]->ableshow($ableshow);
+    public function able_show($able_show=true) {
+        $this->_rule[$this->_index]->able_show($able_show);
+        return $this;
+    }
+    public function isRadio($isRadio=false) {
+        $this->_rule[$this->_index]->isRadio($isRadio);
+        return $this;
+    }
+    public function isCheckbox($isCheckbox=false) {
+        $this->_rule[$this->_index]->isCheckbox($isCheckbox);
         return $this;
     }
     public function issearch($issearch=false) {

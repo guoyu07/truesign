@@ -39,7 +39,7 @@ class siteBaseConfigAdapter extends DbLibraryAdapter
     public function tableInit()
     {
         return Field::start()
-            ->def('document_id')->map('id')->int()->desc('id')->modifiable(false)
+            ->def('document_id')->map('id')->int()->desc('id')->able_modify(false)
             ->def('site_name')->map('site_name')->varchar(30)->desc('网站名称')
             ->def('site_title')->map('site_title')->varchar(30)->desc('网站标题')
             ->def('site_keywords')->map('site_keywords')->varchar(30)->desc('网站关键词')

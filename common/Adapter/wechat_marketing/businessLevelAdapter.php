@@ -40,7 +40,7 @@ class businessLevelAdapter extends DbLibraryAdapter
     public function tableInit()
     {
         return Field::start()
-            ->def('document_id')->map('id')->int()->desc('id')->modifiable(false)
+            ->def('document_id')->map('id')->int()->desc('id')->able_modify(false)
             ->def('level_name')->map('level_name')->varchar(100)->desc('级别名称')->issearch(true)
             ->def('hide_call_num')->map('hide_call_num')->int()->desc('隐号通话数量')->issearch(true)
             ->def('sms_msg_num')->map('sms_msg_num')->int()->desc('短信数量')->issearch(true)
