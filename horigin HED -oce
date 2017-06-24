@@ -1,0 +1,97 @@
+[33mcommit 05c980ac7f810f2b7a985464848f5a6d85436fb6[m[33m ([m[1;36mHEAD -> [m[1;32mmaster[m[33m)[m
+Author: iamsee <root@iamsee.com“>
+Date:   Sat Jun 24 19:34:02 2017 +0800
+
+    m
+
+[33mcommit ff7d8e50c2b675ac382f6faac0376cfefe9998dc[m
+Author: iamsee <root@iamsee.com“>
+Date:   Sat Jun 24 19:32:16 2017 +0800
+
+    m
+
+[33mcommit 922f0152d8e13fae3b0cfc9f2e3279a6acab3c4f[m[33m ([m[1;31morigin/master[m[33m, [m[1;31morigin/HEAD[m[33m)[m
+Author: iamsee <root@iamsee.com“>
+Date:   Thu Jun 22 18:32:28 2017 +0800
+
+    add elasticsearch
+
+[33mcommit 44d53b7818343c3edc7acbb206c983b7b06337a6[m
+Author: iamsee <root@iamsee.com“>
+Date:   Thu Jun 22 09:25:53 2017 +0800
+
+    增加一些手机端vue框架
+
+[33mcommit e1da126a659f9cf028e975a6881ffa7b3067d7c8[m
+Author: iamsee <root@iamsee.com“>
+Date:   Tue Jun 20 15:16:10 2017 +0800
+
+    init vux mint-ui
+
+[33mcommit f236c51ece56780444096f34f230824782492bec[m
+Author: iamsee <root@iamsee.com“>
+Date:   Mon Jun 19 13:45:44 2017 +0800
+
+    m
+
+[33mcommit 5b62d6775ddcf6ddaac4adbeb660eea87eee6f74[m
+Author: iamsee <root@iamsee.com“>
+Date:   Fri Jun 16 20:30:50 2017 +0800
+
+    m
+
+[33mcommit 54a61435a27df90c114ec1c286744a56eb3fcb57[m
+Author: iamsee <root@iamsee.com“>
+Date:   Fri Jun 16 20:23:32 2017 +0800
+
+    列表和主控页面交互会又多次重复请求，下次要优先解决这个问题i
+
+[33mcommit 8d6133ba51ff0d1eb1908e2009e08d04d968d2d6[m
+Author: iamsee <root@iamsee.com“>
+Date:   Thu Jun 15 21:01:11 2017 +0800
+
+    m
+
+[33mcommit 081eaf0258f3c6b9d9c4b48ce7cf44c714488efe[m
+Author: iamsee <root@iamsee.com“>
+Date:   Wed Jun 14 20:00:25 2017 +0800
+
+    m
+
+[33mcommit f0615cc5ca0b819d30f3c1474488cd456f36a67f[m
+Author: iamsee <root@iamsee.com“>
+Date:   Tue Jun 13 18:28:43 2017 +0800
+
+    m
+
+[33mcommit 61ddfd011a22fd1fe8d65d20b309e35ea0639194[m
+Author: iamsee <root@iamsee.com“>
+Date:   Sat Jun 10 19:52:23 2017 +0800
+
+    m
+
+[33mcommit caaa79edf5854423c73255367f6e81fa4a8d87f7[m
+Author: iamsee <root@iamsee.com“>
+Date:   Fri Jun 9 20:55:06 2017 +0800
+
+    m
+
+[33mcommit 08e9766cd7200948cb965c0355b338ee3d2a0a29[m
+Author: iamsee <root@iamsee.com“>
+Date:   Thu Jun 8 20:00:31 2017 +0800
+
+    m
+
+[33mcommit 5ef51110d562f872eceead4584438e2de5e29ab1[m
+Author: liuhaoran <863110738@qq.com>
+Date:   Thu Jun 8 08:14:57 2017 +0800
+
+     增加微信营销项目
+
+[33mcommit c4bab332479a1909568932c54ba4aeecb89660ee[m
+Author: liuhaoran <863110738@qq.com>
+Date:   Tue Jun 6 13:21:36 2017 +0800
+
+    m
+error: Could not read 4cd6ffeb9b51bbd398ef9f85232062b9bacdbac8
+fatal: Failed to traverse parents of commit 56c525e468b22383dacafa15eb3661e53d47b344
