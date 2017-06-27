@@ -50,7 +50,7 @@ class BusinessLevelService extends BaseService
             $db_resposne['data'][0][$k] = '';
         }
 
-        $this->filterRules($this->rules,$db_resposne['data'][0],$params['rules']);
+        $this->filterRules($this->rules,$db_resposne['data'],$params['rules']);
         $access_rules = array('tableaccess'=>$this->tableAccess,'rules'=>$this->rules);
         $db_resposne['access_rules'] = $access_rules;
         return $db_resposne;
@@ -62,8 +62,8 @@ class BusinessLevelService extends BaseService
     public function Get($params=array(),$search_params=array(),$page_params=array(),$sorter=array())
     {
 
-        $db_resposne = $this->Dao->read($search_params,$page_params,$sorter);
-        $this->filterRules($this->rules,$db_resposne['data'][0],$params['rules']);
+        $db_resposne = $this->Dao->readSpecified($search_params,array(),$page_params,$sorter);
+        $this->filterRules($this->rules,$db_resposne['data'],$params['rules']);
         $access_rules = array('tableaccess'=>$this->tableAccess,'rules'=>$this->rules);
         $db_resposne['access_rules'] = $access_rules;
         return $db_resposne;

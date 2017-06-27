@@ -40,12 +40,12 @@ class siteBaseConfigAdapter extends DbLibraryAdapter
     {
         return Field::start()
             ->def('document_id')->map('id')->int()->desc('id')->able_modify(false)
-            ->def('site_name')->map('site_name')->varchar(30)->desc('网站名称')
-            ->def('site_title')->map('site_title')->varchar(30)->desc('网站标题')
+            ->def('site_name')->map('site_name')->varchar(30)->desc('网站名称')->regex('/^.+$/')
+            ->def('site_title')->map('site_title')->varchar(30)->desc('网站标题')->regex('/^.+$/')
             ->def('site_keywords')->map('site_keywords')->varchar(30)->desc('网站关键词')
             ->def('site_desc')->map('site_desc')->varchar(100)->desc('网站描述')
-            ->def('site_logo_img')->map('site_logo_img')->varchar(200)->desc('网站logo')->regex('/^.+$/')
-            ->def('site_domain')->map('site_domain')->varchar(120)->desc('网站域名')
+            ->def('site_logo_img')->map('site_logo_img')->varchar(200)->desc('网站logo')->regex('/^.+$/')->widgetType('headpic')
+            ->def('site_domain')->map('site_domain')->varchar(120)->desc('网站域名')->regex('/^.+$/')
             ->def('site_record')->map('site_record')->varchar(120)->desc('网站备案信息')
             ->def('master_phone_num')->map('master_phone_num')->varchar(120)->desc('站长电话')->isPhone()
             ->def('master_qq_num')->map('master_qq_num')->varchar(120)->desc('站长qq')->regex('/^\d{5,12}$/')
@@ -53,8 +53,8 @@ class siteBaseConfigAdapter extends DbLibraryAdapter
             ->def('custom_service_phone_num')->map('custom_service_phone_num')->varchar(120)->desc('客服电话')->isPhone()
             ->def('custom_service_qq_num')->map('custom_service_qq_num')->varchar(120)->desc('客服QQ')
             ->def('site_copyright')->map('site_copyright')->varchar(120)->desc('网站版权')
-            ->def('app_id')->map('app_id')->varchar(100)->desc('应用ID,微信开发者平台应用ID') //
-            ->def('app_secret')->map('app_secret')->varchar(200)->desc('微信开发者平台应用密匙')
+            ->def('app_id')->map('app_id')->varchar(100)->desc('微信开发者应用ID')->regex('/^.+$/')
+            ->def('app_secret')->map('app_secret')->varchar(200)->desc('微信开发者应用密匙')->regex('/^.+$/')
 
             ->def('mail_account_mail')->map('mail_account_mail')->varchar(200)->desc('网站邮箱账户')->isEmail()
             ->def('mail_server')->map('mail_server')->varchar(200)->desc('网站邮件服务器')
@@ -62,7 +62,7 @@ class siteBaseConfigAdapter extends DbLibraryAdapter
             ->def('mail_username')->map('mail_username')->varchar(200)->desc('网站邮件账户用户名')
             ->def('mail_userpass')->map('mail_userpass')->varchar(200)->desc('网站邮件账户密码')
 
-            ->def('upload_method')->map('upload_method')->int()->desc('文件上传方式')  //0->本地;1->阿里云
+            ->def('upload_method')->map('upload_method')->varchar(20)->desc('文件上传方式')->widgetType('radio',array('',array(1=>'本地',2=>'OSS')))->regex('/^.+$/')
             ->def('oss_accesskeyid')->map('oss_accesskeyid')->varchar(100)->desc('oss_accesskeyid')
             ->def('oss_accesskeysecret')->map('oss_accesskeysecret')->varchar(100)->desc('oss_accesskeysecret')
             ->def('oss_endpoint')->map('oss_endpoint')->varchar(100)->desc('oss_endpoint')

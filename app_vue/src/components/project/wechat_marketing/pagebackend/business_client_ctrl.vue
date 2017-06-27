@@ -3,7 +3,7 @@
         <el-tabs type="border-card" style="background-color: #dcdcdc;box-shadow: none" @tab-click="tabclick"  v-model="defaultTab">
             <el-tab-pane v-for="(item,index) in tab_menu_list" :key="item" :label="item.value" :data-name="item.name" :name="item.name" >
 
-                <div style="width: 100%;height: auto;min-height: 600px;text-align: left;" v-if="item.name==='客户数据'" key="客户数据">
+                <div style="width: 100%;height: auto;min-height: 600px;text-align: left;" v-if="item.name==='客户数据' && defaultTab==='客户数据'" key="客户数据" :tab_name="item.name">
                     <!--<div class="ctrl_btn" style="position: absolute;right:10px;margin-top: -4px">-->
                         <!--<el-button type="primary" @click="add_business_info">新增客户</el-button>-->
                     <!--</div>-->
@@ -22,13 +22,16 @@
                         </table_model>
 
                 </div>
-                <div style="width: 100%;height: auto;min-height: 600px;text-align: left;" v-if="item.name==='级别套餐'" key="级别套餐">
+                <div style="width: 100%;height: auto;min-height: 600px;text-align: left;" v-if="item.name==='级别套餐' && defaultTab==='级别套餐'" key="级别套餐" :tab_name="item.name">
                         <table_model v-loading="isloading" :currect_select="table_currect_select"
                                      :element-loading-text="loading_text" :search_sort_by="table_search_sort_by" :all_data_count="all_data_count" :table_data="table_model_data" :table_field="table_model_field"
                                      :new_add_info="'新增套餐'"
                                      :info_transfer_action="info_transfer_action">
 
                         </table_model>
+                </div>
+                <div style="width: 100%;height: auto;min-height: 600px;text-align: left;" v-if="item.name==='支付方式'" key="支付方式 && defaultTab==='支付方式'" :tab_name="item.name">
+                    支付方式
                 </div>
 
 
@@ -62,6 +65,10 @@
                             name : '级别套餐',
                             value : '级别套餐',
                         },
+                        {
+                            name : '支付方式',
+                            value : '支付方式',
+                        },
                     ],
                 adddata_page_model_data:{},
                 page_model_data:{},
@@ -94,14 +101,7 @@
             table_search_sort_by: {
                 handler: function (val, oldVal) {
                     console.log('change->',val)
-
-                    if(this.defaultTab === '客户数据'){
-                        this.getBusinessInfo(JSON.stringify(this.table_search_sort_by))
-                    }
-                    else if(this.defaultTab === '级别套餐'){
-                        this.getBusinessInfoLevel(JSON.stringify(this.table_search_sort_by))
-                    }
-
+                    this.refresh_table_data(JSON.stringify(this.table_search_sort_by))
 
                 },
                 deep: true
@@ -133,12 +133,7 @@
                     vm.reset_search_sort_by()
                 }
                 else{
-                    if(vm.defaultTab === '客户数据'){
-                        vm.getBusinessInfo(data)
-                    }
-                    else if(vm.defaultTab === '级别套餐'){
-                        vm.getBusinessInfoLevel(data)
-                    }
+                    vm.refresh_table_data(data)
                 }
 
 
@@ -176,23 +171,21 @@
                 this.reset_search_sort_by()
                 if(e.$el.dataset.name === '客户数据'){
                     vm.defaultTab = '客户数据'
-                    vm.getBusinessInfo(JSON.stringify(this.table_search_sort_by))
+//                    vm.getBusinessInfo(JSON.stringify(this.table_search_sort_by))
                 }
                 else if(e.$el.dataset.name === '级别套餐'){
                     vm.defaultTab = '级别套餐'
-                    vm.getBusinessInfoLevel(JSON.stringify(this.table_search_sort_by))
+//                    vm.getBusinessInfoLevel(JSON.stringify(this.table_search_sort_by))
                 }
 
 
 
             },
             getBusinessInfo(search_sort_by){
-
                 var vm = this
                 var search_param = {}
                 if(search_sort_by){
                     search_sort_by = JSON.parse(search_sort_by)
-
                     search_param.search_sort_by = JSON.stringify(search_sort_by)
                 }
                 search_param.rules = 1
@@ -200,8 +193,6 @@
                     .then((res) => {
                         let analysis_data = dbResponseAnalysis2WidgetData(res.data)
                         if(analysis_data.code+'' === '0'){
-
-
                             for (let index in analysis_data.searchWidget){
 //                                      进行响应式set key
                                 //1.0版本
@@ -241,30 +232,31 @@
                 var vm = this
                 var search_param = {}
                 if(search_sort_by){
-                    search_param.search_sort_by = search_sort_by
+                    search_sort_by = JSON.parse(search_sort_by)
+                    search_param.search_sort_by = JSON.stringify(search_sort_by)
                 }
                 search_param.rules = 1
                 axios.post(this.report_api+'getBusinessInfoLevel',search_param,axios_config)
                     .then((res) => {
                         let analysis_data = dbResponseAnalysis2WidgetData(res.data)
+                        console.log('getBusinessInfoLevel',analysis_data)
                         if(analysis_data.code+'' === '0'){
-                            vm.table_model_field = analysis_data.rules
-                            vm.table_model_data = analysis_data.data
-                            vm.all_data_count =analysis_data.count
-                            for (var index in analysis_data.rules){
-                                if(analysis_data.rules[index].issearch){
+
+                            for (let index in analysis_data.searchWidget){
 //                                      进行响应式set key
-//                                    console.log(vm.table_search_sort_by.hasOwnProperty(analysis_data.rules[index].name))
-                                    if(!vm.table_search_sort_by.search.hasOwnProperty(analysis_data.rules[index].name)){
+                                //1.0版本
+                                if(!vm.table_search_sort_by.search.hasOwnProperty(analysis_data.searchWidget[index].search_key)){
 
-                                        vm.$set(vm.table_search_sort_by.search,analysis_data.rules[index].name,'')
+                                    vm.$set(vm.table_search_sort_by.search,analysis_data.searchWidget[index].search_key,analysis_data.searchWidget[index])
 
-                                    }
-                                    if(!vm.table_search_sort_by.sort.hasOwnProperty(analysis_data.rules[index].name)){
+                                }
+                            }
+                            for (let index in analysis_data.sorterWidget){
+//                                      进行响应式set key
+                                //1.0版本
+                                if(!vm.table_search_sort_by.sorter.hasOwnProperty(analysis_data.sorterWidget[index].key)){
+                                    vm.$set(vm.table_search_sort_by.sorter,analysis_data.sorterWidget[index].key,analysis_data.sorterWidget[index].way)
 
-                                        vm.$set(vm.table_search_sort_by.search,analysis_data.rules[index].name,'')
-
-                                    }
                                 }
                             }
                             vm.info_transfer_action = {
@@ -273,6 +265,9 @@
                                 update:'BusinessCtrl/UpdateBusinessInfoLevel',
                                 groupdel:'BusinessCtrl/GroupDelBusinessInfoLevel'
                             }
+                            vm.table_model_field = analysis_data.rules
+                            vm.table_model_data = analysis_data.data
+                            vm.all_data_count =analysis_data.count
 
 //                            console.log(vm.table_search_sort_by)
                         }
@@ -288,6 +283,15 @@
                     page:1,
                     search:{},
                     sorter:{},
+                }
+            },
+            refresh_table_data(data){
+
+                if(this.defaultTab === '客户数据'){
+                    this.getBusinessInfo(JSON.stringify(this.table_search_sort_by))
+                }
+                else if(this.defaultTab === '级别套餐'){
+                    this.getBusinessInfoLevel(JSON.stringify(this.table_search_sort_by))
                 }
             }
 

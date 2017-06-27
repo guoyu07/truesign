@@ -108,36 +108,18 @@ class BusinessCtrlController extends AppBaseController {
     {
         $params = $this->getParams(array(),array('rules','document_id','search_sort_by'));
 
-        if(!empty($params['search_sort_by'])){
-            $search_sort_by = json_decode($params['search_sort_by'],true);
-            $page_param['page_size'] = $search_sort_by['page_size'];
-            $page_param['page'] = $search_sort_by['page'];
-            unset($search_sort_by['page_size']);
-            unset($search_sort_by['page']);
-        }
-        else{
-            $page_param = array();
+        $search_sort_by = $this->analysis_search_sort_by($params['search_sort_by']);
+        if(!empty($search_sort_by)){
+            $page_params = $search_sort_by['page_params'];
+            $search_params = $search_sort_by['search_params'];
+            $sorter_params = $search_sort_by['sorter_params'];
         }
         if($params['document_id']){
-            $search_param = array('document_id'=>$params['document_id']);
-
-        }
-        else{
-            $search_param = array();
+            $search_params = array('document_id'=>$params['document_id']);
         }
 
-        foreach ($search_sort_by as $k=>$v){
-            if(empty($v)){
-                unset($search_sort_by);
-            }
-            else{
-                self::setParam($k,'prefix',$v,$search_param);
-
-            }
-
-        }
         $doService = new BusinessLevelService();
-        $this->output2json($doService->Get($params,$search_param,$page_param));
+        $this->output2json($doService->Get($params,$search_params,$page_params,$sorter_params));
 
 
     }
@@ -150,8 +132,9 @@ class BusinessCtrlController extends AppBaseController {
         $doAdapter = new businessLevelAdapter();
         $doDao = new DAO($doAdapter);
         $condition['id'] = $params['document_id'];
-        unset($params['document_id']);
         $doService = new BusinessLevelService();
         $this->output2json($doService->Update($params,$condition));
+
+
     }
 }

@@ -89,48 +89,53 @@ export function dbResponseAnalysis2WidgetData(dbResponse) {
                     for (var rulekey in dbResponse.rules){
                        if(datakey === rulekey){
                            // widgetData_item_attr = dbResponse.rules[rulekey]
-                            var widget_type = judgeWidgetTypeByKeyAndKeyType(dbResponse.rules[rulekey].name,dbResponse.rules[rulekey].type)
-                           if(widget_type === 'time'){
-                               widgetData_item_attr.value = new Date(datarow[datakey]*1000);
-                               datarow[datakey] = dateTime({date:new Date(datarow[datakey]*1000)})
-                           }
-                           widgetData_item_attr.key = dbResponse.rules[rulekey].name
-                           widgetData_item_attr.label = dbResponse.rules[rulekey].title
-                           widgetData_item_attr.type = widget_type
-                           widgetData_item_attr.issearch = dbResponse.rules[rulekey].issearch
-                           if(dbResponse.rules[rulekey].issearch){
-                               searchWidget.push({
-                                   search_value:'',
-                                   search_key:dbResponse.rules[rulekey].name,
-                                   search_title:dbResponse.rules[rulekey].title
+                                    var widget_type = judgeWidgetTypeByKeyAndKeyType(dbResponse.rules[rulekey].name,dbResponse.rules[rulekey].type,dbResponse.rules[rulekey].widgetType)
+                                    if(widget_type === 'time'){
+                                    widgetData_item_attr.value = new Date(datarow[datakey]*1000);
+                                    datarow[datakey] = dateTime({date:new Date(datarow[datakey]*1000)})
+                                    }
+                                    widgetData_item_attr.key = dbResponse.rules[rulekey].name
+                                    widgetData_item_attr.label = dbResponse.rules[rulekey].title
+                                    widgetData_item_attr.type = widget_type
+                                    widgetData_item_attr.issearch = dbResponse.rules[rulekey].issearch
+                                    widgetData_item_attr.issorter = dbResponse.rules[rulekey].issorter
+                                    widgetData_item_attr.regex = dbResponse.rules[rulekey].regex===false?false:eval(dbResponse.rules[rulekey].regex)
+                                    widgetData_item_attr.able_show = dbResponse.rules[rulekey].name==='document_id'?false:dbResponse.rules[rulekey].able_show
+                                    widgetData_item_attr.able_modify = dbResponse.rules[rulekey].name==='document_id'?false:dbResponse.rules[rulekey].able_modify
+                                    widgetData_item_attr.access = true
+                                    widgetData_item_attr.widgetType = dbResponse.rules[rulekey].widgetType
+                                    if(widget_type === 'checkbox'){
+                                        widgetData_item_attr.value = isEmptyValue(widgetData_item_attr.value)?[]:JSON.parse(widgetData_item_attr.value)
+                                        console.log('getcheckbox',typeof widgetData_item_attr.value, widgetData_item_attr.value )
+                                    }
+                                    if(dbResponse.rules[rulekey].issorter){
+                                    let sorter_item = {}
+                                    sorter_item.key = dbResponse.rules[rulekey].name
+                                    switch(dbResponse.rules[rulekey].issorter === 'asc'){
+                                    case 'asc':
+                                    sorter_item.way = 'ascending'
+                                    break;
+                                    case 'desc':
+                                    sorter_item.way = 'descending'
+                                    break;
+                                    default:
+                                    sorter_item.way = 'ascending'
+                                    }
+                                    sorterWidget.push(sorter_item)
 
-                               })
-                           }
-                           widgetData_item_attr.issorter = dbResponse.rules[rulekey].issorter
-                           if(dbResponse.rules[rulekey].issorter){
-                               let sorter_item = {}
-                               sorter_item.key = dbResponse.rules[rulekey].name
-                               switch(dbResponse.rules[rulekey].issorter === 'asc'){
-                                   case 'asc':
-                                       sorter_item.way = 'ascending'
-                                       break;
-                                   case 'desc':
-                                       sorter_item.way = 'descending'
-                                       break;
-                                   default:
-                                       sorter_item.way = 'ascending'
-                               }
-                               sorterWidget.push(sorter_item)
+                                    }
+                                    if(dbResponse.rules[rulekey].issearch){
+                                        searchWidget.push({
+                                            search_value:'',
+                                            search_key:dbResponse.rules[rulekey].name,
+                                            search_title:dbResponse.rules[rulekey].title
+                                        })
+                                    }
 
-                           }
-                           widgetData_item_attr.regex = dbResponse.rules[rulekey].regex===false?false:eval(dbResponse.rules[rulekey].regex)
-                           widgetData_item_attr.able_modify = dbResponse.rules[rulekey].name==='document_id'?false:dbResponse.rules[rulekey].able_modify
-                           widgetData_item_attr.access = true
-
-                           var widget_width = judgeWidth(dbResponse.rules[rulekey].name,widget_type,datarow[datakey])
-                           dbResponse.rules[rulekey].width = 0
-                           // dbResponse.rules[rulekey].width = widget_width>dbResponse.rules[rulekey].width?widget_width:dbResponse.rules[rulekey].width
-                           dbResponse.rules[rulekey].width = widget_width
+                                    var widget_width = judgeWidth(dbResponse.rules[rulekey].name,widget_type,datarow[datakey])
+                                    dbResponse.rules[rulekey].width = 0
+                                    // dbResponse.rules[rulekey].width = widget_width>dbResponse.rules[rulekey].width?widget_width:dbResponse.rules[rulekey].width
+                                    dbResponse.rules[rulekey].width = widget_width
                        }
                     }
                     widgetData_item.push(widgetData_item_attr)
@@ -160,12 +165,48 @@ export function dbResponseAnalysis2WidgetData(dbResponse) {
 
 }
 
-export function  resolveWidgetData2FormData(WidgetData) {
-    var formdata = {}
-    for (var item of WidgetData){
-        formdata[item.key] = item.value
+export function  resolveWidgetData2FormData(WidgetData,flag=true) {
+    if(flag){
+        var formdata = {}
+
+        for (let item of WidgetData){
+
+            if(item.type==='checkbox'){
+                console.log('checkbox',typeof item.value)
+                item.value = JSON.stringify(item.value)
+                console.log('checkbox',typeof item.value)
+
+            }
+            if(item.type === 'radio'){
+                console.log('radio',JSON.parse(item.value))
+
+            }
+            if(item.type === 'time'){
+                item.value = Date.parse(item.value)/1000
+            }
+            formdata[item.key] = item.value
+        }
+        return formdata
     }
-    return formdata
+    else{
+        for (let item of WidgetData){
+
+            if(item.type==='checkbox'){
+                console.log('checkbox',typeof item.value)
+                item.value = JSON.parse(item.value)
+                console.log('checkbox',typeof item.value)
+
+            }
+            if(item.type === 'radio'){
+                console.log('radio',JSON.stringify(item.value))
+
+            }
+            if(item.type === 'time'){
+                item.value = new Date(item.value*1000)
+            }
+        }
+    }
+
 
 }
 
@@ -185,26 +226,47 @@ function convertCode2Tip(code='0') {
     return response_tip === ''?'未定义code代码:'+code:response_tip
 
 }
-function judgeWidgetTypeByKeyAndKeyType(key,keytype){
-    if(keytype==='text'){
+function judgeWidgetTypeByKeyAndKeyType(key,keytype,widgetType){
+    if(widgetType){
+        widgetType = widgetType[0]
+    }
+    if(widgetType==='text'){
         return 'text'
     }
-    else if(key === 'document_id' || (keytype === 'int'   && key.substr(key.length-4) !== 'time') || key.substr(key.length-3) === 'num'){
+    else if(key === 'document_id' || (keytype === 'int'   && widgetType !== 'time') || widgetType === 'num'){
         return 'num'
     }
-    else if(key.substr(key.length-4) === 'time'){
+    else if(widgetType === 'time'){
         return 'time'
     }
-    else if(key.substr(key.length-4) === 'mail'){
+    else if(widgetType === 'mail'){
         return 'mail'
     }
-    else if(key.substr(key.length-3) === 'img'){
+    else if(widgetType === 'headpic'){
         return 'upimg'
     }
-    else if(key.substr(key.length-4) === 'file'){
+    else if(widgetType === 'file'){
         return 'upfile'
     }
-    else if(key.substr(key.length-3) === 'obj'){
+    else if(widgetType === 'password'){
+        return 'password'
+    }
+    else if(widgetType === 'radio'){
+        return 'radio'
+    }
+    else if(widgetType === 'checkbox'){
+
+        return 'checkbox'
+    }
+    else if(widgetType === 'colorpicker'){
+
+        return 'colorpicker'
+
+    }
+    // else if(key.substr(key.length-3) === 'obj'){
+    //     return 'obj'
+    // }
+    else if(widgetType === 'obj'){
         return 'obj'
     }
     else{
@@ -247,18 +309,28 @@ function judgeWidth(key,keytype,value) {
     tmp_width = key.length * 6
     if(key === 'document_id'){
         return 90
-
     }
     else{
         return base_width+tmp_width
     }
-    // if(keytype === 'str' || keytype === 'mail'){
-    //     tmp_width = (value+'').length*10>key.length*10?(value+'').length*10:length*10;
-    // }
-    // if(keytype === 'num' || keytype === 'time'){
-    //     tmp_width = (value+'').length*10>key.length*4?(value+'').length*10:key.length*4
-    // }
 
+
+}
+function arr2str(arr){
+    if(isEmptyValue(arr)){
+        return ''
+    }
+    else{
+        return arr.join(';')
+    }
+}
+function str2arr(str,delimiter=';') {
+    if(isEmptyValue(str)){
+        return []
+    }
+    else{
+        return str.split(delimiter)
+    }
 }
 
 function isJSON (str, pass_object) {
@@ -308,6 +380,23 @@ function isPlainObj(obj){
     return (obj instanceof Object )&& (obj.constructor === Object);
 }
 
+function isEmptyValue (value) {
+    var type;
+    if(value == null) { // 等同于 value === undefined || value === null
+        return true;
+    }
+    type = Object.prototype.toString.call(value).slice(8, -1);
+    switch(type) {
+        case 'String':
+            return !$.trim(value);
+        case 'Array':
+            return !value.length;
+        case 'Object':
+            return $.isEmptyObject(value); // 普通对象使用 for...in 判断，有 key 即为 false
+        default:
+            return false; // 其他对象均视作非空
+    }
+};
 export function deleteEmptyObj (key,container){
     container = container||window;
     if(isEmpty(container[key])){

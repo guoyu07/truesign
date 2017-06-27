@@ -62,7 +62,7 @@ class SiteBaseConfigService extends BaseService
 
 
         $db_resposne = $this->Dao->read($search_params,$page_params,$sorter);
-        $this->filterRules($this->rules,$db_resposne['data'][0],$params['rules']);
+        $this->filterRules($this->rules,$db_resposne['data'],$params['rules']);
         $access_rules = array('tableaccess'=>$this->tableAccess,'rules'=>$this->rules);
         $db_resposne['access_rules'] = $access_rules;
 
@@ -71,7 +71,7 @@ class SiteBaseConfigService extends BaseService
 
     }
     /*
-         * @for 客户信息更新、软删除接口
+         * @for
          *
          */
     public function Update($params=array(),$search_params=array(),$page_params=array()){

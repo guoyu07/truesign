@@ -42,36 +42,36 @@
             })
 
 
-            var xy_line = Math.floor(Math.sqrt(Math.pow(vm.screenHeight,2)+Math.pow(vm.screenWidth,2)))
-
             var drawCanvas = new DrawCanvas('canvas', vm.screenWidth-10, vm.screenHeight-10)
             var tan = vm.screenHeight/vm.screenWidth
-            for(let i = 0; i < xy_line/2; i++){
+            var xy_line = Math.floor(Math.sqrt(Math.pow(vm.screenHeight,2)+Math.pow(vm.screenWidth,2)))
+//            drawCanvas.dots = []
+
+
+            for(let i = 0; i < 1; i++){
+                var line = i*0.5
                 drawCanvas.initDot(
                     {
                         g:{down:0,right:0,out:0},
-                        init_center:{x:-vm.screenWidth/2 + i*2,
-                            y:vm.screenHeight/2-8 - tan*i*2},
+                        init_center:
+                            {
+                                x:0,
+                                y:0
+                            },
                         z:200,
-                        radius:3.5,
-                        colors:[
-                            {key:0,value:'#53DFD6'}
+                        radius:10,
 
-                        ]
+
                     })
 
             }
-
-
-//          this.help = drawCanvas.dots
-
+            vm.help = drawCanvas.dots
             function render() {
-
 
                 drawCanvas.initWidthHeight(vm.screenWidth,vm.screenHeight)
                 drawCanvas.initCtrl()
                 drawCanvas.drawDots()
-                drawCanvas.move_3D()
+                drawCanvas.move_3D({move_speed:{}})
                 drawCanvas.move_line()
             }
             function animate() {

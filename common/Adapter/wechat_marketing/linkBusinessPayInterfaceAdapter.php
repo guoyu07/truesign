@@ -7,7 +7,7 @@ use Truesign\Adapter\Base\DbLibraryAdapter;
 use Royal\Data\Field;
 
 
-class PayInterfaceAdapter extends DbLibraryAdapter
+class linkBusinessPayInterfaceAdapter extends DbLibraryAdapter
 {
     public function database()
     {
@@ -27,7 +27,7 @@ class PayInterfaceAdapter extends DbLibraryAdapter
 
     public function table()
     {
-        return 'pay_interface';
+        return 'link_business_pay_interface';
 
     }
 
@@ -40,9 +40,9 @@ class PayInterfaceAdapter extends DbLibraryAdapter
     {
         return Field::start()
             ->def('document_id')->map('id')->int()->desc('id')
-            ->def('testRadio')->map('testRadio')->varchar(1000)->desc('testRadio')->widgetType('radio',array('',array(1,2,3)))
-            ->def('testCheckbox')->map('testCheckbox')->varchar(1000)->desc('testCheckbox')->widgetType('checkbox',array('',array(1,2,3)))
-            ->def('pay_interface_code')->map('pay_interface_code')->varchar(300)->desc('支付方式代号')
+            ->def('b_id')->map('b_id')->int()->desc('客户id')
+            ->def('b_username')->map('b_username')->varchar(200)->desc('客户名称')
+            ->def('pay_interface_id')->map('pay_interface_id')->varchar(300)->desc('支付方式id')
             ->def('pay_interface_name')->map('pay_interface_name')->varchar(300)->desc('支付方式名称')
             ->def('pay_acount')->map('pay_acount')->varchar(300)->desc('支付权限账户账号')
             ->def('pay_key')->map('pay_key')->varchar(300)->desc('支付权限key')
@@ -51,7 +51,7 @@ class PayInterfaceAdapter extends DbLibraryAdapter
             ->def('public_key_file')->map('public_key_file')->varchar(300)->desc('公匙文件')
             ->def('private_key_file')->map('private_key_file')->varchar(300)->desc('私匙文件')
             ->def('root_certificate_file')->map('root_certificate_file')->varchar(300)->desc('根证书文件')
-            ->def('note')->map('note')->text()->desc('配置说明、帮助')
+            ->def('note')->map('note')->text()->desc('配置说明、帮助')->able_modify(false)
             ->end();
     }
 

@@ -49,7 +49,7 @@ class BusinessService extends BaseService
             $db_resposne['data'][0][$k] = '';
         }
 
-        $this->filterRules($this->rules,$db_resposne['data'][0],$params['rules']);
+        $this->filterRules($this->rules,$db_resposne['data'],$params['rules']);
         $access_rules = array('tableaccess'=>$this->tableAccess,'rules'=>$this->rules);
         $db_resposne['access_rules'] = $access_rules;
         return $db_resposne;
@@ -63,7 +63,7 @@ class BusinessService extends BaseService
 
         $db_resposne = $this->Dao->readSpecified($search_params,array(),$page_params,$sorter);
 
-        $this->filterRules($this->rules,$db_resposne['data'][0],$params['rules']);
+        $this->filterRules($this->rules,$db_resposne['data'],$params['rules']);
         $access_rules = array('tableaccess'=>$this->tableAccess,'rules'=>$this->rules);
         $db_resposne['access_rules'] = $access_rules;
         echo json_encode($db_resposne);

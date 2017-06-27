@@ -72,6 +72,12 @@ class DrawCanvas {
             vpY:window.innerHeight/2,
         },
         visible=true,
+        colors=[
+            {key:0,value:'rgba(255,255,255,1)'},
+            {key:0.2,value:'rgba(0,255,255,1)'},
+            {key:0.3,value:'rgba(0,0,100,1)'},
+            {key:1,value:'rgba(0,0,0,0.1)'}
+        ]
     }
 
     ){
@@ -104,7 +110,7 @@ class DrawCanvas {
         //             }
         //     }
         // }
-
+        dot.colors = colors
         dot.visible = visible
         dot.fl = fl
         dot.ctrl_v = ctrl_v
@@ -122,10 +128,10 @@ class DrawCanvas {
             y:init_center.y
         }
 
-        if(!style){
-            style = this.initStyle(dot.center,radius)
 
-        }
+        style = this.initStyle(dot.center,radius,false,dot.colors)
+
+
         dot.style = style
 
         dot.each_touch_test = each_touch_test
@@ -136,14 +142,23 @@ class DrawCanvas {
         dot.v = v
         this.dots.push(dot)
     }
-    move_3D(){
+    test({a=1}){
+       console.log('a->',a)
 
+    }
+    move_3D({move_speed={
+        x:0,
+        y:0.2,
+        z:0
+    }}){
         var cls = this
         this.dots.forEach(function (k,v) {
             cls.dots[v].ctrl_v.c_x += cls.ctrl_mode.mode_x
+            cls.dots[v].ctrl_v.c_x -= cls.dots[v].friction.x * (typeof move_speed.x === 'undefined'?0:move_speed.x)
             cls.dots[v].ctrl_v.c_y += cls.ctrl_mode.mode_y
-            cls.dots[v].ctrl_v.c_y -= cls.dots[v].friction.y * 0.0
+            cls.dots[v].ctrl_v.c_y -= cls.dots[v].friction.y * (typeof move_speed.y === 'undefined'?0:move_speed.y)
             cls.dots[v].ctrl_v.c_z += cls.ctrl_mode.mode_z
+            cls.dots[v].ctrl_v.c_z -= cls.dots[v].friction.z * (typeof move_speed.z === 'undefined'?0:move_speed.z)
             // cls.dots[v].ctrl_v.c_x = cls.ctrl_mode.mode_x
             // cls.dots[v].ctrl_v.c_y = cls.ctrl_mode.mode_y
             // cls.dots[v].ctrl_v.c_z = cls.ctrl_mode.mode_z
@@ -240,15 +255,20 @@ class DrawCanvas {
         }
         return '#' + is_color
     }
-    initStyle(center,radius,add_cmd = false){
+
+    initStyle(center,radius,add_cmd = false,
+              colors){
         let style = {}
         let per_style = this.ctx.createRadialGradient(center.x,center.y,radius*0.1,center.x,center.y,radius)
-        // per_style.addColorStop(0,this.randomColor())
-        // per_style.addColorStop(1,"white")
-        per_style.addColorStop(0,"rgba(255,255,255,1)");
-        per_style.addColorStop(0.2,"rgba(0,255,255,1)");
-        per_style.addColorStop(0.3,"rgba(0,0,100,1)");
-        per_style.addColorStop(1,"rgba(0,0,0,0.1)");
+        // // per_style.addColorStop(0,this.randomColor())
+        // // per_style.addColorStop(1,"white")
+        for (var item_style of colors){
+            per_style.addColorStop(item_style.key,item_style.value)
+        }
+        // per_style.addColorStop(0,"rgba(255,255,255,1)");
+        // per_style.addColorStop(0.2,"rgba(0,255,255,1)");
+        // per_style.addColorStop(0.3,"rgba(0,0,100,1)");
+        // per_style.addColorStop(1,"rgba(0,0,0,0.1)");
         style.RadialGradient = per_style
         return style
 
@@ -280,7 +300,7 @@ class DrawCanvas {
                 if(k.style){
                     if(k.style.RadialGradient){
                         // canvasM.ctx.fillStyle = k.style.RadialGradient
-                        canvasM.ctx.fillStyle = canvasM.initStyle(k.center,k.radius).RadialGradient
+                        canvasM.ctx.fillStyle = canvasM.initStyle(k.center,k.radius,false,k.colors).RadialGradient
 
                     }
                     if(k.style.shadowBlur){

@@ -155,6 +155,7 @@ class DAO
     }
 
     public function insertOrupdate($params,$condition){
+
         self::checkDemo();
         $fields = $this->prepareForCreate($params);
 
@@ -170,6 +171,7 @@ class DAO
 
     private function prepareForCreate(&$params)
     {
+
         $this->adapter->wrapCreateParams($params);
 
         if (!$this->adapter->wrapWriteParams($params)) {
@@ -202,6 +204,7 @@ class DAO
 
         $fields = $this->paramPairsToFieldPairs($params);
         return $fields;
+
     }
 
     public function batchCreate(array $paramArray)
@@ -438,6 +441,7 @@ class DAO
         );
         return $this->adapter->wrapListResult($retResult);
     }
+
     public function getColumn(){
         $db = $this->getDb();
         $table_column = $db->getColumn($this->getTable($this->adapter->table_Prefix().$this->adapter->table()));

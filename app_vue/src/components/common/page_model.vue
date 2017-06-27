@@ -8,17 +8,22 @@
                 <div class="page_title" :style="page_title_design" >
                     <span>{{page_data.title}}</span>
                 </div>
-                <div class="fold_bar" @click="fold_content_footer" :style="{left:10+'px'}">
-
+                <div class="ctrl_bar fold_bar" @click="fold_content_footer" >
+                    <i class="fa fa-window-restore" style="display:block;width: 100%;height: 100%"></i>
                 </div>
-                <div class="close_bar" @click="close_page_model" >
-
+                <div class="ctrl_bar close_bar" v-if="source_way==='table'" @click="close_page_model" >
+                    <i class="fa fa-window-close-o" style="display:block;width: 100%;height: 100%"></i>
                 </div>
                 <transition name="fade-right" style="background-color: rgba(220,220,220,0.65)">
                     <div class="page_content" v-if="show_content_footer" :style="page_content_design">
                         <ol>
                             <li v-for="(item,index) in page_data.content">
-                                <label class="filelabel" :style=" {borderBottom:page_data.content[index].access?'1px solid rgba(255,255,255,0.41)':'none',backgroundColor:page_data.content[index].access?'rgba(220,220,220,0.65)':'',verticalAlign: 'top'}">{{page_data.content[index].label}}</label>
+                                <label class="filelabel"
+                                       :style=" {borderBottom:page_data.content[index].access?'1px solid rgba(255,255,255,0.41)':'none',
+                                       backgroundColor:page_data.content[index].access?'rgba(220,220,220,0.65)':'',
+                                       verticalAlign: 'top'}">
+                                    {{page_data.content[index].label}}
+                                </label>
                                 <div v-if="page_data.content[index].type ==='upfile'" class="upfile">
                                     <input class="fileinput" v-if="page_data.content[index].type === 'upfile'" @click="upfile_click" :data-index="index" style="border: none;box-shadow: 0 0 3px #9c9c9c;border-radius: 5px" type="button" v-model="page_data.content[index].value" :readonly="!page_data.content[index].access" />
                                     <input class="fileinput" v-if="page_data.content[index].type === 'upfile'" :data-fileindex="index" v-on:change="upfile_change"  style="border: none;box-shadow: 0 0 3px #9c9c9c;border-radius: 5px;display: none" type="file"  />
@@ -86,38 +91,111 @@
                                             :name="page_data.content[index].label"
                                             type="text"
                                             v-validate.initial="{ rules: { required:(page_data.content[index].regex && page_data.content[index].able_modify )?true:false,regex:page_data.content[index].able_modify?page_data.content[index].regex:false } }" :class="{'input': true, 'is-danger': errors.has(page_data.content[index].label) }"
-
-
                                     />
 
 
                                 </div>
-                                <div v-if="page_data.content[index].type === 'text'"
+                                <div v-else-if="page_data.content[index].type === 'text'"
                                      style="height: auto;max-height: 300px;overflow-y: auto">
                                     <wangeditor style="" :editor_content="page_data.content[index].value" :random_id="{index:random_key,random_key:'page_model'}"></wangeditor>
 
                                 </div>
-                                <input v-if="
-                                page_data.content[index].type !== 'btn' &&
+                                <div v-else-if="page_data.content[index].type === 'radio'" class="widget_radio" >
+                                    <el-radio-group v-if=" Object.keys(page_data.content[index].widgetType[1]).length <=2" v-model="page_data.content[index].value">
+                                        <el-radio v-for="(item,index) in page_data.content[index].widgetType[1]" :key="item" :label='"{\""+index+"\":\""+item+"\"}"'>{{item}}</el-radio>
+                                    </el-radio-group>
+                                    <el-select  v-else=" Object.keys(page_data.content[index].widgetType[1]).length <=2" v-model="page_data.content[index].value" filterable placeholder="请选择">
+                                        <el-option
+                                                v-for="(item,index) in page_data.content[index].widgetType[1]"
+                                                :key="index+':'+item"
+                                                :label="item"
+                                                :value='"{\""+index+"\":\""+item+"\"}"'>
+                                        </el-option>
+                                    </el-select>
+                                    <input
+                                            style="display: none"
+                                            v-model="page_data.content[index].value"
+                                            :name="page_data.content[index].label"
+                                            type="text"
+                                            v-validate.initial="{ rules: { required:(page_data.content[index].regex && page_data.content[index].able_modify )?true:false,regex:page_data.content[index].able_modify?page_data.content[index].regex:false } }" :class="{'input': true, 'is-danger': errors.has(page_data.content[index].label) }"
+                                    />
+                                </div>
+                                <div v-else-if="page_data.content[index].type === 'checkbox'" class="widget_radio" >
+                                    <el-checkbox-group v-if=" Object.keys(page_data.content[index].widgetType[1]).length <=2" v-model="page_data.content[index].value">
+                                        <el-checkbox v-for="(item,index) in page_data.content[index].widgetType[1]" :key="item" :label='"{\""+index+"\":\""+item+"\"}"'>{{item}}</el-checkbox>
+                                    </el-checkbox-group>
+                                    <el-select v-else=" Object.keys(page_data.content[index].widgetType[1]).length <=2" v-model="page_data.content[index].value" filterable multiple placeholder="请选择">
+                                        <el-option
+                                                v-for="(item,index) in page_data.content[index].widgetType[1]"
+                                                :key="item"
+                                                :label="item"
+                                                :value='"{\""+index+"\":\""+item+"\"}"'>
+                                        </el-option>
+                                    </el-select>
+                                </div>
+                                <div v-else-if="page_data.content[index].type === 'colorpicker'" class="widget_radio" >
+                                    <el-color-picker v-model="page_data.content[index].value" show-alpha></el-color-picker>
+
+                                </div>
+
+                                <div style="display: inline-block" class="fileinput" v-if="page_data.content[index].type !== 'btn' &&
                                 page_data.content[index].type !== 'upfile' &&
                                 page_data.content[index].type !== 'upimg' &&
                                 page_data.content[index].type !== 'time' &&
                                 page_data.content[index].type !== 'text' &&
-                                page_data.content[index].type !== 'obj' "
-                                        class="fileinput"
-                                       :disabled="!page_data.content[index].able_modify"
-                                       v-model="page_data.content[index].value"
-                                       :readonly="!page_data.content[index].access  || page_data.content[index].key === 'document_id' || !page_data.content[index].able_modify"
-                                       :style=" {
+                                page_data.content[index].type !== 'obj' &&
+                                page_data.content[index].type !== 'radio' &&
+                                page_data.content[index].type !== 'colorpicker' &&
+                                page_data.content[index].type !== 'checkbox'
+                                ">
+                                    <input v-if="  page_data.content[index].type==='password'"
+                                           class=""
+                                           :disabled="!page_data.content[index].able_modify"
+                                           v-model="page_data.content[index].value"
+                                           :readonly="!page_data.content[index].access  || page_data.content[index].key === 'document_id' || !page_data.content[index].able_modify"
+                                           :style=" {
                                     borderBottom:page_data.content[index].access?'1px solid rgba(255,255,255,0.41)':'none',
                                     backgroundColor:(page_data.content[index].access && page_data.content[index].able_modify)?'rgba(150, 150, 150, 0.19)':''
                                     }"
-                                       :name="page_data.content[index].label"
-                                       type="text"
-                                       v-validate.initial="{ rules: { required:(page_data.content[index].regex && page_data.content[index].able_modify )?true:false,regex:page_data.content[index].able_modify?page_data.content[index].regex:false } }" :class="{'input': true, 'is-danger': errors.has(page_data.content[index].label) }"
+                                           :name="page_data.content[index].label"
+                                           type="password"
+                                           v-validate.initial="{ rules: { required:(page_data.content[index].regex && page_data.content[index].able_modify )?true:false,regex:page_data.content[index].able_modify?page_data.content[index].regex:false } }" :class="{'input': true, 'is-danger': errors.has(page_data.content[index].label) }"
 
 
-                                />
+                                    />
+                                    <input v-if=" page_data.content[index].type !=='password'"
+                                           class=""
+                                           :disabled="!page_data.content[index].able_modify"
+                                           v-model="page_data.content[index].value"
+                                           :readonly="!page_data.content[index].access  || page_data.content[index].key === 'document_id' || !page_data.content[index].able_modify"
+                                           :style=" {
+                                    borderBottom:page_data.content[index].access?'1px solid rgba(255,255,255,0.41)':'none',
+                                    backgroundColor:(page_data.content[index].access && page_data.content[index].able_modify)?'rgba(150, 150, 150, 0.19)':''
+                                    }"
+                                           :name="page_data.content[index].label"
+                                           type="text"
+                                           v-validate.initial="{ rules: { required:(page_data.content[index].regex && page_data.content[index].able_modify )?true:false,regex:page_data.content[index].able_modify?page_data.content[index].regex:false } }" :class="{'input': true, 'is-danger': errors.has(page_data.content[index].label) }"
+
+
+                                    />
+                                </div>
+
+                                    <!--<input v-if="page_data.content[index].type==='password'"-->
+                                           <!--class="fileinput"-->
+                                           <!--:disabled="!page_data.content[index].able_modify"-->
+                                           <!--v-model="page_data.content[index].value"-->
+                                           <!--:readonly="!page_data.content[index].access  || page_data.content[index].key === 'document_id' || !page_data.content[index].able_modify"-->
+                                           <!--:style=" {-->
+                                    <!--borderBottom:page_data.content[index].access?'1px solid rgba(255,255,255,0.41)':'none',-->
+                                    <!--backgroundColor:(page_data.content[index].access && page_data.content[index].able_modify)?'rgba(150, 150, 150, 0.19)':''-->
+                                    <!--}"-->
+                                           <!--:name="page_data.content[index].label"-->
+                                           <!--type="text"-->
+                                           <!--v-validate.initial="{ rules: { required:(page_data.content[index].regex && page_data.content[index].able_modify )?true:false,regex:page_data.content[index].able_modify?page_data.content[index].regex:false } }" :class="{'input': true, 'is-danger': errors.has(page_data.content[index].label) }"-->
+
+
+                                    <!--/>-->
+
                                 <!--<input name="email" v-model="page_data.content[index].value" v-validate.initial="'required|email'" :class="{'input': true, 'is-danger': errors.has('email') }" type="text" placeholder="Email">-->
 
 
@@ -141,7 +219,7 @@
                     <transition name="shifting-half-fade">
                         <div v-if="update_response !== '-1'  && update_response !== '0' " class="show_db_reponse"  key="update_ok"  style="width: 100px;height: 35px;border-radius: 5px;background-color: rgba(50,65,87,0.53);position: absolute;right: 100px;bottom: 3px;line-height: 35px;text-align: center;color: white;font-size: 18px">更新成功</div>
                         <div v-else-if="update_response === '-1'" class="show_db_reponse"  key="update_err" style="width: 100px;height: 35px;border-radius: 5px;background-color: rgba(182,43,21,0.53);position: absolute;right: 100px;bottom: 3px;line-height: 35px;text-align: center;color: white;font-size: 18px">更新失败</div>
-                        <div v-else-if="update_response === '0'" class="show_db_reponse"  key="update_err" style="width: 100px;height: 35px;border-radius: 5px;background-color: rgba(182,82,64,0);position: absolute;right: 100px;bottom: 22px;"></div>
+                        <div v-else-if="update_response === '0'" class="show_db_reponse"  key="update_err" style="width: 100px;height: 35px;border-radius: 5px;background-color: rgba(182,82,64,0);position: absolute;right: 100px;bottom: 36px;"></div>
                     </transition>
                     <button @click="final_update_data"  :class="{ui:ClassisActive, inverted:ClassisActive, teal:ClassisActive, basic:ClassisActive,
                    button:ClassisActive,loading:authing,    forminput:ClassisActive}" :disabled="authing"  style="background-color:rgba(132,132,132,0.54) !important;border-radius:3px;margin: 0px;font-size: 20px;padding: 10px;">
@@ -235,6 +313,9 @@
         props: {
             show_phone_model:{
                 default:false
+            },
+            source_way:{
+                default:'alpha'
             },
             page_type:{
                 type: String,
@@ -658,7 +739,6 @@
             },
             final_update_data(){
 
-                this.build_page_data_to_timestamp()
                 var formdata = resolveWidgetData2FormData(this.page_data.content)
                 var vm = this
                 this.$validator.validateAll().then(() => {
@@ -689,10 +769,11 @@
                             }
                             this.authing = false
                             setTimeout(function () {
+                                console.log('emit->page_model_update_response_done')
                                 vm.update_response = '0'
                                 vm.$root.eventHub.$emit('page_model_update_response_done',res.data)
                             },600)
-                            vm.build_page_data_to_timestamp(false)
+                            resolveWidgetData2FormData(this.page_data.content,false)
 
                         })
                 }).catch(() => {
@@ -711,6 +792,9 @@
             },
             close_page_model(){
                 this.$root.eventHub.$emit('close_page_model',1)
+            },
+            str2arr(str){
+
             }
         },
         beforeDestroy(){
@@ -738,6 +822,9 @@
         max-width: 50%;
         width: 100%;
         min-width: 300px;
+        margin-top 8px;
+        border none
+        height 35px
     }
     .page_model .page_content li .timepicker div{
         width: 300px;
@@ -746,19 +833,19 @@
     .page_model .page_content li .timepicker div input{
         border none
         margin-top -20px
-        height 25px !important
+        height 36px !important
         padding 0
 
     }
     .page_model .page_content li  label{
         background-color: transparent;
-        height: 22px;
-        line-height: 22px;
+        height: 36px;
+        line-height: 36px;
         color: black;
         width: 10%;
-        min-width: 100px;
+        min-width: 150px;
         display: inline-block;
-        text-align: center;
+        text-align: left;
         padding-left: 10px;
         font-size: 13px;
         letter-spacing: inherit;
@@ -772,8 +859,8 @@
     .page_model .page_content li .fileinput{
         color:#727272 !important;
         background-color: transparent;
-        height: 22px;
-        line-height: 22px;
+        height: 36px;
+        line-height: 36px;
         max-width: 55%;
         width: 100%;
         min-width: 100px;
@@ -790,11 +877,15 @@
         outline: 0;
 
     }
+    .page_model .page_content li .fileinput input{
+        width 100%
+        text-align center
+    }
     .page_model .page_content li .filediv .filespan{
-        display: inline-block;height: 22px
+        display: inline-block;height: 36px
     }
     .page_model .page_content li .filediv{
-        width: auto;min-width: 180px;vertical-align: top;display: inline-block;padding-left: 10px;height: 22px;line-height: 22px
+        width: auto;min-width: 180px;vertical-align: top;display: inline-block;padding-left: 10px;height: 36px;line-height: 36px
 
     }
     .now_data_show{
@@ -844,6 +935,8 @@
     }
     .el-input__inner{
         color: black !important;
+        background-color : #e5e5e5
+        box-shadow 0 0 1px #ffffff
     }
 
 
@@ -1010,6 +1103,11 @@
         display inline-block
 
     }
+    .widget_radio{
+        width 400px
+        min-width 400px
+        display inline-block
+    }
     .upfile{
         width 60%
         height 60px;
@@ -1078,35 +1176,59 @@
     .el-date-table th{
         text-align center
     }
+    .ctrl_bar i{
+        font-size 28px;
+        color #828282
+        transition all 0.8s
+    }
+    .ctrl_bar i:hover{
+        color rgba(130, 130, 130, 0.51)
+        transition all 0.8s
+
+    }
     .fold_bar{
         position absolute
-        width 25px
-        height 25px
+        width 36px
+        height 36px
+        /*
         box-shadow 0 0 10px rgba(53, 53, 53, 0.53)
+        background-color #e8e1b5
+
+        */
         border-radius 5px
         top 3px
         margin-left 5px
-        background-color #e8e8e8
         transition all 1.5s
+        right 60px
+        cursor pointer
     }
     .fold_bar:hover{
-        background-color #bcbcbc
+        /*background-color #bcbcbc*/
     }
     .close_bar{
         position absolute
-        width 25px
-        height 25px
+        width 36px
+        height 36px
+        /*
         box-shadow 0 0 10px rgba(53, 53, 53, 0.53)
+        background-color #e8e1b5
+        */
         border-radius 5px
         top 3px
         margin-left 5px
-        background-color #e8e1b5
+
         transition all 1.5s
         right 20px
         cursor pointer
     }
     .close_bar:hover{
+        /*
         background-color rgba(188, 8, 10, 0.54)
+        */
+
+    }
+    .el-select{
+        width 100%
     }
 
 </style>

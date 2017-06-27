@@ -69,7 +69,9 @@ class EnvService extends BaseService
         $this->Dao->insertOrupdate($data,array('server_ip'=>$env['IP']));
 
         $db_resposne = $this->Dao->read(array('server_ip'=>$env['IP']),array(),array(),false,false,true);
-        $this->filterRules($rules,$db_resposne['data'][0],$params['rules']);
+        $db_resposne['data'][0]['create_time'] = date('Y-m-d h:i:s',$db_resposne['data'][0]['create_time']);
+        $db_resposne['data'][0]['update_time'] = date('Y-m-d h:i:s',$db_resposne['data'][0]['update_time']);
+        $this->filterRules($rules,$db_resposne['data'],$params['rules']);
 
         $access_rules = array('tableaccess'=>$table_access,'rules'=>$rules);
         $db_resposne['access_rules'] = $access_rules;

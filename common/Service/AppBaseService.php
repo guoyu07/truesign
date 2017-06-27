@@ -31,16 +31,51 @@ class AppBaseService {
         }
     }
 
-    public function filterRules(&$rules,$db_data_row,$rules_show=0)
+    public function filterRules(&$rules,&$db_data,$rules_show=0)
     {
+
         $request_db_param = array();
+        if(!empty($db_data)){
+            $db_data_row = $db_data[0];
+        }
+
         if($db_data_row && !empty($rules_show)){
+
             foreach ($db_data_row as $k=>$v){
                 $request_db_param[] = $k;
             }
             foreach ($rules as $k=>$v){
                 if(!in_array($k,$request_db_param)){
                     unset($rules[$k]);
+                }
+                else{
+                    if($v->widgetType){
+                       if($v->widgetType[0] == 'radio' && empty($v->widgetType[1][0])){
+                           $v->widgetType[1] = $v->widgetType[1][1];
+                       }
+
+                        else if($v->widgetType[0] == 'checkbox' && empty($v->widgetType[1][0])){
+                            $v->widgetType[1] = $v->widgetType[1][1];
+                        }
+                        elseif (($v->widgetType[0] == 'radio' || $v->widgetType[0] == 'checkbox') && !empty($v->widgetType[1][0]) && !empty($v->widgetType[1][1])){
+                            $doAdapter = $v->widgetType[1][0];
+                            $doDao = new DAO(new $doAdapter);
+                            $db_mold_list = $doDao->readSpecified(array(),array('document_id',$v->widgetType[1][1]),array(),array('create_time'=>'asc'));
+
+                            if(!empty($db_mold_list['statistic']['count'])){
+                                $mold_list = [];
+                                foreach ($db_mold_list['data'] as $kk=>$vv){
+
+                                    $mold_list[$vv['document_id']] = $vv[$v->widgetType[1][1]];
+                                }
+                                $v->widgetType[1] = $mold_list;
+                            }
+                            else{
+                                $v->widgetType[1] = '';
+                            }
+
+                        }
+                    }
                 }
             }
         }

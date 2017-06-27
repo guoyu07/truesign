@@ -17,8 +17,8 @@ class ParamRule {
     public $able_show = true ;
     public $issearch = false ;
     public $issorter = false ;
-    public $isRadio = false;
-    public $isCheckbox = false;
+    public $widgetType = false;
+    public $tag = false;
 
     public $enumValues = false;
     public $defaultValue = false;
@@ -117,12 +117,13 @@ class ParamRule {
         return $this;
     }
 
-    public function isRadio($isRadio) {
-        $this->isRadio = $isRadio;
+    public function widgetType($type,$params)
+    {
+        $this->widgetType = array($type,$params);
         return $this;
     }
-    public function isCheckbox($isCheckbox) {
-        $this->isCheckbox = $isCheckbox;
+    public function tag($tag) {
+        $this->tag = $tag;
         return $this;
     }
     /**

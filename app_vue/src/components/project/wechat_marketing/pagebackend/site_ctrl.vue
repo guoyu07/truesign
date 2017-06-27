@@ -157,9 +157,8 @@
                 var vm = this
                 axios.post(this.report_api+'getsitebaseconfig',{rules:1},axios_config)
                     .then((res) => {
-                        console.log(res.data)
                         let analysis_data = dbResponseAnalysis2WidgetData(res.data)
-                        console.log(analysis_data.widgetdata)
+                        console.log('analysis_data.widgetdata',analysis_data.widgetdata)
 
                         if(analysis_data.code+'' === '0'){
 

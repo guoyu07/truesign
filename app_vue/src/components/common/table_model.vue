@@ -15,13 +15,14 @@
                 >
 
                 </el-input>
-                <el-button @click="resetSelect" size="small" type="success">重置检索</el-button>
+                <el-button @click="resetSelect" size="" type="success">重置检索</el-button>
             </div>
 
             <el-button v-if="new_add_info" type="primary" style="position: absolute;right: 15px"  @click="add_business_info" >{{ new_add_info }}</el-button>
 
         </div>
         <transition name="el-zoom-in-top" >
+
             <div class="table_model" key="tabledata" style="" v-if="all_data_count" >
 
                 <el-table
@@ -34,7 +35,7 @@
                     style="width: 100%;overflow: auto"
                     :header-align="'center'"
                     :height="screenHeight-208"
-                    :tooltip-effect="'light'"
+
                     :show-summary="true"
                     :sum-text="'汇总'"
                     :border="true"
@@ -125,7 +126,7 @@
             :final_update_action="info_transfer_action.update"
             :final_update_btn_desc="'提交修改'"
             :page_data="detail_page_model_data"
-
+             source_way="table"
             style="position:absolute;z-index:100;
             width:98.5%;text-align: center;bottom: 10px;height:auto;max-height: 600px;overflow-y: auto;overflow-x: hidden" >
 
@@ -330,7 +331,7 @@
                         title:'编码',
                     }
         },
-                show_page_model_ctrl_by_table:true,
+                show_page_model_ctrl_by_table:false,
                 detail_page_model_data:{},
                 isloading:false,
                 loading_text:'数据加载中',
@@ -469,6 +470,7 @@
             var vm = this
             this.apihost = this.wechat_marketing_store.apihost
             this.$root.eventHub.$on('page_model_update_response_done',function () {
+                console.log('on->page_model_update_response_done')
                 vm.show_page_model_ctrl_by_table = false
 //                vm.detail_page_model_data = {}
 //                vm.add_business_info()
@@ -528,7 +530,9 @@
                 if(currect_row.hasOwnProperty('username')){
                     username = currect_row.username
                 }
-
+                console.log(rows)
+                console.log(index)
+                console.log(currect_row)
                 this.getCurrectBusinessDetail(document_id,username)
 //                this.$root.eventHub.$emit('currect_row_index',row)
             },
@@ -571,6 +575,7 @@
                     .then((res) => {
 //                        console.log(res.data)
                         let  analysis_data = dbResponseAnalysis2WidgetData(res.data)
+                        console.log('analysis_data',analysis_data)
                         if(analysis_data.code+'' === '0'){
                             var content = analysis_data.widgetdata[0]
                             vm.detail_page_model_data = {
@@ -633,7 +638,7 @@
                 vm.isloading = true
                 axios.post(this.apihost+this.info_transfer_action.update,update_params,axios_config)
                     .then((res) => {
-//                        console.log('update_detail->',res.data)
+                        console.log('update_detail->',res.data)
                         if((typeof res.data === 'object' && res.data.statistic.count>=1) || res.data>=1){
                             vm.$notify.success({
                                 title: '成功',
@@ -652,8 +657,9 @@
                             });
 
                         }
-                        vm.refresh_table_data()
                         vm.isloading = false
+
+                        vm.refresh_table_data()
                     })
                     .catch((error) => {
                         vm.isloading = error

@@ -63,14 +63,11 @@ class Field {
         $this->_rule[$this->_index]->able_show($able_show);
         return $this;
     }
-    public function isRadio($isRadio=false) {
-        $this->_rule[$this->_index]->isRadio($isRadio);
+    public function tag($tag=true) {
+        $this->_rule[$this->_index]->tag($tag);
         return $this;
     }
-    public function isCheckbox($isCheckbox=false) {
-        $this->_rule[$this->_index]->isCheckbox($isCheckbox);
-        return $this;
-    }
+    
     public function issearch($issearch=false) {
         $this->_rule[$this->_index]->issearch($issearch);
         return $this;
@@ -81,6 +78,12 @@ class Field {
     }
     public function regex($regex) {
         $this->_rule[$this->_index]->regex($regex);
+        return $this;
+    }
+
+    public function widgetType($type='str',$params=array())
+    {
+        $this->_rule[$this->_index]->widgetType($type,$params);
         return $this;
     }
     /**

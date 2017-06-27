@@ -1,6 +1,6 @@
 <template>
         <div class="phone_model" @mousedown="startdragthis($event)" @mouseup="overdragthis(false,$event)">
-                <iframe id="phone_model_iframe" name="phone_model_iframe" class="demo-page" frameborder="0"   :src="mobile_show_uri" @click="iframeclick"></iframe>
+                <iframe name="phone_model_iframe" class="demo-page phone_model_iframe" frameborder="0"   :src="currect_mobile_show_uri" @click="iframeclick"></iframe>
                 <input @click="iframe_click_back" type="button" class="phone_model_button">
         </div>
 
@@ -13,6 +13,7 @@
     export default {
         data(){
             return {
+                currect_mobile_show_uri:'http://wap.baidu.com',
                 drag_param:{
                     pos_pageY:0,
                     chat_msg_height:0,
@@ -27,8 +28,6 @@
                     currentDisY:'',
                     offsetWidth:'',
                     pull_pointX:'',
-                    currect_mobile_show_uri:''
-
                 },
             }
         },
@@ -39,7 +38,18 @@
             },
 
         },
-        components: {},
+        watch: {
+            mobile_show_uri: {
+                handler: function (val, oldVal) {
+                   this.currect_mobile_show_uri = this.mobile_show_uri
+
+                },
+                deep: true
+            }
+        },
+        components: {
+
+        },
         computed: {},
         created(){
 
@@ -84,7 +94,7 @@
 
                     $target.css("position", "fixed");
                     $target.css("cursor", "move");
-                    this.drag_param.currentDisX = e.pageX - $target.offset().left;
+                    this.drag_param.currentDisX = e.pageX - $target.offset().left+20;
                     this.drag_param.currentDisY = e.pageY - $target.offset().top;
                     $(document).mousemove(function (e) {
                         if (vm.drag_param.isDrag && !vm.lock) {
@@ -130,7 +140,11 @@
 //                console.log('go back')
 //                $('#phone_model_iframe')[0].contentWindow.history.go(1);
 //                document.getElementById(phone_model_iframe).contentDocument.location.reload(true);
-                document.getElementById('phone_model_iframe').src = document.getElementById('phone_model_iframe').src
+//                document.getElementById('phone_model_iframe').src = document.getElementById('phone_model_iframe').src
+                this.currect_mobile_show_uri = this.currect_mobile_show_uri+' '
+                console.log(this.currect_mobile_show_uri)
+//                $('.phone_model_iframe').src = this.mobile_show_uri
+
 
             }
         },

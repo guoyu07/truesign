@@ -4,7 +4,7 @@ class IndexController extends AppBaseController {
 
     public function indexAction()
     {
-        echo '12321';
+        echo json_encode(array(1=>'oss',2=>'本地'));
 	}
 	public function dodbAction(){
         $doDao = new \Royal\Data\DAO(new \Truesign\Adapter\wechat_marketing\weimobAdapter());

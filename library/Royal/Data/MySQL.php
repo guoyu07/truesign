@@ -455,7 +455,9 @@ class MySQL {
 
     public function insertOrUpdateTable($table, $data, $condition, $idField = 'Fid') {
         $row = $this->getRowByCondition($table, $condition, $idField);
+
         if ($row) {
+            unset($data['create_time']);
             $this->updateTable($table, $data, $condition);
             return $row[$idField];
         } else {
