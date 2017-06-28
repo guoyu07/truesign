@@ -469,6 +469,7 @@
         created(){
             var vm = this
             this.apihost = this.wechat_marketing_store.apihost
+            this.$root.eventHub.$off('page_model_update_response_done')
             this.$root.eventHub.$on('page_model_update_response_done',function () {
                 console.log('on->page_model_update_response_done')
                 vm.show_page_model_ctrl_by_table = false
@@ -476,6 +477,7 @@
 //                vm.add_business_info()
                 vm.refresh_table_data()
             })
+            console.log('table_model->created')
             this.$root.eventHub.$on('close_page_model',() => {
                 this.show_page_model_ctrl_by_table = false
 //                vm.detail_page_model_data = {}
@@ -778,9 +780,15 @@
 
         },
         beforeDestroy(){
-            this.$root.eventHub.$off('refresh_table')
+//            console.log('table_model->beforedestroy')
+//            this.$root.eventHub.$off('refresh_table')
+//            this.$root.eventHub.$off('page_model_update_response_done')
 
         },
+        destroyed(){
+//            console.log('table_model->destroyed')
+
+        }
     }
 </script>
 <style lang="stylus" rel="stylesheet/stylus">

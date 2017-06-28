@@ -137,4 +137,58 @@ class BusinessCtrlController extends AppBaseController {
 
 
     }
+
+
+//    支付接口操作
+    /*
+        * @for
+        *
+        */
+    public function desPayInterfaceAction()
+    {
+        $params = $this->getParams(array(),array('rules'));
+
+        $doService = new BusinessLevelService();
+        $this->output2json($doService->Desc($params));
+    }
+    /*
+     * @for
+     *
+     */
+    /**
+     *
+     */
+    public function getPayInterfaceAction()
+    {
+        $params = $this->getParams(array(),array('rules','document_id','search_sort_by'));
+
+        $search_sort_by = $this->analysis_search_sort_by($params['search_sort_by']);
+        if(!empty($search_sort_by)){
+            $page_params = $search_sort_by['page_params'];
+            $search_params = $search_sort_by['search_params'];
+            $sorter_params = $search_sort_by['sorter_params'];
+        }
+        if($params['document_id']){
+            $search_params = array('document_id'=>$params['document_id']);
+        }
+
+        $doService = new \Truesign\Service\Wechat_marketing_service\PayInterfaceService();
+        $this->output2json($doService->Get($params,$search_params,$page_params,$sorter_params));
+
+
+    }
+    /*
+     * @for
+     *
+     */
+    public function UpdatePayInterfaceAction(){
+        $params = $_POST;
+        $doAdapter = new businessLevelAdapter();
+        $doDao = new DAO($doAdapter);
+        $condition['id'] = $params['document_id'];
+        $doService = new BusinessLevelService();
+        $this->output2json($doService->Update($params,$condition));
+
+
+    }
 }

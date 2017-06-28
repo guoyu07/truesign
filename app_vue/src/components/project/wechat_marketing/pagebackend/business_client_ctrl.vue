@@ -31,7 +31,18 @@
                         </table_model>
                 </div>
                 <div style="width: 100%;height: auto;min-height: 600px;text-align: left;" v-if="item.name==='支付方式'" key="支付方式 && defaultTab==='支付方式'" :tab_name="item.name">
-                    支付方式
+                    <table_model v-loading="isloading"
+                                 :currect_select="table_currect_select"
+                                 :element-loading-text="loading_text"
+                                 :search_sort_by="table_search_sort_by"
+                                 :all_data_count="all_data_count"
+                                 :table_data="table_model_data"
+                                 :table_field="table_model_field"
+                                 :info_transfer_action="info_transfer_action"
+                                 :new_add_info="'新增支付方式'"
+                    >
+
+                    </table_model>
                 </div>
 
 
@@ -122,13 +133,14 @@
             var vm = this
             this.report_api = this.wechat_marketing_store.apihost+'BusinessCtrl/'
             this.$root.eventHub.$emit('init_navmenu','w_m_b_business_client_ctrl')
+            this.$root.eventHub.$off('currect_row_index')
             this.$root.eventHub.$on('currect_row_index',() => {
                 this.show_page_model_ctrl_by_table = !this.show_page_model_ctrl_by_table
             })
 
             this.getBusinessInfo(JSON.stringify(this.table_search_sort_by))
+            this.$root.eventHub.$off('refresh_table')
             this.$root.eventHub.$on('refresh_table',function (data) {
-//                console.log('on->refresh_table',data)
                 if(data === 'resetselect'){
                     vm.reset_search_sort_by()
                 }
@@ -147,8 +159,8 @@
 //            console.log('this.table_search_sort_by',this.table_search_sort_by)
         },
         beforeDestroy(){
-            this.$root.eventHub.$off('refresh_businessinfo')
-            this.$root.eventHub.$off('currect_row_index')
+//            this.$root.eventHub.$off('refresh_businessinfo')
+//            this.$root.eventHub.$off('currect_row_index')
 
         },
         methods: {
@@ -277,6 +289,54 @@
                     })
 
             },
+            getPayInterface(search_sort_by){
+                var vm = this
+                var search_param = {}
+                if(search_sort_by){
+                    search_sort_by = JSON.parse(search_sort_by)
+                    search_param.search_sort_by = JSON.stringify(search_sort_by)
+                }
+                search_param.rules = 1
+                axios.post(this.report_api+'getPayInterface',search_param,axios_config)
+                    .then((res) => {
+                        let analysis_data = dbResponseAnalysis2WidgetData(res.data)
+                        console.log('getBusinessInfoLevel',analysis_data)
+                        if(analysis_data.code+'' === '0'){
+
+                            for (let index in analysis_data.searchWidget){
+//                                      进行响应式set key
+                                //1.0版本
+                                if(!vm.table_search_sort_by.search.hasOwnProperty(analysis_data.searchWidget[index].search_key)){
+
+                                    vm.$set(vm.table_search_sort_by.search,analysis_data.searchWidget[index].search_key,analysis_data.searchWidget[index])
+
+                                }
+                            }
+                            for (let index in analysis_data.sorterWidget){
+//                                      进行响应式set key
+                                //1.0版本
+                                if(!vm.table_search_sort_by.sorter.hasOwnProperty(analysis_data.sorterWidget[index].key)){
+                                    vm.$set(vm.table_search_sort_by.sorter,analysis_data.sorterWidget[index].key,analysis_data.sorterWidget[index].way)
+
+                                }
+                            }
+                            vm.info_transfer_action = {
+                                add:'BusinessCtrl/DescPayInterface',
+                                get:'BusinessCtrl/getPayInterface',
+                                update:'BusinessCtrl/UpdatePayInterface',
+                                groupdel:false
+                            }
+                            vm.table_model_field = analysis_data.rules
+                            vm.table_model_data = analysis_data.data
+                            vm.all_data_count =analysis_data.count
+
+//                            console.log(vm.table_search_sort_by)
+                        }
+//                        vm.isloading = false
+
+
+                    })
+            },
             reset_search_sort_by(){
                 this.table_search_sort_by = {
                     page_size:20,
@@ -286,12 +346,15 @@
                 }
             },
             refresh_table_data(data){
-
+                console.log('refresh_table_data')
                 if(this.defaultTab === '客户数据'){
                     this.getBusinessInfo(JSON.stringify(this.table_search_sort_by))
                 }
                 else if(this.defaultTab === '级别套餐'){
                     this.getBusinessInfoLevel(JSON.stringify(this.table_search_sort_by))
+                }
+                else if(this.defaultTab === '支付方式'){
+                    this.getPayInterface(JSON.stringify(this.table_search_sort_by))
                 }
             }
 
