@@ -30,6 +30,7 @@
     "less-loader": "^4.0.4",
     "lodash": "^4.17.4",
     "moment": "^2.18.1",
+    "node-datetime": "^1.0.1",
     "node-waves": "^0.7.5",
     "normalize.css": "^7.0.0",
     "particles.js": "^2.0.0",

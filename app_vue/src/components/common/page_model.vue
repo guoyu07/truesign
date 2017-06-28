@@ -133,7 +133,7 @@
                                         </el-option>
                                     </el-select>
                                 </div>
-                                <div v-else-if="page_data.content[index].type === 'colorpicker'" class="widget_radio" >
+                                <div v-else-if="page_data.content[index].type === 'color'" class="widget_radio" >
                                     <el-color-picker v-model="page_data.content[index].value" show-alpha></el-color-picker>
 
                                 </div>
@@ -145,7 +145,7 @@
                                 page_data.content[index].type !== 'text' &&
                                 page_data.content[index].type !== 'obj' &&
                                 page_data.content[index].type !== 'radio' &&
-                                page_data.content[index].type !== 'colorpicker' &&
+                                page_data.content[index].type !== 'color' &&
                                 page_data.content[index].type !== 'checkbox'
                                 ">
                                     <input v-if="  page_data.content[index].type==='password'"
@@ -201,14 +201,11 @@
 
                                 <div style="" class="filediv">
                                     <!--<input   @click='change_access($event)' :data-index="index" type="button" v-model="page_data.content[index].access">-->
-
                                     <span  style="" v-show="errors.has(page_data.content[index].label)" class="help is-danger filespan">
                                     <i style=" color:rgba(205,52,25,0.91);margin-right: 10px" v-show="errors.has(page_data.content[index].label)" class="fa  fa-refresh rotate_aw"></i>{{ errors.first(page_data.content[index].label) }}</span>
                                 </div>
 
                             </li>
-
-
                         </ol>
 
 
@@ -326,6 +323,7 @@
                 type: Object,
                 default: function () {
                     return {
+                        borderRadius:'5px',
                         width:this.show_phone_model === true?'60%':'100%',
                         height:'auto',
                         backgroundColor:'#dcdcdc',
@@ -769,9 +767,7 @@
                             }
                             this.authing = false
                             setTimeout(function () {
-                                console.log('emit->page_model_update_response_done')
-                                vm.update_response = '0'
-                                vm.$root.eventHub.$emit('page_model_update_response_done',res.data)
+                                vm.close_page_model(1)
                             },600)
                             resolveWidgetData2FormData(this.page_data.content,false)
 
@@ -790,8 +786,8 @@
             fold_content_footer(){
                 this.show_content_footer = !this.show_content_footer
             },
-            close_page_model(){
-                this.$root.eventHub.$emit('close_page_model',1)
+            close_page_model(data=0){
+                this.$root.eventHub.$emit('close_page_model',data)
             },
             str2arr(str){
 

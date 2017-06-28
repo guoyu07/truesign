@@ -42,7 +42,7 @@ class businessLevelAdapter extends DbLibraryAdapter
         return Field::start()
             ->def('document_id')->map('id')->int()->desc('id')->able_modify(false)
             ->def('level_name')->map('level_name')->varchar(100)->desc('级别名称')->issearch(true)
-            ->def('level_color')->map('level_color')->varchar(100)->desc('级别颜色')->widgetType('colorpicker')
+            ->def('level_color')->map('level_color')->varchar(100)->desc('级别颜色')->widgetType('color')
             ->def('hide_call_num')->map('hide_call_num')->int()->desc('隐号通话数量')->issorter(true)->regex('/^\d+$/')
             ->def('sms_msg_num')->map('sms_msg_num')->int()->desc('短信数量')->issorter(true)->regex('/^\d+$/')
             ->def('theme_ids')->map('theme_ids')->varchar(1000)->desc('模板设定')

@@ -1,8 +1,10 @@
 /**
  * Created by ql-win on 2017/4/19.
  */
-var timesTamp = require('time-stamp');
-const dateTime = require('date-time');
+var timestamp_tools = require('time-stamp');
+const dateTime_tools = require('date-time');
+var time_tools = require('node-datetime');
+
 export function analysis_socket_response(response) {
 
     var analysis_reponse = {
@@ -92,7 +94,7 @@ export function dbResponseAnalysis2WidgetData(dbResponse) {
                                     var widget_type = judgeWidgetTypeByKeyAndKeyType(dbResponse.rules[rulekey].name,dbResponse.rules[rulekey].type,dbResponse.rules[rulekey].widgetType)
                                     if(widget_type === 'time'){
                                     widgetData_item_attr.value = new Date(datarow[datakey]*1000);
-                                    datarow[datakey] = dateTime({date:new Date(datarow[datakey]*1000)})
+                                    datarow[datakey] = dateTime_tools({date:new Date(datarow[datakey]*1000)})
                                     }
                                     widgetData_item_attr.key = dbResponse.rules[rulekey].name
                                     widgetData_item_attr.label = dbResponse.rules[rulekey].title
@@ -172,13 +174,10 @@ export function  resolveWidgetData2FormData(WidgetData,flag=true) {
         for (let item of WidgetData){
 
             if(item.type==='checkbox'){
-                console.log('checkbox',typeof item.value)
                 item.value = JSON.stringify(item.value)
-                console.log('checkbox',typeof item.value)
 
             }
             if(item.type === 'radio'){
-                console.log('radio',JSON.parse(item.value))
 
             }
             if(item.type === 'time'){
@@ -192,13 +191,10 @@ export function  resolveWidgetData2FormData(WidgetData,flag=true) {
         for (let item of WidgetData){
 
             if(item.type==='checkbox'){
-                console.log('checkbox',typeof item.value)
                 item.value = JSON.parse(item.value)
-                console.log('checkbox',typeof item.value)
 
             }
             if(item.type === 'radio'){
-                console.log('radio',JSON.stringify(item.value))
 
             }
             if(item.type === 'time'){
@@ -208,6 +204,11 @@ export function  resolveWidgetData2FormData(WidgetData,flag=true) {
     }
 
 
+}
+export function  timestamp2datetime(timestamp) {
+    var dt = time_tools.create(timestamp,'Y-m-d H:M:S')
+    var formattedDate = dt.format();
+    return formattedDate
 }
 
 function convertCode2Tip(code='0') {
@@ -258,9 +259,9 @@ function judgeWidgetTypeByKeyAndKeyType(key,keytype,widgetType){
 
         return 'checkbox'
     }
-    else if(widgetType === 'colorpicker'){
+    else if(widgetType === 'color'){
 
-        return 'colorpicker'
+        return 'color'
 
     }
     // else if(key.substr(key.length-3) === 'obj'){

@@ -38,6 +38,7 @@ const webpackConfig = {
             'components': resolve('src/components'),
             'api': resolve('src/api'),
             'assets': resolve('src/assets'),
+
         }
     },
   module: {

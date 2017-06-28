@@ -2,8 +2,9 @@
 use Royal\Data\DAO;
 use Truesign\Adapter\wechat_marketing\businessAdapter;
 use Truesign\Adapter\wechat_marketing\businessLevelAdapter;
-use \Truesign\Service\Wechat_marketing_service\BusinessService;
-use \Truesign\Service\Wechat_marketing_service\BusinessLevelService;
+use Truesign\Service\Wechat_marketing_service\BusinessLevelService;
+use Truesign\Service\Wechat_marketing_service\BusinessService;
+use  Truesign\Service\Wechat_marketing_service\PayInterfaceService;
 
 class BusinessCtrlController extends AppBaseController {
 
@@ -144,11 +145,11 @@ class BusinessCtrlController extends AppBaseController {
         * @for
         *
         */
-    public function desPayInterfaceAction()
+    public function descPayInterfaceAction()
     {
         $params = $this->getParams(array(),array('rules'));
 
-        $doService = new BusinessLevelService();
+        $doService = new PayInterfaceService();
         $this->output2json($doService->Desc($params));
     }
     /*
@@ -172,7 +173,7 @@ class BusinessCtrlController extends AppBaseController {
             $search_params = array('document_id'=>$params['document_id']);
         }
 
-        $doService = new \Truesign\Service\Wechat_marketing_service\PayInterfaceService();
+        $doService = new PayInterfaceService();
         $this->output2json($doService->Get($params,$search_params,$page_params,$sorter_params));
 
 
@@ -186,7 +187,7 @@ class BusinessCtrlController extends AppBaseController {
         $doAdapter = new businessLevelAdapter();
         $doDao = new DAO($doAdapter);
         $condition['id'] = $params['document_id'];
-        $doService = new BusinessLevelService();
+        $doService = new PayInterfaceService();
         $this->output2json($doService->Update($params,$condition));
 
 

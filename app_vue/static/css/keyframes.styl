@@ -1,0 +1,39 @@
+base_width=220
+base_height=220
+.truesign_line_wrap{
+            position: relative;
+            width: 200px;
+            height: 200px;
+            background: #666666;
+            border: 1px solid #5EF75E;
+        }
+.truesign_line_wrap:before,.truesign_line_wrap:after{
+    content: " ";
+    display: block;
+    position: absolute;
+    width:base_width px;
+    height:base_height px;
+    top: -10px;
+    left: -10px;
+    border:2px solid #00FF00;
+    z-index:10;
+    box-sizing: border-box;
+    -webkit-animation: truesign_line_wrap_animation 4s infinite linear;
+}
+.truesign_line_wrap:before{
+  -webkit-animation-delay: -2s;
+}
+@keyframes  truesign_line_wrap_animation{
+            0%,100%{
+                clip:rect(0px,base_width px,base_width px,(base_width - 3) px);
+            }
+            25%{
+                clip:rect(0px,base_width px,3px,0px);
+            }
+            50%{
+                clip:rect(0px,3px,base_width px,0px);
+            }
+            75%{
+                clip:rect(base_width - 3 px,base_width px,base_width px,0px);
+            }
+        }

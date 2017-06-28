@@ -1,28 +1,27 @@
 <template>
     <div style="overflow: auto">
+        <!--<pre>-->
+            <!--{{table_field}}-->
+        <!--</pre>-->
         <div id="table_button_bar" style="text-align: left">
             <transition name="fade-left" >
             <el-button type="danger" v-if="all_data_count && multipleSelection.length>0"   @click="delSelectOption">删除选择项</el-button>
             </transition>
             <div style="display: inline-block">
-
-
                 <el-input   v-focus:currect_select="currect_select" :name="item.search_title" :data-key="item.search_key" style="display: inline-block;width: 180px;" v-for="(item,index) in search_sort_by.search" :key="item"
 
                            :placeholder="'请输入'+item.search_title"
                            icon="search"
                            v-model="item.search_value"
                 >
-
                 </el-input>
-                <el-button @click="resetSelect" size="" type="success">重置检索</el-button>
+                <el-button @click="resetSelect" v-if="Object.keys(search_sort_by.search).length" size="" type="success">重置检索</el-button>
             </div>
 
             <el-button v-if="new_add_info" type="primary" style="position: absolute;right: 15px"  @click="add_business_info" >{{ new_add_info }}</el-button>
 
         </div>
         <transition name="el-zoom-in-top" >
-
             <div class="table_model" key="tabledata" style="" v-if="all_data_count" >
 
                 <el-table
@@ -55,24 +54,33 @@
                 </el-table-column>
 
 
-                <el-table-column v-for="(item,index) in table_field"  v-if="item.type !== 'text'"  :key="item"
+                <el-table-column v-for="(item,index) in table_field"
+                                 v-if=""  :key="item"
                          :show-overflow-tooltip="true"
                          :fixed="index === 'document_id' || index === 'username'"
                         :sortable="is_sortable(index)"
                         :prop="index"
                         :label="item.title"
-                        :width="item.width"
+                        :width="item.width" >
 
-                    >
-
-                </el-table-column>
-                <el-table-column v-for="(item,index) in table_field"  v-if="item.type === 'text'"  :key="item"
-                                 :label="item.title"
-                                 width="200">
                     <template scope="scope">
-                        <div v-html="scope.row[item.name]"></div>
+                        <div v-if="!item.widgetType">{{scope.row[item.name]}}</div>
+                        <div v-else-if="item.widgetType[0]==='headpic'">
+                            <img :src="scope.row[item.name]" style="width: auto;height: 30px">
+                        </div>
+                        <div v-else-if="item.widgetType[0]==='password'">{{scope.row[item.name]}}</div>
+                        <div v-else-if="item.widgetType[0]==='text'">文本</div>
+                        <div v-else-if="item.widgetType[0]==='color'" >
+                            <i style="display: block;width: 30px;height: 30px;margin: 0 auto;border-radius: 15px" :style="{backgroundColor:scope.row[item.name]}"></i>
+                        </div>
+                        <div v-else-if="item.widgetType[0]==='time'">{{ get_timestamp2datetime(scope.row[item.name]) }}</div>
+                        <div v-else-if="item.widgetType[0]==='radio'">{{scope.row[item.name]}}</div>
+                        <div v-else-if="item.widgetType[0]==='checkbox'">多选</div>
                     </template>
+
+
                 </el-table-column>
+
                 <el-table-column v-for="(item,index) in table_field" v-if="index==='tag'"  :key="item"
                                  prop="tag" label="标签" width="120" fixed="right"
                                  :filters="[{ text: '家', value: '家' }, { text: '公司', value: '公司' }]"
@@ -146,7 +154,7 @@
     import { mapGetters,mapActions } from 'vuex'
     import axios from 'axios'
     import {axios_config} from '../../api/axiosApi'
-    import {dbResponseAnalysis2WidgetData,deleteEmptyObj,deleteEmptyString} from '../../api/lib/helper/dataAnalysis'
+    import {dbResponseAnalysis2WidgetData,deleteEmptyObj,deleteEmptyString,timestamp2datetime} from '../../api/lib/helper/dataAnalysis'
     import Vue from 'vue'
     import { focus } from 'vue-focus';
 
@@ -464,23 +472,19 @@
                     sorter_arr.push(index)
                 }
                 return sorter_arr
-            }
+            },
+
+
         },
         created(){
             var vm = this
             this.apihost = this.wechat_marketing_store.apihost
-            this.$root.eventHub.$off('page_model_update_response_done')
-            this.$root.eventHub.$on('page_model_update_response_done',function () {
-                console.log('on->page_model_update_response_done')
-                vm.show_page_model_ctrl_by_table = false
-//                vm.detail_page_model_data = {}
-//                vm.add_business_info()
-                vm.refresh_table_data()
-            })
-            console.log('table_model->created')
-            this.$root.eventHub.$on('close_page_model',() => {
+            this.$root.eventHub.$on('close_page_model',(data) => {
+                console.log('on->close_page_model',data)
                 this.show_page_model_ctrl_by_table = false
-//                vm.detail_page_model_data = {}
+                if(data){
+                    this.refresh_table_data()
+                }
             })
         },
         updated(){
@@ -775,8 +779,10 @@
             },
             summaryfunction(columns,data){
                 console.log(columns,data)
+            },
+            get_timestamp2datetime(timestamp){
+                return timestamp2datetime(timestamp)
             }
-
 
         },
         beforeDestroy(){
