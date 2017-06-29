@@ -6,11 +6,12 @@
             <h1>可控</h1>
             <h1>你知道的,一切皆可查询...</h1>
         </div>
+        <loading_canvas :is_line_percent="20"></loading_canvas>
 
     </div>
 </template>
 <script>
-
+    import loading_canvas from 'effect/loading_canvas.vue'
     export default {
         data(){
             return{
@@ -25,7 +26,7 @@
             }
         },
         components:{
-
+            loading_canvas
 
         }
     }

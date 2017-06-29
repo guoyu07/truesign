@@ -5,6 +5,7 @@ namespace Truesign\Adapter\wechat_marketing;
 
 use Truesign\Adapter\Base\DbLibraryAdapter;
 use Royal\Data\Field;
+use Truesign\Service\Wechat_marketing_service\PayInterfaceService;
 
 
 class businessAdapter extends DbLibraryAdapter
@@ -68,7 +69,7 @@ class businessAdapter extends DbLibraryAdapter
                         ->widgetType('checkbox',array(new PayInterfaceAdapter(),array('pay_interface_name')))
                         ->widgetStyle(
                             array(
-                                'backgroundColor'=>'#53DFD6',
+                                'backgroundColor'=>array(new PayInterfaceAdapter(),'pay_interface_color'),
                             )
                         )
                         ->tag(true)

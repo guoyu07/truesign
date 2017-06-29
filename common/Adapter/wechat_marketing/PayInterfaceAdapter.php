@@ -43,6 +43,7 @@ class PayInterfaceAdapter extends DbLibraryAdapter
             ->def('pay_interface_code')->map('pay_interface_code')->varchar(300)->desc('支付方式代号')
             ->def('pay_interface_name')->map('pay_interface_name')->varchar(300)->desc('支付方式名称')
             ->def('pay_interface_logo')->map('pay_interface_logo')->varchar(300)->desc('支付平台logo')->widgetType('headpic')
+            ->def('pay_interface_color')->map('pay_interface_color')->varchar(300)->desc('支付平台颜色')->widgetType('color')
             ->def('pay_acount')->map('pay_acount')->varchar(300)->desc('支付权限账户账号')
             ->def('pay_key')->map('pay_key')->varchar(300)->desc('支付权限key')
             ->def('pay_secret')->map('pay_secret')->varchar(300)->desc('支付权限密匙')

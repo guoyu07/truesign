@@ -12,22 +12,26 @@
 
 
 <script>
-
     //    import ArrayCanvas from '../../../api/array_canvas.js'
     import DrawCanvas from '../../api/drawCanvas.js'
     import {syntaxHighlightJSON} from '../../api/lib/helper/prettyOnHtml'
-
-
     export default{
 
         data() {
             return {
                 screenWidth: document.body.clientWidth,   // 这里是给到了一个默认值 （这个很重要）
                 screenHeight: document.body.clientHeight,  // 这里是给到了一个默认值 （这个很重要）
-                help:''
+                help:'',
+
             }
         },
+        props: {
 
+            is_line_percent:{
+                type: String,
+                default: '10',
+            },
+        },
         mounted(){
             var vm = this
             $('h1').css('display','none')
@@ -40,13 +44,15 @@
                 vm.screenHeight = parseInt(width2height[1])
 
             })
-
-
             var xy_line = Math.floor(Math.sqrt(Math.pow(vm.screenHeight,2)+Math.pow(vm.screenWidth,2)))
 
             var drawCanvas = new DrawCanvas('canvas', vm.screenWidth-10, vm.screenHeight-10)
             var tan = vm.screenHeight/vm.screenWidth
-            for(let i = 0; i < xy_line/2; i++){
+            drawCanvas.dots = []
+            var dots_count = (xy_line/2) * (parseInt(this.is_line_percent)/100)
+            vm.help = this.is_line_percent
+
+            for(let i = 0; i < dots_count; i++){
                 drawCanvas.initDot(
                     {
                         g:{down:0,right:0,out:0},
@@ -56,18 +62,12 @@
                         radius:3.5,
                         colors:[
                             {key:0,value:'#53DFD6'}
-
                         ]
                     })
 
             }
-
-
 //          this.help = drawCanvas.dots
-
             function render() {
-
-
                 drawCanvas.initWidthHeight(vm.screenWidth,vm.screenHeight)
                 drawCanvas.initCtrl()
                 drawCanvas.drawDots()
