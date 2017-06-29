@@ -18,6 +18,7 @@ class ParamRule {
     public $issearch = false ;
     public $issorter = false ;
     public $widgetType = false;
+    public $widgetStyle = false;
     public $tag = false;
 
     public $enumValues = false;
@@ -120,6 +121,11 @@ class ParamRule {
     public function widgetType($type,$params)
     {
         $this->widgetType = array($type,$params);
+        return $this;
+    }
+    public function widgetStyle($params)
+    {
+        $this->widgetStyle = array($params);
         return $this;
     }
     public function tag($tag) {

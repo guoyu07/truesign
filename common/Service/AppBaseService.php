@@ -49,6 +49,7 @@ class AppBaseService {
                     unset($rules[$k]);
                 }
                 else{
+                    //处理 控件类型
                     if($v->widgetType){
                        if($v->widgetType[0] == 'radio' && empty($v->widgetType[1][0])){
                            $v->widgetType[1] = $v->widgetType[1][1];
@@ -57,16 +58,22 @@ class AppBaseService {
                         else if($v->widgetType[0] == 'checkbox' && empty($v->widgetType[1][0])){
                             $v->widgetType[1] = $v->widgetType[1][1];
                         }
-                        elseif (($v->widgetType[0] == 'radio' || $v->widgetType[0] == 'checkbox') && !empty($v->widgetType[1][0]) && !empty($v->widgetType[1][1])){
+                        else if (($v->widgetType[0] == 'radio' || $v->widgetType[0] == 'checkbox') && !empty($v->widgetType[1][0]) && !empty($v->widgetType[1][1])){
                             $doAdapter = $v->widgetType[1][0];
                             $doDao = new DAO(new $doAdapter);
-                            $db_mold_list = $doDao->readSpecified(array(),array('document_id',$v->widgetType[1][1]),array(),array('create_time'=>'asc'));
 
+                            $db_mold_list = $doDao->readSpecified(array(),array_merge(array('document_id'),$v->widgetType[1][1]),array(),array('create_time'=>'asc'));
                             if(!empty($db_mold_list['statistic']['count'])){
                                 $mold_list = [];
                                 foreach ($db_mold_list['data'] as $kk=>$vv){
 
                                     $mold_list[$vv['document_id']] = $vv[$v->widgetType[1][1]];
+                                    $lable_show = '';
+                                    foreach ($v->widgetType[1][1] as $kkk=>$vvv){
+                                        $lable_show .= $vv[$vvv].' ';
+                                    }
+                                    $mold_list[$vv['document_id']]=$lable_show;
+
                                 }
                                 $v->widgetType[1] = $mold_list;
                             }
@@ -75,6 +82,67 @@ class AppBaseService {
                             }
 
                         }
+                    }
+
+                    // 处理 控件样式
+                    if(!empty($v->widgetStyle)){
+                        $widgetStyle = [];
+                        foreach ($v->widgetStyle[0] as $kk=>$vv){  //$kk backgroundColor 等$vv style 数据获取方式
+
+                            if(is_array($vv)){ //如果是数组，则通过传入的adapter接口获取相应字段数据
+
+                                $doAdapter = $vv[0];
+                                $doDao = new DAO(new $doAdapter);
+                                $db_mold_list = $doDao->readSpecified(array(),array('document_id',$vv[1]),array(),array('create_time'=>'asc'));
+                                if(!empty($db_mold_list['statistic']['count'])){
+                                    foreach ($db_mold_list['data'] as $kkk=>$vvv){
+                                        $widgetStyle[$kk][$vvv['document_id']] = $vvv[$vv[1]];
+                                    }
+
+                                }
+                                else{ //adapter结构根据字段查出的样式数据为空
+                                    $widgetStyle[$kk][0] = false;
+                                }
+
+                            }
+                            else{//如果不是数组，则是已经传入具体css style绑定0 意为全员样式
+                                $widgetStyle[$kk][0] = $vv;
+                            }
+
+                        }
+                        //拿到分类汇总数据，按照id进行分组输出样式
+                        // 拿到所有涉及到的id,放入ids数组
+                        $ids = [];
+                        foreach ($widgetStyle as $style_type=>$ids_values){
+                            foreach ($ids_values as $id=>$value){
+                                $ids[] = $id;
+                            }
+                        }
+                        // 按照id便利匹配符合的样式
+                        $ids = (array_unique($ids));
+                        sort($ids);
+
+                        $build_widgetStyle = [];
+                        $common_style = array();
+                        foreach ($ids as $index=>$currect_id){
+                            $id_style = [];
+                            foreach ($widgetStyle as $style_type=>$ids_values){
+                                foreach ($ids_values as $id=>$value){
+                                    if($currect_id === $id){
+                                        $id_style[$style_type] = $value;
+                                    }
+
+                                }
+                            }
+                            if($currect_id == 0 && !empty($id_style)){
+                                $common_style = $id_style;
+                            }
+                            if($currect_id != 0){
+
+                                $build_widgetStyle[$currect_id] = array_merge($id_style,$common_style);
+                            }
+                        }
+                        $v->widgetStyle=empty($build_widgetStyle)?array(0=>$common_style):$build_widgetStyle;
                     }
                 }
             }

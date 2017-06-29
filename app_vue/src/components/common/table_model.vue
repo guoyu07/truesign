@@ -61,7 +61,9 @@
                         :sortable="is_sortable(index)"
                         :prop="index"
                         :label="item.title"
-                        :width="item.width" >
+                        :width="item.width"
+
+                    >
 
                     <template scope="scope">
                         <div v-if="!item.widgetType">{{scope.row[item.name]}}</div>
@@ -74,23 +76,60 @@
                             <i style="display: block;width: 30px;height: 30px;margin: 0 auto;border-radius: 15px" :style="{backgroundColor:scope.row[item.name]}"></i>
                         </div>
                         <div v-else-if="item.widgetType[0]==='time'">{{ get_timestamp2datetime(scope.row[item.name]) }}</div>
-                        <div v-else-if="item.widgetType[0]==='radio'">{{scope.row[item.name]}}</div>
-                        <div v-else-if="item.widgetType[0]==='checkbox'">多选</div>
+                        <div v-else-if="item.widgetType[0]==='radio'">
+                            <div v-if="item.widgetStyle.hasOwnProperty(0)">
+                                <div  v-for="radio_value,radio_index in get_str2json(scope.row[item.name])">
+                                    <el-tag :style="item.widgetStyle[0]" close-transition >{{radio_value}}</el-tag>
+                                </div>
+
+                            </div>
+                            <div v-else="item.widgetStyle.hasOwnProperty(0)" class="nozero">
+                                <div  v-for="radio_item,radio_index in get_str2json(scope.row[item.name])">
+                                <el-tag v-for="style_item,style_id in item.widgetStyle" v-if="style_id===radio_index" :key="style_id" close-transition :style="style_item"> {{ radio_item }}</el-tag>
+                                </div>
+                            </div>
+                            <!--<div v-if="item.widgetStyle.hasOwnProperty(0)" v-for="(radio_value,radio_index) in get_str2json(scope.row[item.name])">-->
+                                <!--<el-tag  close-transition :style="item.widgetStyle[0]">{{radio_value}}</el-tag>-->
+                            <!--</div>-->
+                            <!--<div v-else="item.widgetStyle.hasOwnProperty(0)" class="nozero" v-for="(style_item,style_index) in item.widgetStyle">-->
+                                <!--1-->
+                            <!--</div>-->
+                        </div>
+                        <div v-else-if="item.widgetType[0]==='checkbox'">
+
+                            <div style="display: inline-block;padding-left: 5px" v-for="(item_obj,item_index) in get_str2json(scope.row[item.name])">
+                                <div v-for="type_item,type_id in get_str2json(item_obj)">
+                                    <div v-if="item.widgetStyle.hasOwnProperty(0)">
+                                        <el-tag  close-transition :style="item.widgetStyle[0]">{{type_item}}</el-tag>
+                                    </div>
+                                    <div v-else="item.widgetStyle.hasOwnProperty(0)">
+                                        <el-tag v-for="style_item,style_index in item.widgetStyle" :key="style_index"  v-if="style_index === type_id"   close-transition :style="style_item">{{type_item}}</el-tag>
+
+                                    </div>
+
+
+                                </div>
+                                <!--<div v-for="(style_item,style_index) in get_str2json(item.widgetStyle)">-->
+                                    <!---->
+                                <!--</div>-->
+                            </div>
+
+                        </div>
                     </template>
 
 
                 </el-table-column>
 
-                <el-table-column v-for="(item,index) in table_field" v-if="index==='tag'"  :key="item"
-                                 prop="tag" label="标签" width="120" fixed="right"
-                                 :filters="[{ text: '家', value: '家' }, { text: '公司', value: '公司' }]"
-                                 :filter-method="filterTag"
-                                 filter-placement="bottom"
-                >
-                    <template scope="scope" >
-                        <el-tag :type="scope.row.tag === '家' ? 'primary' : 'success'" close-transition>{{scope.row.tag}}</el-tag>
-                    </template>
-                </el-table-column>
+                <!--<el-table-column v-for="(item,index) in table_field" v-if="index==='tag'"  :key="item"-->
+                                 <!--prop="tag" label="标签" width="120" fixed="right"-->
+                                 <!--:filters="[{ text: '家', value: '家' }, { text: '公司', value: '公司' }]"-->
+                                 <!--:filter-method="filterTag"-->
+                                 <!--filter-placement="bottom"-->
+                <!--&gt;-->
+                    <!--<template scope="scope" >-->
+                        <!--<el-tag :type="scope.row.tag === '家' ? 'primary' : 'success'" close-transition>{{scope.row.tag}}</el-tag>-->
+                    <!--</template>-->
+                <!--</el-table-column>-->
 
 
                 <el-table-column
@@ -782,6 +821,12 @@
             },
             get_timestamp2datetime(timestamp){
                 return timestamp2datetime(timestamp)
+            },
+            get_str2json(str){
+                if(str.length>=2){
+                    return JSON.parse(str)
+                }
+                else return ''
             }
 
         },

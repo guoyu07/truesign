@@ -86,6 +86,11 @@ class Field {
         $this->_rule[$this->_index]->widgetType($type,$params);
         return $this;
     }
+    public function widgetStyle($params=array())
+    {
+        $this->_rule[$this->_index]->widgetStyle($params);
+        return $this;
+    }
     /**
      * @return ParamRule
      */

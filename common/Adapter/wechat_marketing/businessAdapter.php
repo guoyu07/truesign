@@ -55,8 +55,23 @@ class businessAdapter extends DbLibraryAdapter
             ->def('sms_send_num')->map('sms_send_num')->int()->desc('已发送短信数')->able_modify(false)->regex('/^\d{0,6}$/')->issorter(true)
             ->def('enable_time')->map('enable_time')->int()->desc('启用时间')->regex('/^.+$/')->issorter('asc')->widgetType('time')
             ->def('expire_time')->map('expire_time')->int()->desc('到期时间')->regex('/^.+$/')->issorter('asc')->widgetType('time')
-            ->def('level_tag')->map('level_tag')->varchar(500)->desc('等级/套餐')->able_modify(false)->widgetType('radio',array(new businessLevelAdapter(),'level_name'))->tag(true)
-            ->def('pay_interface_tag')->map('pay_interface_tag')->varchar(500)->desc('支付方式')->widgetType('checkbox',array(new PayInterfaceAdapter(),'pay_interface_name'))->tag(true)
+            ->def('level_tag')->map('level_tag')->varchar(500)->desc('等级/套餐')->able_modify(false)
+                        ->widgetType('radio',array(new businessLevelAdapter(),array('level_name')))
+                        ->widgetStyle(
+                            array(
+                                'backgroundColor'=>array(new businessLevelAdapter(),'level_color'),
+                                'color'=>'#FFFFFF',
+                                )
+                        )
+                        ->tag(true)
+            ->def('pay_interface_tag')->map('pay_interface_tag')->varchar(500)->desc('支付方式')
+                        ->widgetType('checkbox',array(new PayInterfaceAdapter(),array('pay_interface_name')))
+                        ->widgetStyle(
+                            array(
+                                'backgroundColor'=>'#53DFD6',
+                            )
+                        )
+                        ->tag(true)
             ->end();
     }
 

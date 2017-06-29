@@ -106,6 +106,7 @@ export function dbResponseAnalysis2WidgetData(dbResponse) {
                                     widgetData_item_attr.able_modify = dbResponse.rules[rulekey].name==='document_id'?false:dbResponse.rules[rulekey].able_modify
                                     widgetData_item_attr.access = true
                                     widgetData_item_attr.widgetType = dbResponse.rules[rulekey].widgetType
+                                    widgetData_item_attr.widgetStyle = dbResponse.rules[rulekey].widgetStyle
                                     if(widget_type === 'checkbox'){
                                         widgetData_item_attr.value = isEmptyValue(widgetData_item_attr.value)?[]:JSON.parse(widgetData_item_attr.value)
                                         console.log('getcheckbox',typeof widgetData_item_attr.value, widgetData_item_attr.value )
