@@ -17,6 +17,7 @@
                                      :table_field="table_model_field"
                                      :info_transfer_action="info_transfer_action"
                                      :new_add_info="'新增客户'"
+                                     groupdelable="true"
                         >
 
                         </table_model>
@@ -26,7 +27,8 @@
                         <table_model v-loading="isloading" :currect_select="table_currect_select"
                                      :element-loading-text="loading_text" :search_sort_by="table_search_sort_by" :all_data_count="all_data_count" :table_data="table_model_data" :table_field="table_model_field"
                                      :new_add_info="'新增套餐'"
-                                     :info_transfer_action="info_transfer_action">
+                                     :info_transfer_action="info_transfer_action"
+                                     groupdelable="true">
 
                         </table_model>
                 </div>
@@ -40,6 +42,7 @@
                                  :table_field="table_model_field"
                                  :info_transfer_action="info_transfer_action"
                                  :new_add_info="'新增支付方式'"
+                                 groupdelable="true"
                     >
 
                     </table_model>

@@ -29,7 +29,7 @@ class FunCtrlController extends AppBaseController {
      */
     public function getFunAction()
     {
-        $params = $this->getParams(array(),array('rules','document_id','search_sort_by'));
+        $params = $this->getParams(array(),array('rules','document_id','search_sort_by','fun_keyword'));
         $search_sort_by = $this->analysis_search_sort_by($params['search_sort_by']);
         if(!empty($search_sort_by)){
             $page_params = $search_sort_by['page_params'];
@@ -43,7 +43,8 @@ class FunCtrlController extends AppBaseController {
         $doService = new FunService();
         $db_response = $doService->get($params,$search_params,$page_params,$sorter_params);
 
-        if(empty($db_response['statistic']['count'])){
+
+        if(empty($db_response['statistic']['count']) && !empty($params['fun_keyword'])){
             $this->DescFunAction(1);
         }
         else{

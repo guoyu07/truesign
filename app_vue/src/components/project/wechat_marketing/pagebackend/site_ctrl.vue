@@ -155,6 +155,12 @@
                     vm.getBaseInfo()
                 }
             })
+            this.$root.eventHub.$on('refresh_table',function (data) {
+                console.log('on->refresh_table')
+                vm.getMaster(JSON.stringify(this.table_search_sort_by))
+
+
+            })
 
         },
         mounted(){

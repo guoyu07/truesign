@@ -4,7 +4,7 @@
         <el-tabs type="border-card" style="background-color: #dcdcdc;box-shadow: none" @tab-click="tabclick"  v-model="defaultTab">
             <el-tab-pane v-for="(item,index) in tab_menu_list" :key="item" :label="item.value" :data-name="item.name" :name="item.name" >
 
-                <div class="tab_content"  v-if="item.name==='关于我们模块'" key="关于我们模块">
+                <div class="tab_content"  v-if="item.name==='关于我们模块'" key="关于我们模块" style="padding-left:80px ">
                     <page_model
                             :show_phone_model="true"
                             :final_update_btn_desc="'更新数据'"
@@ -14,7 +14,7 @@
 
                             style="width: 100%;min-width:600px;display: inline-block;vertical-align: top" ></page_model>
                 </div>
-                <div class="tab_content" v-if="item.name==='留言板模块'" key="留言板模块">
+                <div class="tab_content" v-if="item.name==='留言板模块'" key="留言板模块" style="padding-left:80px ">
                     <page_model
                                 :show_phone_model="true"
                                 :final_update_btn_desc="'更新数据'"

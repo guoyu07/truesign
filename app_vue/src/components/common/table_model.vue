@@ -71,7 +71,11 @@
                             <img :src="scope.row[item.name]" style="width: auto;height: 30px">
                         </div>
                         <div v-else-if="item.widgetType[0]==='password'">{{scope.row[item.name]}}</div>
-                        <div v-else-if="item.widgetType[0]==='text'">文本</div>
+                        <div v-else-if="item.widgetType[0]==='text'">
+                            <div v-html="scope.row[item.name]">
+
+                            </div>
+                        </div>
                         <div v-else-if="item.widgetType[0]==='color'" >
                             <i style="display: block;width: 30px;height: 30px;margin: 0 auto;border-radius: 15px" :style="{backgroundColor:scope.row[item.name]}"></i>
                         </div>
@@ -84,8 +88,15 @@
 
                             </div>
                             <div v-else="item.widgetStyle.hasOwnProperty(0)" class="nozero">
+
                                 <div  v-for="radio_item,radio_index in get_str2json(scope.row[item.name])">
-                                <el-tag v-for="style_item,style_id in item.widgetStyle" v-if="style_id===radio_index" :key="style_id" close-transition :style="style_item"> {{ radio_item }}</el-tag>
+                                    <div v-if="item.widgetStyle">  <!--如果配置了样式-->
+                                        <el-tag v-for="style_item,style_id in item.widgetStyle" v-if="style_id===radio_index" :key="style_id" close-transition :style="style_item"> {{ radio_item }}</el-tag>
+
+                                    </div>
+                                    <div v-else="item.widgetStyle"> <!--如果没有配置样式-->
+                                        {{radio_item}}
+                                    </div>
                                 </div>
                             </div>
                             <!--<div v-if="item.widgetStyle.hasOwnProperty(0)" v-for="(radio_value,radio_index) in get_str2json(scope.row[item.name])">-->
@@ -103,8 +114,12 @@
                                         <el-tag  close-transition :style="item.widgetStyle[0]">{{type_item}}</el-tag>
                                     </div>
                                     <div v-else="item.widgetStyle.hasOwnProperty(0)">
-                                        <el-tag v-for="style_item,style_index in item.widgetStyle" :key="style_index"  v-if="style_index === type_id"   close-transition :style="style_item">{{type_item}}</el-tag>
-
+                                        <div v-if="item.widgetStyle">  <!--如果配置了样式-->
+                                            <el-tag v-for="style_item,style_index in item.widgetStyle" :key="style_index"  v-if="style_index === type_id"   close-transition :style="style_item">{{type_item}}</el-tag>
+                                        </div>
+                                        <div v-else="item.widgetStyle">  <!--如果没有配置样式-->
+                                            {{radio_item}} &nbsp;
+                                        </div>
                                     </div>
 
 
@@ -417,7 +432,7 @@
                 defult:'uri'
             },
             groupdelable:{
-                default:true
+                default:false
             },
             show_phone_model:{
                 default:false

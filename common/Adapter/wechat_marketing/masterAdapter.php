@@ -42,9 +42,12 @@ class masterAdapter extends DbLibraryAdapter
             ->def('document_id')->map('id')->int()->desc('id')
             ->def('username')->map('username')->varchar(100)->desc('用户名')
             ->def('password')->map('password')->varchar(100)->desc('密码')
+                ->widgetType('password')
             ->def('level')->map('level')->varchar(500)->desc('管理员等级')
-            ->widgetType('radio',array('',array(1,2,3,4,5,6,7,8,9)))
+                ->widgetType('radio',array('',array(1,2,3,4,5,6,7,8,9)))
+                ->widgetStyle(array('backgroundColor','gray'))
             ->def('note')->map('note')->varchar(500)->desc('备注')
+                ->widgetType('text')
             ->end();
     }
 
