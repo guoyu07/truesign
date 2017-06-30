@@ -11,7 +11,7 @@
     </div>
 </template>
 <script>
-    import loading_canvas from 'effect/loading_canvas.vue'
+    import loading_canvas from './effect/loading_canvas.vue'
     export default {
         data(){
             return{

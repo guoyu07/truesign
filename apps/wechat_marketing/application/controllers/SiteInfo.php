@@ -3,6 +3,7 @@ use \Truesign\Adapter\wechat_marketing\siteBaseConfigAdapter;
 use Truesign\Adapter\wechat_marketing\envAdapter;
 use Royal\Data\DAO;
 use \Truesign\Service\Wechat_marketing_service\EnvService;
+use \Truesign\Service\Wechat_marketing_service\MasterService;
 use \Truesign\Service\Wechat_marketing_service\SiteBaseConfigService;
 class SiteInfoController extends AppBaseController {
 
@@ -28,12 +29,13 @@ class SiteInfoController extends AppBaseController {
     public function descSiteBaseConfigInfoAction($rules = 0)
     {
 
+
         $params = $this->getParams(array(),array('rules'));
         if(empty($params['rules'])){
             $params['rules'] = $rules;
         }
         $doService = new SiteBaseConfigService();
-        $this->output2json($doService->Desc());
+        $this->output2json($doService->Desc($params));
 	}
 	public function getSiteBaseConfigAction(){
 
@@ -43,13 +45,13 @@ class SiteInfoController extends AppBaseController {
         $db_resposne = $doService->Get($params,array(),array('page_size'=>1));
         if(empty($db_resposne['statistic']['count'])){
             $this->descSiteBaseConfigInfoAction(1);
+
         }
         else{
             $this->output2json($db_resposne);
         }
 
     }
-
     /*
      * sitebaseconfig adapter 数据更新接口
      */
@@ -62,5 +64,41 @@ class SiteInfoController extends AppBaseController {
         $this->output2json($doService->Update($params,$condition));
     }
 
+
+    /*
+     *
+     * */
+    public function descMasterAction($rules = 0)
+    {
+
+
+        $params = $this->getParams(array(),array('rules'));
+        if(empty($params['rules'])){
+            $params['rules'] = $rules;
+        }
+        $doService = new MasterService();
+        $this->output2json($doService->Desc($params));
+    }
+    public function getMasterAction(){
+
+        $params = $this->getParams(array(),array('rules'));
+
+        $doService = new MasterService();
+        $db_resposne = $doService->Get($params,array(),array('page_size'=>1));
+
+        $this->output2json($db_resposne);
+
+    }
+    /*
+     *
+     */
+    public function updateMasterAction()
+    {
+        $params = $_POST;
+        $condition['id'] = $params['document_id'];
+        unset($params['document_id']);
+        $doService = new MasterService();
+        $this->output2json($doService->Update($params,$condition));
+    }
 
 }

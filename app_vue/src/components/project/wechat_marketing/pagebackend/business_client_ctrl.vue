@@ -334,8 +334,6 @@
 //                            console.log(vm.table_search_sort_by)
                         }
 //                        vm.isloading = false
-
-
                     })
             },
             reset_search_sort_by(){

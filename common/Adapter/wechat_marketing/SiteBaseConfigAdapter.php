@@ -62,7 +62,8 @@ class siteBaseConfigAdapter extends DbLibraryAdapter
             ->def('mail_username')->map('mail_username')->varchar(200)->desc('网站邮件账户用户名')
             ->def('mail_userpass')->map('mail_userpass')->varchar(200)->desc('网站邮件账户密码')
 
-            ->def('upload_method')->map('upload_method')->varchar(20)->desc('文件上传方式')->widgetType('radio',array('',array(1=>'本地',2=>'OSS')))->regex('/^.+$/')
+            ->def('upload_method')->map('upload_method')->varchar(20)->desc('文件上传方式')
+                ->widgetType('radio',array('',array('本地','OSS')))->regex('/^.+$/')
             ->def('oss_accesskeyid')->map('oss_accesskeyid')->varchar(100)->desc('oss_accesskeyid')
             ->def('oss_accesskeysecret')->map('oss_accesskeysecret')->varchar(100)->desc('oss_accesskeysecret')
             ->def('oss_endpoint')->map('oss_endpoint')->varchar(100)->desc('oss_endpoint')
