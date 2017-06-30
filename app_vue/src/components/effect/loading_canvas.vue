@@ -74,6 +74,9 @@
         methods:{
             start(){
                 console.log('start')
+                this.initBase();
+                this.initDots();
+                this.animate()
 
             },
             initBase(){
@@ -94,12 +97,27 @@
                 this.drawParams.dots_count = vm.drawParams.xy_line * (parseInt(this.is_line_percent)/100)
 //            this.help = this.drawParams.dots_count
 
-                for(let i = 0; i <this.drawParams.dots_count; i++){
+//                for(let i = 0; i <this.drawParams.dots_count; i++){
+//                    vm.drawCanvas.initDot(
+//                        {
+//                            g:{down:0,right:0,out:0},
+//                            init_center:{x:-vm.screenWidth/2 + i*2,
+//                                y:vm.screenHeight/2-8 - this.drawParams.tan*i*2},
+//                            z:400,
+//                            scale_fn_base:1,
+//                            radius:is_pixel,
+//                            colors:[
+//                                {key:0,value:'#53DFD6'}
+//                            ]
+//                        })
+//
+//                }
+                for(let i = 0; i <1; i++){
                     vm.drawCanvas.initDot(
                         {
                             g:{down:0,right:0,out:0},
-                            init_center:{x:-vm.screenWidth/2 + i*2,
-                                y:vm.screenHeight/2-8 - this.drawParams.tan*i*2},
+                            init_center:{x:-0,
+                                y:0},
                             z:400,
                             scale_fn_base:1,
                             radius:is_pixel,
@@ -117,9 +135,7 @@
             },
 
             render(){
-                this.initBase()
-                this.initDots()
-                this.draw()
+
 
                 this.drawCanvas.initWidthHeight(this.screenWidth,this.screenHeight)
                 this.drawCanvas.initCtrl()

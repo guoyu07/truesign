@@ -32,53 +32,53 @@ class DrawCanvas {
         this.height = height
     }
     initDot({
-        fl = 200,
-        start_time=Date.parse(new Date()),
-        end_time=false,
-        init_center = false,
-        center = false,
-        radius = false,
-        each_touch_test = false,
-        edge_touch_test = false,
-        style = false,
-        z=0,
-        ctrl_v = {
-            c_x:0,
-            c_y:0,
-            c_z:0
-        },
-        g = {
-            down:1,
-            right:0,
-            out:0
-        },
-        friction = {
-            x:0.98,
-            y:0.98,
-            z:0.98
-        },
-        v = {
-            vx:0,
-            vy:0,
-            vz:0
-        },
-        scale_fn = 1/(1 + -z/fl),
-        scale = {
-            scale_X:scale_fn,
-            scale_Y:scale_fn
-        },
-        vp = {    //消失点
-            vpX:window.innerWidth/2,
-            vpY:window.innerHeight/2,
-        },
-        visible=true,
-        colors=[
-            {key:0,value:'rgba(255,255,255,1)'},
-            {key:0.2,value:'rgba(0,255,255,1)'},
-            {key:0.3,value:'rgba(0,0,100,1)'},
-            {key:1,value:'rgba(0,0,0,0.1)'}
-        ]
-    }
+                fl = 200,
+                start_time=Date.parse(new Date()),
+                end_time=false,
+                init_center = false,
+                center = false,
+                radius = false,
+                each_touch_test = false,
+                edge_touch_test = false,
+                style = false,
+                z=0,
+                ctrl_v = {
+                    c_x:0,
+                    c_y:0,
+                    c_z:0
+                },
+                g = {
+                    down:1,
+                    right:0,
+                    out:0
+                },
+                friction = {
+                    x:0.98,
+                    y:0.98,
+                    z:0.98
+                },
+                v = {
+                    vx:0,
+                    vy:0,
+                    vz:0
+                },
+                scale_fn = 1/(1 + -z/fl),
+                scale = {
+                    scale_X:scale_fn,
+                    scale_Y:scale_fn
+                },
+                vp = {    //消失点
+                    vpX:window.innerWidth/2,
+                    vpY:window.innerHeight/2,
+                },
+                visible=true,
+                colors=[
+                    {key:0,value:'rgba(255,255,255,1)'},
+                    {key:0.2,value:'rgba(0,255,255,1)'},
+                    {key:0.3,value:'rgba(0,0,100,1)'},
+                    {key:1,value:'rgba(0,0,0,0.1)'}
+                ]
+            }
 
     ){
         // console.log(g)
@@ -143,22 +143,18 @@ class DrawCanvas {
         this.dots.push(dot)
     }
     test({a=1}){
-       console.log('a->',a)
+        console.log('a->',a)
 
     }
-    move_3D({move_speed={
-        x:0,
-        y:0.2,
-        z:0
-    }}){
+    move_3D(x=0,y=0.2,z=0){
         var cls = this
         this.dots.forEach(function (k,v) {
             cls.dots[v].ctrl_v.c_x += cls.ctrl_mode.mode_x
-            cls.dots[v].ctrl_v.c_x -= cls.dots[v].friction.x * (typeof move_speed.x === 'undefined'?0:move_speed.x)
+            cls.dots[v].ctrl_v.c_x -= cls.dots[v].friction.x * (typeof x === 'undefined'?0:x)
             cls.dots[v].ctrl_v.c_y += cls.ctrl_mode.mode_y
-            cls.dots[v].ctrl_v.c_y -= cls.dots[v].friction.y * (typeof move_speed.y === 'undefined'?0:move_speed.y)
+            cls.dots[v].ctrl_v.c_y -= cls.dots[v].friction.y * (typeof y === 'undefined'?0:y)
             cls.dots[v].ctrl_v.c_z += cls.ctrl_mode.mode_z
-            cls.dots[v].ctrl_v.c_z -= cls.dots[v].friction.z * (typeof move_speed.z === 'undefined'?0:move_speed.z)
+            cls.dots[v].ctrl_v.c_z -= cls.dots[v].friction.z * (typeof z === 'undefined'?0:z)
             // cls.dots[v].ctrl_v.c_x = cls.ctrl_mode.mode_x
             // cls.dots[v].ctrl_v.c_y = cls.ctrl_mode.mode_y
             // cls.dots[v].ctrl_v.c_z = cls.ctrl_mode.mode_z
@@ -171,17 +167,17 @@ class DrawCanvas {
             cls.dots[v].scale_fn = 1/(1 + -cls.dots[v].z/cls.dots[v].fl)
 
             if(cls.dots[v].init_center.y < -(cls.height/1.5)){
-              cls.dots[v].init_center.y = cls.height/1.5;
+                cls.dots[v].init_center.y = cls.height/1.5;
             }
             if(cls.dots[v].z>cls.dots[v].fl){
-              cls.dots[v].z = -1000
+                cls.dots[v].z = -1000
             }
             if(cls.dots[v].scale_fn>1000){
-              cls.dots[v].scale_fn=1000
+                cls.dots[v].scale_fn=1000
             }
-          if(cls.dots[v].z<-1000){
-            cls.dots[v].z=cls.dots[v].fl
-          }
+            if(cls.dots[v].z<-1000){
+                cls.dots[v].z=cls.dots[v].fl
+            }
             cls.dots[v].scale = {
                 scale_X:cls.dots[v].scale_fn,
                 scale_Y:cls.dots[v].scale_fn
