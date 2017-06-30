@@ -24,7 +24,13 @@
             return {
                 screenWidth: document.body.clientWidth,   // 这里是给到了一个默认值 （这个很重要）
                 screenHeight: document.body.clientHeight,  // 这里是给到了一个默认值 （这个很重要）
-                help:''
+                help:'',
+                drawCanvas:{},
+                drawParams:{
+                    xy_line:0,
+                    tan:0,
+                    dots_count:0,
+                }
             }
         },
 
@@ -41,51 +47,56 @@
 
             })
 
+            this.start();
 
 
-            var drawCanvas = new DrawCanvas('canvas', vm.screenWidth-10, vm.screenHeight-10)
-            for(let i = 0; i < 150; i++){
-                drawCanvas.initDot(
-                    {
-                        g:{down:-0.3,right:0,out:0},
-                        init_center:{x:Math.random()*(Math.random()>0.5?1:-1) * (drawCanvas.width/2) ,
-                            y:Math.random()*(Math.random()>0.5?1:-1) * (drawCanvas.height/2) },
-                        z:-Math.random()*1000
-                    })
+        },
+        methods:{
+            start(){
+                console.log('start')
+                this.initBase();
+                this.initDots();
+                this.animate()
+
+            },
+            initBase(){
+                var vm = this
+                this.drawCanvas = new DrawCanvas('canvas', vm.screenWidth-10, vm.screenHeight-10)
+
+
+            },
+            initDots(){
+                var vm = this
+                for(let i = 0; i < 150; i++){
+                    this.drawCanvas.initDot(
+                        {
+                            g:{down:-0.3,right:0,out:0},
+                            init_center:{x:Math.random()*(Math.random()>0.5?1:-1) * (this.drawCanvas.width/2) ,
+                                y:Math.random()*(Math.random()>0.5?1:-1) * (this.drawCanvas.height/2) },
+                            z:-Math.random()*1000
+                        })
+
+                }
+            },
+            draw(){
+                this.drawCanvas.drawDots()
+
+            },
+
+            render(){
+
+                this.drawCanvas.initWidthHeight(this.screenWidth,this.screenHeight)
+                this.drawCanvas.initCtrl()
+                this.drawCanvas.drawDots()
+                this.drawCanvas.move_3D(0,0,0)
+                this.drawCanvas.move_line()
+            },
+            animate(){
+                this.render();
+                requestAnimationFrame( this.animate );
 
             }
 
-//          for(let i = 0; i < 1; i++){
-//              drawCanvas.initDot(
-//                  {
-//                      g:{down:0,right:0,out:0},
-//                      init_center:{x:0 ,
-//                          y:0},
-//                      z:-120
-//                  })
-//
-//          }
-
-
-//          this.help = drawCanvas.dots
-
-            function render() {
-
-
-                drawCanvas.initWidthHeight(vm.screenWidth,vm.screenHeight)
-                drawCanvas.initCtrl()
-                drawCanvas.drawDots()
-                drawCanvas.move_3D({move_speed:{
-                    y:0.2
-                }})
-//              drawCanvas.move_line()
-            }
-            function animate() {
-                render();
-                requestAnimationFrame( animate );
-
-            }
-            animate()
         }
     }
 
