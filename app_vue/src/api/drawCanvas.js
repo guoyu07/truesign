@@ -62,6 +62,7 @@ class DrawCanvas {
                     vy:0,
                     vz:0
                 },
+                scale_fn_base = 0,
                 scale_fn = 1/(1 + -z/fl),
                 scale = {
                     scale_X:scale_fn,
@@ -114,10 +115,12 @@ class DrawCanvas {
         dot.visible = visible
         dot.fl = fl
         dot.ctrl_v = ctrl_v
-        dot.scale_fn = scale_fn
+        if(scale_fn_base){
+            dot.scale_fn = scale_fn_base
+        }
         dot.scale = scale = {
-            scale_X : scale_fn,
-            scale_Y : scale_fn
+            scale_X : dot.scale_fn,
+            scale_Y : dot.scale_fn
         }
         dot.vp = vp
         dot.radius = radius
@@ -148,6 +151,7 @@ class DrawCanvas {
     }
     move_3D(x=0,y=0.2,z=0){
         var cls = this
+        console.log(x,y,z)
         this.dots.forEach(function (k,v) {
             cls.dots[v].ctrl_v.c_x += cls.ctrl_mode.mode_x
             cls.dots[v].ctrl_v.c_x -= cls.dots[v].friction.x * (typeof x === 'undefined'?0:x)
@@ -338,6 +342,7 @@ class DrawCanvas {
     initCtrl(){
         const cls = this
         window.addEventListener('keydown', function (event) {
+            console.log('event.keyCode',event.keyCode)
             switch (event.keyCode) {
                 case 38:        //up
                     cls.ctrl_mode.mode_z = 1;

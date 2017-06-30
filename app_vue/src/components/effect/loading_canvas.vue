@@ -112,13 +112,13 @@
 //                        })
 //
 //                }
-                for(let i = 0; i <1; i++){
+                for(let i = 0; i <this.drawParams.dots_count; i++){
                     vm.drawCanvas.initDot(
                         {
                             g:{down:0,right:0,out:0},
-                            init_center:{x:-0,
+                            init_center:{x:0,
                                 y:0},
-                            z:400,
+//                            z:100,
                             scale_fn_base:1,
                             radius:is_pixel,
                             colors:[
@@ -127,7 +127,7 @@
                         })
 
                 }
-                this.help = this.drawCanvas.dots[0]
+                this.help = this.drawCanvas.dots[this.drawParams.dots_count-1]
             },
             draw(){
                 this.drawCanvas.drawDots()
