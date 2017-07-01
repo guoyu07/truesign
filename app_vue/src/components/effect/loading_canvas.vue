@@ -131,7 +131,6 @@
             },
             draw(){
                 this.drawCanvas.drawDots()
-
             },
 
             render(){

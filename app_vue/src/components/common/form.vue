@@ -1,7 +1,7 @@
 <template>
-    <div id="form" style="z-index:9999;position: absolute;width: 400px;min-width: 400px;border-radius: 0.1rem;overflow: hidden">
-        <div v-if="circle_flag_pos==='left'" class="circle_flag" :style="{left: '0',marginLeft:'-0.15rem'}" ></div>
-        <div v-else="circle_flag_pos==='left'" class="circle_flag" :style="{right: '0',marginRight:'-0.15rem'}" ></div>
+    <div id="form" style="z-index:9999;position: absolute;width: 400px;min-width: 400px;border-radius: 18px;overflow: hidden">
+        <div @click="change_form_type" v-if="circle_flag_pos==='left'" class="circle_flag" :style="{cursor:'pointer',left: '0',marginLeft:'-0.15rem'}" ></div>
+        <div @click="change_form_type" v-else="circle_flag_pos==='left'" class="circle_flag" :style="{cursor:'pointer',right: '0',marginRight:'-0.15rem'}" ></div>
         <div
                 style="font-size: 0.1rem;width: 100%;height: 0.2rem;
                 background-color: gainsboro;line-height: 0.2rem;
@@ -157,6 +157,9 @@
                     }
                 });
             },
+            change_form_type(){
+                this.$root.eventHub.$emit('change_form_type',1)
+            }
         },
         mounted(){
 
@@ -181,9 +184,10 @@
 
 }
 
-.reg_form:hover
+/*.reg_form:hover
     transition  all 3s
     transform-origin:0% 50%;
     transform: rotateY(60deg);
+    */
 
 </style>

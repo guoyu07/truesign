@@ -45,6 +45,8 @@
             this.updateWechat_marketing_store({
                 apihost:wechat_marketing_apihost
             })
+            console.log('route',this.$route.path)
+//            this.$router.push('/wechat_marketing/main_page')
         },
         mounted(){
 

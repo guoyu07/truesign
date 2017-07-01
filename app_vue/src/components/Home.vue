@@ -1,11 +1,11 @@
 <template>
-    <div class="root_home" style="overflow:auto;" >
-        <div class="word_show">
-            <h1>数据</h1>
-            <h1>可视</h1>
-            <h1>可控</h1>
-            <h1>你知道的,一切皆可查询...</h1>
-        </div>
+    <div class="root_home" style="overflow:hidden;" >
+        <!--<div class="word_show">-->
+            <!--<h1>数据</h1>-->
+            <!--<h1>可视</h1>-->
+            <!--<h1>可控</h1>-->
+            <!--<h1>你知道的,一切皆可查询...</h1>-->
+        <!--</div>-->
         <loading_canvas :is_line_percent="20"></loading_canvas>
 
     </div>

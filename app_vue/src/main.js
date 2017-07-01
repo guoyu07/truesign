@@ -15,8 +15,9 @@ import zh_CN from 'vee-validate/dist/locale/zh_CN';
 // import ar from 'vee-validate/dist/locale/ar';
 Validator.addLocale(zh_CN);
 const config_validate = {
+
     errorBagName: 'errors', // change if property conflicts.
-    fieldsBagName: 'fields',
+    fieldsBagName: 'vee-fields',
     delay: 0,
     locale: 'zh_CN',
     dictionary: {

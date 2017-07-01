@@ -71,6 +71,7 @@
                             <img :src="scope.row[item.name]" style="width: auto;height: 30px">
                         </div>
                         <div v-else-if="item.widgetType[0]==='password'">{{scope.row[item.name]}}</div>
+                        <div v-else-if="item.widgetType[0]==='status'">{{scope.row[item.name] === 1?'是':'否'}}</div>
                         <div v-else-if="item.widgetType[0]==='text'">
                             <div v-html="scope.row[item.name]">
 
@@ -79,6 +80,7 @@
                         <div v-else-if="item.widgetType[0]==='color'" >
                             <i style="display: block;width: 30px;height: 30px;margin: 0 auto;border-radius: 15px" :style="{backgroundColor:scope.row[item.name]}"></i>
                         </div>
+
                         <div v-else-if="item.widgetType[0]==='time'">{{ get_timestamp2datetime(scope.row[item.name]) }}</div>
                         <div v-else-if="item.widgetType[0]==='radio'">
                             <div v-if="item.widgetStyle.hasOwnProperty(0)">

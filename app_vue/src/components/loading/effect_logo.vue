@@ -1,5 +1,5 @@
 <template>
-  <div class="" style="height: 80%;position: absolute;z-index:10"  >
+  <div class="" style=""  >
         <!--<input v-model="on_logo_pos" style="position: absolute;z-index:100000;background-color: white;color: black!important;margin-left: 200px">-->
         <div id="logo_scope" :class="{'logo_effect_center_out':on_logo_pos === 'center' || on_logo_pos==='relative_center'}"
              :style="{
@@ -167,7 +167,7 @@
                     this.borderStyle.borderRight = 20
                     this.borderStyle.borderTop = 20
                     this.borderStyle.borderBottom = 20
-                    $('#logo_scope').css('margin','15px 75px')
+//                    $('#logo_scope').css('margin','15px 75px')
                 }
 
             },

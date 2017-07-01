@@ -1,6 +1,8 @@
 /**
  * Created by ql-win on 2017/4/19.
  */
+import md5 from 'md5'
+import sha256 from 'sha256'
 var timestamp_tools = require('time-stamp');
 const dateTime_tools = require('date-time');
 var time_tools = require('node-datetime');
@@ -184,6 +186,18 @@ export function  resolveWidgetData2FormData(WidgetData,flag=true) {
             if(item.type === 'time'){
                 item.value = Date.parse(item.value)/1000
             }
+            if(item.type === 'password'){
+               console.log('item',item.value.length)
+                if(isEmpty(item.value) || (item.value.length<8) || ( item.value.length >64 )){
+                        item.value  = ''
+                }
+                else if(item.value.length === 64){
+                    item.value = item.value
+                }
+                else{
+                    item.value = sha256(md5(item.value+'iamsee'))
+                }
+            }
             formdata[item.key] = item.value
         }
         return formdata
@@ -235,7 +249,7 @@ function judgeWidgetTypeByKeyAndKeyType(key,keytype,widgetType){
     if(widgetType==='text'){
         return 'text'
     }
-    else if(key === 'document_id' || (keytype === 'int'   && widgetType !== 'time') || widgetType === 'num'){
+    else if(key === 'document_id' || (keytype === 'int'   &&  widgetType !== 'time' && widgetType !=='status') || widgetType === 'num'){
         return 'num'
     }
     else if(widgetType === 'time'){
@@ -271,6 +285,9 @@ function judgeWidgetTypeByKeyAndKeyType(key,keytype,widgetType){
     else if(widgetType === 'obj'){
         return 'obj'
     }
+    else if(widgetType === 'status'){
+        return 'status'
+    }
     else{
         return 'str'
     }
@@ -301,14 +318,14 @@ function judgeWidth(key,keytype,value) {
             base_width = 200
             break
         case 'num':
-            base_width = 100
+            base_width = 120
             break
         default:
             base_width = 120
     }
 
     var tmp_width = 0;
-    tmp_width = key.length * 6
+    tmp_width = key.length * 8
     if(key === 'document_id'){
         return 90
     }

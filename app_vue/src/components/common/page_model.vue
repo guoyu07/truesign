@@ -137,7 +137,10 @@
                                     <el-color-picker v-model="page_data.content[index].value" show-alpha></el-color-picker>
 
                                 </div>
+                                <div v-else-if="page_data.content[index].type === 'status'" class="widget_status">
+                                    {{ page_data.content[index]===1?'是':'否' }}
 
+                                </div>
                                 <div style="display: inline-block" class="fileinput" v-if="page_data.content[index].type !== 'btn' &&
                                 page_data.content[index].type !== 'upfile' &&
                                 page_data.content[index].type !== 'upimg' &&
@@ -146,23 +149,29 @@
                                 page_data.content[index].type !== 'obj' &&
                                 page_data.content[index].type !== 'radio' &&
                                 page_data.content[index].type !== 'color' &&
+                                page_data.content[index].type !== 'status' &&
                                 page_data.content[index].type !== 'checkbox'
                                 ">
-                                    <input v-if="  page_data.content[index].type==='password'"
-                                           class=""
-                                           :disabled="!page_data.content[index].able_modify"
-                                           v-model="page_data.content[index].value"
-                                           :readonly="!page_data.content[index].access  || page_data.content[index].key === 'document_id' || !page_data.content[index].able_modify"
-                                           :style=" {
+                                    <div v-if="page_data.content[index].type==='password'">
+
+                                            <input
+                                                   class=""
+                                                   :disabled="!page_data.content[index].able_modify"
+                                                   v-model="page_data.content[index].value"
+                                                   :readonly=" !page_data.content[index].access  || page_data.content[index].key === 'document_id' || !page_data.content[index].able_modify"
+                                                   :style=" {
                                     borderBottom:page_data.content[index].access?'1px solid rgba(255,255,255,0.41)':'none',
                                     backgroundColor:(page_data.content[index].access && page_data.content[index].able_modify)?'rgba(150, 150, 150, 0.19)':''
                                     }"
-                                           :name="page_data.content[index].label"
-                                           type="password"
-                                           v-validate.initial="{ rules: { required:(page_data.content[index].regex && page_data.content[index].able_modify )?true:false,regex:page_data.content[index].able_modify?page_data.content[index].regex:false } }" :class="{'input': true, 'is-danger': errors.has(page_data.content[index].label) }"
+                                                   :name="page_data.content[index].label"
+                                                   type="password"
+                                                   v-validate.initial="{ rules: { required:(page_data.content[index].regex && page_data.content[index].able_modify )?true:false,regex:page_data.content[index].able_modify?page_data.content[index].regex:false } }" :class="{'input': true, 'is-danger': errors.has(page_data.content[index].label) }"
 
 
-                                    />
+                                            />
+
+                                    </div>
+
                                     <input v-if=" page_data.content[index].type !=='password'"
                                            class=""
                                            :disabled="!page_data.content[index].able_modify"
@@ -180,29 +189,10 @@
                                     />
                                 </div>
 
-                                    <!--<input v-if="page_data.content[index].type==='password'"-->
-                                           <!--class="fileinput"-->
-                                           <!--:disabled="!page_data.content[index].able_modify"-->
-                                           <!--v-model="page_data.content[index].value"-->
-                                           <!--:readonly="!page_data.content[index].access  || page_data.content[index].key === 'document_id' || !page_data.content[index].able_modify"-->
-                                           <!--:style=" {-->
-                                    <!--borderBottom:page_data.content[index].access?'1px solid rgba(255,255,255,0.41)':'none',-->
-                                    <!--backgroundColor:(page_data.content[index].access && page_data.content[index].able_modify)?'rgba(150, 150, 150, 0.19)':''-->
-                                    <!--}"-->
-                                           <!--:name="page_data.content[index].label"-->
-                                           <!--type="text"-->
-                                           <!--v-validate.initial="{ rules: { required:(page_data.content[index].regex && page_data.content[index].able_modify )?true:false,regex:page_data.content[index].able_modify?page_data.content[index].regex:false } }" :class="{'input': true, 'is-danger': errors.has(page_data.content[index].label) }"-->
-
-
-                                    <!--/>-->
-
-                                <!--<input name="email" v-model="page_data.content[index].value" v-validate.initial="'required|email'" :class="{'input': true, 'is-danger': errors.has('email') }" type="text" placeholder="Email">-->
-
-
                                 <div style="" class="filediv">
                                     <!--<input   @click='change_access($event)' :data-index="index" type="button" v-model="page_data.content[index].access">-->
                                     <span  style="" v-show="errors.has(page_data.content[index].label)" class="help is-danger filespan">
-                                    <i style=" color:rgba(205,52,25,0.91);margin-right: 10px" v-show="errors.has(page_data.content[index].label)" class="fa  fa-refresh rotate_aw"></i>{{ errors.first(page_data.content[index].label) }}</span>
+                                    <i style=" color:rgba(205,52,25,0.38);margin-right: 10px" v-show="errors.has(page_data.content[index].label)" class="fa  fa-refresh rotate_aw"></i>{{ errors.first(page_data.content[index].label) }}</span>
                                 </div>
 
                             </li>
@@ -545,7 +535,7 @@
             })
         },
         mounted(){
-
+            console.log('page_data',this.page_data)
 
 
 
@@ -1103,6 +1093,9 @@
         width 400px
         min-width 400px
         display inline-block
+    }
+    .widget_status{
+        display: inline-block;height: 30px;line-height: 35px;font-size: 16px;color: gray;padding-left: 20px
     }
     .upfile{
         width 60%
