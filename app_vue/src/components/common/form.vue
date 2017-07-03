@@ -29,7 +29,7 @@
                 <el-form-item label="密码"  prop="pass">
                     <el-input type="password" v-model="login_form.pass"></el-input>
                 </el-form-item>
-                <el-form-item>
+                <el-form-item style="margin-left: -80px">
                     <el-button type="primary" @click="submitLoginForm('login_form_rule')">登陆</el-button>
                     <el-button @click="resetForm('login_form_rule')">重置</el-button>
                 </el-form-item>
@@ -37,10 +37,16 @@
         </div>
         <div  v-else="formtype==='login'"  class="wechat_marketing_form reg_form" style="text-align: center;margin-right: 50px;margin-left: 20px;margin-top: 100px;">
             <el-radio-group @change="radio_reg_type_change" size="small"  v-model="radio_reg_type" style="position: absolute;left:0;top:50px;">
-                <el-radio-button  v-for="(item,index) in login_reg_list" :key="index" :label="index"></el-radio-button>
+                <el-radio-button  v-for="(item,index) in reg_type_list" :key="index" :label="index"></el-radio-button>
 
             </el-radio-group>
+
                 <el-form :label-position="labelPosition"  ref="reg_form_rule" :rules="reg_form_rule" label-width="100px" :model="reg_form">
+                    <transition name="el-zoom-in-top">
+                        <el-form-item v-if="radio_reg_type==='员工'" label="商家识别码" prop="business_code">
+                            <el-input v-model="reg_form.business_code"></el-input>
+                        </el-form-item>
+                    </transition>
                     <el-form-item label="用户名" prop="username">
                         <el-input v-model="reg_form.username"></el-input>
                     </el-form-item>
@@ -60,7 +66,7 @@
 
                         </el-input>
                     </el-form-item>
-                    <el-form-item>
+                    <el-form-item style="margin-left: -80px">
                         <el-button type="primary" @click="submitRegForm('reg_form_rule')">注册</el-button>
                         <el-button @click="resetForm('reg_form_rule')">重置</el-button>
                     </el-form-item>
@@ -155,7 +161,8 @@
                     pass: '',
                     email: '',
                     phonenum:'',
-                    phonenum_code:''
+                    phonenum_code:'',
+                    business_code:''
                 },
                 reg_form_rule:{
                     username: [
@@ -211,7 +218,19 @@
         },
         methods: {
             radio_reg_type_change(data){
+                console.log(data)
+                this.radio_reg_type = data
+                if(data === '员工'){
+//                    this.reg_form_rule.business_code =  [{ required: true, message: '商家识别码', trigger: 'blur' }]
+                    this.$set(this.reg_form_rule,'business_code',[{ required: true, message: '商家识别码', trigger: 'blur' }])
+                }
+                else{
+                   if(this.reg_form_rule.hasOwnProperty('business_code')){
+                       this.$delete(this.reg_form_rule,'business_code')
+                   }
 
+                }
+                console.log(this.reg_form_rule)
             },
             radio_login_type_change(data){
                 this.radio_login_type = data

@@ -338,6 +338,27 @@ class DrawCanvas {
             return (a.z - b.z);
         }
     }
+    draw1(){
+        var hsl = 0
+        var   angle = 0.01;
+        var vm_this = this
+        setInterval(function () {
+            angle += 0.03;
+            console.log(angle)
+            hsl <= 360 ? hsl+=0.25 : hsl = 0;
+            let s = -Math.sin(angle);
+            let c = Math.cos(angle);
+
+            vm_this.ctx.save();
+            vm_this.ctx.globalAlpha = 0.5;
+            vm_this.ctx.beginPath();
+            vm_this.ctx.fillStyle = 'hsla('+hsl+', 100%, 50%, 1)';
+            vm_this.ctx.arc(this.width/2+(s*75),this.height/2+(c*75),25,0,2*Math.PI);
+            vm_this.ctx.fill();
+            vm_this.ctx.restore();
+        },5)
+
+    }
 
 
     initCtrl(){

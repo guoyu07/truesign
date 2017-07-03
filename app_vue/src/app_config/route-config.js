@@ -44,7 +44,7 @@ const project = resolve => require(['../components/project/project.vue'], resolv
 const effect = resolve => require(['../components/effect/effect.vue'], resolve)
 const canvas = resolve => require(['../components/effect/canvas.vue'], resolve)
 const loading_canvas = resolve => require(['../components/effect/loading_canvas.vue'], resolve)
-const loading_canvas_backup = resolve => require(['../components/effect/loading_canvas_backup.vue'], resolve)
+const draw_canvas = resolve => require(['../components/effect/draw_canvas.vue'], resolve)
 
 const threejs_wormhole = resolve => require(['../components/effect/threejs_wormhole.vue'], resolve)
 const css3d_periodictable = resolve => require(['../components/effect/css3d_periodictable.vue'], resolve)
@@ -559,12 +559,12 @@ const routes = [
                 component: loading_canvas
             },
             {
-                name: 'loading_canvas_backup',
-                path: 'loading_canvas_backup',
+                name: 'draw_canvas',
+                path: 'draw_canvas',
                 meta: {
-                    title: 'loading_canvas_backup'
+                    title: 'draw_canvas'
                 },
-                component: loading_canvas_backup
+                component: draw_canvas
             },
                 {
                     name: 'canvas',

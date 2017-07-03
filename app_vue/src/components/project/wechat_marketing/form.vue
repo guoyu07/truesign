@@ -1,7 +1,7 @@
 <template>
     <div style="width: 100%;height: 100%;overflow: hidden">
-        <div id="is_form_container" style="text-align: center;">
-            <div style="position: absolute;width: 800px;height: 580px;z-index:1;margin-left: 20px;margin-top: 20px;">
+        <div id="is_form_container" style="">
+            <div style="position: absolute;width: 800px;height: 580px;z-index:1;margin-left: 20px;margin-top: 20px;min-width: 10px">
                 <common_form formtype="login"  class="login_form_container" circle_flag_pos="right" style=""></common_form>
                 <common_form formtype="reg"  class="reg_form_container" circle_flag_pos="left" style=""></common_form>
             </div>
@@ -99,11 +99,11 @@
         position absolute
     }
     #is_form_container .effect_logo_container{
-        transition all 1.5s
+        transition all 0.8s
         border-radius 100px;
     }
     #is_form_container .effect_logo_container:hover{
-        box-shadow 0 0 15px black
-        transition all 1.5s
+        box-shadow 0 0 55px black
+        transition all 0.8s
     }
 </style>
