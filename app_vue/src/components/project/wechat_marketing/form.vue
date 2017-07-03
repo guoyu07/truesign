@@ -13,8 +13,9 @@
                 <!--</div>-->
 
             <!--</transition>-->
-            <div class="form_mask"  :style="{left:form_status==='login'?0:430+'px'}">
-                <div  @click="change_form_type"  class="effect_logo_container" style="width:200px;height:200px;position:absolute;cursor:pointer;left: 50%;margin-left: -100px;top:50%;margin-top: -110px">
+            <div class="form_mask"  :style="{left:form_status==='login'?430+'px':0}">
+                <div  @click="change_form_type"  class="effect_logo_container"
+                      style="width:200px;height:200px;position:absolute;cursor:pointer;left: 50%;margin-left: -100px;top:50%;margin-top: -110px">
                     <effectlogo logo_pos="relative_center" logo_width="150"
                                 style="position: absolute;margin-top: 10px;margin-left: 10px;"></effectlogo>
                 </div>
@@ -49,6 +50,7 @@
             this.$root.eventHub.$on('change_form_type',() => {
                 vm.change_form_type()
             })
+            this.$root.eventHub.$emit('init_navmenu','form')
         },
         mounted(){
 

@@ -151,13 +151,14 @@ class DrawCanvas {
     }
     move_3D(x=0,y=0.2,z=0){
         var cls = this
-        console.log(x,y,z)
+        // console.log(x,y,z)
         this.dots.forEach(function (k,v) {
             cls.dots[v].ctrl_v.c_x += cls.ctrl_mode.mode_x
             cls.dots[v].ctrl_v.c_x -= cls.dots[v].friction.x * (typeof x === 'undefined'?0:x)
             cls.dots[v].ctrl_v.c_y += cls.ctrl_mode.mode_y
             cls.dots[v].ctrl_v.c_y -= cls.dots[v].friction.y * (typeof y === 'undefined'?0:y)
             cls.dots[v].ctrl_v.c_z += cls.ctrl_mode.mode_z
+
             cls.dots[v].ctrl_v.c_z -= cls.dots[v].friction.z * (typeof z === 'undefined'?0:z)
             // cls.dots[v].ctrl_v.c_x = cls.ctrl_mode.mode_x
             // cls.dots[v].ctrl_v.c_y = cls.ctrl_mode.mode_y
@@ -165,8 +166,8 @@ class DrawCanvas {
 
             cls.dots[v].init_center.x += cls.dots[v].ctrl_v.c_x
             cls.dots[v].init_center.y += cls.dots[v].ctrl_v.c_y
-            cls.dots[v].z += cls.dots[v].ctrl_v.c_z
 
+            cls.dots[v].z += cls.dots[v].ctrl_v.c_z
 
             cls.dots[v].scale_fn = 1/(1 + -cls.dots[v].z/cls.dots[v].fl)
 
@@ -342,7 +343,7 @@ class DrawCanvas {
     initCtrl(){
         const cls = this
         window.addEventListener('keydown', function (event) {
-            console.log('event.keyCode',event.keyCode)
+            // console.log('event.keyCode',event.keyCode)
             switch (event.keyCode) {
                 case 38:        //up
                     cls.ctrl_mode.mode_z = 1;

@@ -46,7 +46,9 @@
                 apihost:wechat_marketing_apihost
             })
             console.log('route',this.$route.path)
-//            this.$router.push('/wechat_marketing/main_page')
+            if(this.$route.path === '/wechat_marketing'){
+                this.$router.push('/wechat_marketing/main_page')
+            }
         },
         mounted(){
 

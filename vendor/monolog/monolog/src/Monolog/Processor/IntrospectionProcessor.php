@@ -50,6 +50,9 @@ class IntrospectionProcessor
      */
     public function __invoke(array $record)
     {
+        echo json_encode(123);
+        echo json_encode($trace);
+        exit();
         // return if the level is not high enough
         if ($record['level'] < $this->level) {
             return $record;
@@ -94,7 +97,7 @@ class IntrospectionProcessor
                 'file'      => isset($trace[$i - 1]['file']) ? $trace[$i - 1]['file'] : null,
                 'line'      => isset($trace[$i - 1]['line']) ? $trace[$i - 1]['line'] : null,
                 'class'     => isset($trace[$i]['class']) ? $trace[$i]['class'] : null,
-                'function'  => isset($trace[$i]['function']) ? $trace[$i]['function'] : null,
+                'function1'  => isset($trace[$i]['function']) ? $trace[$i]['function'] : null,
             )
         );
 

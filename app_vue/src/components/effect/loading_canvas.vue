@@ -134,8 +134,6 @@
             },
 
             render(){
-
-
                 this.drawCanvas.initWidthHeight(this.screenWidth,this.screenHeight)
                 this.drawCanvas.initCtrl()
                 this.drawCanvas.drawDots()
@@ -143,9 +141,13 @@
                 this.drawCanvas.move_line()
             },
             animate(){
+                var vm = this
                 this.render();
                 requestAnimationFrame( this.animate );
 
+//                setInterval(function () {
+//                    vm.animate()
+//                },50)
             }
 
         }

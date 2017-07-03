@@ -10,6 +10,8 @@ namespace Truesign\Service\Wechat_marketing_service;
 
 
 use Royal\Data\DAO;
+use Royal\Logger\Logger;
+use Royal\Prof\TrueSignConst;
 use Truesign\Adapter\wechat_marketing\businessAdapter;
 
 class BusinessService extends BaseService
@@ -110,4 +112,33 @@ class BusinessService extends BaseService
 
     }
 
+
+    /*
+     * 根据手机号和验证码在business表里创建记录
+     * 流程->判断此手机号是否已经验证了其它账户
+     * ->是->返回提示
+     * ->否->保存手机号和验证码（有手机号则更新，无则插入数据），在客户点击注册后根据手机号判定验证码是否正确，
+     * ->否重复上一步
+     * ->是保存其他信息更新状态为已验证->账户注册完成
+     *
+     * */
+    public function UpdatePhoneSms($params)
+    {
+        $phone = $params['phone'];
+        $sms = $params['sms'];
+        $count = $this->Dao->count(array('phone_num'=>$phone,'phone_num_auth_status'=>1));
+        if(empty($count)){
+            $db_response = $this->Dao->insertOrupdate($params,array('phone_num'=>$phone));
+            return $db_response;
+        }
+        elseif($count>1){
+            Logger::log('CODELOGIC','存在'.$count.'条相同手机号注册信息,手机号不应有重复数据',array(TrueSignConst::CODE_LOGIC_ERR(),'phone_num'=>$phone));
+            throw new \Exception(TrueSignConst::CODE_LOGIC_ERR()['desc'].'此手机号已绑定其他账户',TrueSignConst::CODE_LOGIC_ERR()['code']);
+        }
+        else{
+            throw new \Exception('此手机号已绑定其他账户',TrueSignConst::CODE_LOGIC_ERR()['code']);
+
+        }
+
+    }
 }

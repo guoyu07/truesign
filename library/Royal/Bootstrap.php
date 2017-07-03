@@ -2,9 +2,13 @@
 namespace Royal;
 
 use Royal\Prof\TimeStack;
+use Royal\Prof\TrueSignConst;
 abstract class Bootstrap {
 
     static function loadConfig() {
+//        初始化常量
+        new TrueSignConst();
+
         //配置节点
         $section = 'common';
         //如果在phpunit环境中，则加载phpunit的配置节点
@@ -30,7 +34,6 @@ abstract class Bootstrap {
     static function run($app='o_app')
     {
         define('CURRECT_APPLICATION_PATH', APPLICATION_PATH.DIRECTORY_SEPARATOR.'apps'.DIRECTORY_SEPARATOR.$app);
-
         static::loadConfig();
         if (php_sapi_name() != 'cli') {
             TimeStack::start();

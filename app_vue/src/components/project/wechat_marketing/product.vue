@@ -6,7 +6,15 @@
 
 
 <script>
+    export default {
+        components: {
+            Parallax
+        },
+        created(){
+            this.$root.eventHub.$emit('init_navmenu','product')
 
+        }
+    }
 </script>
 <style lang="stylus" rel="stylesheet/stylus">
 

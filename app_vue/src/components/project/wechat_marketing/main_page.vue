@@ -24,6 +24,10 @@
     export default {
         components: {
             Parallax
+        },
+        created(){
+            this.$root.eventHub.$emit('init_navmenu','form')
+
         }
     }
 </script>

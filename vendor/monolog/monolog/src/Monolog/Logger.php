@@ -30,6 +30,10 @@ class Logger implements LoggerInterface
      * Detailed debug information
      */
     const DEBUG = 100;
+    /*
+     * 代码逻辑请求日志
+     * */
+    const CODELOGIC = 110;
 
     /**
      * Interesting events
@@ -93,6 +97,7 @@ class Logger implements LoggerInterface
      */
     protected static $levels = array(
         self::DEBUG     => 'DEBUG',
+        self::CODELOGIC     => 'CODELOGIC',
         self::INFO      => 'INFO',
         self::NOTICE    => 'NOTICE',
         self::WARNING   => 'WARNING',
@@ -285,6 +290,7 @@ class Logger implements LoggerInterface
      */
     public function addRecord($level, $message, array $context = array())
     {
+
         if (!$this->handlers) {
             $this->pushHandler(new StreamHandler('php://stderr', static::DEBUG));
         }
@@ -331,6 +337,7 @@ class Logger implements LoggerInterface
 
         foreach ($this->processors as $processor) {
             $record = call_user_func($processor, $record);
+
         }
 
         while ($handler = current($this->handlers)) {
@@ -513,6 +520,7 @@ class Logger implements LoggerInterface
      */
     public function log($level, $message, array $context = array())
     {
+
         $level = static::toMonologLevel($level);
 
         return $this->addRecord($level, $message, $context);

@@ -27,6 +27,7 @@ class IProcessor {
         $skipClasses = array('Royal\\Logger\\', 'Monolog\\');
         while (isset($trace[$i]['class'])) {
             foreach ($skipClasses as $part) {
+
                 if (strpos($trace[$i]['class'], $part) !== false) {
                     $i++;
                     continue 2;
@@ -39,6 +40,11 @@ class IProcessor {
         if (!$extra) {
             $extra = array();
         }
+        $request_source = [];
+        for($j=sizeof($trace);$j>=$i;$j--){
+            unset($trace[$j]['object']);
+            $request_source[] = $trace[$j];
+        }
 
         // we should have the call source now
         $extra = array_merge(
@@ -48,6 +54,7 @@ class IProcessor {
                 'line' => isset($trace[$i - 1]['line']) ? $trace[$i - 1]['line'] : null,
                 'class' => isset($trace[$i]['class']) ? $trace[$i]['class'] : null,
                 'function' => isset($trace[$i]['function']) ? $trace[$i]['function'] : null,
+                'request_source' => json_encode($request_source,256)
             )
         );
 

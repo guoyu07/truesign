@@ -13,17 +13,29 @@ class Logger {
      */
     static $logger = null;
 
-    static function getLogger () {
+    static function getLogger ($level='') {
         if (!static::$logger) {
-
 //            $logPath = APPLICATION_PATH.'/logs';
             $logPath = CURRECT_APPLICATION_PATH.'/logs';
             if (php_sapi_name() != 'cli') {
-                $fileName = 'web';
-                $formatter = new LineFormatter("[%datetime%][%level_name%][%extra.ip%][%extra.class%:%extra.line%]: %message% %context% %extra.url%\n", 'H:i:s', true, true);
+                if($level == 'CODELOGIC'){
+                    $fileName = 'web_code_logic';
+                    $formatter = new LineFormatter("\n[%datetime%]\n[%level_name%][%extra.ip%][%extra.class%:%extra.line%]: %message% %context% %extra.url%\nrequest_source=> \n%extra.request_source%\n", 'H:i:s', true, true);
+
+                }
+                else{
+                    $fileName = 'web';
+                    $formatter = new LineFormatter("[%datetime%][%level_name%][%extra.ip%][%extra.class%:%extra.line%]: %message% %context% %extra.url%\n", 'H:i:s', true, true);
+                }
             } else {
-                $fileName = 'cli';
-                $formatter = new LineFormatter("[%datetime%][%level_name%][%extra.class%:%extra.line%]: %message% %context%\n", 'H:i:s', true, true);
+                if($level == 'CODELOGIC'){
+                    $fileName = 'cli_code_logic';
+                    $formatter = new LineFormatter("[%datetime%][%level_name%][%extra.class%:%extra.line%]: %message% %context% %extra.url%\n%extra.request_source%\n", 'H:i:s', true, true);
+                }
+                else{
+                    $fileName = 'cli';
+                    $formatter = new LineFormatter("[%datetime%][%level_name%][%extra.class%:%extra.line%]: %message% %context%\n", 'H:i:s', true, true);
+                }
             }
 
             $conf = \Yaf_Registry::get('config');
@@ -33,11 +45,15 @@ class Logger {
             $criticalHandler = new FileHandler(sprintf('%s/%s_critical.log', $logPath, $fileName),\Monolog\Logger::CRITICAL);
             $logger->pushHandler($criticalHandler);
 
+
             $errorHandler = new FileHandler(sprintf('%s/%s_error.log', $logPath, $fileName),  \Monolog\Logger::ERROR);
             $logger->pushHandler($errorHandler);
 
             $normalHandler = new FileHandler(sprintf('%s/%s.log', $logPath, $fileName), $conf->application->logger->level);
             $logger->pushHandler($normalHandler);
+
+            $codelogicHandler = new FileHandler(sprintf('%s/%s.log', $logPath, 'code_logic'), \Monolog\Logger::CODELOGIC);
+            $logger->pushHandler($codelogicHandler);
 
             $alertHandler = new FileHandler(sprintf('%s/%s_timeout.log', $logPath, $fileName),  \Monolog\Logger::ALERT, false);
             $logger->pushHandler($alertHandler);
@@ -137,6 +153,7 @@ class Logger {
      * @return null
      */
     static function info($message, array $context = array()) {
+
         static::getLogger()->info($message, $context);
     }
 
@@ -160,6 +177,6 @@ class Logger {
      * @return null
      */
     static function log($level, $message, array $context = array()) {
-        static::getLogger()->log($level, $message, $context);
+        static::getLogger($level)->log($level, $message, $context);
     }
 }

@@ -43,4 +43,15 @@ class CommonController extends AppBaseController {
         $this->output2json($cb_response);
 	}
 
+    public function sendSmsAction()
+    {
+
+        $params = $this->getParams(array('phone'),array('source'));
+        $SMS = new \Truesign\Service\Sms\EallSms();
+        $sms_code = rand(100000, 999999);
+        $sms_response = $SMS->smsSend('business_regeister',$params['phone'],$sms_code);
+        var_dump($sms_response);
+
+	}
+
 }

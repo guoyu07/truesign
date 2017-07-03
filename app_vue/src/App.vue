@@ -24,6 +24,7 @@ import { mapGetters,mapActions } from 'vuex'
 import platform from 'platform';
         //        import fullScreen from './utils/fullScreen'
 export default {
+
         data () {
             return {
                 show_nav: true,

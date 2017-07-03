@@ -42,12 +42,23 @@ class businessAdapter extends DbLibraryAdapter
     {
         return Field::start()
             ->def('document_id')->map('id')->int()->desc('id')->able_modify(false)->issorter('asc')
-            ->def('username')->map('username')->varchar(100)->desc('用户名')->issearch('asc')
+            ->def('username')->map('username')->varchar(100)->desc('用户名')->issearch('asc')->regex('/^[a-zA-Z](\w){5,20}$/')
             ->def('password')->map('password')->varchar(100)->desc('密码')->widgetType('password')
+//                ->regex('/^((?![0-9]+$)(?![a-zA-Z]+$)[a-zA-Z][\.\w]{7,20}|(\w){64})$/')
+                ->regex('/^([a-zA-Z][\\.\w]{7,20}|(\w){64})$/')
             ->def('headpic')->map('headpic')->varchar(200)->desc('头像')->widgetType('headpic')
+
             ->def('phone_num')->map('phone_num')->varchar(15)->desc('手机号')->issearch(true)->isPhone()->issorter('asc')
+            ->def('phone_num_auth_code')->map('phone_num_auth_code')->int()->desc('手机号认证识别码')->regex('/^\d{6}$/')->able_modify(false)
+            ->def('phone_num_auth_status')->map('phone_num_auth_status')->int()->desc('手机号认证状态')->regex('/^\d+$/')->able_modify(false)
+                ->widgetType('status')
+
             ->def('email')->map('email')->varchar(50)->desc('邮箱')->issearch(true)->isEmail()
-            ->def('weimob_num')->map('weimob_num')->int()->desc('公众号数量')->regex('/^\d{0,2}$/')->issorter('asc')
+            ->def('email_auth_code')->map('email_auth_code')->int()->desc('邮箱认证识别码')->regex('/\d{6}/')->able_modify(false)
+            ->def('email_auth_status')->map('email_auth_status')->int()->desc('邮箱认证识状态')->regex('/^\d+$/')->able_modify(false)
+                ->widgetType('status')
+
+            ->def('weimob_num')->map('weimob_num')->int()->desc('允许公众号数量(0-99)')->regex('/^\d{0,2}$/')->issorter('asc')
             ->def('recharge')->map('recharge')->varchar(50)->desc('充值总额')->isMoney()->issorter('asc')
             ->def('remainder')->map('remainder')->varchar(50)->desc('余额')->able_modify(false)->isMoney()
             ->def('access_hide_call_num')->map('access_hide_call_num')->int()->desc('允许隐号通话数量')->regex('/^\d{0,6}$/')
