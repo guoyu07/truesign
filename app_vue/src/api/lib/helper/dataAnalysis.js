@@ -228,6 +228,18 @@ export function  resolveWidgetData2FormData(WidgetData,flag=true) {
 
 
 }
+
+export function countdownPrettyTimeByTimestmp (limit_time) {
+  let login_time =  Date.parse(limit_time)/1000 + 10*24*60*60
+
+  let last_time =  login_time - Date.parse(new Date())/1000
+
+  let day = parseInt(last_time/(3600*24))
+  let hour = parseInt(last_time%(3600*24)/3600)
+  let minute = parseInt(last_time%(3600*24)%3600/60)
+  let sec = parseInt(last_time%(3600*24)%3600%60)
+  return day + '天' +hour +'时'+minute + '分' + sec +'秒'
+}
 export function  timestamp2datetime(timestamp) {
     var dt = time_tools.create(timestamp,'Y-m-d H:M:S')
     var formattedDate = dt.format();
@@ -366,7 +378,7 @@ function isJSON (str, pass_object) {
     // if (!isString(str)) return false;
 
     str = str.replace(/\s/g, '').replace(/\n|\r/, '');
-cd
+
     if(/^\{(.*?)\}$/.test(str)){
         return /"(.*?)":(.*?)/g.test(str);
     }
@@ -407,7 +419,7 @@ function isPlainObj(obj){
     return (obj instanceof Object )&& (obj.constructor === Object);
 }
 
-function isEmptyValue (value) {
+export  function isEmptyValue (value) {
     var type;
     if(value == null) { // 等同于 value === undefined || value === null
         return true;

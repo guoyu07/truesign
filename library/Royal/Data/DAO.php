@@ -690,7 +690,7 @@ class DAO
      * @param $params , read only one row
      * @return array|bool
      */
-    public function get($params, $specified = array(), $sorter = array()) {
+    public function get($params, $specified = array(), $sorter = array(),$IgnoreCreateUpdateTime=false) {
         $db = $this->getDb();
 
         $this->adapter->wrapReadParams($params);
@@ -714,11 +714,13 @@ class DAO
         }
         if (!empty($specified)) {
             $fields = $this->paramsToFields($specified);
+
             $fields = implode(',', $fields);
         }
-        $result = $db->getRowByCondition($this->getTable($this->adapter->table()), $condition, $fields);
+
+        $result = $db->getRowByCondition($this->getTable($this->adapter->table_Prefix().$this->adapter->table()), $condition, $fields);
         if (!empty($result)) {
-            $result = $this->fieldPairsToParamPairs($result);
+            $result = $this->fieldPairsToParamPairs($result,$IgnoreCreateUpdateTime);
             return $this->adapter->wrapItemResult($result);
         } else {
             return false;

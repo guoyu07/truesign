@@ -1,10 +1,12 @@
 <template>
     <div style="width: 100%;height: 100%;overflow: hidden">
         <div id="is_form_container" style="">
-            <div style="position: absolute;width: 800px;height: 580px;z-index:1;margin-left: 20px;margin-top: 20px;min-width: 10px">
+            <transition name="el-fade-in-linear">
+            <div v-if="wechat_marketing_store.token === ''" style="position: absolute;width: 800px;height: 580px;z-index:1;margin-left: 20px;margin-top: 20px;min-width: 10px">
                 <common_form formtype="login"  class="login_form_container" circle_flag_pos="right" style=""></common_form>
                 <common_form formtype="reg"  class="reg_form_container" circle_flag_pos="left" style=""></common_form>
             </div>
+            </transition>
             <!--<transition name="el-zoom-in-top">-->
 
                 <!--<div class="form_mask" v-if="form_status==='login'" :style="{left:0}">-->
@@ -13,12 +15,21 @@
                 <!--</div>-->
 
             <!--</transition>-->
-            <div class="form_mask"  :style="{left:form_status==='login'?430+'px':0}">
+            <div class="form_mask"  :style="{left:judge_mask_left(form_status)}">
+
                 <div  @click="change_form_type"  class="effect_logo_container"
-                      style="width:200px;height:200px;position:absolute;cursor:pointer;left: 50%;margin-left: -100px;top:50%;margin-top: -110px">
+                      :style="{opacity:wechat_marketing_store.token?0.5:1}" style="">
                     <effectlogo logo_pos="relative_center" logo_width="150"
                                 style="position: absolute;margin-top: 10px;margin-left: 10px;"></effectlogo>
+
                 </div>
+                <common_form v-if="wechat_marketing_store.token" formtype="show"  class="" circle_flag_pos="no"
+                             style="position:absolute;z-index:20;margin-top: 20px;width: 100%;height: 100% "
+                             :userinfo="wechat_marketing_store.userinfo">
+
+                </common_form>
+
+
             </div>
         </div>
     </div>
@@ -32,13 +43,15 @@
     import sha256 from 'sha256'
     import axios from 'axios'
     import {axios_config} from 'api/axiosApi'
+    import {isEmptyValue} from '../../../api/lib/helper/dataAnalysis'
     import { mapGetters,mapActions } from 'vuex'
 
     export default {
         data(){
             return{
                 form_status:'login',
-                form_data:{}
+                form_data:{},
+                userinfo:{},
             }
         },
 
@@ -60,29 +73,50 @@
 
             this.$root.eventHub.$on('login_form_submit',function (formdata) {
                 console.log('on->login_form_submit',formdata)
-                formdata['password'] = sha256(md5(formdata['password']))
-                vm.doLogin(formdata)
+                let new_formdata = JSON.parse(JSON.stringify(formdata))
+                new_formdata['password'] = sha256(md5(new_formdata['password']))
+                vm.doLogin(new_formdata)
             })
             this.$root.eventHub.$on('reg_form_submit',function (formdata) {
                 console.log('on->reg_form_submit',formdata)
-                formdata['password'] = sha256(md5(formdata['password']))
-                vm.doReg(formdata)
+                let new_formdata = JSON.parse(JSON.stringify(formdata))
+                new_formdata['password'] = sha256(md5(new_formdata['password']))
+                vm.doReg(new_formdata)
             })
+            this.$root.eventHub.$on('exit_login',function (data) {
+                  vm.updateWechat_marketing_store({
+                        token:{
+                          type:'del'
+                        },
+                        userinfo:{
+                          type:'del'
+                        }
+                  })
+                vm.check_login_status()
+            })
+            this.check_login_status()
+
+
 
         },
         mounted(){
 
 
-
-
         },
         beforeDestroy(){
-
+          this.$root.eventHub.$off('reg_form_submit')
+          this.$root.eventHub.$off('login_form_submit')
+          this.$root.eventHub.$off('exit_login')
         },
         methods:{
+            ...mapActions([
+            'updateWechat_marketing_store',
+            ]),
             change_form_type(){
                 var vm = this
-                vm.form_status = vm.form_status === 'login' ? 'reg':'login'
+                if(isEmptyValue(this.updateWechat_marketing_store.token)){
+                  vm.form_status = vm.form_status === 'login' ? 'reg':'login'
+                }
 
             },
             doLogin(formdata){
@@ -96,6 +130,18 @@
                       message: res.data.desc,
                       type: 'success'
                     });
+                    vm.updateWechat_marketing_store({
+                      token:{
+                        type:'update',
+                        value:res.data.response.token,
+                      },
+                      userinfo:{
+                        type:'update',
+                        value:res.data.response.userinfo
+                      }
+                    })
+                    vm.check_login_status()
+
                   }
                   else{
                     vm.$message({
@@ -109,7 +155,7 @@
 
                 })
             },
-          doReg(formdata){
+            doReg(formdata){
             var vm = this
 
             axios.post(this.wechat_marketing_store.apihost+'LoginOrReg/reg',formdata,axios_config)
@@ -121,6 +167,18 @@
                     message: res.data.desc,
                     type: 'success'
                   });
+
+                  vm.updateWechat_marketing_store({
+                    token:{
+                      type:'update',
+                      value:res.data.response.token,
+                    },
+                    userinfo:{
+                      type:'update',
+                      value:res.data.response.userinfo
+                    }
+                  })
+                  vm.check_login_status()
                 }
                 else{
                   vm.$message({
@@ -134,6 +192,25 @@
 
               })
           },
+            judge_mask_left(data){
+              if(data === 'login'){
+                return  430+'px'
+              }
+              else if(data === 'reg'){
+                return 0
+              }
+              else if(data === 'show'){
+                return 215+'px'
+              }
+            },
+            check_login_status(){
+                if(this.wechat_marketing_store.token && this.wechat_marketing_store.userinfo){
+                    this.form_status = 'show'
+                }
+                else{
+                  this.form_status = 'login'
+                }
+            }
 
         },
 
@@ -168,6 +245,8 @@
     #is_form_container .effect_logo_container{
         transition all 0.8s
         border-radius 100px;
+        width:200px;height:200px;position:absolute;cursor:pointer;left: 50%;margin-left: -104px;top:50%;margin-top: -110px;z-index:10
+
     }
     #is_form_container .effect_logo_container:hover{
         box-shadow 0 0 55px black

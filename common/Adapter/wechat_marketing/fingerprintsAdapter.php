@@ -46,11 +46,12 @@ class fingerprintsAdapter extends DbLibraryAdapter
             ->def('aimed_type')->map('aimed_type')->varchar(200)->desc('针对类型')->able_modify(false)
                 ->widgetType('radio',array('',array('管理登录','商户登录','员工登录','代理登录','其它')))
                 ->able_modify(false)
-            ->def('iptype')->map('iptype')->int(100)->desc('ip类型')->able_modify(false)
+            ->def('iptype')->map('iptype')->varchar(100)->desc('ip类型')->able_modify(false)
                 ->widgetType('radio',array('',array('ipv4','ipv6')))->able_modify(false)
             ->def('ip')->map('ip')->varchar(100)->desc('ip')->able_modify(false)
             ->def('platform')->map('platform')->varchar(100)->desc('平台')->able_modify(false)
-            ->def('fingerprints')->map('fingerprints')->varchar(1000)->desc('指纹')->able_modify(false)
+            ->def('fingerprints')->map('fingerprints')->text()->desc('指纹')->able_modify(false)
+            ->def('debug_backtrace')->map('debug_backtrace')->text()->desc('访问日志')->able_modify(false)
             ->def('note')->map('note')->text()->desc('备注')
             ->end();
     }

@@ -7,7 +7,9 @@ use Truesign\Adapter\Base\DbLibraryAdapter;
 use Royal\Data\Field;
 use Truesign\Service\Wechat_marketing_service\PayInterfaceService;
 
-
+/*
+ * 暂时不使用数据库，以日志方式写入文件
+ * */
 class businessAdapter extends DbLibraryAdapter
 {
     public function database()

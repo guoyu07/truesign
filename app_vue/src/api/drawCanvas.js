@@ -26,6 +26,9 @@ class DrawCanvas {
         }
         this.dots = []
 
+        this.angle = 0.01
+        this.hsl = 0
+
     }
     initWidthHeight(width,height){
         this.width = width
@@ -338,25 +341,22 @@ class DrawCanvas {
             return (a.z - b.z);
         }
     }
-    draw1(){
-        var hsl = 0
-        var   angle = 0.01;
-        var vm_this = this
-        setInterval(function () {
-            angle += 0.03;
-            console.log(angle)
-            hsl <= 360 ? hsl+=0.25 : hsl = 0;
-            let s = -Math.sin(angle);
-            let c = Math.cos(angle);
+    draw_alfa(v_this, awayfrom = 75,item_radius = 25){
 
-            vm_this.ctx.save();
-            vm_this.ctx.globalAlpha = 0.5;
-            vm_this.ctx.beginPath();
-            vm_this.ctx.fillStyle = 'hsla('+hsl+', 100%, 50%, 1)';
-            vm_this.ctx.arc(this.width/2+(s*75),this.height/2+(c*75),25,0,2*Math.PI);
-            vm_this.ctx.fill();
-            vm_this.ctx.restore();
-        },5)
+          v_this.angle += 0.03;
+          v_this.hsl <= 360 ? v_this.hsl+=0.25 : v_this.hsl = 0;
+          let s = -Math.sin(v_this.angle);
+          let c = Math.cos(v_this.angle);
+          console.log('draw_alfa')
+          v_this.ctx.save();
+          v_this.ctx.globalAlpha = 0.8;
+          v_this.ctx.beginPath();
+          v_this.ctx.fillStyle = 'hsla('+v_this.hsl+', 100%, 50%, 1)';
+          v_this.ctx.arc(v_this.width/2+(s*awayfrom),v_this.height/2+(c*awayfrom),item_radius,0,2*Math.PI);
+          v_this.ctx.fill();
+          v_this.ctx.restore();
+
+
 
     }
 

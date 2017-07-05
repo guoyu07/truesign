@@ -2,6 +2,7 @@
 
 use Truesign\Service\Wechat_marketing_service\BusinessService;
 use Royal\Prof\TrueSignConst;
+use \Truesign\Service\Wechat_marketing_service\FingerPrintsService;
 
 class LoginOrRegController extends AppBaseController
 {
@@ -9,9 +10,30 @@ class LoginOrRegController extends AppBaseController
 
     public function indexAction()
     {
-        echo \Royal\Crypt\Decrypt::encryption('iamsee',1);
-        echo '<hr>';
-        print_r(\Royal\Crypt\Decrypt::encryption('WFlaRAdWGFQBBQlWClYBU1s=',1,1));
+//        echo \Royal\Crypt\Decrypt::encryption('iamsee','5','business');
+//        echo '<hr>';
+//        $decode_info = (\Royal\Crypt\Decrypt::encryption('U0Q5WXF5WFUYfWQcIR1xRFAVXDVsBAwYGBAY=','','',1));
+//        if(empty($decode_info)){
+//            self::throwException(TrueSignConst::OPERATION_lOGIC_ERR('token无法识别'));
+//        }
+//        else{
+//            $limit_time = $decode_info['limit_time'];
+//            if($limit_time<time()){
+//                self::throwException(TrueSignConst::OPERATION_lOGIC_ERR('身份验证已经过期,请重新登录'));
+//
+//            }
+//            else{
+//                $businessService = new BusinessService();
+//                $userinfo = $businessService->getUserInfoCodeById($decode_info['id']);
+//                if(empty($userinfo)){
+//                    self::throwException(TrueSignConst::OPERATION_lOGIC_ERR('token识别身份信息错误'));
+//                }
+//                $decode_info['userinfo'] = $userinfo;
+//                echo json_encode($decode_info,256);
+//            }
+//        }
+        $fpservice = new FingerPrintsService();
+        echo json_encode($fpservice->setFingerPrints());
     }
 
     public function sendSmsAction()
@@ -56,14 +78,8 @@ class LoginOrRegController extends AppBaseController
             unset($params['account_type']);
             $businessService = new BusinessService();
             $service_response = $businessService->reg($params);
-            if($service_response>0){
-                self::throwException(TrueSignConst::SUCCESS('注册成功'));
-            }
-            else{
-                self::throwException(TrueSignConst::ERROR('注册失败'));
+            $this->output2json($service_response);
 
-            }
-            self::throwException(TrueSignConst::SUCCESS($service_response));
 
 
         } elseif ($params['account_type'] == 'worker') {
@@ -73,6 +89,30 @@ class LoginOrRegController extends AppBaseController
         }
 
 
+    }
+
+    /*登录接口
+    */
+    public function loginAction()
+    {
+        $params = $this->getParams(array('username', 'password','account_type'), array('business_code'), new \Truesign\Adapter\wechat_marketing\businessAdapter());
+        if (empty($params['account_type'])) {
+            self::throwException(TrueSignConst::ERROR_DATA_FORMAT('账户类型不能为空'));
+        } elseif ($params['account_type'] == 'business') {
+            unset($params['business_code']);
+            unset($params['account_type']);
+
+            $businessService = new BusinessService();
+            $service_response = $businessService->login($params);
+            $this->output2json($service_response);
+
+
+
+        } elseif ($params['account_type'] == 'worker') {
+            self::throwException(TrueSignConst::ERROR_DATA_FORMAT('员工登录尚未开通'));
+        } else {
+            self::throwException(TrueSignConst::ERROR_DATA_FORMAT('账户类型不合法'));
+        }
     }
 
 }

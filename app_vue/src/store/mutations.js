@@ -1,6 +1,8 @@
 import * as types from './mutation-types'
 import LocalVoucher from '../api/localVoucherTools.js'
+import {isEmptyValue} from '../api/lib/helper/dataAnalysis'
 var _ = require('lodash');
+
 
 LocalVoucher.checkStorageMode()
 LocalVoucher.initEngine()
@@ -152,9 +154,40 @@ export const mutations = {
         }
     },
     [types.wechat_marketing_store](state,data){
+        console.log('preupdate->wechat_marketing_store',data)
+
+
         if(data.apihost){
             state.wechat_marketing_store.apihost = data.apihost
         }
+        if(data.hasOwnProperty('token')){
+            if(data.token.type==='update'){
+              state.wechat_marketing_store.token = data.token.value
+              LocalVoucher.setKeyValue('wechat_marketing_store.token',data.token.value)
+            }
+            if(data.token.type==='del'){
+                console.log('del->token',data.token)
+                state.wechat_marketing_store.token = ''
+              // LocalVoucher.setKeyValue('wechat_marketing_store.token','')
+              LocalVoucher.removeKey('wechat_marketing_store.token')
+
+            }
+        }
+        if(data.hasOwnProperty('userinfo')){
+            if(data.userinfo.type==='update'){
+              state.wechat_marketing_store.userinfo = data.userinfo.value
+              LocalVoucher.setKeyValue('wechat_marketing_store.userinfo',JSON.stringify(data.userinfo.value))
+            }
+            if(data.userinfo.type==='del'){
+              state.wechat_marketing_store.userinfo = ''
+              // LocalVoucher.setKeyValue('wechat_marketing_store.userinfo',JSON.stringify([]))
+              LocalVoucher.removeKey('wechat_marketing_store.userinfo')
+
+            }
+        }
+
+
+
     }
 
 }

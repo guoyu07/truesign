@@ -12,7 +12,6 @@
 <script>
     import DrawCanvas from '../../api/drawCanvas.js'
     import Vue from 'vue'
-//
     export default{
 
         data() {
@@ -49,83 +48,80 @@
                 vm.screenWidth = parseInt(width2height[0])
                 vm.screenHeight = parseInt(width2height[1])
                 Vue.nextTick( () => {
-//                    vm.start()
+                    vm.start()
                 })
             })
-//            this.start()
+            this.start()
+            this.animate()
 
-                var W,H
-                    var canvas = document.getElementById('canvas')
-                    var ctx = canvas.getContext('2d')
-                    var hsl = 0
-                    var angle = 0.01;
+//                var W,H
+//                    var canvas = document.getElementById('canvas')
+//                    var ctx = canvas.getContext('2d')
+//                    var hsl = 0
+//                    var angle = 0.01;
 
-                function size(){
-                    W = window.innerWidth
-                        H = window.innerHeight;
-                    canvas.width = W;
-                    canvas.height = H;
-                }
+//                function size(){
+//                    W = vm.screenWidth
+//                        H = vm.screenHeight
+//                  console.log(W,vm.screenWidth)
+//                  console.log(H,vm.screenHeight)
+//
+//                  canvas.width = W;
+//                    canvas.height = H;
+//                }
 
-                function paint(){
-                    angle += 0.03;
-                    hsl <= 360 ? hsl+=0.25 : hsl = 0;
-                    var s = -Math.sin(angle);
-                    var c = Math.cos(angle);
+//                function paint(){
+//                    angle += 0.03;
+//                    hsl <= 360 ? hsl+=0.25 : hsl = 0;
+//                    var s = -Math.sin(angle);
+//                    var c = Math.cos(angle);
+//
+//                    ctx.save();
+//                    ctx.globalAlpha = 0.5;
+//                    ctx.beginPath();
+//                    ctx.fillStyle = 'hsla('+hsl+', 100%, 50%, 1)';
+//                    ctx.arc(W/2+(s*75),H/2+(c*75),25,0,2*Math.PI);
+//                    ctx.fill();
+//                    ctx.restore();
+//                }
 
-                    ctx.save();
-                    ctx.globalAlpha = 0.5;
-                    ctx.beginPath();
-                    ctx.fillStyle = 'hsla('+hsl+', 100%, 50%, 1)';
-                    ctx.arc(W/2+(s*75),H/2+(c*75),25,0,2*Math.PI);
-                    ctx.fill();
-                    ctx.restore();
-                }
 
-                setInterval(paint, 5)
-
-                size();
-                $(window).on('resize', size);
+//
+//                size();
+//                $(window).on('resize', size);
 
 
         },
         methods:{
-//            start(){
-//                var vm = this
-//                console.log('start')
-//                this.initBase();
-//                this.draw();
-//            },
-//            initBase(){
-//                var vm = this
-////                vm.drawParams.xy_line = Math.floor(Math.sqrt(Math.pow(vm.screenHeight,2)+Math.pow(vm.screenWidth,2)))
-//
-//                vm.drawCanvas = new DrawCanvas('canvas', vm.screenWidth-10, vm.screenHeight-10)
-//
-//            },
-//            initDots(){
-//                var vm = this
-//            },
-//            draw(){
-//                this.drawCanvas.draw1()
-//            },
+            start(){
+                var vm = this
+                console.log('start')
+                this.initBase();
 
-//            render(){
-//                this.drawCanvas.initWidthHeight(this.screenWidth,this.screenHeight)
-//                this.drawCanvas.initCtrl()
-//                this.drawCanvas.drawDots()
-//                this.drawCanvas.move_3D(0,0,0)
-//                this.drawCanvas.move_line()
-//            },
-//            animate(){
-//                var vm = this
-//                this.render();
-//                requestAnimationFrame( this.animate );
-//
-////                setInterval(function () {
-////                    vm.animate()
-////                },50)
-//            }
+
+            },
+            initBase(){
+                var vm = this
+//                vm.drawParams.xy_line = Math.floor(Math.sqrt(Math.pow(vm.screenHeight,2)+Math.pow(vm.screenWidth,2)))
+
+                vm.drawCanvas = new DrawCanvas('canvas', vm.screenWidth, vm.screenHeight)
+
+            },
+            initDots(){
+                var vm = this
+            },
+            draw(){
+                this.drawCanvas.draw1()
+            },
+
+            render(){
+              this.drawCanvas.draw_alfa(this.drawCanvas,75,15)
+            },
+            animate(){
+                var vm = this
+                this.render();
+                requestAnimationFrame( this.animate );
+            }
 
         }
 

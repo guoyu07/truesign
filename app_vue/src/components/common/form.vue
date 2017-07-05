@@ -1,7 +1,7 @@
 <template>
     <div id="common_form" style="z-index:9999;position: absolute;width: 400px;min-width: 400px;border-radius: 18px;overflow: hidden">
         <div @click="change_form_type" v-if="circle_flag_pos==='left'" class="circle_flag" :style="{cursor:'pointer',left: '0',marginLeft:'-0.15rem'}" ></div>
-        <div @click="change_form_type" v-else="circle_flag_pos==='left'" class="circle_flag" :style="{cursor:'pointer',right: '0',marginRight:'-0.15rem'}" ></div>
+        <div @click="change_form_type" v-else-if="circle_flag_pos==='right'" class="circle_flag" :style="{cursor:'pointer',right: '0',marginRight:'-0.15rem'}" ></div>
         <div
                 style="font-size: 0.1rem;width: 100%;height: 0.2rem;
                 background-color: gainsboro;line-height: 0.2rem;
@@ -9,7 +9,8 @@
                 box-shadow: 0 0 0 1px #bfbfbf;
                 ">
             <span v-if="formtype === 'login'">登陆</span>
-            <span v-else="formtype === 'login'">商家注册</span>
+            <span v-else-if="formtype === 'reg'">注册</span>
+            <span v-else-if="formtype === 'show'" style="">账户信息</span>
         </div>
         <div v-if="formtype==='login'"  class="wechat_marketing_form login_form" style="text-align: center;margin-right: 50px;margin-left: 20px;margin-top: 100px;">
             <el-radio-group @change="radio_login_type_change" size="small"  v-model="radio_login_type" style="position: absolute;left:0;top:50px;">
@@ -35,7 +36,7 @@
                 </el-form-item>
             </el-form>
         </div>
-        <div  v-else="formtype==='login'"  class="wechat_marketing_form reg_form" style="text-align: center;margin-right: 50px;margin-left: 20px;margin-top: 100px;">
+        <div  v-else-if="formtype==='reg'"  class="wechat_marketing_form reg_form" style="text-align: center;margin-right: 50px;margin-left: 20px;margin-top: 100px;">
             <el-radio-group @change="radio_reg_type_change" size="small"  v-model="radio_reg_type" style="position: absolute;left:0;top:50px;">
                 <el-radio-button  v-for="(item,index) in reg_type_list" :key="index" :label="index"></el-radio-button>
 
@@ -77,6 +78,48 @@
                     </el-form-item>
                 </el-form>
             </div>
+        <div  v-else-if="formtype==='show' && userinfo"  class="wechat_marketing_form show_form" style="text-align: center;margin-left: -6px;margin-top: 30px;">
+            <div class="img_div" style="height: 100px;margin: 15px auto">
+                <img src="" style="width: 100px;height: 100px">
+            </div>
+            <div class="userinfo_div" style="text-align: center;margin-top:15px;margin-left: 15px">
+                <p >{{userinfo.identifier_code}}</p>
+                <p style="display: inline-block">{{userinfo.username}}</p>
+                <p style="">{{userinfo.phone_num}}</p>
+                <div class="is_level_div">
+                    <div class="level_div" style="">
+                        <label v-if="userinfo.level_tag===''" style="display: inline-block"><b><i>lv0</i></b></label>
+                        <div  v-else="userinfo.level_tag===''" style="display: inline-block">
+                            <label v-for="item,index in JSON.parse(userinfo.level_tag)" style="display: inline-block">lv{{item==''?0:item}}</label>
+                        </div>
+                    </div>
+                    <div class="level_div_mask" :style="{left:level_mask_left+'px'}">
+
+                    </div>
+                </div>
+                <fieldset style="">
+                    <legend style="padding-left: -20px;font-size: 15px;color: #808080;">登录信息</legend>
+                    <p style="text-align: left">
+                        <label style="width: 120px;text-align: right;">登录IP:</label> {{userinfo.fg.ip}}
+                    </p>
+                    <p style="text-align: left">
+                        <label style="width: 120px;text-align: right;">登录时间:</label>
+                        {{userinfo.fg.create_time}}
+                    </p>
+                    <p style="text-align: left">
+                        <label style="width: 120px;text-align: right;">凭证有效期:</label>
+                        {{userinfo.fg.last_login_time}}
+                    </p>
+                </fieldset>
+            </div>
+            <div class="ctrl_div" style="position: absolute;bottom: 100px;left:50%;margin-left: -100px">
+                <input class="enter_backend" @click="enter_backend" type="button"
+                       style="" value="进入后台">
+                <input class="exit_login" @click="exit_login" type="button"
+                       style="" value="退出登录">
+            </div>
+
+        </div>
 
     </div>
 
@@ -91,8 +134,8 @@
     import axios from 'axios'
     import {axios_config} from 'api/axiosApi'
     import { mapGetters,mapActions } from 'vuex'
-    import {dbResponseAnalysis2WidgetData} from 'api/lib/helper/dataAnalysis'
-
+    import {dbResponseAnalysis2WidgetData,countdownPrettyTimeByTimestmp} from 'api/lib/helper/dataAnalysis'
+    import LocalVoucher from '../../api/localVoucherTools.js'
 
 export default {
 
@@ -170,13 +213,11 @@ export default {
                 },
                 login_form_rule:{
                     username: [
-                        { required: true, message: '请输入用户名', trigger: 'blur' },
+                        { validator: validate_username,trigger: 'change' },
                     ],
                     password: [
-                        { required: true, message: '请输入密码', trigger: 'blur' },
+                        { validator: validate_password,  trigger: 'change' },
                     ],
-
-
                 },
                 reg_form: {
                     username: '',
@@ -220,11 +261,20 @@ export default {
                     '商家':'business',
                     '员工':'worker',
                 },
-                btn_send_msg:'发送验证码'
+                btn_send_msg:'发送验证码',
+              level_mask_left:-20,
+              compute_last_login_time:{}
 
             };
         },
         props:{
+              userinfo:{
+                default: function () {
+                  return {}
+                }, //left_top
+                required: false,
+
+              },
             circle_flag_pos:{
                 type: String,
                 default: 'left', //left_top
@@ -240,6 +290,9 @@ export default {
 
         },
         methods: {
+            ...mapActions([
+                'updateWechat_marketing_store',
+            ]),
             radio_reg_type_change(data){
                 console.log(data)
                 this.radio_reg_type = data
@@ -290,8 +343,9 @@ export default {
                 var vm = this
                 this.$refs[formName].validate((valid) => {
                 if (valid) {
-                        console.log('emit->login_form_submit')
-                        vm.$root.eventHub.$emit('login_form_submit',vm.login_form)
+                    console.log('emit->login_form_submit')
+                    vm.login_form.account_type = vm.login_type_list[vm.radio_login_type]
+                    vm.$root.eventHub.$emit('login_form_submit',vm.login_form)
                 } else {
                     console.log('error submit!!');
                     return false;
@@ -364,11 +418,51 @@ export default {
 
                 }
 
-            }
+            },
+            exit_login(){
+              clearInterval(this.compute_last_login_time)
+
+
+
+              this.$root.eventHub.$emit('exit_login',1)
+
+            },
+          enter_backend(){}
+        },
+        created(){
+          LocalVoucher.checkStorageMode()
+          LocalVoucher.initEngine()
         },
         mounted(){
+          var vm = this
+          this.level_mask_interval = setInterval(function () {
+
+            if(vm.level_mask_left<0){
+              vm.level_mask_left = 40
+            }
+            else{
+              vm.level_mask_left = -20
+            }
+
+          },2000)
+
+          this.compute_last_login_time = setInterval(function () {
+                if(vm.userinfo.hasOwnProperty('fg')){
+                  let last_time = countdownPrettyTimeByTimestmp(vm.userinfo.fg.create_time)
+                  vm.$set(vm.userinfo.fg,'last_login_time',last_time)
+                }
+                else{
+                  clearInterval(vm.compute_last_login_time)
+                }
+
+          })
+
 
         },
+        updated(){
+
+        },
+
 
         computed:{
             ...mapGetters([
@@ -404,5 +498,72 @@ export default {
 }
 .el-message{
     top:65px !important
+}enter_backend
+#common_form .enter_backend{
+     transition all 0.8s
+     padding: 5px 20px;background-color: #57DCDF;
+     border-radius 3px
+ }
+#common_form .enter_backend:hover{
+    transition all 0.8s
+
+    padding: 5px 20px;background-color: #50cbce;
+    border-radius 3px
 }
+#common_form .exit_login{
+    transition all 0.8s
+    padding: 5px 20px;background-color: gray;
+
+    border-radius 3px
+}
+#common_form .exit_login:hover{
+    transition all 0.8s
+    background-color #1e242b
+    box-shadow  0 0 10px #ffffff
+}
+#common_form .userinfo_div p{
+    display block
+    text-align: center;
+    text-transform: uppercase;
+    background: 0 0;
+    font-family: 'Graphik Web',sans-serif;
+    font-style: normal;
+    font-stretch: normal;
+    font-size: 1em;
+    color: #00B5AD !important
+    font-weight 800
+    letter-spacing: 2.9px;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    outline: 0;
+    padding 10px 10px
+}
+#common_form .userinfo_div .is_level_div{
+    display:block;position: absolute;right: 10px;top:60px;width: 22px;height: 20px;
+    overflow hidden
+}
+#common_form .userinfo_div .level_div{
+    font-size 16px
+    position absolute
+}
+
+
+#common_form .userinfo_div .level_div_mask{
+    height 20px
+    width 20px
+    position absolute
+    font-size 16px
+    background:-webkit-linear-gradient(0deg,rgba(255, 255, 255, 0),rgba(255, 255, 255, 0.7),rgba(255, 255, 255, 0));
+    -webkit-transform:skewx(-25deg);
+    -webkit-transition:all .5s;
+    transition all 0.8s
+    left -20px
+}
+#common_form .userinfo_div .level_div_mask:hover{
+    transition all 0.8s
+    left 40px
+}
+fieldset{padding:15px .305em ;margin:0 2px;border:1px solid silver}
+
+legend{padding:.5em;border:0;width:auto}
 </style>

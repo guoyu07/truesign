@@ -119,7 +119,17 @@ class BusinessService extends BaseService
 
     }
 
+    /*
+     * 根据id获取商户信息基本
+     * */
+    public function getUserInfoCodeById($id){
+        $db_reponse = $this->Dao->read(array('id'=>$id));
+        if(!empty($db_reponse['data'][0])){
+            unset($db_reponse['data'][0]['password']);
+        }
+        return $db_reponse['data'][0];
 
+    }
     /*
      * 根据手机号和验证码在business表里创建记录
      * 流程->判断此手机号是否已经验证了其它账户
@@ -144,11 +154,10 @@ class BusinessService extends BaseService
 
         } else {
             self::throwException(TrueSignConst::ERROR('此手机号已经绑定其他账户'));
-
         }
-
     }
 
+    /*商户注册逻辑*/
     public function reg($params)
     {
         $count = $this->Dao->count(array('phone_num' => $params['phone_num'] , 'phone_num_auth_status' => 1));
@@ -183,12 +192,37 @@ class BusinessService extends BaseService
                     $db_reponse = $this->Dao->update($update_params);
 
                     if($db_reponse>0){
+                        /*
+                         * 指纹信息记录
+                         * */
                         $response = TrueSignConst::SUCCESS('注册成功');
-                        $response['response'] = array('username'=>$params['username'],'phone'=>$params['phone_num']);
+                        $fgservice =  new FingerPrintsService();
+                        $db_reponse = 0;
+                        $db_reponse = $fgservice->setFingerPrints('businessAdapter',
+                            $db_data['document_id'],$params['username'],
+                            'reg','','PC','ipv4');
+                        $userinfo = $this->getUserInfoCodeById($db_data['document_id']);
+                        if(!empty($db_reponse)){
+
+                            $userinfo['fg'] = $fgservice->getLastFingerPrints(
+                                'businessAdapter',$db_data['document_id'],'reg'
+                            );
+                        }
+
+                        /*
+                         * 注册相应返回
+                         * */
+                        $response['response'] = array(
+                            'token'=>Decrypt::encryption($params['username'],$db_data['document_id'],'business'),
+                            'userinfo'=> $userinfo
+                        );
+
                     }
                     else{
-                        $response = TrueSignConst::SUCCESS('注册失败');
+                        $response = TrueSignConst::ERROR('注册失败');
                     }
+
+                    return $response;
                 }
             } else {
                 self::throwException(TrueSignConst::CODE_LOGIC_ERR('手机号[' . $params['phone_num'] . ']存在冗余数据，请联系管理员或者换号注册'));
@@ -202,4 +236,49 @@ class BusinessService extends BaseService
             self::throwException(TrueSignConst::ERROR('此手机号已经绑定注册过'));
         }
     }
+
+    /*商户登录逻辑*/
+    public function login($params){
+
+        $search_params = array('username'=>$params['username']);
+        $password = self::SHA256Pass($params['password']);
+        $count = $this->Dao->count($search_params);
+        if(empty($count)){
+            $response = TrueSignConst::OPERATION_lOGIC_ERR('账户不存在');
+        }
+        else if($count == 1){
+            $db_response = $this->Dao->get($search_params,array('document_id','password'));
+            if($db_response['password'] === $password){
+                $response = TrueSignConst::SUCCESS('登录成功');
+
+                $fgservice =  new FingerPrintsService();
+                $db_reponse = 0;
+                $db_reponse = $fgservice->setFingerPrints('businessAdapter',
+                    $db_response['document_id'],$params['username'],
+                    'login','','PC','ipv4');
+                $userinfo = $this->getUserInfoCodeById($db_response['document_id']);
+                if(!empty($db_reponse)){
+
+                    $userinfo['fg'] = $fgservice->getLastFingerPrints(
+                        'businessAdapter',$db_response['document_id'],'login'
+                    );
+                }
+                $response['response'] = array(
+                    'token'=>Decrypt::encryption($params['username'],$db_response['document_id'],'business'),
+                    'userinfo'=> $userinfo
+                );
+            }
+            else{
+                $response = TrueSignConst::ERROR('密码错误');
+            }
+        }
+        else{
+            $response = TrueSignConst::CODE_LOGIC_ERR('账户['.$params['username'].']存在问题，请联系客服！');
+            Logger::log('CODELOGIC', '存在' . $count . '条相同 用户名 注册信息,用户名不应有重复数据', array(TrueSignConst::CODE_LOGIC_ERR(), 'username' => $params['username']));
+
+        }
+        return $response;
+
+    }
+
 }

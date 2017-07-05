@@ -59,6 +59,18 @@ const LocalVoucherTools = {
             console.log('存储引擎还未初始化')
         }
     },
+    removeKey(key){
+      if(this.data.StorageEngine) {
+        if (key ) {
+          delete this.data.keys[key]
+          this.data.keys = _.uniq(this.data.keys)
+          this.data.StorageEngine.removeItem(key)
+        }
+      }
+      else{
+        console.log('存储引擎还未初始化')
+      }
+    },
     clear(){
         this.data.StorageEngine.clear()
     }

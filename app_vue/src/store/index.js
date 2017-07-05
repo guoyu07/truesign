@@ -6,6 +6,8 @@ import getters from './getters'
 import LocalVoucher from '../api/localVoucherTools.js'
 LocalVoucher.checkStorageMode()
 LocalVoucher.initEngine()
+import isJson from 'is-json'
+import isEmpty from 'lodash.isempty'
 Vue.use(Vuex);
 
 const state = {
@@ -41,7 +43,9 @@ const state = {
         music:false
     },
     wechat_marketing_store:{
-        apihost:''
+        apihost:'',
+        token:isEmpty(LocalVoucher.getValue('wechat_marketing_store.token'))?'':(LocalVoucher.getValue('wechat_marketing_store.token')),
+        userinfo:isJson(LocalVoucher.getValue('wechat_marketing_store.userinfo'))?(JSON.parse(LocalVoucher.getValue('wechat_marketing_store.userinfo'))):'',
     }
 
 }

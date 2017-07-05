@@ -378,7 +378,7 @@ class AppBaseService {
      * */
     public function SHA256Pass($password)
     {
-        return SHA256::make($password+'@IAMSEE·TRUESIGN');
+        return SHA256::make($password.'@IAMSEE·TRUESIGN');
     }
 
     public function IdentifierGenerator($header,DAOAdapter $adapter,$file)
