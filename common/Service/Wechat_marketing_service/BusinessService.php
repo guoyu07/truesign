@@ -202,6 +202,8 @@ class BusinessService extends BaseService
                             $db_data['document_id'],$params['username'],
                             'reg','','PC','ipv4');
                         $userinfo = $this->getUserInfoCodeById($db_data['document_id']);
+                        $userinfo['lable_type'] = '商户';
+
                         if(!empty($db_reponse)){
 
                             $userinfo['fg'] = $fgservice->getLastFingerPrints(
@@ -258,7 +260,7 @@ class BusinessService extends BaseService
                     'login','','PC','ipv4');
                 $userinfo = $this->getUserInfoCodeById($db_response['document_id']);
                 if(!empty($db_reponse)){
-
+                    $userinfo['lable_type'] = '商户';
                     $userinfo['fg'] = $fgservice->getLastFingerPrints(
                         'businessAdapter',$db_response['document_id'],'login'
                     );

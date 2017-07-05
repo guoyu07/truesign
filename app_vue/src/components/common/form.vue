@@ -80,7 +80,8 @@
             </div>
         <div  v-else-if="formtype==='show' && userinfo"  class="wechat_marketing_form show_form" style="text-align: center;margin-left: -6px;margin-top: 30px;">
             <div class="img_div" style="height: 100px;margin: 15px auto">
-                <img src="" style="width: 100px;height: 100px">
+                <img :src="userinfo.headpic?userinfo.headpic:'http://cdn.iamsee.com/headpic/demo.jpg'"
+                     style="width: 100px;height: 100px;border-radius: 50px;box-shadow:  0 0 20px black">
             </div>
             <div class="userinfo_div" style="text-align: center;margin-top:15px;margin-left: 15px">
                 <p >{{userinfo.identifier_code}}</p>
@@ -88,7 +89,10 @@
                 <p style="">{{userinfo.phone_num}}</p>
                 <div class="is_level_div">
                     <div class="level_div" style="">
-                        <label v-if="userinfo.level_tag===''" style="display: inline-block"><b><i>lv0</i></b></label>
+                        <label class="label_type"
+                                style="">
+                            {{userinfo.lable_type}}</label>
+                        <label v-if="userinfo.level_tag===''" style="display: inline-block" class="label_type"><b><i>lv0</i></b></label>
                         <div  v-else="userinfo.level_tag===''" style="display: inline-block">
                             <label v-for="item,index in JSON.parse(userinfo.level_tag)" style="display: inline-block">lv{{item==''?0:item}}</label>
                         </div>
@@ -438,7 +442,7 @@ export default {
           this.level_mask_interval = setInterval(function () {
 
             if(vm.level_mask_left<0){
-              vm.level_mask_left = 40
+              vm.level_mask_left = 100
             }
             else{
               vm.level_mask_left = -20
@@ -539,7 +543,7 @@ export default {
     padding 10px 10px
 }
 #common_form .userinfo_div .is_level_div{
-    display:block;position: absolute;right: 10px;top:60px;width: 22px;height: 20px;
+    display:block;position: absolute;right: 10px;top:60px;width: 100px;height: 20px;
     overflow hidden
 }
 #common_form .userinfo_div .level_div{
@@ -548,6 +552,9 @@ export default {
 }
 
 
+#common_form .userinfo_div .label_type{
+    color: #00b5ad;padding: 0px 5px;background-color: #cdcdcd;border: 1px solid gainsboro;letter-spacing: 2px;border-radius: 2px
+}
 #common_form .userinfo_div .level_div_mask{
     height 20px
     width 20px
