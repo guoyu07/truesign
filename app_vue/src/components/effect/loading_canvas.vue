@@ -7,7 +7,7 @@
 
                 <pre  id="loading_canvas_help_pre" :style="{height:screenHeight-30} ">{{ help  }}</pre>
             </div>
-            <canvas id="canvas" :width='screenWidth-10' :height='screenHeight-10' style=" background:#000;margin:0 auto;"></canvas>
+            <canvas id="canvas" :width='screenWidth-10' :height='screenHeight-10' style="margin:0 auto;"></canvas>
         </div>
     </div>
 </template>

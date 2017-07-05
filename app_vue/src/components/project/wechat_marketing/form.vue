@@ -28,6 +28,11 @@
 <script>
     import common_form from '../../common/form.vue'
     import effectlogo from '../../loading/effect_logo.vue'
+    import md5 from 'md5'
+    import sha256 from 'sha256'
+    import axios from 'axios'
+    import {axios_config} from 'api/axiosApi'
+    import { mapGetters,mapActions } from 'vuex'
 
     export default {
         data(){
@@ -42,8 +47,9 @@
             effectlogo
         },
         computed: {
-
-
+          ...mapGetters([
+            'wechat_marketing_store',
+          ])
         },
         created(){
             var vm = this
@@ -51,6 +57,18 @@
                 vm.change_form_type()
             })
             this.$root.eventHub.$emit('init_navmenu','form')
+
+            this.$root.eventHub.$on('login_form_submit',function (formdata) {
+                console.log('on->login_form_submit',formdata)
+                formdata['password'] = sha256(md5(formdata['password']))
+                vm.doLogin(formdata)
+            })
+            this.$root.eventHub.$on('reg_form_submit',function (formdata) {
+                console.log('on->reg_form_submit',formdata)
+                formdata['password'] = sha256(md5(formdata['password']))
+                vm.doReg(formdata)
+            })
+
         },
         mounted(){
 
@@ -66,7 +84,56 @@
                 var vm = this
                 vm.form_status = vm.form_status === 'login' ? 'reg':'login'
 
-            }
+            },
+            doLogin(formdata){
+              var vm = this
+              axios.post(this.wechat_marketing_store.apihost+'LoginOrReg/login',formdata,axios_config)
+                .then((res) => {
+                  if(res.data.code === 0){
+                    vm.$message({
+                      duration:2000,
+                      showClose:true,
+                      message: res.data.desc,
+                      type: 'success'
+                    });
+                  }
+                  else{
+                    vm.$message({
+                      duration:2000,
+                      showClose:true,
+                      message: res.data.code + ' ' +res.data.desc,
+                      type: 'error'
+                    });
+                  }
+
+
+                })
+            },
+          doReg(formdata){
+            var vm = this
+
+            axios.post(this.wechat_marketing_store.apihost+'LoginOrReg/reg',formdata,axios_config)
+              .then((res) => {
+                if(res.data.code === 0){
+                  vm.$message({
+                    duration:2000,
+                    showClose:true,
+                    message: res.data.desc,
+                    type: 'success'
+                  });
+                }
+                else{
+                  vm.$message({
+                    duration:2000,
+                    showClose:true,
+                    message: res.data.code + ' ' +res.data.desc,
+                    type: 'error'
+                  });
+                }
+
+
+              })
+          },
 
         },
 

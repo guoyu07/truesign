@@ -60,7 +60,6 @@ class EallSms
         curl_setopt($ch, CURLOPT_POSTFIELDS, $data);
         $r = curl_exec($ch);
         curl_close($ch);
-        echo $r;
 
         $r = json_decode($r, 1);
 

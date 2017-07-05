@@ -26,8 +26,8 @@
                 <el-form-item label="用户名" prop="username">
                     <el-input v-model="login_form.username"></el-input>
                 </el-form-item>
-                <el-form-item label="密码"  prop="pass">
-                    <el-input type="password" v-model="login_form.pass"></el-input>
+                <el-form-item label="密码"  prop="password">
+                    <el-input type="password" v-model="login_form.password"></el-input>
                 </el-form-item>
                 <el-form-item style="margin-left: -80px">
                     <el-button type="primary" @click="submitLoginForm('login_form_rule')">登陆</el-button>
@@ -50,24 +50,29 @@
                     <el-form-item label="用户名" prop="username">
                         <el-input v-model="reg_form.username"></el-input>
                     </el-form-item>
-                    <el-form-item label="密码"  prop="pass">
-                        <el-input type="password" v-model="reg_form.pass"></el-input>
+                    <el-form-item label="密码"  prop="password">
+                        <el-input type="password" v-model="reg_form.password"></el-input>
                     </el-form-item>
                     <el-form-item label="邮箱"  prop="email">
                         <el-input  v-model="reg_form.email"></el-input>
                     </el-form-item>
-                    <el-form-item label="手机号" prop="phonenum">
-                        <el-input  v-model="reg_form.phonenum">
-                            <el-button slot="append" icon="" value="" @click="send_sms">发送验证码</el-button>
+                    <el-form-item label="手机号" prop="phone_num">
+                        <el-input  v-model="reg_form.phone_num">
+                            <el-button slot="append"
+                                       icon=""  :disabled="btn_send_msg !== '发送验证码'"
+                                       :loading="btn_send_msg !== '发送验证码'" type="info"
+                                       value="" @click="send_sms">
+                                {{ btn_send_msg==='发送验证码'?'发送验证码':btn_send_msg+ '  秒' }}
+                            </el-button>
                         </el-input>
                     </el-form-item>
-                    <el-form-item label="验证码" prop="phonenum_code">
-                        <el-input  v-model="reg_form.phonenum_code">
+                    <el-form-item label="验证码" prop="phone_num_auth_code">
+                        <el-input  v-model="reg_form.phone_num_auth_code">
 
                         </el-input>
                     </el-form-item>
                     <el-form-item style="margin-left: -80px">
-                        <el-button type="primary" @click="submitRegForm('reg_form_rule')">注册</el-button>
+                        <el-button type="primary"  @click="submitRegForm('reg_form_rule')" >注册</el-button>
                         <el-button @click="resetForm('reg_form_rule')">重置</el-button>
                     </el-form-item>
                 </el-form>
@@ -84,10 +89,12 @@
     import Velocity from 'velocity-animate'
     import Vue from 'vue'
     import axios from 'axios'
-    import {axios_config} from '../../api/axiosApi'
+    import {axios_config} from 'api/axiosApi'
     import { mapGetters,mapActions } from 'vuex'
+    import {dbResponseAnalysis2WidgetData} from 'api/lib/helper/dataAnalysis'
 
-    export default {
+
+export default {
 
         data() {
             var validate_username = (rule, value, callback) => {
@@ -97,6 +104,9 @@
                 }
                 else if(!re.test(value)){
                     return callback(new Error('字母开头,长度[6-20]'));
+                }
+                else{
+                  callback();
                 }
             }
             var validate_password = (rule, value, callback) => {
@@ -108,6 +118,9 @@
                 else if(!re.test(value)){
                     return callback(new Error('字母(开头),长度[8-20]'));
                 }
+                else{
+                  callback();
+                }
             }
             var validate_email = (rule, value, callback) => {
                 var re = new RegExp(/^[A-Za-z0-9\u4e00-\u9fa5]+@[a-zA-Z0-9_-]+(\.[a-zA-Z0-9_-]+)+$/);
@@ -117,6 +130,9 @@
                 }
                 else if(!re.test(value)){
                     return callback(new Error('邮箱格式不正确'));
+                }
+                else{
+                  callback();
                 }
             }
             var validate_phone = (rule, value, callback) => {
@@ -128,6 +144,9 @@
                 else if(!re.test(value)){
                     return callback(new Error('手机号格式不正确'));
                 }
+                else{
+                  callback();
+                }
 
             }
             var validate_phone_code = (rule, value, callback) => {
@@ -138,19 +157,22 @@
                 else if(!re.test(value)){
                     return callback(new Error('长度[6]位'));
                 }
+                else{
+                  callback();
+                }
             }
             return {
                 labelPosition: 'right',
                 login_form:{
                     business_code:'',
                     username: '',
-                    pass: '',
+                    password: '',
                 },
                 login_form_rule:{
                     username: [
                         { required: true, message: '请输入用户名', trigger: 'blur' },
                     ],
-                    pass: [
+                    password: [
                         { required: true, message: '请输入密码', trigger: 'blur' },
                     ],
 
@@ -158,10 +180,10 @@
                 },
                 reg_form: {
                     username: '',
-                    pass: '',
+                    password: '',
                     email: '',
-                    phonenum:'',
-                    phonenum_code:'',
+                    phone_num:'',
+                    phone_num_auth_code:'',
                     business_code:''
                 },
                 reg_form_rule:{
@@ -169,7 +191,7 @@
 //                        { required: true, message: '请输入用户名', trigger: 'blur' },
                         { validator: validate_username,trigger: 'change' },
                     ],
-                    pass: [
+                    password: [
 //                        { required: true, message: '请输入密码', trigger: 'blur' },
                         { validator: validate_password,  trigger: 'change' },
                     ],
@@ -177,11 +199,11 @@
 //                        { required: true, message: '请输入邮箱', trigger: 'blur' },
                         { validator: validate_email, trigger: 'change' },
                     ],
-                    phonenum: [
+                    phone_num: [
 //                        { required: true, message: '请输入手机号', trigger: 'blur' },
                         { validator: validate_phone, trigger: 'change' },
                     ],
-                    phonenum_code: [
+                    phone_num_auth_code: [
 //                        { required: true, message: '请输入验证码', trigger: 'blur' },
                         { validator: validate_phone_code, trigger: 'change' },
                     ],
@@ -198,6 +220,7 @@
                     '商家':'business',
                     '员工':'worker',
                 },
+                btn_send_msg:'发送验证码'
 
             };
         },
@@ -264,20 +287,26 @@
                 }
             },
             submitLoginForm(formName) {
+                var vm = this
                 this.$refs[formName].validate((valid) => {
-                    if (valid) {
-                        alert('submit!');
-                    } else {
-                        console.log('error submit!!');
-                        return false;
-                    }
+                if (valid) {
+                        console.log('emit->login_form_submit')
+                        vm.$root.eventHub.$emit('login_form_submit',vm.login_form)
+                } else {
+                    console.log('error submit!!');
+                    return false;
+                }
                 });
             },
             submitRegForm(formName) {
+              console.log('submitRegForm',formName)
 
+              var vm = this
                 this.$refs[formName].validate((valid) => {
                     if (valid) {
-                        alert('submit!');
+                        console.log('emit->reg_form_submit')
+                        vm.reg_form.account_type = vm.reg_type_list[vm.radio_reg_type]
+                        vm.$root.eventHub.$emit('reg_form_submit',vm.reg_form)
                     } else {
                         console.log('error submit!!');
                         return false;
@@ -291,14 +320,49 @@
                 this.$root.eventHub.$emit('change_form_type',1)
             },
             send_sms(){
-                var re = new RegExp(/^((?![0-9]+$)(?![a-zA-Z]+$)[a-zA-Z][\\.\w]{7,20}|(\w){64})$/);
-                if(!re.test(this.reg_form.phonenum)){
+                var vm = this
+                var re = new RegExp(/(^(0[0-9]{2,3}\\-)?([2-9][0-9]{6,7})+(\\-[0-9]{1,4})?$)|(^0?[1][3578][0-9]{9}$)/);
+                if(!re.test(this.reg_form.phone_num)){
+                    this.$message({
+                        duration:2000,
+                        showClose:true,
+                        message: '手机号格不正确',
+                        type: 'warning'
+                    });
+                }
+                else{
+                    axios.post(this.wechat_marketing_store.apihost+'loginorreg/sendSms',{account_type:this.reg_type_list[this.radio_reg_type],phone_num:this.reg_form.phone_num},axios_config)
+                        .then((res) => {
+                            if(res.data.code === 0){
+                                vm.$message({
+                                    duration:2000,
+                                    showClose:true,
+                                    message: res.data.desc,
+                                    type: 'success'
+                                });
+                            }
+                            else{
+                                vm.$message({
+                                    duration:2000,
+                                    showClose:true,
+                                    message: res.data.code + ' ' +res.data.desc,
+                                    type: 'error'
+                                });
+                            }
+                            vm.btn_send_msg = 10
+                            let count_down_send_msg = setInterval(function () {
+                                    if(vm.btn_send_msg <= 0){
+                                      clearInterval(count_down_send_msg)
+                                      vm.btn_send_msg = '发送验证码'
+                                    }
+                                    else{
+                                      vm.btn_send_msg -= 1
+                                    }
+                            },1000)
+
+                        })
 
                 }
-                axios.post(this.wechat_marketing_store.apihost+'/common/sendSms',{account_type:'客户注册',phone:this.reg_form.phonenum},axios_config)
-                    .then((res) => {
-                        console.log(res)
-                    })
 
             }
         },
@@ -337,5 +401,8 @@
 }
 #common_form .el-input__inner{
     color black !important
+}
+.el-message{
+    top:65px !important
 }
 </style>

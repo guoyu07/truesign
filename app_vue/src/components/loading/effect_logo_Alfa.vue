@@ -86,7 +86,7 @@
   			}
   		},
         props:{
-
+  		   
             logo_pos:{
                 type: String,
                 default: 'center', //left_top

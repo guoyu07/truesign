@@ -6,14 +6,14 @@
  * Time: 21:22
  */
 
-namespace Royal\Util;
+namespace Royal\Crypt;
 
 
 class Decrypt
 {
-    static function  encryption($info,$salt, $type = 0,$time_salt = 10*24*60*60) {
-        $salt = md5($salt);
-        $key = sha1('iamsee.com:'.$salt);
+    static function  encryption($info,$id, $type = 0,$time_salt = 10*24*60*60) {
+        $salt = md5($id);
+        $key = sha1('@IAMSEE·TRUESIGN'.$salt);
         if (!$type) {
             $info = $info.','.(time()+$time_salt);
             $encryption_info = $info ^ $key;

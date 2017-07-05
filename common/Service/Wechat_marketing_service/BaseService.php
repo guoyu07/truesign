@@ -11,10 +11,13 @@ namespace Truesign\Service\Wechat_marketing_service;
 
 
 
+use Royal\Crypt\SHA256;
 use Truesign\Service\AppBaseService;
 
 class BaseService extends AppBaseService
 {
+
+
 
 
 

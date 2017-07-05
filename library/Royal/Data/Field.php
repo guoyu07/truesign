@@ -55,6 +55,10 @@ class Field {
         $this->_rule[$this->_index]->title($desc);
         return $this;
     }
+    public function notEmpty($notEmpty=false) {
+        $this->_rule[$this->_index]->notEmpty($notEmpty);
+        return $this;
+    }
     public function able_modify($able_modify=true) {
         $this->_rule[$this->_index]->able_modify($able_modify);
         return $this;

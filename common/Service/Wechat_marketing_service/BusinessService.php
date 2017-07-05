@@ -9,9 +9,12 @@
 namespace Truesign\Service\Wechat_marketing_service;
 
 
+use Royal\Crypt\Decrypt;
+use Royal\Crypt\SHA256;
 use Royal\Data\DAO;
 use Royal\Logger\Logger;
 use Royal\Prof\TrueSignConst;
+use function Sodium\crypto_pwhash_scryptsalsa208sha256;
 use Truesign\Adapter\wechat_marketing\businessAdapter;
 
 class BusinessService extends BaseService
@@ -23,22 +26,23 @@ class BusinessService extends BaseService
 
     public function __construct()
     {
+
         $this->Adapter = new businessAdapter();
         $this->Dao = new DAO($this->Adapter);
         $this->tableAccess = $this->Adapter->getTableAccess();
         $this->rules = $this->Adapter->paramRules();
-        if($this->tableaccess_ctrl()){
+        if ($this->tableaccess_ctrl()) {
             $access = $this->getAccess();
-            $this->AuthTableAccess($access,$this->tableAccess);
+            $this->AuthTableAccess($access, $this->tableAccess);
         }
+
     }
 
     /*
 	 * @for客户信息新增字段获取接口
 	 */
-    public function Desc($params=array(),$search_params=array(),$page_params=array())
+    public function Desc($params = array(), $search_params = array(), $page_params = array())
     {
-
 
 
         $db_resposne['statistic']['count'] = 1;
@@ -47,26 +51,27 @@ class BusinessService extends BaseService
         unset($db_resposne['data'][0]['update_time']);
         unset($db_resposne['data'][0]['create_time']);
         unset($db_resposne['data'][0]['if_delete']);
-        foreach ($db_resposne['data'][0] as $k=>$v){
+        foreach ($db_resposne['data'][0] as $k => $v) {
             $db_resposne['data'][0][$k] = '';
         }
 
-        $this->filterRules($this->rules,$db_resposne['data'],$params['rules']);
-        $access_rules = array('tableaccess'=>$this->tableAccess,'rules'=>$this->rules);
+        $this->filterRules($this->rules, $db_resposne['data'], $params['rules']);
+        $access_rules = array('tableaccess' => $this->tableAccess, 'rules' => $this->rules);
         $db_resposne['access_rules'] = $access_rules;
         return $db_resposne;
     }
+
     /*
      * @for 获取客户信息接口
      *
      */
-    public function Get($params=array(),$search_params=array(),$page_params=array(),$sorter=array())
+    public function Get($params = array(), $search_params = array(), $page_params = array(), $sorter = array())
     {
 
-        $db_resposne = $this->Dao->readSpecified($search_params,array(),$page_params,$sorter);
+        $db_resposne = $this->Dao->readSpecified($search_params, array(), $page_params, $sorter);
 
-        $this->filterRules($this->rules,$db_resposne['data'],$params['rules']);
-        $access_rules = array('tableaccess'=>$this->tableAccess,'rules'=>$this->rules);
+        $this->filterRules($this->rules, $db_resposne['data'], $params['rules']);
+        $access_rules = array('tableaccess' => $this->tableAccess, 'rules' => $this->rules);
         $db_resposne['access_rules'] = $access_rules;
         echo json_encode($db_resposne);
         exit();
@@ -74,40 +79,42 @@ class BusinessService extends BaseService
 
 
     }
+
     /*
          * @for 客户信息更新、软删除接口
          *
          */
-    public function Update($params=array(),$search_params=array(),$page_params=array()){
+    public function Update($params = array(), $search_params = array(), $page_params = array())
+    {
 
         $search_params['id'] = $params['document_id'];
         unset($search_params['document_id']);
-        $db_response = $this->Dao->insertOrupdate($params,$search_params);
+        $params['password'] = self::SHA256Pass($params['password']);
+        $db_response = $this->Dao->insertOrupdate($params, $search_params);
         return $db_response;
     }
 
     /*
      * @for 客户信息批量软删除接口
      */
-    public function GroupDel($params=array())
+    public function GroupDel($params = array())
     {
 
-        if(!empty($params['ids'])){
-            $params_ids = explode(',',$params['ids']);
-        }
-        else{
+        if (!empty($params['ids'])) {
+            $params_ids = explode(',', $params['ids']);
+        } else {
             $params_ids = array();
         }
         $doAdapter = new businessAdapter();
         $doDao = new DAO($doAdapter);
         $updatedata = [];
-        foreach ($params_ids as $k=>$v){
+        foreach ($params_ids as $k => $v) {
             $updatedata_item['id'] = $v;
             $updatedata_item['if_delete'] = 1;
             $updatedata[] = $updatedata_item;
         }
 
-        $db_reponse = $doDao->groupUpdate($params['ids'],$updatedata,'if_delete');
+        $db_reponse = $doDao->groupUpdate($params['ids'], $updatedata, 'if_delete');
         return $db_reponse;
 
     }
@@ -124,21 +131,75 @@ class BusinessService extends BaseService
      * */
     public function UpdatePhoneSms($params)
     {
-        $phone = $params['phone'];
+        $phone = $params['phone_num'];
         $sms = $params['sms'];
-        $count = $this->Dao->count(array('phone_num'=>$phone,'phone_num_auth_status'=>1));
-        if(empty($count)){
-            $db_response = $this->Dao->insertOrupdate($params,array('phone_num'=>$phone));
+        $count = $this->Dao->count(array('phone_num' => $phone, 'phone_num_auth_status' => 1));
+        if (empty($count)) {
+            $db_response = $this->Dao->insertOrupdate(array('phone_num' => $phone, 'phone_num_auth_code' => $sms, 'phone_num_auth_code_updatetime' => time()), array('phone_num' => $phone));
+
             return $db_response;
-        }
-        elseif($count>1){
-            Logger::log('CODELOGIC','存在'.$count.'条相同手机号注册信息,手机号不应有重复数据',array(TrueSignConst::CODE_LOGIC_ERR(),'phone_num'=>$phone));
-            throw new \Exception(TrueSignConst::CODE_LOGIC_ERR()['desc'].'此手机号已绑定其他账户',TrueSignConst::CODE_LOGIC_ERR()['code']);
-        }
-        else{
-            throw new \Exception('此手机号已绑定其他账户',TrueSignConst::CODE_LOGIC_ERR()['code']);
+        } elseif ($count > 1) {
+            Logger::log('CODELOGIC', '存在' . $count . '条相同手机号注册信息,手机号不应有重复数据', array(TrueSignConst::CODE_LOGIC_ERR(), 'phone_num' => $phone));
+            self::throwException(TrueSignConst::CODE_LOGIC_ERR('此手机号已经绑定其他账户'));
+
+        } else {
+            self::throwException(TrueSignConst::ERROR('此手机号已经绑定其他账户'));
 
         }
 
+    }
+
+    public function reg($params)
+    {
+        $count = $this->Dao->count(array('phone_num' => $params['phone_num'] , 'phone_num_auth_status' => 1));
+        if (empty($count)) {
+
+            $count = $this->Dao->count(array('username' => $params['username'], 'phone_num_auth_status' => 1));
+            if(!empty($count)){
+                self::throwException(TrueSignConst::OPERATION_lOGIC_ERR('此用户名已经注册'));
+            }
+            $count = $this->Dao->count(array('email' => $params['email'], 'phone_num_auth_status' => 1));
+            if(!empty($count)){
+                self::throwException(TrueSignConst::OPERATION_lOGIC_ERR('此邮箱已经注册'));
+            }
+            $count = $this->Dao->count(array('phone_num' => $params['phone_num']));
+            if (empty($count)) {
+                self::throwException(TrueSignConst::OPERATION_lOGIC_ERR('此手机号暂未获取验证码，非法验证'));
+            } elseif ($count == 1) {
+                $db_reponse = $this->Dao->readSpecified(array('phone_num' => $params['phone_num']), array('document_id', 'phone_num_auth_code', 'phone_num_auth_code_updatetime'));
+
+                $db_data = $db_reponse['data'][0];
+                if (time() - $db_data['phone_num_auth_code_updatetime'] > 30 * 60) {
+
+                    self::throwException(TrueSignConst::OPERATION_lOGIC_ERR('验证码失效，请重新获取'));
+                } elseif ($db_data['phone_num_auth_code'] != $params['phone_num_auth_code']) {
+                    self::throwException(TrueSignConst::OPERATION_lOGIC_ERR('验证码不正确,请重新获取'));
+                } else {
+
+                    $db_reponse = array();
+                    $params['password'] = self::SHA256Pass($params['password']);
+                    $identifier_code = $this->IdentifierGenerator('B',new businessAdapter(),'identifier_code');
+                    $update_params = array_merge(array('id' => $db_data['document_id'],'identifier_code'=>$identifier_code , 'phone_num_auth_status' => 1), $params);
+                    $db_reponse = $this->Dao->update($update_params);
+
+                    if($db_reponse>0){
+                        $response = TrueSignConst::SUCCESS('注册成功');
+                        $response['response'] = array('username'=>$params['username'],'phone'=>$params['phone_num']);
+                    }
+                    else{
+                        $response = TrueSignConst::SUCCESS('注册失败');
+                    }
+                }
+            } else {
+                self::throwException(TrueSignConst::CODE_LOGIC_ERR('手机号[' . $params['phone_num'] . ']存在冗余数据，请联系管理员或者换号注册'));
+                Logger::log('CODELOGIC', '存在' . $count . '条相同手机号注册信息,手机号不应有重复数据', array(TrueSignConst::CODE_LOGIC_ERR(), 'phone_num' => $params['phone_num']));
+
+            }
+        } elseif ($count > 1) {
+            Logger::log('CODELOGIC', '存在' . $count . '条相同手机号注册信息,手机号不应有重复数据', array(TrueSignConst::CODE_LOGIC_ERR(), 'phone_num' => $phone));
+            self::throwException(TrueSignConst::CODE_LOGIC_ERR('此手机号已经绑定注册过'));
+        } else {
+            self::throwException(TrueSignConst::ERROR('此手机号已经绑定注册过'));
+        }
     }
 }

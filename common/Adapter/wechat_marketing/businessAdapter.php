@@ -42,14 +42,16 @@ class businessAdapter extends DbLibraryAdapter
     {
         return Field::start()
             ->def('document_id')->map('id')->int()->desc('id')->able_modify(false)->issorter('asc')
+            ->def('identifier_code')->map('identifier_code')->varchar(15)->desc('识别码')->able_modify(false)->key()
             ->def('username')->map('username')->varchar(100)->desc('用户名')->issearch('asc')->regex('/^[a-zA-Z](\w){5,20}$/')
             ->def('password')->map('password')->varchar(100)->desc('密码')->widgetType('password')
 //                ->regex('/^((?![0-9]+$)(?![a-zA-Z]+$)[a-zA-Z][\.\w]{7,20}|(\w){64})$/')
                 ->regex('/^([a-zA-Z][\\.\w]{7,20}|(\w){64})$/')
             ->def('headpic')->map('headpic')->varchar(200)->desc('头像')->widgetType('headpic')
 
-            ->def('phone_num')->map('phone_num')->varchar(15)->desc('手机号')->issearch(true)->isPhone()->issorter('asc')
+            ->def('phone_num')->map('phone_num')->varchar(15)->desc('手机号')->issearch(true)->issorter('asc')->isPhone()
             ->def('phone_num_auth_code')->map('phone_num_auth_code')->int()->desc('手机号认证识别码')->regex('/^\d{6}$/')->able_modify(false)
+            ->def('phone_num_auth_code_updatetime')->map('phone_num_auth_code_updatetime')->int()->desc('手机号认证识别码更新时间')->able_modify(false)->widgetType('time')
             ->def('phone_num_auth_status')->map('phone_num_auth_status')->int()->desc('手机号认证状态')->regex('/^\d+$/')->able_modify(false)
                 ->widgetType('status')
 

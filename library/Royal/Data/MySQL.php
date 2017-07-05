@@ -44,6 +44,7 @@ class MySQL {
                 PDO::ATTR_EMULATE_PREPARES => false,
                 PDO::ATTR_STRINGIFY_FETCHES => false,
                 PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
+                PDO::ATTR_AUTOCOMMIT => true,
             ));
 
         TimeStack::end();
@@ -454,7 +455,9 @@ class MySQL {
     }
 
     public function insertOrUpdateTable($table, $data, $condition, $idField = 'Fid') {
+
         $row = $this->getRowByCondition($table, $condition, $idField);
+
 
         if ($row) {
             unset($data['create_time']);
@@ -528,7 +531,8 @@ class MySQL {
     public function query($sql, $values = null,$ignore_error=false ) {
 
         TimeStack::start(TimeStack::TAG_SQL, array('sql'=>$sql, 'values'=>$values));
-        try {
+        try
+            {
             Logger::info('SQL_QUERY', array('sql'=>$sql, 'values'=>$values,'ip'=>$_SERVER['REMOTE_ADDR']));
 
                 $stmt = $this->dbh->prepare($sql);
@@ -537,10 +541,33 @@ class MySQL {
 
             TimeStack::end();
                 return $stmt;
-            } catch (Exception $e) {
+            }
+        catch (Exception $e) {
                 Logger::error('SQL_QUERY_ERROR', array('error'=>$e,'sql'=>$sql, 'values'=>$values));
                 if(!$ignore_error) {
                     throw $e;
+            }
+        }
+    }
+
+    public function queryByTransaction($sql, $values = null,$ignore_error=false ) {
+
+        TimeStack::start(TimeStack::TAG_SQL, array('sql'=>$sql, 'values'=>$values));
+        try
+        {
+            Logger::info('SQL_QUERY', array('sql'=>$sql, 'values'=>$values,'ip'=>$_SERVER['REMOTE_ADDR']));
+
+            $stmt = $this->dbh->prepare($sql);
+            $stmt->execute($values);
+
+
+            TimeStack::end();
+            return $stmt;
+        }
+        catch (Exception $e) {
+            Logger::error('SQL_QUERY_ERROR', array('error'=>$e,'sql'=>$sql, 'values'=>$values));
+            if(!$ignore_error) {
+                throw $e;
             }
         }
     }

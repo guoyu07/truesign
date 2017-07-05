@@ -23,7 +23,7 @@ class ParamRule {
 
     public $enumValues = false;
     public $defaultValue = false;
-    public $notEmpty = false;
+    public $notEmpty = true;
     public $allowEmpty = true;
 
     /**
@@ -178,7 +178,8 @@ class ParamRule {
      * @return ParamRule
      */
     public function isEmail() {
-        $this->regex = '/^[A-Za-z0-9\u4e00-\u9fa5]+@[a-zA-Z0-9_-]+(\.[a-zA-Z0-9_-]+)+$/';
+//        $this->regex = '/^[A-Za-z0-9\u4e00-\u9fa5]+@[a-zA-Z0-9_-]+(\.[a-zA-Z0-9_-]+)+$/';
+        $this->regex = '/^[A-Za-z0-9]+@[a-zA-Z0-9_-]+(\.[a-zA-Z0-9_-]+)+$/';
         return $this;
     }
 

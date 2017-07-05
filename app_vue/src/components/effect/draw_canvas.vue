@@ -1,24 +1,18 @@
 <template>
-    <div style="width: 100%;height: 100%;overflow: hidden">
-        <div class="canvas_container" style="">
-            <div id="loading_canval_help_div" :style="{height:screenHeight-30+'px',overflow:'auto'}">
+    <div id="draw_canvas" style="width: 100%;height: 100%;overflow: hidden">
 
-
-                <pre v-if="help"  id="loading_canvas_help_pre" :style="{height:screenHeight-30} ">{{ help  }}</pre>
-            </div>
-            <canvas id="canvas" :width='screenWidth-10' :height='screenHeight-10' style=" background:#000;margin:0 auto;"></canvas>
-        </div>
+            <canvas id="canvas" :width='screenWidth-10' :height='screenHeight-10' style="margin:0 auto;"></canvas>
+        <span class='background'></span>
+        <span class='foreground'></span>
     </div>
 </template>
 
 
 
 <script>
-    //    import ArrayCanvas from '../../../api/array_canvas.js'
     import DrawCanvas from '../../api/drawCanvas.js'
-    import {syntaxHighlightJSON} from '../../api/lib/helper/prettyOnHtml'
     import Vue from 'vue'
-
+//
     export default{
 
         data() {
@@ -44,52 +38,77 @@
         watch:{
             is_line_percent(curVal,oldVal){
                 console.log(curVal,oldVal)
-                this.start()
+//                this.start()
             }
         },
         mounted(){
             var vm = this
-            $('h1').css('display','none')
-//          var arrayCanvas = new ArrayCanvas('canvas')
-
             this.$root.eventHub.$on('screenWidth2screenHeight', function (data) {
                 console.log('canvas-change_w2h')
                 var width2height = data.split(",")
                 vm.screenWidth = parseInt(width2height[0])
                 vm.screenHeight = parseInt(width2height[1])
                 Vue.nextTick( () => {
-                    vm.start()
+//                    vm.start()
                 })
-
-
-
             })
-            this.start()
+//            this.start()
 
+                var W,H
+                    var canvas = document.getElementById('canvas')
+                    var ctx = canvas.getContext('2d')
+                    var hsl = 0
+                    var angle = 0.01;
 
+                function size(){
+                    W = window.innerWidth
+                        H = window.innerHeight;
+                    canvas.width = W;
+                    canvas.height = H;
+                }
+
+                function paint(){
+                    angle += 0.03;
+                    hsl <= 360 ? hsl+=0.25 : hsl = 0;
+                    var s = -Math.sin(angle);
+                    var c = Math.cos(angle);
+
+                    ctx.save();
+                    ctx.globalAlpha = 0.5;
+                    ctx.beginPath();
+                    ctx.fillStyle = 'hsla('+hsl+', 100%, 50%, 1)';
+                    ctx.arc(W/2+(s*75),H/2+(c*75),25,0,2*Math.PI);
+                    ctx.fill();
+                    ctx.restore();
+                }
+
+                setInterval(paint, 5)
+
+                size();
+                $(window).on('resize', size);
 
 
         },
         methods:{
-            start(){
-                var vm = this
-                console.log('start')
-                this.initBase();
-                this.draw();
-            },
-            initBase(){
-                var vm = this
-//                vm.drawParams.xy_line = Math.floor(Math.sqrt(Math.pow(vm.screenHeight,2)+Math.pow(vm.screenWidth,2)))
-
-                vm.drawCanvas = new DrawCanvas('canvas', vm.screenWidth-10, vm.screenHeight-10)
-
-            },
-            initDots(){
-                var vm = this
-            },
-            draw(){
-                this.drawCanvas.draw1()
-            },
+//            start(){
+//                var vm = this
+//                console.log('start')
+//                this.initBase();
+//                this.draw();
+//            },
+//            initBase(){
+//                var vm = this
+////                vm.drawParams.xy_line = Math.floor(Math.sqrt(Math.pow(vm.screenHeight,2)+Math.pow(vm.screenWidth,2)))
+//
+//                vm.drawCanvas = new DrawCanvas('canvas', vm.screenWidth-10, vm.screenHeight-10)
+//
+//            },
+//            initDots(){
+//                var vm = this
+//            },
+//            draw(){
+//                this.drawCanvas.draw1()
+//            },
 
 //            render(){
 //                this.drawCanvas.initWidthHeight(this.screenWidth,this.screenHeight)
@@ -114,14 +133,36 @@
 
 </script>
 <style>
-    .canvas_container{
-        border: 5px solid rgba(255, 255, 255, 0.11)
-    }
-    #loading_canval_help_div{
-        position: absolute;text-align: center;color: #00B5AD;padding-left: 10%
-    }
-    #loading_canvas_help_pre{
-        box-shadow:0 1px 4px rgba(0, 0, 0, 0.3), 0 0 40px rgba(0, 0, 0, 0.1) inset;border:none;display: block;width: 500px;background-color: transparent;color: #00d4cb;
 
+    #draw_canvas canvas {
+        position: relative;
+        z-index: 100;
     }
+
+    #draw_canvas .background, .foreground {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        border-radius: 50%;
+    }
+
+    #draw_canvas .background {
+        width: 220px;
+        height: 220px;
+        background: rgba(0, 0, 0, 0.35);
+        display: block;
+        margin: -110px 0 0 -110px;
+        box-shadow: inset 1px 1px 4px rgba(0, 0, 0, 0.5), 1px 1px 4px rgba(255, 255, 255, 0.2);
+    }
+
+    #draw_canvas .foreground {
+        width: 80px;
+        height: 80px;
+        margin: -40px 0 0 -40px;
+        background: #333336;
+        box-shadow: 1px 1px 4px rgba(0, 0, 0, 0.5);
+    }
+
+
+
 </style>

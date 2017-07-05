@@ -56,6 +56,7 @@ class AppBaseController extends \ReInit\YafBase\Controller
     {
 
         $paramRules = $adapter ? $adapter->paramRules() : array();
+
         $rules = $this->getRules($required, $optional, $paramRules);
 
         $request = $this->getRequest();
@@ -102,8 +103,13 @@ class AppBaseController extends \ReInit\YafBase\Controller
 //        $desc = $model->getErrorText($code);
         $this->inputError($code, $desc);
     }
-    protected  function output2json($result){
+    public  function output2json($result){
         echo json_encode($result,JSON_ERROR_DEPTH );
+    }
+    public function throwException(array $exception){
+        $code = $exception['code'];
+        $desc = $exception['desc'];
+        throw new Exception($desc,$code);
     }
 
     protected function inputError($code, $msg)

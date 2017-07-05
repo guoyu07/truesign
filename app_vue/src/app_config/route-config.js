@@ -63,9 +63,10 @@ const fullpage = resolve => require(['../components/mainpage/fullpage.vue'], res
 
 // loading 工作区
 //  */
-// const loading = resolve => require(['../components/loading/loading.vue'], resolve)
+const loading = resolve => require(['../components/loading/loading.vue'], resolve)
 // const effect_line = resolve => require(['../components/loading/effect_line.vue'], resolve)
-// const effect_logo = resolve => require(['../components/loading/effect_logo.vue'], resolve)
+const effect_logo = resolve => require(['../components/loading/effect_logo.vue'], resolve)
+const effect_logo_Alfa = resolve => require(['../components/loading/effect_logo_Alfa.vue'], resolve)
 // const svg = resolve => require(['../components/loading/svg.vue'], resolve)
 //
 // /*
@@ -147,12 +148,12 @@ const routes = [
     //     component: siteshow_backend
     // },
     {
-        name: 'Home',
+        name: 'draw_canvas',
         path: '/',
         meta: {
-            title: 'home'
+            title: 'draw_canvas'
         },
-        component: home
+        component: draw_canvas
     },
     {
         name: 'tools',
@@ -616,69 +617,80 @@ const routes = [
                 },
         ]
     },
-    // {
-    //     name: 'loading',
-    //     path: '/loading',
-    //     meta: {
-    //         title: 'loading'
-    //     },
-    //     component: loading,
-    //     children:[
-    //         {
-    //             name: 'effect_line',
-    //             path: 'effect_line',
-    //             meta: {
-    //                 title: 'effect_line'
-    //             },
-    //             component: effect_line
-    //         },
-    //         {
-    //             name: 'effect_logo',
-    //             path: 'effect_logo',
-    //             meta: {
-    //                 title: 'effect_logo'
-    //             },
-    //             component: effect_logo
-    //         },
-    //         {
-    //             name: 'svg',
-    //             path: 'svg',
-    //             meta: {
-    //                 title: 'svg'
-    //             },
-    //             component: svg
-    //         },
-    //
-    //     ]
-    // },
-    // {
-    //     name: 'conn',
-    //     path: '/conn',
-    //     meta: {
-    //         title: 'conn'
-    //     },
-    //     component: conn,
-    //     children:[
-    //         {
-    //             name: 'initSocket',
-    //             path: 'initSocket',
-    //             meta: {
-    //                 title: 'initSocket'
-    //             },
-    //             component: initSocket
-    //         },
-    //     ]
-    // },
-    // {
-    //     name: 'help_window_resize',
-    //     path: '/help_window_resize',
-    //     meta: {
-    //         title: 'help_window_resize'
-    //     },
-    //     component: help_window_resize,
-    //
-    //
-    // },
+    {
+        name: 'loading',
+        path: '/loading',
+        meta: {
+            title: 'loading'
+        },
+        component: loading,
+        children: [
+            //         {
+            //             name: 'effect_line',
+            //             path: 'effect_line',
+            //             meta: {
+            //                 title: 'effect_line'
+            //             },
+            //             component: effect_line
+            //         },
+            {
+                name: 'effect_logo',
+                path: 'effect_logo',
+                meta: {
+                    title: 'effect_logo'
+                },
+                component: effect_logo
+            },
+            {
+                name: 'effect_logo_Alfa',
+                path: 'effect_logo_Alfa',
+                meta:{
+                    title: 'effect_logo_Alfa'
+                },
+                component:effect_logo_Alfa
+
+            }
+
+            //         {
+            //             name: 'svg',
+            //             path: 'svg',
+            //             meta: {
+            //                 title: 'svg'
+            //             },
+            //             component: svg
+            //         },
+            //
+            //     ]
+            // },
+            // {
+            //     name: 'conn',
+            //     path: '/conn',
+            //     meta: {
+            //         title: 'conn'
+            //     },
+            //     component: conn,
+            //     children:[
+            //         {
+            //             name: 'initSocket',
+            //             path: 'initSocket',
+            //             meta: {
+            //                 title: 'initSocket'
+            //             },
+            //             component: initSocket
+            //         },
+            //     ]
+            // },
+            // {
+            //     name: 'help_window_resize',
+            //     path: '/help_window_resize',
+            //     meta: {
+            //         title: 'help_window_resize'
+            //     },
+            //     component: help_window_resize,
+            //
+            //
+        ]
+    },
 
     {
             name: 'wechat_marketing',
@@ -828,5 +840,6 @@ const routes = [
 
 
 ]
+
 
 export default routes

@@ -317,7 +317,8 @@ function json_decode($json, $assoc = false, $depth = 512, $options = 0)
  * @throws \InvalidArgumentException if the JSON cannot be encoded.
  * @link http://www.php.net/manual/en/function.json-encode.php
  */
-function json_encode($value, $options = 0, $depth = 512)
+//function json_encode($value, $options = 0, $depth = 512)
+function http_json_encode($value, $options = 0, $depth = 512)
 {
     $json = \json_encode($value, $options, $depth);
     if (JSON_ERROR_NONE !== json_last_error()) {

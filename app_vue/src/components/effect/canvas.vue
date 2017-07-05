@@ -1,10 +1,10 @@
 <template>
   <div style="width: 100%;height: 100%;overflow: hidden">
     <div class="canvas_container" style="">
-      <div id="loading_canval_help_div" style="">
+      <div v-if="help" id="loading_canval_help_div" style="">
         <pre  id="loading_canvas_help_pre" style=" ">{{ help  }}</pre>
       </div>
-      <canvas id="canvas" :width='screenWidth-10' :height='screenHeight-10' style=" background:#000;margin:0 auto;"></canvas>
+      <canvas id="canvas" :width='screenWidth-10' :height='screenHeight-10' style=" margin:0 auto;"></canvas>
     </div>
   </div>
 </template>
@@ -88,7 +88,7 @@
                 this.drawCanvas.initWidthHeight(this.screenWidth,this.screenHeight)
                 this.drawCanvas.initCtrl()
                 this.drawCanvas.drawDots()
-                this.drawCanvas.move_3D(0,0,0)
+                this.drawCanvas.move_3D(0,0.2,0)
                 this.drawCanvas.move_line()
             },
             animate(){

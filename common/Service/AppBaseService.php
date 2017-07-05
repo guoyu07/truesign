@@ -2,16 +2,22 @@
 namespace Truesign\Service;
 
 
+use Royal\Crypt\SHA256;
 use Royal\Data\DAO;
+use Royal\Data\DAOAdapter;
 
 class AppBaseService {
-//    表权限控制
+//    表权限控制 
     public function tableaccess_ctrl()
     {
         $config = \Yaf_Registry::get('accessconfig');
         return $config['wechat_marketing']['tableaccess'];
     }
-
+    public function throwException(array $exception){
+        $code = $exception['code'];
+        $desc = $exception['desc'];
+        throw new \Exception($desc,$code);
+    }
     public function AuthTableAccess($access,$tableaccess,$way='both')
     {
         if('both' == $way){
@@ -31,6 +37,13 @@ class AppBaseService {
         }
     }
 
+    /*
+     * 处理adapter中的相应数据和格式传输给前端，用户控件渲染
+     * @param &$rules 样式与规则
+     * @param &$db_data 查询或组合出来的数据
+     * @param $rule_show 是否显示$rules的标志位
+     * @return mixed 数据
+     * */
     public function filterRules(&$rules,&$db_data,$rules_show=0)
     {
 
@@ -265,10 +278,7 @@ class AppBaseService {
         return 0;
     }
 
-    // 抛出异常
-    public static function throwException($str, $code = -100) {
-        throw new \Exception($str, $code);
-    }
+   
 
     /**
      * 从结果集里，得到一个数组，里面只包含一列指定的$col。去重复。
@@ -361,5 +371,28 @@ class AppBaseService {
 
         $zoom_param = '?x-oss-process=image/resize,m_lfit,w_'.$size.'&';
         return $zoom_param;
+    }
+
+    /*
+     * 新增方法
+     * */
+    public function SHA256Pass($password)
+    {
+        return SHA256::make($password+'@IAMSEE·TRUESIGN');
+    }
+
+    public function IdentifierGenerator($header,DAOAdapter $adapter,$file)
+    {
+        $PRE_ID = date('Ym',time());
+        $doDao = new DAO($adapter);
+        $count = $doDao->count(array());
+        if(empty($count)){
+            $APPEND_ID = '1000';
+        }
+        else{
+            $db_reponse = $doDao->readSpecified(array($file));
+            $APPEND_ID = 1000+(int)$db_reponse['data'][0][$file];
+        }
+        return $header.$PRE_ID.$APPEND_ID;
     }
 }

@@ -2,6 +2,7 @@
 
 namespace Royal\Validator;
 use \Exception;
+use Royal\Prof\TrueSignConst;
 
 class ParamValidator {
     function __construct()
@@ -133,6 +134,7 @@ class ParamValidator {
 
         $param = $request->get($rule->name, $rule->defaultValue);
 
+
         if ($param === false) {
             if ($rule->required) {
                 throw new Exception(ParamValidator::requiredErrorDesc($rule->desc()), $throw_code);
@@ -140,9 +142,10 @@ class ParamValidator {
             return false;
         }
 
-        if ($rule->notEmpty && empty($param)) {
-            throw new Exception(ParamValidator::emptyErrorDesc($rule->desc()), $throw_code);
-        }
+//        if ($rule->notEmpty && empty($param)) {
+//            throw new Exception(ParamValidator::emptyErrorDesc($rule->desc()), $throw_code);
+//        }
+
 
         if ($param === '') {
             if ($rule->type == 'enum') {
@@ -154,6 +157,11 @@ class ParamValidator {
         }
         if(gettype($param) === 'array'){
             return $param;
+        }
+        if($rule->regex){
+            if (!preg_match($rule->regex,$param)){
+                throw new Exception(TrueSignConst::ERROR_DATA_FORMAT($rule->desc().'格式不正确')['desc'],TrueSignConst::ERROR_DATA_FORMAT()['code']);
+            }
         }
         switch ($rule->type) {
 //            case 'int':

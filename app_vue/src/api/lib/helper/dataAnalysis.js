@@ -57,6 +57,14 @@ export function analysis_socket_response(response) {
 
     return analysis_reponse
 }
+export function analysis_yaf_response(response) {
+    response = JSON.parse(response)
+    var analysis_reponse = {
+        response_code : response.code,
+        response_desc : response.desc
+    }
+    return analysis_reponse
+}
 
 /*
 用于处理yaf api 返回一会的数据格式，并附加打包完成的控件数据格式
@@ -195,7 +203,7 @@ export function  resolveWidgetData2FormData(WidgetData,flag=true) {
                     item.value = item.value
                 }
                 else{
-                    item.value = sha256(md5(item.value+'iamsee'))
+                    item.value = sha256(md5(item.value))
                 }
             }
             formdata[item.key] = item.value
