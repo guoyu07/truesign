@@ -39,8 +39,9 @@
                 },
                 navmenu_theme_color:'#324157',
                 user_scope:{
-                    img:'http://truesign-app.oss-cn-beijing.aliyuncs.com/logo/logo_min.png',
-                    name:'IAMSEE'
+                    img:'http://cdn.iamsee.com/headpic/avatar.png',
+                    name:'aaa',
+                    link:''
                 },
             }
         },

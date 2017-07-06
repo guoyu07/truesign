@@ -15,8 +15,10 @@ class Bootstrap extends Yaf_Bootstrap_Abstract{
 
 	public function _initPlugin(Yaf_Dispatcher $dispatcher) {
 		//注册一个插件
-		$objSamplePlugin = new SamplePlugin();
-		$dispatcher->registerPlugin($objSamplePlugin);
+		$authPlugin = new AuthPlugin();
+		$dispatcher->registerPlugin($authPlugin);
+        $routerPlugin = new RouterPlugin();
+        $dispatcher->registerPlugin($routerPlugin);
 	}
 
 	public function _initRoute(Yaf_Dispatcher $dispatcher) {
@@ -26,5 +28,11 @@ class Bootstrap extends Yaf_Bootstrap_Abstract{
 	public function _initView(Yaf_Dispatcher $dispatcher){
 		//在这里注册自己的view控制器，例如smarty,firekylin
         $dispatcher->disableView();
+	}
+
+    public function _initTest(Yaf_Dispatcher $dispatcher)
+    {
+
+        
 	}
 }

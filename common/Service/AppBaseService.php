@@ -419,17 +419,22 @@ class AppBaseService {
             $APPEND_ID = '1000';
         }
         else{
-            $db_reponse = $doDao->get(array(),array($file),array('id'=>'desc'),false,true);
+            $db_reponse = $doDao->get(array('phone_num_auth_status'=>1),array($file),array('id'=>'desc'),false,true);
             $CURRECT_PRE_ID = substr($db_reponse[$file],0,7);
             if($header.$PRE_ID == $CURRECT_PRE_ID){
                 $LAST_APPEND_ID = substr($db_reponse[$file],7,strlen($db_reponse[$file])-1);
 
             }
-            $APPEND_ID = (int)$LAST_APPEND_ID+1;
+            if(empty($LAST_APPEND_ID)){
+                $APPEND_ID = 1000;
+            }
+            else{
+                $APPEND_ID = (int)$LAST_APPEND_ID+1;
+
+            }
 
 
         }
-
 
         return $header.$PRE_ID.$APPEND_ID;
     }

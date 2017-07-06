@@ -12,8 +12,8 @@
 
                 <el-menu-item :style="{color: menu_item_color}" v-for="(item,index) in menulist" :key="item" :index="index">{{item}}</el-menu-item>
 
-                <el-menu-item v-if='user_scope.name' :style="{color: menu_item_color}" index="append_user">
-                    <img style="border-radius: 200px" :src='user_scope.img'>
+                <el-menu-item v-if='user_scope.name' :style="{color: menu_item_color}" :index="user_scope.link">
+                    <img style="border-radius: 200px;width: 60px;height: 60px" :src='user_scope.img'>
                     <p style="display: inline">{{user_scope.name }}</p>
                 </el-menu-item>
 

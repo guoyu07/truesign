@@ -16,10 +16,6 @@
                         <div style="width: 100%;height: auto;min-height: 600px;text-align: left;" v-else-if="item.name==='站点设置'" key="站点设置">
 
                             <page_model :page_data="siteinfo" style="width: 100%;min-width:600px;display: inline-block;vertical-align: top" ></page_model>
-
-
-
-
                         </div>
                         <div style="width: 100%;height: auto;min-height: 600px;text-align: left;" v-else-if="item.name==='管理员账户管理'" key="管理员账户管理">
 
@@ -158,15 +154,10 @@
             this.$root.eventHub.$on('refresh_table',function (data) {
                 console.log('on->refresh_table')
                 vm.getMaster(JSON.stringify(this.table_search_sort_by))
-
-
             })
 
         },
         mounted(){
-
-
-
         },
         beforeDestroy(){
             this.$root.eventHub.$off('refresh_page_model')
