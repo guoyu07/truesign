@@ -45,7 +45,9 @@ class BusinessCtrlController extends AppBaseController {
         }
 
         $doService = new BusinessService();
-        $this->output2json($doService->get($params,$search_params,$page_params,$sorter_params));
+        $response = \Royal\Prof\TrueSignConst::SUCCESS('获取客户信息成功');
+        $response['response'] = $doService->get($params,$search_params,$page_params,$sorter_params);
+        $this->output2json($response);
 
 
     }
@@ -59,7 +61,9 @@ class BusinessCtrlController extends AppBaseController {
         $doDao = new DAO($doAdapter);
         $condition['id'] = $params['document_id'];
         $doService = new BusinessService();
-        $this->output2json($doService->Update($params,$condition));
+        $response = \Royal\Prof\TrueSignConst::SUCCESS('更新客户信息成功');
+        $response['response'] = $doService->Update($params,$condition);
+        $this->output2json($response);
     }
 
     /*
@@ -84,8 +88,9 @@ class BusinessCtrlController extends AppBaseController {
             $updatedata[] = $updatedata_item;
         }
         $doService = new BusinessService();
-
-        $this->output2json($doService->GroupDel($params));
+        $response = \Royal\Prof\TrueSignConst::SUCCESS('批量删除商户资料成功');
+        $response['response'] = $doService->GroupDel($params);
+        $this->output2json($response);
 
     }
 
@@ -120,7 +125,9 @@ class BusinessCtrlController extends AppBaseController {
         }
 
         $doService = new BusinessLevelService();
-        $this->output2json($doService->Get($params,$search_params,$page_params,$sorter_params));
+        $response = \Royal\Prof\TrueSignConst::SUCCESS('客户等级信息获取成功');
+        $response['response'] = $doService->Get($params,$search_params,$page_params,$sorter_params);
+        $this->output2json($response);
 
 
     }
@@ -134,7 +141,9 @@ class BusinessCtrlController extends AppBaseController {
         $doDao = new DAO($doAdapter);
         $condition['id'] = $params['document_id'];
         $doService = new BusinessLevelService();
-        $this->output2json($doService->Update($params,$condition));
+        $response = \Royal\Prof\TrueSignConst::SUCCESS('客户等级信息更新成功');
+        $response['response'] = $doService->Update($params,$condition);
+        $this->output2json($response);
 
 
     }
@@ -150,7 +159,10 @@ class BusinessCtrlController extends AppBaseController {
         $params = $this->getParams(array(),array('rules'));
 
         $doService = new PayInterfaceService();
-        $this->output2json($doService->Desc($params));
+
+        $response = \Royal\Prof\TrueSignConst::SUCCESS('初始化支付接口信息字段成功');
+        $response['response'] = $doService->Desc($params);;
+        $this->output2json($response);
     }
     /*
      * @for
@@ -174,7 +186,9 @@ class BusinessCtrlController extends AppBaseController {
         }
 
         $doService = new PayInterfaceService();
-        $this->output2json($doService->Get($params,$search_params,$page_params,$sorter_params));
+        $response = \Royal\Prof\TrueSignConst::SUCCESS('获取支付接口信息成功');
+        $response['response'] = $doService->Get($params,$search_params,$page_params,$sorter_params);
+        $this->output2json($response);
 
 
     }
@@ -188,7 +202,9 @@ class BusinessCtrlController extends AppBaseController {
         $doDao = new DAO($doAdapter);
         $condition['id'] = $params['document_id'];
         $doService = new PayInterfaceService();
-        $this->output2json($doService->Update($params,$condition));
+        $response = \Royal\Prof\TrueSignConst::SUCCESS('更新支付接口信息成功');
+        $response['response'] = $doService->Update($params,$condition);
+        $this->output2json($response);
 
 
     }

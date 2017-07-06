@@ -221,7 +221,6 @@
     #is_form_container{
         width 860px;
         height 640px;
-        background-color transparent
         left:50%;
         margin-left -430px;
         position absolute

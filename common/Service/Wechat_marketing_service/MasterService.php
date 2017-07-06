@@ -9,7 +9,10 @@
 namespace Truesign\Service\Wechat_marketing_service;
 
 
+use EasyWeChat\Core\Exception;
+use Royal\Crypt\Decrypt;
 use Royal\Data\DAO;
+use Royal\Prof\TrueSignConst;
 use Truesign\Adapter\wechat_marketing\masterAdapter;
 
 class MasterService extends BaseService
@@ -66,6 +69,9 @@ class MasterService extends BaseService
         $this->filterRules($this->rules,$db_resposne['data'],$params['rules']);
         $access_rules = array('tableaccess'=>$this->tableAccess,'rules'=>$this->rules);
         $db_resposne['access_rules'] = $access_rules;
+//        if($params['document_id']){
+//            $db_resposne['data'][0]['password'] = '';
+//        }
 
         return $db_resposne;
 
@@ -79,33 +85,77 @@ class MasterService extends BaseService
 
         $search_params['id'] = $params['document_id'];
         unset($search_params['document_id']);
+        $params['password'] = self::SHA256Pass($params['password']);
+//        $db_response = $this->Dao->get(array('id'=>$search_params['id']),array('password'));
+//        if($params['password']  == $db_response['password']){
+//            $db_response = 0;
+//            $db_response = $this->Dao->insertOrupdate($params,$search_params);
+//            if($db_response > 0){
+//                $response = TrueSignConst::SUCCESS('更新成功');
+//            }
+//            else{
+//                $response = TrueSignConst::ERROR('更新失败');
+//            }
+//        }
+//        else{
+//            $response = TrueSignConst::OPERATION_lOGIC_ERR('密码错误，无法更新数据');
+//        }
         $db_response = $this->Dao->insertOrupdate($params,$search_params);
-        return $db_response;
-    }
-
-    /*
-     * @for
-     */
-    public function GroupDel($params=array())
-    {
-
-        if(!empty($params['ids'])){
-            $params_ids = explode(',',$params['ids']);
+        if($db_response > 0){
+            $response = TrueSignConst::SUCCESS('更新成功');
         }
         else{
-            $params_ids = array();
+            $response = TrueSignConst::ERROR('更新失败');
         }
-        $doAdapter = new businessAdapter();
-        $doDao = new DAO($doAdapter);
-        $updatedata = [];
-        foreach ($params_ids as $k=>$v){
-            $updatedata_item['id'] = $v;
-            $updatedata_item['if_delete'] = 1;
-            $updatedata[] = $updatedata_item;
+        return $response;
+
+    }
+
+    /*管理员登录逻辑*/
+    public function login($params){
+
+        $search_params = array('username'=>$params['username']);
+        $password = self::SHA256Pass($params['password']);
+        $count = $this->Dao->count($search_params);
+
+        if(empty($count)){
+            $response = TrueSignConst::OPERATION_lOGIC_ERR('账户不存在');
+        }
+        else if($count == 1){
+            $db_response = $this->Dao->get($search_params,array('document_id','password'));
+            if($db_response['password'] === $password){
+                $response = TrueSignConst::SUCCESS('登录成功');
+
+                $fgservice =  new FingerPrintsService();
+                $db_reponse = 0;
+                $db_reponse = $fgservice->setFingerPrints($this->Adapter->table().'Adapter',
+                    $db_response['document_id'],$params['username'],
+                    'login','','PC','ipv4');
+                $userinfo = $this->Get(array('document_id'=>$db_response['document_id']));
+                $userinfo = $userinfo['data'][0];
+                unset($userinfo['password']);
+                if(!empty($db_reponse)){
+                    $userinfo['lable_type'] = '管理员';
+                    $userinfo['fg'] = $fgservice->getLastFingerPrints(
+                        $this->Adapter->table().'Adapter',$db_response['document_id'],'login'
+                    );
+                }
+                $response['response'] = array(
+                    'token'=>Decrypt::encryption($params['username'],$db_response['document_id'],'master'),
+                    'userinfo'=> $userinfo
+                );
+            }
+            else{
+                $response = TrueSignConst::ERROR('密码错误');
+            }
+        }
+        else{
+            $response = TrueSignConst::CODE_LOGIC_ERR('账户['.$params['username'].']存在问题，请联系客服！');
+            Logger::log('CODELOGIC', '存在' . $count . '条相同 用户名 注册信息,用户名不应有重复数据', array(TrueSignConst::CODE_LOGIC_ERR(), 'username' => $params['username']));
+
         }
 
-        $db_reponse = $doDao->groupUpdate($params['ids'],$updatedata,'if_delete');
-        return $db_reponse;
+        return $response;
 
     }
 

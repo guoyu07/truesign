@@ -171,17 +171,21 @@ class MySQL {
 
     public function getRowByCondition($table, $condition, $fields = '') {
 
-        list($condition, $values) = $this->getConditionPair($condition);
-
-        if($condition)
+        if(!empty($condition[1]))
             $where = 'WHERE';
         else{
             $where = '';
         }
+        list($condition, $values) = $this->getConditionPair($condition);
+
+
+
+
         if (empty($fields))
             $sql = sprintf('SELECT * FROM %s %s %s LIMIT 1', $table,$where, $condition);
         else
             $sql = sprintf('SELECT %s FROM %s %s %s LIMIT 1', $fields, $table,$where, $condition);
+
         return $this->get_row($sql, $values);
     }
 

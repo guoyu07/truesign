@@ -9,6 +9,7 @@
 namespace Truesign\Service\Wechat_marketing_service;
 
 
+use EasyWeChat\Core\Exception;
 use Royal\Crypt\Decrypt;
 use Royal\Crypt\SHA256;
 use Royal\Data\DAO;
@@ -73,8 +74,7 @@ class BusinessService extends BaseService
         $this->filterRules($this->rules, $db_resposne['data'], $params['rules']);
         $access_rules = array('tableaccess' => $this->tableAccess, 'rules' => $this->rules);
         $db_resposne['access_rules'] = $access_rules;
-        echo json_encode($db_resposne);
-        exit();
+
         return $db_resposne;
 
 
@@ -87,11 +87,35 @@ class BusinessService extends BaseService
     public function Update($params = array(), $search_params = array(), $page_params = array())
     {
 
-        $search_params['id'] = $params['document_id'];
-        unset($search_params['document_id']);
-        $params['password'] = self::SHA256Pass($params['password']);
-        $db_response = $this->Dao->insertOrupdate($params, $search_params);
-        return $db_response;
+        $UniqueFiles = array('phone_num' => $params['phone_num'], 'username' => $params['username'], 'email' => $params['email']);
+        $flag_file = array('phone_num_auth_status' => 1);
+        if (empty($params['document_id'])) {
+            $check_response = self::checkUniqueFile(new businessAdapter(), $UniqueFiles, $flag_file);
+            if(!empty($check_response)){
+                $params['password'] = self::SHA256Pass($params['password']);
+                $this->Dao->create($params);
+            }
+            else{
+                self::throwException(TrueSignConst::CODE_LOGIC_ERR('代码逻辑出现错误'));
+                Logger::log('CODELOGIC', '代码逻辑出现错误', debug_backtrace());
+
+            }
+        } else {
+            self::setParam('id','neq',$params['document_id'],$flag_file);
+            $check_response = self::checkUniqueFile(new businessAdapter(), $UniqueFiles, $flag_file);
+            if(!empty($check_response)){
+                $params['id'] = $params['document_id'];
+                unset($params['document_id']);
+                $params['password'] = self::SHA256Pass($params['password']);
+                $this->Dao->update($params);
+            }
+            else{
+                self::throwException(TrueSignConst::CODE_LOGIC_ERR('代码逻辑出现错误'));
+                Logger::log('CODELOGIC', '代码逻辑出现错误', debug_backtrace());
+
+            }
+        }
+
     }
 
     /*
@@ -122,14 +146,16 @@ class BusinessService extends BaseService
     /*
      * 根据id获取商户信息基本
      * */
-    public function getUserInfoCodeById($id){
-        $db_reponse = $this->Dao->read(array('id'=>$id));
-        if(!empty($db_reponse['data'][0])){
+    public function getUserInfoCodeById($id)
+    {
+        $db_reponse = $this->Dao->read(array('id' => $id));
+        if (!empty($db_reponse['data'][0])) {
             unset($db_reponse['data'][0]['password']);
         }
         return $db_reponse['data'][0];
 
     }
+
     /*
      * 根据手机号和验证码在business表里创建记录
      * 流程->判断此手机号是否已经验证了其它账户
@@ -158,29 +184,115 @@ class BusinessService extends BaseService
     }
 
     /*商户注册逻辑*/
-    public function reg($params)
+    public function reg($params, $auth_code = true)
     {
-        $count = $this->Dao->count(array('phone_num' => $params['phone_num'] , 'phone_num_auth_status' => 1));
-        if (empty($count)) {
+//
+//        $count = $this->Dao->count(array('phone_num' => $params['phone_num'] , 'phone_num_auth_status' => 1));
+//        if (empty($count)) {
+//
+//            $count = $this->Dao->count(array('username' => $params['username'], 'phone_num_auth_status' => 1));
+//            if(!empty($count)){
+//                self::throwException(TrueSignConst::OPERATION_lOGIC_ERR('此用户名已经注册'));
+//            }
+//            $count = $this->Dao->count(array('email' => $params['email'], 'phone_num_auth_status' => 1));
+//            if(!empty($count)){
+//                self::throwException(TrueSignConst::OPERATION_lOGIC_ERR('此邮箱已经注册'));
+//            }
+//            $count = $this->Dao->count(array('phone_num' => $params['phone_num']));
+//            if (empty($count)) {
+//                if($auth_code){
+//                    self::throwException(TrueSignConst::OPERATION_lOGIC_ERR('此手机号暂未获取验证码，非法验证'));
+//                }
+//            }
+//            elseif ($count == 1) {
+//                $db_reponse = $this->Dao->readSpecified(array('phone_num' => $params['phone_num']), array('document_id', 'phone_num_auth_code', 'phone_num_auth_code_updatetime'));
+//
+//                $db_data = $db_reponse['data'][0];
+//                if (time() - $db_data['phone_num_auth_code_updatetime'] > 30 * 60) {
+//                    if($auth_code){
+//                        self::throwException(TrueSignConst::OPERATION_lOGIC_ERR('验证码失效，请重新获取'));
+//
+//                    }
+//                } elseif ($db_data['phone_num_auth_code'] != $params['phone_num_auth_code']) {
+//                    self::throwException(TrueSignConst::OPERATION_lOGIC_ERR('验证码不正确,请重新获取'));
+//                } else {
+//
+//                    $db_reponse = array();
+//                    $params['password'] = self::SHA256Pass($params['password']);
+//                    $identifier_code = $this->IdentifierGenerator('B',new businessAdapter(),'identifier_code');
+//                    $update_params = array_merge(array('id' => $db_data['document_id'],'identifier_code'=>$identifier_code , 'phone_num_auth_status' => 1), $params);
+//
+//                    $update_params['enable_time'] = time(); /*重置启用时间为注册时间*/
+//                    $update_params['expire_time'] = time() + 10*24*3600; /*过期时间为十天之后*/
+//                    $db_reponse = $this->Dao->update($update_params);
+//
+//                    if($db_reponse>0){
+//                        /*
+//                         * 指纹信息记录
+//                         * */
+//                        $response = TrueSignConst::SUCCESS('注册成功');
+//                        $fgservice =  new FingerPrintsService();
+//                        $db_reponse = 0;
+//                        $db_reponse = $fgservice->setFingerPrints($this->Adapter->table().'Adapter',
+//                            $db_data['document_id'],$params['username'],
+//                            'reg','','PC','ipv4');
+//                        $userinfo = $this->getUserInfoCodeById($db_data['document_id']);
+//                        $userinfo['lable_type'] = '商户';
+//
+//                        if(!empty($db_reponse)){
+//
+//                            $userinfo['fg'] = $fgservice->getLastFingerPrints(
+//                                $this->Adapter->table().'Adapter',$db_data['document_id'],'reg'
+//                            );
+//                        }
+//
+//                        /*
+//                         * 注册相应返回
+//                         * */
+//                        $response['response'] = array(
+//                            'token'=>Decrypt::encryption($params['username'],$db_data['document_id'],'business'),
+//                            'userinfo'=> $userinfo
+//                        );
+//
+//                    }
+//                    else{
+//                        $response = TrueSignConst::ERROR('注册失败');
+//                    }
+//
+//                    return $response;
+//                }
+//            }
+//            else {
+//                self::throwException(TrueSignConst::CODE_LOGIC_ERR('手机号[' . $params['phone_num'] . ']存在冗余数据，请联系管理员或者换号注册'));
+//                Logger::log('CODELOGIC', '存在' . $count . '条相同手机号注册信息,手机号不应有重复数据', array(TrueSignConst::CODE_LOGIC_ERR(), 'phone_num' => $params['phone_num']));
+//
+//            }
+//        } elseif ($count > 1) {
+//            Logger::log('CODELOGIC', '存在' . $count . '条相同手机号注册信息,手机号不应有重复数据', array(TrueSignConst::CODE_LOGIC_ERR(), 'phone_num' => $phone));
+//            self::throwException(TrueSignConst::CODE_LOGIC_ERR('此手机号已经绑定注册过'));
+//        } else {
+//            self::throwException(TrueSignConst::ERROR('此手机号已经绑定注册过'));
+//        }
 
-            $count = $this->Dao->count(array('username' => $params['username'], 'phone_num_auth_status' => 1));
-            if(!empty($count)){
-                self::throwException(TrueSignConst::OPERATION_lOGIC_ERR('此用户名已经注册'));
-            }
-            $count = $this->Dao->count(array('email' => $params['email'], 'phone_num_auth_status' => 1));
-            if(!empty($count)){
-                self::throwException(TrueSignConst::OPERATION_lOGIC_ERR('此邮箱已经注册'));
-            }
+        $UniqueFiles = array('phone_num' => $params['phone_num'], 'username' => $params['username'], 'email' => $params['email']);
+        $flag_file = array('phone_num_auth_status' => 1);
+        $check_response = self::checkUniqueFile(new businessAdapter(), $UniqueFiles, $flag_file);
+        if (!empty($check_response)) {
             $count = $this->Dao->count(array('phone_num' => $params['phone_num']));
             if (empty($count)) {
-                self::throwException(TrueSignConst::OPERATION_lOGIC_ERR('此手机号暂未获取验证码，非法验证'));
-            } elseif ($count == 1) {
-                $db_reponse = $this->Dao->readSpecified(array('phone_num' => $params['phone_num']), array('document_id', 'phone_num_auth_code', 'phone_num_auth_code_updatetime'));
+                if($auth_code){
+                    self::throwException(TrueSignConst::OPERATION_lOGIC_ERR('此手机号暂未获取验证码，非法验证'));
+                }
+            }
+            elseif ($count == 1) {
+                $db_reponse = $this->Dao->get(array('phone_num' => $params['phone_num']), array('document_id', 'phone_num_auth_code', 'phone_num_auth_code_updatetime'));
 
-                $db_data = $db_reponse['data'][0];
+                $db_data = $db_reponse;
                 if (time() - $db_data['phone_num_auth_code_updatetime'] > 30 * 60) {
+                    if($auth_code){
+                        self::throwException(TrueSignConst::OPERATION_lOGIC_ERR('验证码失效，请重新获取'));
 
-                    self::throwException(TrueSignConst::OPERATION_lOGIC_ERR('验证码失效，请重新获取'));
+                    }
                 } elseif ($db_data['phone_num_auth_code'] != $params['phone_num_auth_code']) {
                     self::throwException(TrueSignConst::OPERATION_lOGIC_ERR('验证码不正确,请重新获取'));
                 } else {
@@ -189,6 +301,9 @@ class BusinessService extends BaseService
                     $params['password'] = self::SHA256Pass($params['password']);
                     $identifier_code = $this->IdentifierGenerator('B',new businessAdapter(),'identifier_code');
                     $update_params = array_merge(array('id' => $db_data['document_id'],'identifier_code'=>$identifier_code , 'phone_num_auth_status' => 1), $params);
+
+                    $update_params['enable_time'] = time(); /*重置启用时间为注册时间*/
+                    $update_params['expire_time'] = time() + 10*24*3600; /*过期时间为十天之后*/
                     $db_reponse = $this->Dao->update($update_params);
 
                     if($db_reponse>0){
@@ -198,7 +313,7 @@ class BusinessService extends BaseService
                         $response = TrueSignConst::SUCCESS('注册成功');
                         $fgservice =  new FingerPrintsService();
                         $db_reponse = 0;
-                        $db_reponse = $fgservice->setFingerPrints('businessAdapter',
+                        $db_reponse = $fgservice->setFingerPrints($this->Adapter->table().'Adapter',
                             $db_data['document_id'],$params['username'],
                             'reg','','PC','ipv4');
                         $userinfo = $this->getUserInfoCodeById($db_data['document_id']);
@@ -207,7 +322,7 @@ class BusinessService extends BaseService
                         if(!empty($db_reponse)){
 
                             $userinfo['fg'] = $fgservice->getLastFingerPrints(
-                                'businessAdapter',$db_data['document_id'],'reg'
+                                $this->Adapter->table().'Adapter',$db_data['document_id'],'reg'
                             );
                         }
 
@@ -226,61 +341,57 @@ class BusinessService extends BaseService
 
                     return $response;
                 }
-            } else {
+            }
+            else {
                 self::throwException(TrueSignConst::CODE_LOGIC_ERR('手机号[' . $params['phone_num'] . ']存在冗余数据，请联系管理员或者换号注册'));
                 Logger::log('CODELOGIC', '存在' . $count . '条相同手机号注册信息,手机号不应有重复数据', array(TrueSignConst::CODE_LOGIC_ERR(), 'phone_num' => $params['phone_num']));
 
             }
-        } elseif ($count > 1) {
-            Logger::log('CODELOGIC', '存在' . $count . '条相同手机号注册信息,手机号不应有重复数据', array(TrueSignConst::CODE_LOGIC_ERR(), 'phone_num' => $phone));
-            self::throwException(TrueSignConst::CODE_LOGIC_ERR('此手机号已经绑定注册过'));
-        } else {
-            self::throwException(TrueSignConst::ERROR('此手机号已经绑定注册过'));
+        }
+        else{
+            self::throwException(TrueSignConst::CODE_LOGIC_ERR('代码逻辑出现错误'));
+            Logger::log('CODELOGIC', '代码逻辑出现错误', debug_backtrace());
+
         }
     }
 
-    /*商户登录逻辑*/
-    public function login($params){
+            /*商户登录逻辑*/
 
-        $search_params = array('username'=>$params['username']);
+    public function login($params)
+    {
+
+        $search_params = array('username' => $params['username']);
         $password = self::SHA256Pass($params['password']);
         $count = $this->Dao->count($search_params);
-        if(empty($count)){
+        if (empty($count)) {
             $response = TrueSignConst::OPERATION_lOGIC_ERR('账户不存在');
-        }
-        else if($count == 1){
-            $db_response = $this->Dao->get($search_params,array('document_id','password'));
-            if($db_response['password'] === $password){
+        } else if ($count == 1) {
+            $db_response = $this->Dao->get($search_params, array('document_id', 'password'));
+            if ($db_response['password'] === $password) {
                 $response = TrueSignConst::SUCCESS('登录成功');
 
-                $fgservice =  new FingerPrintsService();
+                $fgservice = new FingerPrintsService();
                 $db_reponse = 0;
-                $db_reponse = $fgservice->setFingerPrints('businessAdapter',
-                    $db_response['document_id'],$params['username'],
-                    'login','','PC','ipv4');
+                $db_reponse = $fgservice->setFingerPrints('businessAdapter', $db_response['document_id'], $params['username'], 'login', '', 'PC', 'ipv4');
                 $userinfo = $this->getUserInfoCodeById($db_response['document_id']);
-                if(!empty($db_reponse)){
+                if (!empty($db_reponse)) {
                     $userinfo['lable_type'] = '商户';
-                    $userinfo['fg'] = $fgservice->getLastFingerPrints(
-                        'businessAdapter',$db_response['document_id'],'login'
-                    );
+                    $userinfo['fg'] = $fgservice->getLastFingerPrints('businessAdapter', $db_response['document_id'], 'login');
                 }
-                $response['response'] = array(
-                    'token'=>Decrypt::encryption($params['username'],$db_response['document_id'],'business'),
-                    'userinfo'=> $userinfo
-                );
-            }
-            else{
+                $response['response'] = array('token' => Decrypt::encryption($params['username'], $db_response['document_id'], 'business'), 'userinfo' => $userinfo);
+            } else {
                 $response = TrueSignConst::ERROR('密码错误');
             }
-        }
-        else{
-            $response = TrueSignConst::CODE_LOGIC_ERR('账户['.$params['username'].']存在问题，请联系客服！');
+        } else {
+            $response = TrueSignConst::CODE_LOGIC_ERR('账户[' . $params['username'] . ']存在问题，请联系客服！');
             Logger::log('CODELOGIC', '存在' . $count . '条相同 用户名 注册信息,用户名不应有重复数据', array(TrueSignConst::CODE_LOGIC_ERR(), 'username' => $params['username']));
 
         }
         return $response;
 
     }
+
+
+
 
 }

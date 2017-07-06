@@ -26,7 +26,7 @@
             Parallax
         },
         created(){
-            this.$root.eventHub.$emit('init_navmenu','form')
+            this.$root.eventHub.$emit('init_navmenu','main_page')
 
         }
     }

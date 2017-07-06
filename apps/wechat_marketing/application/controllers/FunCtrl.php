@@ -2,6 +2,7 @@
 use Royal\Data\DAO;
 use Truesign\Adapter\wechat_marketing\businessAdapter;
 use Truesign\Service\Wechat_marketing_service\FunService;
+use Royal\Prof\TrueSignConst;
 
 
 class FunCtrlController extends AppBaseController {
@@ -21,7 +22,9 @@ class FunCtrlController extends AppBaseController {
             $params['rules'] = $rules;
         }
         $doService = new FunService();
-        $this->output2json($doService->desc($params));
+        $response = TrueSignConst::SUCCESS('初始化功能字段成功');
+        $response['response'] = $doService->desc($params);
+        $this->output2json($response);
     }
     /*
      * @for
@@ -48,7 +51,9 @@ class FunCtrlController extends AppBaseController {
             $this->DescFunAction(1);
         }
         else{
-            $this->output2json($db_response);
+            $response = TrueSignConst::SUCCESS('获取功能信息成功');
+            $response['response'] = $db_response;
+            $this->output2json($response);
         }
 
 
@@ -68,7 +73,9 @@ class FunCtrlController extends AppBaseController {
         unset($params['document_id']);
 
         $doService = new FunService();
-        $this->output2json($doService->Update($params,$condition));
+        $response = TrueSignConst::SUCCESS('更新功能信息成功');
+        $response['response'] = $doService->Update($params,$condition);
+        $this->output2json($response);
     }
 
     /*
@@ -76,7 +83,7 @@ class FunCtrlController extends AppBaseController {
      */
     public function GroupDelFunAction()
     {
-        die(print_r('未开放接口'));
+        TrueSignConst::OPERATION_lOGIC_ERR('未开放接口');
         $params = $this->getParams(array('ids'));
 
         if(!empty($params['ids'])){

@@ -43,7 +43,7 @@ class EnvService extends BaseService
 
     }
     /*
-     * @for 获取客户信息接口
+     * @for 环境信息更细与获取接口
      *
      */
     public function Get($params=array(),$search_params=array(),$page_params=array(),$sorter=array())

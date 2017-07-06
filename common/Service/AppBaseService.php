@@ -5,6 +5,7 @@ namespace Truesign\Service;
 use Royal\Crypt\SHA256;
 use Royal\Data\DAO;
 use Royal\Data\DAOAdapter;
+use Royal\Prof\TrueSignConst;
 
 class AppBaseService {
 //    表权限控制 
@@ -17,6 +18,34 @@ class AppBaseService {
         $code = $exception['code'];
         $desc = $exception['desc'];
         throw new \Exception($desc,$code);
+    }
+    public function checkUniqueFile(DAOAdapter $DAOAdapter, $files = array(),$flag_file=array(),$append_desc='已注册'){
+        if(empty($files) || empty($flag_file)){
+            return false;
+        }
+        else{
+            foreach ($files as $k=>$v){
+
+                $file = array($k=>$v);
+                $doDao = new DAO($DAOAdapter);
+
+                $count = 0;
+                $count = $doDao->count(array_merge($file,$flag_file));
+                if($count==1){
+                    $rules = $DAOAdapter->paramRules();
+                    foreach ($rules as $key=>$rule){
+                        if($key == $k){
+                            self::throwException(TrueSignConst::OPERATION_lOGIC_ERR($rule->title.' '.$v.' '.$append_desc));
+                        }
+                    }
+                }
+                elseif($count > 1){
+                    Logger::log('CODELOGIC', '存在' . $count . '条相同 '.$rule->title.' 注册信息,不应有重复数据', array(TrueSignConst::CODE_LOGIC_ERR(), $k => $v));
+                    self::throwException(TrueSignConst::CODE_LOGIC_ERR($rule->title.' '.$v.' '.$append_desc));
+                }
+            }
+            return true;
+        }
     }
     public function AuthTableAccess($access,$tableaccess,$way='both')
     {
@@ -390,9 +419,18 @@ class AppBaseService {
             $APPEND_ID = '1000';
         }
         else{
-            $db_reponse = $doDao->readSpecified(array($file));
-            $APPEND_ID = 1000+(int)$db_reponse['data'][0][$file];
+            $db_reponse = $doDao->get(array(),array($file),array('id'=>'desc'),false,true);
+            $CURRECT_PRE_ID = substr($db_reponse[$file],0,7);
+            if($header.$PRE_ID == $CURRECT_PRE_ID){
+                $LAST_APPEND_ID = substr($db_reponse[$file],7,strlen($db_reponse[$file])-1);
+
+            }
+            $APPEND_ID = (int)$LAST_APPEND_ID+1;
+
+
         }
+
+
         return $header.$PRE_ID.$APPEND_ID;
     }
 }

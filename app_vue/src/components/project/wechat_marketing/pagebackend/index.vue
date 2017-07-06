@@ -63,6 +63,9 @@
             this.updateWechat_marketing_store({
                 apihost:wechat_marketing_apihost
             })
+              if(this.$route.path === '/wechat_marketing_backend'){
+                this.$router.push('/wechat_marketing_backend/w_m_b_site_ctrl')
+              }
 
         },
         mounted(){

@@ -147,14 +147,14 @@ class ParamValidator {
 //        }
 
 
-        if ($param === '') {
-            if ($rule->type == 'enum') {
-                return false;
-            }
-            if ($rule->type == 'str') {
-                return $rule->allowEmpty ? '' : false;
-            }
-        }
+//        if ($param === '') {
+//            if ($rule->type == 'enum') {
+//                return false;
+//            }
+//            if ($rule->type == 'str') {
+//                return $rule->allowEmpty ? '' : false;
+//            }
+//        }
         if(gettype($param) === 'array'){
             return $param;
         }

@@ -197,7 +197,7 @@
                 var vm = this
                 axios.post(this.report_api+'getenv',{rules:1},axios_config)
                     .then((res) => {
-                        let analysis_data = dbResponseAnalysis2WidgetData(res.data)
+                        let analysis_data = dbResponseAnalysis2WidgetData(res.data.response)
                         if(analysis_data.code+'' === '0'){
                             var siteinfo_content = analysis_data.widgetdata[0]
                             vm.siteinfo = {
@@ -212,7 +212,7 @@
                 var vm = this
                 axios.post(this.report_api+'getsitebaseconfig',{rules:1},axios_config)
                     .then((res) => {
-                        let analysis_data = dbResponseAnalysis2WidgetData(res.data)
+                        let analysis_data = dbResponseAnalysis2WidgetData(res.data.response)
                         console.log('analysis_data.widgetdata',analysis_data.widgetdata)
 
                         if(analysis_data.code+'' === '0'){
@@ -236,7 +236,7 @@
                 search_param.rules = 1
                 axios.post(this.report_api+'getMaster',search_param,axios_config)
                     .then((res) => {
-                        let analysis_data = dbResponseAnalysis2WidgetData(res.data)
+                        let analysis_data = dbResponseAnalysis2WidgetData(res.data.response)
                         console.log('getBusinessInfoLevel',analysis_data)
                         if(analysis_data.code+'' === '0'){
 

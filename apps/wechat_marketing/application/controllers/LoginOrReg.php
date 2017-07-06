@@ -3,6 +3,7 @@
 use Truesign\Service\Wechat_marketing_service\BusinessService;
 use Royal\Prof\TrueSignConst;
 use \Truesign\Service\Wechat_marketing_service\FingerPrintsService;
+use \Truesign\Service\Wechat_marketing_service\MasterService;
 
 class LoginOrRegController extends AppBaseController
 {
@@ -110,7 +111,12 @@ class LoginOrRegController extends AppBaseController
 
         } elseif ($params['account_type'] == 'worker') {
             self::throwException(TrueSignConst::ERROR_DATA_FORMAT('员工登录尚未开通'));
-        } else {
+        } elseif($params['account_type'] == 'master'){
+            $masterService = new MasterService();
+            $service_response = $masterService->login($params);
+            $this->output2json($service_response);
+        }
+        else {
             self::throwException(TrueSignConst::ERROR_DATA_FORMAT('账户类型不合法'));
         }
     }

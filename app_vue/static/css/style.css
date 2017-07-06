@@ -2,7 +2,7 @@ html,body{
     height:100%;
     width:100%;
     margin:0px;
-    background:rgba(0, 0, 0, 0.35)
+    background:gainsboro !important;
 }
 body{
     overflow:auto;
@@ -52,8 +52,7 @@ body {
     font-family: "Helvetica Neue",Helvetica,"PingFang SC","Hiragino Sans GB","Microsoft YaHei","\5FAE\8F6F\96C5\9ED1",Arial,sans-serif;
     line-height: 1.5;
     color: #333;
-    background-color: #f2f2f2;
-    font-size: 0.24rem;
+    /*background-color: #f2f2f2;*/
 }
 
 a {
@@ -79,7 +78,6 @@ a {
 }
 
 .navLink {
-    font-size: 0.42rem;
     -webkit-box-flex: 1;
     -ms-flex: auto;
     flex: auto;
@@ -112,7 +110,6 @@ a {
 .navLinkText {
     display: block;
     line-height: 1;
-    font-size: 0.24rem;
 }
 
 .img-responsive {

@@ -67,8 +67,7 @@ class PayInterfaceService extends BaseService
         $this->filterRules($this->rules,$db_resposne['data'],$params['rules']);
         $access_rules = array('tableaccess'=>$this->tableAccess,'rules'=>$this->rules);
         $db_resposne['access_rules'] = $access_rules;
-        echo json_encode($db_resposne);
-        exit();
+
         return $db_resposne;
 
 

@@ -3,7 +3,7 @@
         <!--<pre>-->
             <!--{{table_field}}-->
         <!--</pre>-->
-        <div id="table_button_bar" style="text-align: left">
+        <div id="table_button_bar" style="text-align: left;height: 38px">
             <transition name="fade-left" >
             <el-button type="danger" v-if="all_data_count && multipleSelection.length>0"   @click="delSelectOption">删除选择项</el-button>
             </transition>
@@ -120,7 +120,7 @@
                                             <el-tag v-for="style_item,style_index in item.widgetStyle" :key="style_index"  v-if="style_index === type_id"   close-transition :style="style_item">{{type_item}}</el-tag>
                                         </div>
                                         <div v-else="item.widgetStyle">  <!--如果没有配置样式-->
-                                            {{radio_item}} &nbsp;
+                                            {{type_item}} &nbsp;
                                         </div>
                                     </div>
 
@@ -671,7 +671,7 @@
                 vm.isloading = true
                 axios.post(this.apihost+this.info_transfer_action.get,search_param,axios_config)
                     .then((res) => {
-                        let analysis_data = dbResponseAnalysis2WidgetData(res.data)
+                        let analysis_data = dbResponseAnalysis2WidgetData(res.data.response)
                         var content = analysis_data.widgetdata[0]
                         vm.detail_page_model_data = {
                             title:show_title,
@@ -700,19 +700,21 @@
                 vm.isloading = true
                 axios.post(this.apihost+this.info_transfer_action.update,update_params,axios_config)
                     .then((res) => {
-                        console.log('update_detail->',res.data)
-                        if((typeof res.data === 'object' && res.data.statistic.count>=1) || res.data>=1){
+                        if(res.data.code===0){
+
                             vm.$notify.success({
                                 title: '成功',
                                 message: '删除成功',
                                 offset: 100,
                                 duration:'2000'
                             });
+                            vm.refresh_table_data()
+
                         }
                         else{
                             vm.$notify.success({
                                 title: '失败',
-                                message: '删除失败',
+                                message: res.data.code + ' ' + res.data.desc,
                                 type:'error',
                                 offset: 100,
                                 duration:'2000'
@@ -721,7 +723,6 @@
                         }
                         vm.isloading = false
 
-                        vm.refresh_table_data()
                     })
                     .catch((error) => {
                         vm.isloading = error

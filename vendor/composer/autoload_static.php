@@ -11,7 +11,6 @@ class ComposerStaticInit9a3ede72af7ff81950ab8fc3f5f30544
         'c964ee0ededf28c96ebd9db5099ef910' => __DIR__ . '/..' . '/guzzlehttp/promises/src/functions_include.php',
         'a0edc8309cc5e1d60e3047b5df6b7052' => __DIR__ . '/..' . '/guzzlehttp/psr7/src/functions_include.php',
         '37a3dc5111fe8f707ab4c132ef1dbc62' => __DIR__ . '/..' . '/guzzlehttp/guzzle/src/functions_include.php',
-        'ad155f8f1cf0d418fe49e248db8c661b' => __DIR__ . '/..' . '/react/promise/src/functions_include.php',
         '9e090711773bfc38738f5dbaee5a7f14' => __DIR__ . '/..' . '/overtrue/wechat/src/Payment/helpers.php',
     );
 
@@ -22,14 +21,12 @@ class ComposerStaticInit9a3ede72af7ff81950ab8fc3f5f30544
             'Symfony\\Component\\HttpFoundation\\' => 33,
             'Symfony\\Bridge\\PsrHttpMessage\\' => 30,
         ),
-        'R' => 
-        array (
-            'React\\Promise\\' => 14,
-        ),
         'P' => 
         array (
             'Psr\\Log\\' => 8,
             'Psr\\Http\\Message\\' => 17,
+            'Psr\\Container\\' => 14,
+            'Payment\\' => 8,
         ),
         'O' => 
         array (
@@ -41,15 +38,12 @@ class ComposerStaticInit9a3ede72af7ff81950ab8fc3f5f30544
         ),
         'G' => 
         array (
-            'GuzzleHttp\\Stream\\' => 18,
-            'GuzzleHttp\\Ring\\' => 16,
             'GuzzleHttp\\Psr7\\' => 16,
             'GuzzleHttp\\Promise\\' => 19,
             'GuzzleHttp\\' => 11,
         ),
         'E' => 
         array (
-            'Elasticsearch\\' => 14,
             'EasyWeChat\\' => 11,
         ),
         'D' => 
@@ -71,10 +65,6 @@ class ComposerStaticInit9a3ede72af7ff81950ab8fc3f5f30544
         array (
             0 => __DIR__ . '/..' . '/symfony/psr-http-message-bridge',
         ),
-        'React\\Promise\\' => 
-        array (
-            0 => __DIR__ . '/..' . '/react/promise/src',
-        ),
         'Psr\\Log\\' => 
         array (
             0 => __DIR__ . '/..' . '/psr/log/Psr/Log',
@@ -83,6 +73,14 @@ class ComposerStaticInit9a3ede72af7ff81950ab8fc3f5f30544
         array (
             0 => __DIR__ . '/..' . '/psr/http-message/src',
         ),
+        'Psr\\Container\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/psr/container/src',
+        ),
+        'Payment\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/riverslei/payment/src',
+        ),
         'Overtrue\\Socialite\\' => 
         array (
             0 => __DIR__ . '/..' . '/overtrue/socialite/src',
@@ -90,14 +88,6 @@ class ComposerStaticInit9a3ede72af7ff81950ab8fc3f5f30544
         'Monolog\\' => 
         array (
             0 => __DIR__ . '/..' . '/monolog/monolog/src/Monolog',
-        ),
-        'GuzzleHttp\\Stream\\' => 
-        array (
-            0 => __DIR__ . '/..' . '/guzzlehttp/streams/src',
-        ),
-        'GuzzleHttp\\Ring\\' => 
-        array (
-            0 => __DIR__ . '/..' . '/guzzlehttp/ringphp/src',
         ),
         'GuzzleHttp\\Psr7\\' => 
         array (
@@ -110,10 +100,6 @@ class ComposerStaticInit9a3ede72af7ff81950ab8fc3f5f30544
         'GuzzleHttp\\' => 
         array (
             0 => __DIR__ . '/..' . '/guzzlehttp/guzzle/src',
-        ),
-        'Elasticsearch\\' => 
-        array (
-            0 => __DIR__ . '/..' . '/elasticsearch/elasticsearch/src/Elasticsearch',
         ),
         'EasyWeChat\\' => 
         array (

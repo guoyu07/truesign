@@ -23,7 +23,10 @@ class SiteInfoController extends AppBaseController {
     {
         $params = $this->getParams(array(),array('rules','server_help'));
         $doService = new EnvService();
-        $this->output2json($doService->Get($params));
+        $service_reponse = $doService->Get($params);
+        $response = \Royal\Prof\TrueSignConst::SUCCESS('数据更新成功');
+        $response['response']=$service_reponse;
+        $this->output2json($response);
 	}
 
     public function descSiteBaseConfigInfoAction($rules = 0)
@@ -35,7 +38,9 @@ class SiteInfoController extends AppBaseController {
             $params['rules'] = $rules;
         }
         $doService = new SiteBaseConfigService();
-        $this->output2json($doService->Desc($params));
+        $response = \Royal\Prof\TrueSignConst::SUCCESS('初始化配置信息项成功');
+        $response['response'] = $doService->Desc($params);
+        $this->output2json($response);
 	}
 	public function getSiteBaseConfigAction(){
 
@@ -48,7 +53,9 @@ class SiteInfoController extends AppBaseController {
 
         }
         else{
-            $this->output2json($db_resposne);
+            $response = \Royal\Prof\TrueSignConst::SUCCESS('数据获取成功');
+            $response['response'] = $db_resposne;
+            $this->output2json($response);
         }
 
     }
@@ -81,12 +88,13 @@ class SiteInfoController extends AppBaseController {
     }
     public function getMasterAction(){
 
-        $params = $this->getParams(array(),array('rules'));
+        $params = $this->getParams(array(),array('document_id','rules'));
 
         $doService = new MasterService();
         $db_resposne = $doService->Get($params,array(),array('page_size'=>1));
-
-        $this->output2json($db_resposne);
+        $response = \Royal\Prof\TrueSignConst::SUCCESS('管理员账户信息获取成功');
+        $response['response'] = $db_resposne;
+        $this->output2json($response);
 
     }
     /*
@@ -95,8 +103,6 @@ class SiteInfoController extends AppBaseController {
     public function updateMasterAction()
     {
         $params = $_POST;
-        $condition['id'] = $params['document_id'];
-        unset($params['document_id']);
         $doService = new MasterService();
         $this->output2json($doService->Update($params,$condition));
     }

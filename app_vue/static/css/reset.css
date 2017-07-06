@@ -41,7 +41,7 @@ footer, header, hgroup, menu, nav, section {
     display: block;
 }
 body {
-    background-color: rgba(162, 180, 197, 0.64) !important;
+    /*background-color: rgba(162, 180, 197, 0.64) !important;*/
     /*background: linear-gradient(to right, rgba(61, 77, 92, 0.78), #3D4D5C,#3D4D5C,#3D4D5C,#3D4D5C,#3D4D5C,#3D4D5C,  rgba(61, 77, 92, 0.78)) !important; !* 标准的语法（必须放在最后） *!*/
 }
 a{text-decoration:none}

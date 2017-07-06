@@ -24,7 +24,12 @@ class DbConfig {
 
     public function diffKey(DAOAdapter $adapter,$mysql_user = null) {
         $exceptKeys = $this->analysisKeyByAdapter($adapter);
+
         $currentKeys = $this->analysisKeyByDb($adapter,$mysql_user);
+        echo $adapter->table().PHP_EOL;
+        if($adapter->table() === 'business'){
+            var_dump($exceptKeys);
+        }
 
         $table = Remote::getTable($adapter->table_Prefix().$adapter->table());
         $sqls = array();

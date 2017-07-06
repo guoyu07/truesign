@@ -1,5 +1,5 @@
 <template>
-    <div class="top_router_view" style="background-color: gainsboro;text-align: center;overflow: auto;" >
+    <div class="top_router_view" style="background-color: transparent;text-align: center;overflow: auto;" >
         <p class="top_router_tip" style="opacity: 0.2">wechat_marketing</p>
 
         <navmenu :logo="logo" :menulist="menulist"></navmenu>
@@ -41,11 +41,9 @@
 
         },
         created(){
-            console.log('wechat_marketing_apihost',wechat_marketing_apihost)
             this.updateWechat_marketing_store({
                 apihost:wechat_marketing_apihost
             })
-            console.log('route',this.$route.path)
             if(this.$route.path === '/wechat_marketing'){
                 this.$router.push('/wechat_marketing/main_page')
             }

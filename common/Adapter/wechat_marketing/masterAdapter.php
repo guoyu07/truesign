@@ -41,7 +41,7 @@ class masterAdapter extends DbLibraryAdapter
         return Field::start()
             ->def('document_id')->map('id')->int()->desc('id')
             ->def('username')->map('username')->varchar(100)->desc('用户名')
-            ->def('password')->map('password')->varchar(100)->desc('密码')
+            ->def('password')->map('password')->varchar(100)->desc('密码')->regex('/^([a-zA-Z][\\.\w]{7,20}|(\w){64})$/')
                 ->widgetType('password')
             ->def('level')->map('level')->varchar(500)->desc('管理员等级')
                 ->widgetType('radio',array('',array(1,2,3,4,5,6,7,8,9)))

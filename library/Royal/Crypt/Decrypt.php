@@ -27,7 +27,7 @@ class Decrypt
             /*解析id*/
             $id = substr($info,3,1);
             /*解析加密字符码*/
-            $info = substr_replace($info,'',3,1);
+            $info = substr_replace($info,'',3,strlen($id));
             $salt = md5($id);
             $key = sha1($saltkey.$salt);
 

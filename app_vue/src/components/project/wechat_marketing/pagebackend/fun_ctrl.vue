@@ -201,8 +201,9 @@
                 search_param.fun_keyword = 'aboutus'
                 axios.post(this.report_api+this.info_transfer_action.get,search_param,axios_config)
                     .then((res) => {
-                        let analysis_data = dbResponseAnalysis2WidgetData(res.data)
-                        if(analysis_data.code+'' === '0'){
+                      if(res.data.code === 0){
+                        let analysis_data = dbResponseAnalysis2WidgetData(res.data.response)
+
                                 var siteinfo_content = analysis_data.widgetdata[0]
 //
                             for (var index in siteinfo_content){
@@ -222,7 +223,15 @@
                                 }
 //                            console.log(vm.table_search_sort_by)
                         }
-//                        vm.isloading = false
+                      else {
+                        vm.$notify.error({
+                          title: '失败',
+                          message: res.data.code + ' ' + res.data.desc,
+                          offset: 100,
+                          duration: '2000'
+                        });
+                      }
+//
 
 
                     })
@@ -240,9 +249,10 @@
                 search_param.fun_keyword = 'messageboard'
                 axios.post(this.report_api+this.info_transfer_action.get,search_param,axios_config)
                     .then((res) => {
-                        let analysis_data = dbResponseAnalysis2WidgetData(res.data)
-                        if(analysis_data.code+'' === '0'){
-                            var siteinfo_content = analysis_data.widgetdata[0]
+                        if(res.data.code === 0){
+                          let analysis_data = dbResponseAnalysis2WidgetData(res.data.response)
+
+                          var siteinfo_content = analysis_data.widgetdata[0]
 //
                             for (var index in siteinfo_content){
                                 if(siteinfo_content[index].key  === 'fun_keyword'){
@@ -260,7 +270,15 @@
                                 content:siteinfo_content
                             }
 //                            console.log(vm.table_search_sort_by)
+                        }else {
+                          vm.$notify.error({
+                            title: '失败',
+                            message: res.data.code + ' ' + res.data.desc,
+                            offset: 100,
+                            duration: '2000'
+                          });
                         }
+
 //                        vm.isloading = false
 
 
@@ -276,8 +294,8 @@
                 search_param.rules = 1
                 axios.post(this.report_api+this.info_transfer_action.get,search_param,axios_config)
                     .then((res) => {
-                        let analysis_data = dbResponseAnalysis2WidgetData(res.data)
-                        if(analysis_data.code+'' === '0'){
+                        if(res.data.code === 0){
+                          let analysis_data = dbResponseAnalysis2WidgetData(res.data.response)
 
 //                            console.log('analysis_data.searchWidget',analysis_data.searchWidget)
                             for (let index in analysis_data.searchWidget){
@@ -308,6 +326,14 @@
                             vm.all_data_count =analysis_data.count
 
 //                            console.log(vm.table_search_sort_by)
+                        }
+                        else {
+                          vm.$notify.error({
+                            title: '失败',
+                            message: res.data.code + ' ' + res.data.desc,
+                            offset: 100,
+                            duration: '2000'
+                          });
                         }
 
                     })

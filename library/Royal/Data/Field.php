@@ -85,6 +85,8 @@ class Field {
         return $this;
     }
 
+
+
     public function widgetType($type='str',$params=array())
     {
         $this->_rule[$this->_index]->widgetType($type,$params);

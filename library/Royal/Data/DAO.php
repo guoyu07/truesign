@@ -690,15 +690,22 @@ class DAO
      * @param $params , read only one row
      * @return array|bool
      */
-    public function get($params, $specified = array(), $sorter = array(),$IgnoreCreateUpdateTime=false) {
+    public function get($params, $specified = array(), $sorter = array(),$IgnoreCreateUpdateTime=false,$ignoreDel=false) {
+
+        if(!$ignoreDel){
+            if(!isset($params['if_delete'])){
+                $params['if_delete'] = 0;
+            }
+        }
+
         $db = $this->getDb();
 
         $this->adapter->wrapReadParams($params);
         $condition = $this->paramsToCondition($params);
 
         empty($sorter) && ($sorter = $this->adapter->defaultSort());
-
         $whereClause = $condition[0];
+
         if (!empty($sorter)) {
             $sorters = array();
             foreach ($sorter as $s => $o) {

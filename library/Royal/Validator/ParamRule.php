@@ -23,8 +23,7 @@ class ParamRule {
 
     public $enumValues = false;
     public $defaultValue = false;
-    public $notEmpty = true;
-    public $allowEmpty = true;
+
 
     /**
      * @return ParamRule default type str with length between (0, 1024).
@@ -221,24 +220,6 @@ class ParamRule {
     }
 
 
-    /**
-     * @param $notEmpty
-     * @return ParamRule
-     */
-    public function notEmpty($notEmpty) {
-        $this->notEmpty = $notEmpty;
-        return $this;
-    }
-
-
-    /**
-     * @param $notEmpty
-     * @return ParamRule
-     */
-    public function allowEmpty($allowEmpty) {
-        $this->allowEmpty = $allowEmpty;
-        return $this;
-    }
 
 
     public function desc() {

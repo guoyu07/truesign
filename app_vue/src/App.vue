@@ -113,6 +113,7 @@ export default {
 
 <style lang="stylus" rel="stylesheet/stylus">
 
+
 #route-show
     margin 0
     padding 0

@@ -80,7 +80,11 @@
             </div>
         <div  v-else-if="formtype==='show' && userinfo"  class="wechat_marketing_form show_form" style="text-align: center;margin-left: -6px;margin-top: 30px;">
             <div class="img_div" style="height: 100px;margin: 15px auto">
-                <img :src="userinfo.headpic?userinfo.headpic:'http://cdn.iamsee.com/headpic/demo.jpg'"
+                <img v-if="userinfo.lable_type === '商户'" :src="userinfo.headpic?userinfo.headpic:'http://cdn.iamsee.com/headpic/demo.jpg'"
+                     style="width: 100px;height: 100px;border-radius: 50px;box-shadow:  0 0 20px black">
+                <img v-if="userinfo.lable_type === '管理员'" :src="userinfo.headpic?userinfo.headpic:'http://cdn.iamsee.com/headpic/avatar.png'"
+                     style="width: 100px;height: 100px;border-radius: 50px;box-shadow:  0 0 20px black">
+                <img v-if="userinfo.lable_type === '员工'" :src="userinfo.headpic?userinfo.headpic:'http://cdn.iamsee.com/headpic/demo.jpg'"
                      style="width: 100px;height: 100px;border-radius: 50px;box-shadow:  0 0 20px black">
             </div>
             <div class="userinfo_div" style="text-align: center;margin-top:15px;margin-left: 15px">
@@ -90,12 +94,25 @@
                 <div class="is_level_div">
                     <div class="level_div" style="">
                         <label class="label_type"
-                                style="">
+                               style="">
                             {{userinfo.lable_type}}</label>
-                        <label v-if="userinfo.level_tag===''" style="display: inline-block" class="label_type"><b><i>lv0</i></b></label>
-                        <div  v-else="userinfo.level_tag===''" style="display: inline-block">
-                            <label v-for="item,index in JSON.parse(userinfo.level_tag)" style="display: inline-block">lv{{item==''?0:item}}</label>
+                        <div v-if="userinfo.lable_type === '商户'" style="display: inline-block">
+
+                            <label v-if="userinfo.level_tag===''" style="display: inline-block" class="label_type"><b><i>lv0</i></b></label>
+                            <div  v-else="userinfo.level_tag===''" style="display: inline-block">
+                                <label v-for="item,index in JSON.parse(userinfo.level_tag)" style="display: inline-block"><b><i>lv{{item==''?0:item}}</i></b></label>
+                            </div>
                         </div>
+                        <div v-else-if="userinfo.lable_type === '管理员'" style="display: inline-block">
+                            <!--<label  style="display: inline-block" class="label_type"><b><i>{{userinfo.level}}</i></b></label>-->
+                            <label v-if="userinfo.level===''" style="display: inline-block" class="label_type"><b><i>lv0</i></b></label>
+                            <div  v-else="userinfo.level===''" style="display: inline-block">
+                                <label v-for="item,index in JSON.parse(userinfo.level)" style="display: inline-block"><b><i>lv{{item==''?0:item}}</i></b></label>
+                            </div>
+                        </div>
+
+
+
                     </div>
                     <div class="level_div_mask" :style="{left:level_mask_left+'px'}">
 
@@ -315,32 +332,13 @@ export default {
             radio_login_type_change(data){
                 this.radio_login_type = data
                 if(data === '员工'){
-                    this.login_form_rule = {
-                        business_code: [
-                            { required: true, message: '商家识别码', trigger: 'blur' },
-                        ],
-                        username: [
-                            { required: true, message: '请输入用户名', trigger: 'blur' },
-                        ],
-                            pass: [
-                            { required: true, message: '请输入密码', trigger: 'blur' },
-                        ],
+                  this.$set(this.login_form_rule,'business_code',[{ required: true, message: '商家识别码', trigger: 'blur' }])
 
-
-                    }
                 }
                 else{
-                    this.login_form_rule = {
-
-                        username: [
-                            { required: true, message: '请输入用户名', trigger: 'blur' },
-                        ],
-                        pass: [
-                            { required: true, message: '请输入密码', trigger: 'blur' },
-                        ],
-
-
-                    }
+                  if(this.login_form_rule.hasOwnProperty('business_code')){
+                    this.$delete(this.login_form_rule,'business_code')
+                  }
                 }
             },
             submitLoginForm(formName) {
@@ -431,7 +429,23 @@ export default {
               this.$root.eventHub.$emit('exit_login',1)
 
             },
-          enter_backend(){}
+          enter_backend(){
+              var router_to_uri = '/wechat_marketing'
+              switch (this.userinfo.lable_type){
+                case '商户':
+                  router_to_uri = '/wechat_marketing'
+                  break;
+                case '管理员':
+                  router_to_uri = '/wechat_marketing_backend'
+                  break;
+                case '员工':
+                  router_to_uri = '/wechat_marketing'
+                  break;
+                default:
+                  router_to_uri = '/wechat_marketing';
+              }
+                this.$router.push(router_to_uri)
+          }
         },
         created(){
           LocalVoucher.checkStorageMode()
@@ -533,7 +547,6 @@ export default {
     font-family: 'Graphik Web',sans-serif;
     font-style: normal;
     font-stretch: normal;
-    font-size: 1em;
     color: #00B5AD !important
     font-weight 800
     letter-spacing: 2.9px;
