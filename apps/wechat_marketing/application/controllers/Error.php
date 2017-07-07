@@ -13,13 +13,24 @@ class ErrorController extends AppBaseController {
         if (!$code) {
             $code = -100;
         }
-        //throw $exception;
-        $this->inputError($exception->getCode(), $exception->getMessage());
+        $this->inputError($code, $exception->getMessage());
+        Yaf_Dispatcher::getInstance()->disableView();
+        /* error occurs */
+//        switch ($exception->getCode()) {
+//            case YAF_ERR_NOTFOUND_MODULE:
+//            case YAF_ERR_NOTFOUND_CONTROLLER:
+//            case YAF_ERR_NOTFOUND_ACTION:
+//            case YAF_ERR_NOTFOUND_VIEW:
+//                echo 404, ":", $exception->getMessage();
+//                break;
+//            default :
+//                $message = $exception->getMessage();
+//                echo $exception->getCode()." : ". $exception->getMessage();
+//                break;
+//        }
 
-        //       var_dump($exception);
-        ////        $this->_view->display('index/demo.phtml');
-        //        return false;
-	}
+
+    }
     public function indexAction()
     {
         $this->render('error');

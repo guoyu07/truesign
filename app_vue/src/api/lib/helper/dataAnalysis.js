@@ -119,7 +119,7 @@ export function dbResponseAnalysis2WidgetData(dbResponse) {
                                     widgetData_item_attr.widgetStyle = dbResponse.rules[rulekey].widgetStyle
                                     if(widget_type === 'checkbox'){
                                         widgetData_item_attr.value = isEmptyValue(widgetData_item_attr.value)?[]:JSON.parse(widgetData_item_attr.value)
-                                        console.log('getcheckbox',typeof widgetData_item_attr.value, widgetData_item_attr.value )
+                                        // console.log('getcheckbox',typeof widgetData_item_attr.value, widgetData_item_attr.value )
                                     }
                                     if(dbResponse.rules[rulekey].issorter){
                                     let sorter_item = {}
@@ -398,7 +398,7 @@ function isJSON (str, pass_object) {
 
 
 //无论是空字符串、空整形、空对象都返回true
-function isEmpty(obj){
+export function isEmpty(obj){
     var _isEmpty = false;
     if(typeof obj ==='string'||typeof obj ==='number'){
         _isEmpty = !obj;

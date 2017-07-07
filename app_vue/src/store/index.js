@@ -46,11 +46,13 @@ const state = {
         apihost:'',
         token:isEmpty(LocalVoucher.getValue('wechat_marketing_store.token'))?'':(LocalVoucher.getValue('wechat_marketing_store.token')),
         userinfo:isJson(LocalVoucher.getValue('wechat_marketing_store.userinfo'))?(JSON.parse(LocalVoucher.getValue('wechat_marketing_store.userinfo'))):'',
+        last_response:{}
     }
 
 }
 
 export default new Vuex.Store({
+    // strict:true,
     state,
     mutations,
     getters,

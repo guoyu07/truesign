@@ -266,7 +266,9 @@
             </div>
             <div v-else="page_data.title" key="nopagedata" style="text-align: center;display: inline-block">
                 <div class="now_data_show" style="">
-                    <span style="margin-top: 50px;display: block">暂无数据</span>
+                    <span style="margin-top: 50px;display: block">
+                        {{page_data.nodatadesc ? page_data.nodatadesc : '暂无数据'}}
+                    </span>
                     <div class="loader"
                          style="position:absolute;width: 200px;height: 300px;overflow: hidden;left: 50%;margin-left: -100px;top:220px;">
                         <div class="loading--1" style="display: none"></div>
@@ -485,7 +487,11 @@
       page_data: {
         type: Object,
         default: function () {
-          return ''
+          return {
+            nodatadesc: '暂无数据',
+            title: '列表页标题栏',
+            content: []
+          }
         },
         required: false,
       },
@@ -527,6 +533,7 @@
         type: Object,
         default: function () {
           return {
+            nodatadesc: '暂无信息',
             title: '列表页标题栏',
             content: []
           }
@@ -575,7 +582,7 @@
       })
     },
     mounted(){
-      console.log('page_data', this.page_data)
+//      console.log('page_data', this.page_data)
 
     },
     watch: {
@@ -769,30 +776,11 @@
         var vm = this
         this.$validator.validateAll().then(() => {
           vm.authing = true
-          axios.post(this.wechat_marketing_store.apihost + this.final_update_action, formdata, axios_config)
+//          formdata.token = this.wechat_marketing_store.token
+          vm.$http.post(this.wechat_marketing_store.apihost + this.final_update_action, formdata, vm.$http_config)
+          //          axios.post(this.wechat_marketing_store.apihost + this.final_update_action, formdata, axios_config)
             .then((res) => {
-//                            console.log('final-update->',res.data)
-//                            if((typeof res.data === 'object' && res.data.statistic.count>=1) || res.data>=1){
-//                                vm.$notify.success({
-//                                    title: '成功',
-//                                    message: '操作成功',
-//                                    offset: 100,
-//                                    duration:'1000'
-//                                });
-//                                if(vm.page_data.content[0].key !== 'document_id'){
-//                                    vm.$root.eventHub.$emit('refresh_page_model',1)
-//                                }
-//                            }
-//                            else{
-//                                vm.$notify.success({
-//                                    title: '失败',
-//                                    message: '操作失败',
-//                                    type:'error',
-//                                    offset: 100,
-//                                    duration:'1000'
-//                                });
-//
-//                            }
+
               if (res.data.code === 0) {
                 vm.$notify.success({
                   title: '成功',
@@ -803,9 +791,11 @@
                 if (vm.page_data.content[0].key !== 'document_id') {
                   vm.$root.eventHub.$emit('refresh_page_model', 1)
                 }
-                setTimeout(function () {
-                  vm.close_page_model(1)
-                }, 600)
+                vm.close_page_model(1)
+
+//                setTimeout(function () {
+//                  vm.close_page_model(1)
+//                }, 600)
 
               }
               else {
@@ -822,7 +812,6 @@
 
               this.authing = false
 
-
             })
         }).catch(() => {
           // eslint-disable-next-line
@@ -833,12 +822,12 @@
             duration: '2000'
           });
         });
-
       },
       fold_content_footer(){
         this.show_content_footer = !this.show_content_footer
       },
       close_page_model(data = 0){
+        console.log('emit->close_page_model')
         this.$root.eventHub.$emit('close_page_model', data)
       },
       str2arr(str){

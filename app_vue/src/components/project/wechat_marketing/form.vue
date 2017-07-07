@@ -41,8 +41,8 @@
     import effectlogo from '../../loading/effect_logo.vue'
     import md5 from 'md5'
     import sha256 from 'sha256'
-    import axios from 'axios'
-    import {axios_config} from 'api/axiosApi'
+//    import axios from 'axios'
+//    import {axios_config} from 'api/axiosApi'
     import {isEmptyValue} from '../../../api/lib/helper/dataAnalysis'
     import { mapGetters,mapActions } from 'vuex'
 
@@ -121,7 +121,8 @@
             },
             doLogin(formdata){
               var vm = this
-              axios.post(this.wechat_marketing_store.apihost+'LoginOrReg/login',formdata,axios_config)
+              this.$http.post(this.wechat_marketing_store.apihost+'LoginOrReg/login',formdata,this.$http_config)
+//              axios.post(this.wechat_marketing_store.apihost+'LoginOrReg/login',formdata,axios_config)
                 .then((res) => {
                   if(res.data.code === 0){
                     vm.$message({
@@ -157,8 +158,8 @@
             },
             doReg(formdata){
             var vm = this
-
-            axios.post(this.wechat_marketing_store.apihost+'LoginOrReg/reg',formdata,axios_config)
+            this.$http.post(this.wechat_marketing_store.apihost+'LoginOrReg/reg',formdata,this.$http_config)
+//            axios.post(this.wechat_marketing_store.apihost+'LoginOrReg/reg',formdata,axios_config)
               .then((res) => {
                 if(res.data.code === 0){
                   vm.$message({

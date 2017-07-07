@@ -5,33 +5,11 @@
             <el-tab-pane v-for="(item,index) in tab_menu_list" :key="item" :label="item.value" :data-name="item.name" :name="item.name" >
 
                 <div style="width: 100%;height: auto;min-height: 600px;text-align: left;" v-if="item.name==='公众号管理'" key="公众号管理">
-                    <table_model v-loading="isloading"
-                                 :currect_select="table_currect_select"
-                                 :element-loading-text="loading_text"
-                                 :search_sort_by="table_search_sort_by"
-                                 :all_data_count="all_data_count"
-                                 :table_data="table_model_data"
-                                 :table_field="table_model_field"
-                                 :info_transfer_action="info_transfer_action"
-
-                    >
-
-                    </table_model>
+                    公众号管理
 
                 </div>
                 <div style="width: 100%;height: auto;min-height: 600px;text-align: left;" v-if="item.name==='内容管理'" key="内容管理">
-                    <table_model v-loading="isloading"
-                                 :currect_select="table_currect_select"
-                                 :element-loading-text="loading_text"
-                                 :search_sort_by="table_search_sort_by"
-                                 :all_data_count="all_data_count"
-                                 :table_data="table_model_data"
-                                 :table_field="table_model_field"
-                                 :info_transfer_action="info_transfer_action"
-
-                    >
-
-                    </table_model>
+                   内容管理
                 </div>
 
 
@@ -95,10 +73,8 @@
             table_search_sort_by: {
                 handler: function (val, oldVal) {
                     if(this.defaultTab === '公众号数据'){
-                        this.getTableInfo(JSON.stringify(this.table_search_sort_by))
                     }
                     else if(this.defaultTab === '内容管理'){
-                        this.getTableInfoLevel(JSON.stringify(this.table_search_sort_by))
                     }
 
 
@@ -182,11 +158,9 @@
                 console.log(e.$el.dataset.name)
                 if(e.$el.dataset.name === '公众号数据'){
                     vm.defaultTab = '公众号数据'
-                    vm.getTableInfo(JSON.stringify(this.table_search_sort_by))
                 }
                 else if(e.$el.dataset.name === '内容管理'){
                     vm.defaultTab = '内容管理'
-                    vm.getTableInfoLevel(JSON.stringify(this.table_search_sort_by))
                 }
 
 

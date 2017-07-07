@@ -430,21 +430,23 @@ export default {
 
             },
           enter_backend(){
-              var router_to_uri = '/wechat_marketing'
               switch (this.userinfo.lable_type){
                 case '商户':
-                  router_to_uri = '/wechat_marketing'
+                  this.$router.push({name:this.$route.name,params:{source_name:this.$route.name}})
                   break;
                 case '管理员':
-                  router_to_uri = '/wechat_marketing_backend'
+                  this.$router.push({name:'wechat_marketing_backend',params:{source_name:this.$route.name}})
+
                   break;
                 case '员工':
-                  router_to_uri = '/wechat_marketing'
+                  this.$router.push({name:this.$route.name,params:{source_name:this.$route.name}})
+
                   break;
                 default:
-                  router_to_uri = '/wechat_marketing';
+                  this.$router.push({name:this.$route.name,params:{source_name:this.$route.name}})
+
               }
-                this.$router.push(router_to_uri)
+
           }
         },
         created(){

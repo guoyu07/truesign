@@ -8,11 +8,21 @@
 class RouterPlugin extends Yaf_Plugin_Abstract {
 
 	public function routerStartup(Yaf_Request_Abstract $request, Yaf_Response_Abstract $response) {
+        $controller = ucfirst(strtolower($request->getControllerName()));
+        $file = sprintf('%s/application/controllers/%s.php', APPLICATION_PATH, $controller);
+        if (!file_exists($file) && preg_match('/^(.*)\/([^\/]*)$/', $file, $matched)) {
+            list(, $dir, $file) = $matched;
+            $file = strtolower($file);
+            foreach (glob("$dir/*") as $realfile) {
+                $realFileName = preg_replace('/.*\//', '', $realfile);
+                if (strtolower($realFileName) == $file) {
+                    $controller = preg_replace('/\.php/i', '', $realFileName);
+                    $request->setControllerName($controller);
+                    break;
+                }
+            }
+        }
 	}
 
-	public function routerShutdown(Yaf_Request_Abstract $request, Yaf_Response_Abstract $response) {
 
-        $controller = strtolower($request->getControllerName());
-        $action = strtolower($request->getActionName());
-	}
 }

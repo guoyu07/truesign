@@ -11,30 +11,7 @@ class LoginOrRegController extends AppBaseController
 
     public function indexAction()
     {
-//        echo \Royal\Crypt\Decrypt::encryption('iamsee','5','business');
-//        echo '<hr>';
-//        $decode_info = (\Royal\Crypt\Decrypt::encryption('U0Q5WXF5WFUYfWQcIR1xRFAVXDVsBAwYGBAY=','','',1));
-//        if(empty($decode_info)){
-//            self::throwException(TrueSignConst::OPERATION_lOGIC_ERR('token无法识别'));
-//        }
-//        else{
-//            $limit_time = $decode_info['limit_time'];
-//            if($limit_time<time()){
-//                self::throwException(TrueSignConst::OPERATION_lOGIC_ERR('身份验证已经过期,请重新登录'));
-//
-//            }
-//            else{
-//                $businessService = new BusinessService();
-//                $userinfo = $businessService->getUserInfoCodeById($decode_info['id']);
-//                if(empty($userinfo)){
-//                    self::throwException(TrueSignConst::OPERATION_lOGIC_ERR('token识别身份信息错误'));
-//                }
-//                $decode_info['userinfo'] = $userinfo;
-//                echo json_encode($decode_info,256);
-//            }
-//        }
-        $fpservice = new FingerPrintsService();
-        echo json_encode($fpservice->setFingerPrints());
+
     }
 
     public function sendSmsAction()

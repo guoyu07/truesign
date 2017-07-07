@@ -8,6 +8,10 @@ import App from './App.vue'
 // Vue.use(MintUI)
 import ElementUI from 'element-ui'
 Vue.use(ElementUI)
+import axios from 'axios'
+import {axios_config} from './api/axiosApi'
+Vue.prototype.$http = axios
+Vue.prototype.$http_config = axios_config
 // import VueValidator from 'vue-validator'
 // Vue.use(VueValidator)
 import VeeValidate, { Validator } from 'vee-validate';

@@ -59,7 +59,9 @@ class WeimobCtrlController extends AppBaseController {
 
         }
         $doService = new WeimobService();
-        $this->output2json($doService->get($params,$search_param,$page_param));
+        $response = \Royal\Prof\TrueSignConst::SUCCESS('获取公众号信息成功');
+        $response['response'] = $doService->get($params,$search_param,$page_param);
+        $this->output2json($response);
 
 
     }
@@ -74,7 +76,9 @@ class WeimobCtrlController extends AppBaseController {
         $condition['id'] = $params['document_id'];
         unset($params['document_id']);
         $doService = new WeimobService();
-        $this->output2json($doService->Update($params,$condition));
+        $response = \Royal\Prof\TrueSignConst::SUCCESS('更新公众号信息成功');
+        $response['response'] = $doService->Update($params,$condition);
+        $this->output2json($response);
     }
 
     /*

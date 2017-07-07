@@ -20,14 +20,23 @@ class Decrypt
             $info = $account_type.','.$info.','.(time()+$time_salt);
             $encryption_info = $info ^ $key;
             $encode_key =  base64_encode($encryption_info);
-            $encode_key =  substr_replace($encode_key,$id,3,0); /*id附着*/
+            $flag_length_id = self::numMapKey(strlen($id));
+            $encode_key =  substr_replace($encode_key,$flag_length_id,3,0); /*id长度标志附着*/
+            $encode_key =  substr_replace($encode_key,$id,6,0); /*id附着*/
             return $encode_key;
         }
         else{ /*解密操作*/
             /*解析id*/
-            $id = substr($info,3,1);
-            /*解析加密字符码*/
-            $info = substr_replace($info,'',3,strlen($id));
+
+            $flag_length_id = substr($info,3,1);
+
+            $id_lenght = self::numMapKey($flag_length_id,true)+1;/*拿到id长度*/
+
+            $id = substr($info,6,$id_lenght);/*获取id*/
+            /*解析加密字符码,去除附着的 id长度标志 和id*/
+            $info = substr_replace($info,'',6,$id_lenght);/*去除id*/
+            $info = substr_replace($info,'',3,1);/*去除id长度标志*/
+
             $salt = md5($id);
             $key = sha1($saltkey.$salt);
 
@@ -48,5 +57,30 @@ class Decrypt
 
             }
         }
+    }
+
+    static function numMapKey($value,$type=false){
+        $baseSequence = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+        $baseNumKey = str_split($baseSequence);
+        $baseKeyNum = array_flip($baseNumKey);
+        if(empty($value)){
+            return false;
+        }
+        if($type > 62){
+            return false;
+        }
+        if(!$type){ /*由num获取key*/
+
+            return $baseNumKey[$value-1];
+        }
+        else{ /*由key获取num*/
+            if(!in_array($value,$baseNumKey)){
+                return false;
+            }
+            else{
+                return $baseKeyNum[$value];
+            }
+        }
+
     }
 }

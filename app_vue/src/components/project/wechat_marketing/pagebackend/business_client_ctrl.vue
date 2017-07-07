@@ -120,7 +120,6 @@
     watch: {
       table_search_sort_by: {
         handler: function (val, oldVal) {
-          console.log('change->', val)
           this.refresh_table_data(JSON.stringify(this.table_search_sort_by))
 
         },
@@ -147,7 +146,6 @@
       })
 
       this.getBusinessInfo(JSON.stringify(this.table_search_sort_by))
-      this.$root.eventHub.$off('refresh_table')
       this.$root.eventHub.$on('refresh_table', function (data) {
         console.log('on->refresh_table')
         if (data === 'resetselect') {
@@ -167,6 +165,9 @@
 //            console.log('this.table_search_sort_by',this.table_search_sort_by)
     },
     beforeDestroy(){
+      console.log('off->refresh_table')
+      this.$root.eventHub.$off('refresh_table')
+
 //            this.$root.eventHub.$off('refresh_businessinfo')
 //            this.$root.eventHub.$off('currect_row_index')
 
@@ -207,7 +208,9 @@
           search_param.search_sort_by = JSON.stringify(search_sort_by)
         }
         search_param.rules = 1
-        axios.post(this.report_api + 'Getbusinessinfo', search_param, axios_config)
+//        search_param.token = this.wechat_marketing_store.token
+        this.$http.post(this.report_api + 'Getbusinessinfo', search_param, this.$http_config)
+//        axios.post(this.report_api + 'Getbusinessinfo', search_param, axios_config)
           .then((res) => {
             if (res.data.code === 0) {
 
@@ -262,7 +265,9 @@
           search_param.search_sort_by = JSON.stringify(search_sort_by)
         }
         search_param.rules = 1
-        axios.post(this.report_api + 'getBusinessInfoLevel', search_param, axios_config)
+//        search_param.token = this.wechat_marketing_store.token
+        this.$http.post(this.report_api + 'getBusinessInfoLevel', search_param, this.$http_config)
+//        axios.post(this.report_api + 'getBusinessInfoLevel', search_param, axios_config)
           .then((res) => {
             if (res.data.code === 0) {
               let analysis_data = dbResponseAnalysis2WidgetData(res.data.response)
@@ -317,7 +322,9 @@
           search_param.search_sort_by = JSON.stringify(search_sort_by)
         }
         search_param.rules = 1
-        axios.post(this.report_api + 'getPayInterface', search_param, axios_config)
+//        search_param.token = this.wechat_marketing_store.token
+        this.$http.post(this.report_api + 'getPayInterface', search_param, this.$http_config)
+//        axios.post(this.report_api + 'getPayInterface', search_param, axios_config)
           .then((res) => {
             if (res.data.code === 0) {
               let analysis_data = dbResponseAnalysis2WidgetData(res.data.response)
@@ -369,7 +376,6 @@
         }
       },
       refresh_table_data(data){
-        console.log('refresh_table_data')
         if (this.defaultTab === '客户数据') {
           this.getBusinessInfo(JSON.stringify(this.table_search_sort_by))
         }

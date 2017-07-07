@@ -7,14 +7,15 @@
  */
 class ErrorController extends iAppBaseController {
 
+
     //从2.1开始, errorAction支持直接通过参数获取异常
     public function errorAction($exception) {
         $code = $exception->getCode();
-        if (!$code) {
+        if (empty($code) && $code != 0 ) {
             $code = -100;
         }
         //throw $exception;
-        $this->inputError($exception->getCode(), $exception->getMessage());
+        $this->inputError($code, $exception->getMessage());
 
         //       var_dump($exception);
         ////        $this->_view->display('index/demo.phtml');
