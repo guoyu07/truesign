@@ -561,6 +561,7 @@
     created(){
       var vm = this
       this.apihost = this.wechat_marketing_store.apihost
+      this.$root.eventHub.$off('close_page_model')
       this.$root.eventHub.$on('close_page_model', (data) => {
         console.log('on->close_page_model')
         this.show_page_model_ctrl_by_table = false
@@ -878,6 +879,7 @@
 
     },
     beforeDestroy(){
+      this.$root.eventHub.$off('close_page_model')
 //            console.log('table_model->beforedestroy')
 //            this.$root.eventHub.$off('refresh_table')
 //            this.$root.eventHub.$off('page_model_update_response_done')
