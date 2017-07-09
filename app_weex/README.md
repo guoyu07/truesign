@@ -1,65 +1,41 @@
-# Weex To-do list app
+# app_weex_default
 
-A demo to-do list app, powered by Weex and Vue.
+> app_weex_default
 
-## Video demos
+## getting start
 
-[![Android demo](https://img.youtube.com/vi/AMU0gXuEl_Y/0.jpg)](https://www.youtube.com/watch?v=AMU0gXuEl_Y)
-[![iOS demo](https://img.youtube.com/vi/4L4ABYDhpsA/0.jpg)](https://www.youtube.com/watch?v=4L4ABYDhpsA)
-
-## Compile
-
-Install the dependencies:
-
-```
+```bash
 npm install
 ```
 
-Compile the source code:
+## file structure
 
-+ `npm run build` # Compile the source code for web platform and native platform.
-+ `npm run dev` # Watch mode for `npm run build`.
+* `src/*`: all source code
+* `app.js`: entrance of the Weex page
+* `build/*`: some build scripts
+* `dist/*`: where places generated code
+* `assets/*`: some assets for Web preview
+* `index.html`: a page with Web preview and qrcode of Weex js bundle
+* `weex.html`: Web render
+* `.babelrc`: babel config (preset-2015 by default)
+* `.eslintrc`: eslint config (standard by default)
 
-Copy the bundle file:
+## npm scripts
 
-+ `npm run copy:android` # Copy generated bundle file to the assets of Android project.
-+ `npm run copy:ios` # Copy generated bundle file to the assets of iOS project.
-+ `npm run copy` # Run both `copy:andriod` and `copy:ios`.
+```bash
+# build both two js bundles for Weex and Web
+npm run build
 
-More npm scripts will be find in the `package.json`.
+# build the two js bundles and watch file changes
+npm run dev
 
-### Start Web Service
-
-```
+# start a Web server at 8080 port
 npm run serve
+
+# start weex-devtool for debugging with native
+npm run debug
 ```
 
-The server is listening on 1337. Visit http://127.0.0.1:1337/index.html can preview the app on browser.
+## notes
 
- > NOTE: Currently the vue renderer is not ready, the web page isn't rendering by Vue components.
-
-### Run The Android Project
-
-First you should install [Android Studio](https://developer.android.com/studio/index.html) and Android SDK.
-
-Assuming you have configured the Android development environment properly, just use Android Studio to open the project in the `android` folder, and run the app as other normal Android projects.
-
-> NOTE: If don't find the android project, open the file `android/build.graddle`. Android Studio will then create the android project.
-
-### Run The iOS Project
-
-First you should [setup the iOS develop environment](https://developer.apple.com/library/content/documentation/IDEs/Conceptual/AppStoreDistributionTutorial/Setup/Setup.html) and install the [CocoaPods](https://guides.cocoapods.org/using/getting-started.html).
-
-Enter the `ios` path, use CocoaPods to install dependencies:
-
-```
-pod install
-```
-
-Open the project in the `ios` folder by Xcode. 
-
- > NOTE: If needed, drag the `Pods.xcodeproj` file to Xcode and add its libs to the project.
-
-Run the app on the simulator.
-
- > NOTE: If you want to run the app on real device, you also need to setup your own signing configuration.
+You can config more babel, ESLint and PostCSS plugins in `webpack.config.js`.
