@@ -43,7 +43,7 @@ class siteBaseConfigAdapter extends DbLibraryAdapter
             ->def('site_name')->map('site_name')->varchar(30)->desc('网站名称')->regex('/^.+$/')
             ->def('site_title')->map('site_title')->varchar(30)->desc('网站标题')->regex('/^.+$/')
             ->def('site_keywords')->map('site_keywords')->varchar(30)->desc('网站关键词')
-            ->def('site_desc')->map('site_desc')->varchar(100)->desc('网站描述')
+            ->def('site_desc')->map('site_desc')->varchar(100)->desc('网站描述')->widgetType('file')
             ->def('site_logo_img')->map('site_logo_img')->varchar(200)->desc('网站logo')->regex('/^.+$/')->widgetType('headpic')
             ->def('site_domain')->map('site_domain')->varchar(120)->desc('网站域名')->regex('/^.+$/')
             ->def('site_record')->map('site_record')->varchar(120)->desc('网站备案信息')

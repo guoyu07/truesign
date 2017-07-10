@@ -43,6 +43,8 @@ class masterAdapter extends DbLibraryAdapter
             ->def('username')->map('username')->varchar(100)->desc('用户名')
             ->def('password')->map('password')->varchar(100)->desc('密码')->regex('/^([a-zA-Z][\\.\w]{7,20}|(\w){64})$/')
                 ->widgetType('password')
+            ->def('headpic')->map('headpic')->varchar(200)->desc('头像')
+                ->widgetType('headpic')
             ->def('level')->map('level')->varchar(500)->desc('管理员等级')
                 ->widgetType('radio',array('',array(1,2,3,4,5,6,7,8,9)))
                 ->widgetStyle(array('backgroundColor','gray'))

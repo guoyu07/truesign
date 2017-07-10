@@ -85,7 +85,6 @@ class MasterService extends BaseService
 
         $search_params['id'] = $params['document_id'];
         unset($search_params['document_id']);
-        $params['password'] = self::SHA256Pass($params['password']);
 //        $db_response = $this->Dao->get(array('id'=>$search_params['id']),array('password'));
 //        if($params['password']  == $db_response['password']){
 //            $db_response = 0;

@@ -68,7 +68,7 @@ class SiteInfoController extends AppBaseController {
         $condition['id'] = $params['document_id'];
         unset($params['document_id']);
         $doService = new SiteBaseConfigService();
-        $response = \Royal\Prof\TrueSignConst::SUCCESS('管理员账户信息获取成功');
+        $response = \Royal\Prof\TrueSignConst::SUCCESS('站点配置信息更新成功');
         $response['response'] = $doService->Update($params,$condition);
         $this->output2json($response);
     }
@@ -86,7 +86,9 @@ class SiteInfoController extends AppBaseController {
             $params['rules'] = $rules;
         }
         $doService = new MasterService();
-        $this->output2json($doService->Desc($params));
+        $response = \Royal\Prof\TrueSignConst::SUCCESS('初始化管理员账户信息成功');
+        $response['response'] = $doService->Desc($params);
+        $this->output2json($response);
     }
     public function getMasterAction(){
 
@@ -106,7 +108,7 @@ class SiteInfoController extends AppBaseController {
     {
         $params = $_POST;
         $doService = new MasterService();
-        $this->output2json($doService->Update($params,$condition));
+        $this->output2json($doService->Update($params));
     }
 
 }

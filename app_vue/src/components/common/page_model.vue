@@ -16,16 +16,9 @@
                     </div>
                     <transition name="fade-right" style="background-color: rgba(220,220,220,0.65)">
                         <div class="page_content" v-if="show_content_footer" :style="page_content_design">
-                            <!--<ol>-->
-                            <transition-group id="fields-list" name="menu-list" tag="ol"
-                                              v-on:before-enter="beforeEnter"
-                                              v-on:enter="enter"
-                                              v-on:after-enter="afterEnter"
-                                              v-on:enter-cancelled="enterCancelled"
-                                              v-on:leave="leave"
-                                              v-bind:css="false"
-                            >
-                                <li v-for="(item,index) in page_data.content" :key="item" :data-index="index" :data-id="index">
+                            <ol>
+
+                                <li v-for="(item,index) in page_data.content">
                                     <label class="filelabel"
                                            :style=" {borderBottom:page_data.content[index].access?'1px solid rgba(255,255,255,0.41)':'none',
                                        backgroundColor:page_data.content[index].access?'rgba(220,220,220,0.65)':'',
@@ -58,15 +51,17 @@
                                         <el-upload style="height: 120px"
 
                                                    class="avatar-uploader"
-                                                   :data="upload_params.up_param"
-                                                   :action="upload_params.up_action"
 
                                                    :show-file-list="false"
                                                    :drag=false
                                                    :multiple=false
+                                                   :on-change="AvatarUploadChange"
                                                    :on-success="handleAvatarSuccess"
                                                    :on-progress="handleAvatarProgress"
                                                    :before-upload="beforeAvatarUpload"
+                                                   :data="upload_params.up_param"
+                                                   :action="upload_params.up_action"
+                                                   :http-request="handleAvatarUpload"
 
                                         >
                                             <input
@@ -242,9 +237,8 @@
                                     </div>
 
                                 </li>
-                            </transition-group>
 
-                            <!--</ol>-->
+                            </ol>
 
 
                         </div>
@@ -349,7 +343,7 @@
         report_api: '',
         upload_params: {
           up_param: {},
-          up_action: 'http://truesign-app.oss-cn-beijing.aliyuncs.com/',
+          up_action: '',
           up_filename: '',
           tmp_upload_index: ''
         },
@@ -593,7 +587,6 @@
     },
     mounted(){
 //      console.log('page_data', this.page_data)
-
     },
     watch: {
       page_data: {
@@ -653,19 +646,36 @@
         $target.next().click()
 
       },
-      upfile_change(e){
+      upfile_change(e,headpic=false){
         var vm = this
-        var files = e.target.files || e.dataTransfer.files;
-        if (!files.length) {
-          return;
+        var files
+        if(!headpic){
+
+          files = e.target.files || e.dataTransfer.files;
+          if (!files.length) {
+            return;
+          }
+          var filename = files[0].name
+          var target_index = e.currentTarget.dataset.fileindex
+          var file = files[0]
+          var type = 'website_file'
+          this.page_data.content[target_index].value = filename
         }
-        var filename = files[0].name
-        var target_index = e.currentTarget.dataset.fileindex
-        this.page_data.content[target_index].value = filename
+        else{
+          console.log('headpic',headpic)
+          file = headpic.file
+//          files.append(headpic.file)
+          filename = headpic.file.name
+          target_index = this.upload_params.tmp_upload_index
+          type = 'headpic'
+          this.page_data.content[target_index].value = 'http://truesign-app.oss-cn-beijing.aliyuncs.com/tmp_img/uploading.png'
+        }
+
+
         $.ajaxSetup({async: false});
         $.post(this.report_api + 'common/updateimg2ossByClient', {
           filename: Date.parse(new Date()) / 1000 + '_._._' + target_index + '_._._' + filename,
-          type: 'website_file'
+          type: type
         }, function (result) {
           var pre_up2oss_params = JSON.parse(result)
           var currect_uri = pre_up2oss_params.uri
@@ -675,6 +685,7 @@
           vm.upload_params.up_filename = 'file'
 
         })
+        console.log('vm.upload_params',vm.upload_params)
         // xhr 上传
         // 变量声明
         var xhr = new XMLHttpRequest();
@@ -683,6 +694,7 @@
           var responseText = JSON.parse(xhr.responseText)
 //                    console.log(responseText)
           var currect_data_index = responseText.file_path.match(/_\._\._(.*?)_\._\._/)[1]
+          console.log(currect_data_index,responseText.file_path)
           vm.page_data.content[currect_data_index].value = responseText.file_path
 //                    console.log(vm.page_data.content[currect_data_index].value)
 
@@ -692,7 +704,7 @@
           formData.append(key, value);
         });
         // 填充数据
-        formData.append('file', files[0]);
+        formData.append('file', file);
         // 开始上传
         xhr.open('POST', vm.upload_params.up_action, true);
         // xhr.setRequestHeader("Content-type","application/x-www-form-urlencoded");  // 将参数解析成传统form的方式上传
@@ -715,6 +727,10 @@
       handleAvatarProgress(event, file, fileList){
 //                console.log(event)
       },
+      AvatarUploadChange(file){
+        var vm = this
+
+      },
       beforeAvatarUpload(file) {
         var vm = this
         $.ajaxSetup({async: false});
@@ -722,15 +738,14 @@
           filename: Date.parse(new Date()) / 1000 + '_._._' + this.upload_params.tmp_upload_index + '_._._' + file.name,
           type: 'business_logo'
         }, function (result) {
+
           var pre_up2oss_params = JSON.parse(result)
           var currect_uri = pre_up2oss_params.uri
           var currect_param = pre_up2oss_params.param
-//                    console.log(currect_uri)
           vm.upload_params.up_action = currect_uri
           vm.upload_params.up_param = currect_param
           vm.upload_params.up_filename = 'file'
         })
-        $.ajaxSetup({async: true});
 
         const isJPGOrPng = (file.type === 'image/jpeg' || file.type === 'image/png');
         const isLt2M = file.size / 1024 / 1024 < 2;
@@ -759,6 +774,9 @@
           });
         }
         return isJPGOrPng && isLt2M;
+      },
+      handleAvatarUpload(file_obj){
+        this.upfile_change('',file_obj);
       },
       build_page_data_to_timestamp(flag = true){
 
@@ -863,7 +881,7 @@
 
       },
 
-      /*动态效果*/
+        /*动态效果*/
       beforeEnter(el) {
         //console.log('beforeEnter')
         el.style.opacity = 0

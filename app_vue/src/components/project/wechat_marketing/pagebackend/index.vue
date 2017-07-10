@@ -6,7 +6,8 @@
 
         <navmenu :logo="logo" :menulist="menulist"
                  :navmenu_theme_color="navmenu_theme_color" :menu_item_color="'#cbcfe4'"
-                 :user_scope="user_scope"></navmenu>
+                 :account_info="'/wechat_marketing_backend/accountInfo'"
+                 ></navmenu>
 
 
         <div style="min-width: 1200px;height:100%;width: 100%;background-color: transparent;margin: 0 auto;padding-top: 65px;">
@@ -14,7 +15,6 @@
                 <router-view></router-view>
             </transition>
         </div>
-
     </div>
     <div v-else="wechat_marketing_store.last_response.code === 0" class="top_router_view"
          style="background-color: gainsboro;text-align: center;overflow: hidden;padding-top: 10%">
@@ -45,11 +45,7 @@
           w_m_b_extend_ctrl: '统计、日志、审核'
         },
         navmenu_theme_color: '#324157',
-        user_scope: {
-          img: 'http://cdn.iamsee.com/headpic/avatar.png',
-          name: 'loading...',
-          link: ''
-        },
+
         token:this.wechat_marketing_store
       }
     },
@@ -103,7 +99,6 @@
 
         }
       })
-      this.user_scope.name = this.wechat_marketing_store.userinfo.username
 
     },
     updated(){
