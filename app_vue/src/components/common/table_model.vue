@@ -171,7 +171,7 @@
                     <el-table-column
                             fixed="right"
                             label="操作"
-                            width="100">
+                            width="130">
                         <template scope="scope">
                             <el-button @click="handleViewDetailClick(scope.$index,table_data)" type="text" size="small">
                                 查看
@@ -196,7 +196,7 @@
             </div>
             <div v-else="all_data_count" key="notabledata" style="text-align: center">
                 <div class="now_data_show" style="">
-                    <span style="margin-top: 50px;display: block">{{table_nodatadesc?table_nodatadesc:'暂无数据'}}</span>
+                    <span style="margin-top: 50px;display: block">{{table_nodatadesc ? table_nodatadesc : '暂无数据'}}</span>
                     <div class="loader"
                          style="position:absolute;width: 200px;height: 300px;overflow: hidden;left: 50%;margin-left: -100px;top:220px;">
                         <div class="loading--1" style="display: none"></div>
@@ -209,7 +209,7 @@
             </div>
         </transition>
         <transition name="fade-up" style="">
-            <page_model :element-loading-text="loading_text" v-if="show_page_model_ctrl_by_table"
+            <page_model :element-loading-text="loading_text" v-if="wechat_marketing_store.page_model"
                         :final_update_action="info_transfer_action.update"
                         :final_update_btn_desc="'提交修改'"
                         :page_data="detail_page_model_data"
@@ -499,7 +499,7 @@
         },
         required: false,
       },
-      table_nodatadesc:{
+      table_nodatadesc: {
         default: '暂无数据',
         required: false,
       },
@@ -561,13 +561,10 @@
     created(){
       var vm = this
       this.apihost = this.wechat_marketing_store.apihost
-      this.$root.eventHub.$off('close_page_model')
-      this.$root.eventHub.$on('close_page_model', (data) => {
-        console.log('on->close_page_model')
-        this.show_page_model_ctrl_by_table = false
-        if (data) {
-          this.refresh_table_data()
-        }
+      this.$root.eventHub.$off('refresh_table_model')
+      this.$root.eventHub.$on('refresh_table_model', (data) => {
+        console.log('on->refresh_table_model')
+        this.refresh_table_data()
       })
     },
     updated(){
@@ -610,8 +607,11 @@
       phone_model,
     },
     methods: {
+      ...mapActions([
+        'updateWechat_marketing_store',
+      ]),
       handleViewDetailClick(index, rows) {
-        this.show_page_model_ctrl_by_table = false
+
         var currect_row = rows[index]
         var document_id = currect_row.document_id
         var username = ''
@@ -637,7 +637,12 @@
         }
       },
       rowDblClick(row, event, column){
-        this.show_page_model_ctrl_by_table = false
+//                this.show_page_model_ctrl_by_table = false
+        this.updateWechat_marketing_store({
+          page_model: {
+            type: 'del',
+          }
+        })
       },
       toggleSelection(rows) {
         if (rows) {
@@ -659,23 +664,30 @@
       },
       add_business_info(){
         var vm = this
-//        search_param.token = this.wechat_marketing_store.token
         this.$http.post(this.apihost + this.info_transfer_action.add, {
 //        axios.post(this.apihost + this.info_transfer_action.add, {
           rules: 1,
           token: this.wechat_marketing_store.token
         }, this.$http_config)
           .then((res) => {
-//                        console.log(res.data)
-            let analysis_data = dbResponseAnalysis2WidgetData(res.data)
-            console.log('analysis_data', analysis_data)
-            if (analysis_data.code + '' === '0') {
+            if (res.data.code === 0) {
+              let analysis_data = dbResponseAnalysis2WidgetData(res.data.response)
+
               var content = analysis_data.widgetdata[0]
               vm.detail_page_model_data = {
                 title: vm.new_add_info + '信息',
                 content: content
               }
-              vm.show_page_model_ctrl_by_table = true
+              vm.updateWechat_marketing_store({})
+            }
+            else {
+              vm.$notify.success({
+                title: '失败',
+                message: res.data.code + ' ' + res.data.desc,
+                type: 'error',
+                offset: 100,
+                duration: '2000'
+              });
 
             }
 
@@ -698,18 +710,26 @@
           show_title = '详细数据信息'
         }
         vm.isloading = true
-//        search_param.token =  this.wechat_marketing_store.token
-        this.$http.post(this.apihost + this.info_transfer_action.get,search_param,this.$http_config)
-//        axios.post(this.apihost + this.info_transfer_action.get, search_param, axios_config)
+        console.log('start->loading')
+        this.$http.post(this.apihost + this.info_transfer_action.get, search_param, this.$http_config)
+        //        axios.post(this.apihost + this.info_transfer_action.get, search_param, axios_config)
           .then((res) => {
             let analysis_data = dbResponseAnalysis2WidgetData(res.data.response)
             var content = analysis_data.widgetdata[0]
+            console.log(analysis_data)
             vm.detail_page_model_data = {
               title: show_title,
               content: content
             }
-            vm.show_page_model_ctrl_by_table = true
+            vm.updateWechat_marketing_store({
+              page_model: {
+                type: 'update',
+                value: true
+              }
+            })
             vm.isloading = false
+            console.log('end->loading')
+
           })
           .catch((error) => {
             vm.isloading = error
@@ -729,9 +749,8 @@
           update_params.rules = 1
         }
         vm.isloading = true
-//        update_params.token =  this.wechat_marketing_store.token
-        this.$http.post(this.apihost + this.info_transfer_action.update, update_params,this.$http_config)
-//        axios.post(this.apihost + this.info_transfer_action.update, update_params, axios_config)
+        this.$http.post(this.apihost + this.info_transfer_action.update, update_params, this.$http_config)
+        //        axios.post(this.apihost + this.info_transfer_action.update, update_params, axios_config)
           .then((res) => {
             if (res.data.code === 0) {
 
@@ -781,22 +800,17 @@
           this.$root.eventHub.$emit('refresh_table', 'resetselect')
         }
         else {
-
           console.log('emit->refresh_table')
           this.$root.eventHub.$emit('refresh_table', JSON.stringify(vm.search_sort_by))
         }
 
       },
       clickCurrectSelect(e){
-//                alert(1)
-//                console.log(e.currentTarget.dataset.key)
       },
       remoteSearchMethod(query) {
         this.search_sort_by[this.currect_select] = query
-//                console.log(this.search_sort_by)
       },
       focusCurrectSelect(e){
-//                console.log(e)
       },
       delSelectOption(){
         var vm = this

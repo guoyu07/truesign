@@ -135,7 +135,7 @@
       })
       this.getAboutus()
       this.$root.eventHub.$on('refresh_table', function (data) {
-//                console.log('on->refresh_table',data)
+                console.log('on->refresh_table',data)
         if (data === 'resetselect') {
           vm.reset_search_sort_by()
         }
@@ -158,7 +158,11 @@
     beforeDestroy(){
       this.$root.eventHub.$off('refresh_businessinfo')
       this.$root.eventHub.$off('currect_row_index')
+      console.log('fun_ctrl->beforeDestroy')
 
+    },
+    destroyed(){
+      console.log('fun_ctrl->destroyed')
     },
     methods: {
       handleValidate: function (e) {

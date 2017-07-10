@@ -192,6 +192,17 @@ export const mutations = {
 
       }
     }
+    if (data.hasOwnProperty('page_model')) {
+      if (data.page_model.type === 'update') {
+        state.wechat_marketing_store.page_model = data.page_model.value
+
+      }
+      if (data.page_model.type === 'del') {
+        state.wechat_marketing_store.page_model = false
+
+
+      }
+    }
 
   }
 
