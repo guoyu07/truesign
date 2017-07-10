@@ -3,7 +3,7 @@
         <transition name="el-zoom-in-top">
             <div v-if="page_data.title" key="haspagedata" class="page_model" :style="page_design" v-loading="authing"
                  :element-loading-text="laoding_text">
-                <div v-if="page_type==='list'" :style="{paddingLeft: page_model_padding_left}">
+                <div :style="{paddingLeft: page_model_padding_left}">
 
                     <div class="page_title" :style="page_title_design">
                         <span>{{page_data.title}}</span>
@@ -16,8 +16,16 @@
                     </div>
                     <transition name="fade-right" style="background-color: rgba(220,220,220,0.65)">
                         <div class="page_content" v-if="show_content_footer" :style="page_content_design">
-                            <ol>
-                                <li v-for="(item,index) in page_data.content">
+                            <!--<ol>-->
+                            <transition-group id="fields-list" name="menu-list" tag="ol"
+                                              v-on:before-enter="beforeEnter"
+                                              v-on:enter="enter"
+                                              v-on:after-enter="afterEnter"
+                                              v-on:enter-cancelled="enterCancelled"
+                                              v-on:leave="leave"
+                                              v-bind:css="false"
+                            >
+                                <li v-for="(item,index) in page_data.content" :key="item" :data-index="index" :data-id="index">
                                     <label class="filelabel"
                                            :style=" {borderBottom:page_data.content[index].access?'1px solid rgba(255,255,255,0.41)':'none',
                                        backgroundColor:page_data.content[index].access?'rgba(220,220,220,0.65)':'',
@@ -172,7 +180,7 @@
                                         {{ page_data.content[index] === 1 ? '是' : '否' }}
 
                                     </div>
-                                    <div style="display: inline-block" class="fileinput" v-if="page_data.content[index].type !== 'btn' &&
+                                    <div style="display: inline-block" class="fileinput" v-else-if="page_data.content[index].type !== 'btn' &&
                                 page_data.content[index].type !== 'upfile' &&
                                 page_data.content[index].type !== 'upimg' &&
                                 page_data.content[index].type !== 'time' &&
@@ -222,6 +230,7 @@
                                         />
                                     </div>
 
+
                                     <div style="" class="filediv">
                                         <!--<input   @click='change_access($event)' :data-index="index" type="button" v-model="page_data.content[index].access">-->
                                         <span style="" v-show="errors.has(page_data.content[index].label)"
@@ -233,7 +242,9 @@
                                     </div>
 
                                 </li>
-                            </ol>
+                            </transition-group>
+
+                            <!--</ol>-->
 
 
                         </div>
@@ -295,569 +306,614 @@
 
 
 <script>
-    import phone_model from '../common/phone_model.vue'
-    const Waves = require('node-waves');
-    import wangeditor from '../tools/wangeditor.vue'
-    import Vue from 'vue'
-    import {resolveWidgetData2FormData}   from '../../api/lib/helper/dataAnalysis'
-    import axios from 'axios'
-    import {axios_config} from '../../api/axiosApi'
-    import {mapGetters, mapActions} from 'vuex'
-    import {Message} from 'element-ui';
-    export default {
-        data(){
-            return {
+  import phone_model from '../common/phone_model.vue'
+  const Waves = require('node-waves');
+  import wangeditor from '../tools/wangeditor.vue'
+  import Vue from 'vue'
+  import { resolveWidgetData2FormData }   from '../../api/lib/helper/dataAnalysis'
+  import axios from 'axios'
+  import { axios_config } from '../../api/axiosApi'
+  import { mapGetters, mapActions } from 'vuex'
+  import { Message } from 'element-ui';
+  export default {
+    data(){
+      return {
 
-                pickerOptions: {
-                    shortcuts: [{
-                        text: '今天',
-                        onClick(picker) {
-                            picker.$emit('pick', new Date());
-                        }
-                    }, {
-                        text: '昨天',
-                        onClick(picker) {
-                            const date = new Date();
-                            date.setTime(date.getTime() - 3600 * 1000 * 24);
-                            picker.$emit('pick', date);
-                        }
-                    }, {
-                        text: '一周前',
-                        onClick(picker) {
-                            const date = new Date();
-                            date.setTime(date.getTime() - 3600 * 1000 * 24 * 7);
-                            picker.$emit('pick', date);
-                        }
-                    }]
-                },
-                imageUrl: '',
-                ClassisActive: true,
-                authing: false,
-                laoding_text: '请求处理中',
-                update_response: '0',
-                report_api: '',
-                upload_params: {
-                    up_param: {},
-                    up_action: 'http://truesign-app.oss-cn-beijing.aliyuncs.com/',
-                    up_filename: '',
-                    tmp_upload_index: ''
-                },
-                show_content_footer: true,
-                is_key: 'server_help',
-                mobile_show_uri: 'http://wap.baidu.com'
+        pickerOptions: {
+          shortcuts: [{
+            text: '今天',
+            onClick(picker) {
+              picker.$emit('pick', new Date());
             }
-        },
-        props: {
-            show_phone_model: {
-                default: false
-            },
-            source_way: {
-                default: 'alpha'
-            },
-            page_type: {
-                type: String,
-                default: 'list',
-                required: false,
-            },
-            page_design: {
-                type: Object,
-                default: function () {
-                    return {
-                        borderRadius: '5px',
-                        width: this.show_phone_model === true ? '60%' : '100%',
-                        height: 'auto',
-                        backgroundColor: '#dcdcdc',
-                        color: '#000000',
-                        overflow: 'hidden',
-                        display: 'inline-block',
-                        boxShadow: '0 0 15px gray',
-
-                    }
-                },
-                required: false,
-            },
-            page_model_padding_left: {
-                default: '13%'
-            },
-            page_title_design: {
-                type: Object,
-                default: function () {
-                    return {
-                        width: '20%',
-                        minWidth: '80px',
-                        height: '30px',
-                        lineHeight: '30px',
-                        backgroundColor: '#b6b6b6',
-                        color: '#000000',
-                        textAlign: 'right',
-                        paddingRight: '10px',
-                        boxShadow: '0 0 10px #000000'
-
-                    }
-                },
-                required: false,
-            },
-            page_content_design: {
-                type: Object,
-                default: function () {
-                    return {
-                        width: '100%',
-                        height: '100%',
-                        backgroundColor: 'transparent',
-                        color: '#000000',
-                        textAlign: 'left',
-                        marginTop: '20px',
-
-                    }
-                },
-                required: false,
-            },
-            page_data_demo: {
-                type: Object,
-                default: function () {
-                    return {
-                        title: '列表页标题栏',
-                        content: [
-                            {
-                                type: 'num',
-                                key: 'id',
-                                label: '数字',
-                                value: 1,
-                                access: false
-                            },
-                            {
-                                type: 'str',
-                                key: 'id',
-                                label: '字符串',
-                                value: '2',
-                                access: false
-                            },
-                            {
-                                type: 'boolen',
-                                key: 'id',
-                                label: '布尔',
-                                value: true,
-                                access: false
-                            },
-                            {
-                                type: 'object',
-                                key: 'id',
-                                label: '对象',
-                                value: {
-                                    a: 'a',
-                                    b: 'b'
-                                },
-                                access: false
-                            },
-                            {
-                                type: 'array',
-                                key: 'id',
-                                label: '数组',
-                                value: [
-                                    'a', 'b'
-                                ],
-                                access: false
-                            },
-                            {
-                                type: 'upfile',
-                                key: 'id',
-                                label: '文件',
-                                value: "http://upyun.com/123.zip",
-                                access: false
-                            },
-                            {
-                                type: 'time',
-                                key: 'id',
-                                label: '时间',
-                                value: "",
-                                access: false
-                            },
-                            {
-                                type: 'btn',
-                                key: 'id',
-                                label: '按钮',
-                                value: '提交',
-                                action_uri: 'http://www.baidu.com'
-                            }
-                        ]
-                    }
-                },
-                required: false,
-            },
-            page_data: {
-                type: Object,
-                default: function () {
-                    return {
-                        nodatadesc: '暂无数据',
-                        title: '列表页标题栏',
-                        content: []
-                    }
-                },
-                required: false,
-            },
-
-            page_title_design_detail: {
-                type: Object,
-                default: function () {
-                    return {
-                        width: '20%',
-                        minWidth: '80px',
-                        height: '30px',
-                        lineHeight: '30px',
-                        backgroundColor: '#b6b6b6',
-                        color: '#000000',
-                        textAlign: 'right',
-                        paddingRight: '10px',
-                        boxShadow: '0 0 10px #000000'
-
-                    }
-                },
-                required: false,
-            },
-            page_content_design_detail: {
-                type: Object,
-                default: function () {
-                    return {
-                        width: '100%',
-                        height: '100%',
-                        backgroundColor: 'transparent',
-                        color: '#000000',
-                        textAlign: 'left',
-                        marginTop: '20px',
-
-                    }
-                },
-                required: false,
-            },
-            page_data_detail: {
-                type: Object,
-                default: function () {
-                    return {
-                        nodatadesc: '暂无信息',
-                        title: '列表页标题栏',
-                        content: []
-                    }
-                },
-                required: false,
-            },
-            final_update_action: {
-                default: 'SiteInfo/updateSiteBaseConfig',
-                required: false,
-            },
-            final_update_btn_desc: {
-                type: String,
-                default: '提交数据'
+          }, {
+            text: '昨天',
+            onClick(picker) {
+              const date = new Date();
+              date.setTime(date.getTime() - 3600 * 1000 * 24);
+              picker.$emit('pick', date);
             }
-        },
-        components: {
-            wangeditor,
-            phone_model
-        },
-        computed: {
-            ...mapGetters([
-                'wechat_marketing_store',
-            ]),
-            random_key(n = 1, m = 10){
-
-                var r = Math.random() * 10000000000;
-                var re = Math.floor(r)
-                return re
+          }, {
+            text: '一周前',
+            onClick(picker) {
+              const date = new Date();
+              date.setTime(date.getTime() - 3600 * 1000 * 24 * 7);
+              picker.$emit('pick', date);
             }
-
+          }]
         },
-        created(){
-            var vm = this
+        imageUrl: '',
+        ClassisActive: true,
+        authing: false,
+        laoding_text: '请求处理中',
+        update_response: '0',
+        report_api: '',
+        upload_params: {
+          up_param: {},
+          up_action: 'http://truesign-app.oss-cn-beijing.aliyuncs.com/',
+          up_filename: '',
+          tmp_upload_index: ''
+        },
+        show_content_footer: true,
+        is_key: 'server_help',
+        mobile_show_uri: 'http://wap.baidu.com'
+      }
+    },
+    props: {
+      show_phone_model: {
+        default: false
+      },
+      source_way: {
+        default: 'alpha'
+      },
+      page_type: {
+        type: String,
+        default: 'list',
+        required: false,
+      },
+      page_design: {
+        type: Object,
+        default: function () {
+          return {
+            borderRadius: '5px',
+            width: this.show_phone_model === true ? '60%' : '100%',
+            height: 'auto',
+            backgroundColor: '#dcdcdc',
+            color: '#000000',
+            overflow: 'hidden',
+            display: 'inline-block',
+            boxShadow: '0 0 15px gray',
+
+          }
+        },
+        required: false,
+      },
+      page_model_padding_left: {
+        default: '13%'
+      },
+      page_title_design: {
+        type: Object,
+        default: function () {
+          return {
+            width: '20%',
+            minWidth: '80px',
+            height: '30px',
+            lineHeight: '30px',
+            backgroundColor: '#b6b6b6',
+            color: '#000000',
+            textAlign: 'right',
+            paddingRight: '10px',
+            boxShadow: '0 0 10px #000000'
+
+          }
+        },
+        required: false,
+      },
+      page_content_design: {
+        type: Object,
+        default: function () {
+          return {
+            width: '100%',
+            height: '100%',
+            backgroundColor: 'transparent',
+            color: '#000000',
+            textAlign: 'left',
+            marginTop: '20px',
+
+          }
+        },
+        required: false,
+      },
+      page_data_demo: {
+        type: Object,
+        default: function () {
+          return {
+            title: '列表页标题栏',
+            content: [
+              {
+                type: 'num',
+                key: 'id',
+                label: '数字',
+                value: 1,
+                access: false
+              },
+              {
+                type: 'str',
+                key: 'id',
+                label: '字符串',
+                value: '2',
+                access: false
+              },
+              {
+                type: 'boolen',
+                key: 'id',
+                label: '布尔',
+                value: true,
+                access: false
+              },
+              {
+                type: 'object',
+                key: 'id',
+                label: '对象',
+                value: {
+                  a: 'a',
+                  b: 'b'
+                },
+                access: false
+              },
+              {
+                type: 'array',
+                key: 'id',
+                label: '数组',
+                value: [
+                  'a', 'b'
+                ],
+                access: false
+              },
+              {
+                type: 'upfile',
+                key: 'id',
+                label: '文件',
+                value: "http://upyun.com/123.zip",
+                access: false
+              },
+              {
+                type: 'time',
+                key: 'id',
+                label: '时间',
+                value: "",
+                access: false
+              },
+              {
+                type: 'btn',
+                key: 'id',
+                label: '按钮',
+                value: '提交',
+                action_uri: 'http://www.baidu.com'
+              }
+            ]
+          }
+        },
+        required: false,
+      },
+      page_data: {
+        type: Object,
+        default: function () {
+          return {
+            nodatadesc: '暂无数据',
+            title: '列表页标题栏',
+            content: []
+          }
+        },
+        required: false,
+      },
+
+      page_title_design_detail: {
+        type: Object,
+        default: function () {
+          return {
+            width: '20%',
+            minWidth: '80px',
+            height: '30px',
+            lineHeight: '30px',
+            backgroundColor: '#b6b6b6',
+            color: '#000000',
+            textAlign: 'right',
+            paddingRight: '10px',
+            boxShadow: '0 0 10px #000000'
+
+          }
+        },
+        required: false,
+      },
+      page_content_design_detail: {
+        type: Object,
+        default: function () {
+          return {
+            width: '100%',
+            height: '100%',
+            backgroundColor: 'transparent',
+            color: '#000000',
+            textAlign: 'left',
+            marginTop: '20px',
+
+          }
+        },
+        required: false,
+      },
+      page_data_detail: {
+        type: Object,
+        default: function () {
+          return {
+            nodatadesc: '暂无信息',
+            title: '列表页标题栏',
+            content: []
+          }
+        },
+        required: false,
+      },
+      final_update_action: {
+        default: 'SiteInfo/updateSiteBaseConfig',
+        required: false,
+      },
+      final_update_btn_desc: {
+        type: String,
+        default: '提交数据'
+      }
+    },
+    components: {
+      wangeditor,
+      phone_model
+    },
+    computed: {
+      ...mapGetters([
+        'wechat_marketing_store',
+      ]),
+      random_key(n = 1, m = 10){
+
+        var r = Math.random() * 10000000000;
+        var re = Math.floor(r)
+        return re
+      }
+
+    },
+    created(){
+      var vm = this
 //            var currect_width = this.show_phone_model === true?'60%':'100%'
 //            this.page_design.width = currect_width
-            this.report_api = this.wechat_marketing_store.apihost
-            this.$root.eventHub.$on('editor_content', function (data) {
+      this.report_api = this.wechat_marketing_store.apihost
+      this.$root.eventHub.$on('editor_content', function (data) {
 //                console.log('editor_content->',data)
-                for (var item in vm.page_data.content) {
-                    if (vm.page_data.content[item].type === 'text') {
+        for (var item in vm.page_data.content) {
+          if (vm.page_data.content[item].type === 'text') {
 
-                        vm.page_data.content[item].value = data.html
-                    }
-                }
-            })
-        },
-        mounted(){
+            vm.page_data.content[item].value = data.html
+          }
+        }
+      })
+    },
+    mounted(){
 //      console.log('page_data', this.page_data)
 
+    },
+    watch: {
+      page_data: {
+        handler: function (val, oldVal) {
+
+          for (var index in this.page_data.content) {
+
+            if (this.page_data.content[index].key === 'fun_uri') {
+              this.mobile_show_uri = 'http://' + this.page_data.content[index].value
+            }
+          }
         },
-        watch: {
-            page_data: {
-                handler: function (val, oldVal) {
+        deep: true
+      },
+    },
+    updated(){
 
-                    for (var index in this.page_data.content) {
+      let config = {
+        // How long Waves effect duration
+        // when it's clicked (in milliseconds)
+        duration: 3000,
+        // Delay showing Waves effect on touch
+        // and hide the effect if user scrolls
+        // (0 to disable delay) (in milliseconds)
+        delay: 500
+      };
+      Waves.init(config)
+      Waves.attach('#update_btn', ['waves-button']);
+      Waves.attach('.page_model', ['waves-block']);
 
-                        if (this.page_data.content[index].key === 'fun_uri') {
-                            this.mobile_show_uri = 'http://' + this.page_data.content[index].value
-                        }
-                    }
-                },
-                deep: true
-            },
-        },
-        updated(){
+    },
 
-            let config = {
-                // How long Waves effect duration
-                // when it's clicked (in milliseconds)
-                duration: 3000,
-                // Delay showing Waves effect on touch
-                // and hide the effect if user scrolls
-                // (0 to disable delay) (in milliseconds)
-                delay: 500
-            };
-            Waves.init(config)
-            Waves.attach('#update_btn', ['waves-button']);
-            Waves.attach('.page_model', ['waves-block']);
-
-        },
-
-        methods: {
-            ...mapActions([
-                'updateWechat_marketing_store',
-            ]),
-            changetime(data){
+    methods: {
+      ...mapActions([
+        'updateWechat_marketing_store',
+      ]),
+      changetime(data){
 //                console.log('time',data,Date.parse(data)/1000)
 
-            },
-            upload_this_index(e, data){
-                this.upload_params.tmp_upload_index = data
-            },
-            change_access(e){
-                var target_index = e.currentTarget.dataset.index
-                this.page_data.content[target_index].access = !this.page_data.content[target_index].access
-            },
-            handleRemove(file, fileList) {
+      },
+      upload_this_index(e, data){
+        this.upload_params.tmp_upload_index = data
+      },
+      change_access(e){
+        var target_index = e.currentTarget.dataset.index
+        this.page_data.content[target_index].access = !this.page_data.content[target_index].access
+      },
+      handleRemove(file, fileList) {
 //                console.log(file, fileList);
-            },
-            handlePreview(file) {
+      },
+      handlePreview(file) {
 //                console.log(file);
-            },
-            upfile_click(e){
-                var target_index = e.currentTarget.dataset.index
-                var $target = $(e.currentTarget)
-                $target.next().click()
+      },
+      upfile_click(e){
+        var target_index = e.currentTarget.dataset.index
+        var $target = $(e.currentTarget)
+        $target.next().click()
 
-            },
-            upfile_change(e){
-                var vm = this
-                var files = e.target.files || e.dataTransfer.files;
-                if (!files.length) {
-                    return;
-                }
-                var filename = files[0].name
-                var target_index = e.currentTarget.dataset.fileindex
-                this.page_data.content[target_index].value = filename
-                $.ajaxSetup({async: false});
-                $.post(this.report_api + 'common/updateimg2ossByClient', {
-                    filename: Date.parse(new Date()) / 1000 + '_._._' + target_index + '_._._' + filename,
-                    type: 'website_file'
-                }, function (result) {
-                    var pre_up2oss_params = JSON.parse(result)
-                    var currect_uri = pre_up2oss_params.uri
-                    var currect_param = pre_up2oss_params.param
-                    vm.upload_params.up_action = currect_uri
-                    vm.upload_params.up_param = currect_param
-                    vm.upload_params.up_filename = 'file'
+      },
+      upfile_change(e){
+        var vm = this
+        var files = e.target.files || e.dataTransfer.files;
+        if (!files.length) {
+          return;
+        }
+        var filename = files[0].name
+        var target_index = e.currentTarget.dataset.fileindex
+        this.page_data.content[target_index].value = filename
+        $.ajaxSetup({async: false});
+        $.post(this.report_api + 'common/updateimg2ossByClient', {
+          filename: Date.parse(new Date()) / 1000 + '_._._' + target_index + '_._._' + filename,
+          type: 'website_file'
+        }, function (result) {
+          var pre_up2oss_params = JSON.parse(result)
+          var currect_uri = pre_up2oss_params.uri
+          var currect_param = pre_up2oss_params.param
+          vm.upload_params.up_action = currect_uri
+          vm.upload_params.up_param = currect_param
+          vm.upload_params.up_filename = 'file'
 
-                })
-                // xhr 上传
-                // 变量声明
-                var xhr = new XMLHttpRequest();
-                var formData = new FormData();
-                xhr.onload = function () {
-                    var responseText = JSON.parse(xhr.responseText)
+        })
+        // xhr 上传
+        // 变量声明
+        var xhr = new XMLHttpRequest();
+        var formData = new FormData();
+        xhr.onload = function () {
+          var responseText = JSON.parse(xhr.responseText)
 //                    console.log(responseText)
-                    var currect_data_index = responseText.file_path.match(/_\._\._(.*?)_\._\._/)[1]
-                    vm.page_data.content[currect_data_index].value = responseText.file_path
+          var currect_data_index = responseText.file_path.match(/_\._\._(.*?)_\._\._/)[1]
+          vm.page_data.content[currect_data_index].value = responseText.file_path
 //                    console.log(vm.page_data.content[currect_data_index].value)
 
-                }
-                // 添加参数
-                $.each(vm.upload_params.up_param, function (key, value) {
-                    formData.append(key, value);
-                });
-                // 填充数据
-                formData.append('file', files[0]);
-                // 开始上传
-                xhr.open('POST', vm.upload_params.up_action, true);
-                // xhr.setRequestHeader("Content-type","application/x-www-form-urlencoded");  // 将参数解析成传统form的方式上传
+        }
+        // 添加参数
+        $.each(vm.upload_params.up_param, function (key, value) {
+          formData.append(key, value);
+        });
+        // 填充数据
+        formData.append('file', files[0]);
+        // 开始上传
+        xhr.open('POST', vm.upload_params.up_action, true);
+        // xhr.setRequestHeader("Content-type","application/x-www-form-urlencoded");  // 将参数解析成传统form的方式上传
 
-                // 跨域上传时，传cookie
-                xhr.withCredentials = false;
+        // 跨域上传时，传cookie
+        xhr.withCredentials = false;
 
-                // 发送数据
-                xhr.send(formData);
+        // 发送数据
+        xhr.send(formData);
 
-            },
-            handleAvatarSuccess(res, file) {
+      },
+      handleAvatarSuccess(res, file) {
 
-                var currect_data_index = res.file_path.match(/_\._\._(.*?)_\._\._/)[1]
-                this.page_data.content[currect_data_index].value = file.file_path
-                this.page_data.content[parseInt(currect_data_index)].value = res.file_path
+        var currect_data_index = res.file_path.match(/_\._\._(.*?)_\._\._/)[1]
+        this.page_data.content[currect_data_index].value = file.file_path
+        this.page_data.content[parseInt(currect_data_index)].value = res.file_path
 
 //                this.imageUrl = URL.createObjectURL(file.raw);
-            },
-            handleAvatarProgress(event, file, fileList){
+      },
+      handleAvatarProgress(event, file, fileList){
 //                console.log(event)
-            },
-            beforeAvatarUpload(file) {
-                var vm = this
-                $.ajaxSetup({async: false});
-                $.post(this.report_api + 'common/updateimg2ossByClient', {
-                    filename: Date.parse(new Date()) / 1000 + '_._._' + this.upload_params.tmp_upload_index + '_._._' + file.name,
-                    type: 'business_logo'
-                }, function (result) {
-                    var pre_up2oss_params = JSON.parse(result)
-                    var currect_uri = pre_up2oss_params.uri
-                    var currect_param = pre_up2oss_params.param
+      },
+      beforeAvatarUpload(file) {
+        var vm = this
+        $.ajaxSetup({async: false});
+        $.post(this.report_api + 'common/updateimg2ossByClient', {
+          filename: Date.parse(new Date()) / 1000 + '_._._' + this.upload_params.tmp_upload_index + '_._._' + file.name,
+          type: 'business_logo'
+        }, function (result) {
+          var pre_up2oss_params = JSON.parse(result)
+          var currect_uri = pre_up2oss_params.uri
+          var currect_param = pre_up2oss_params.param
 //                    console.log(currect_uri)
-                    vm.upload_params.up_action = currect_uri
-                    vm.upload_params.up_param = currect_param
-                    vm.upload_params.up_filename = 'file'
-                })
-                $.ajaxSetup({async: true});
+          vm.upload_params.up_action = currect_uri
+          vm.upload_params.up_param = currect_param
+          vm.upload_params.up_filename = 'file'
+        })
+        $.ajaxSetup({async: true});
 
-                const isJPGOrPng = (file.type === 'image/jpeg' || file.type === 'image/png');
-                const isLt2M = file.size / 1024 / 1024 < 2;
+        const isJPGOrPng = (file.type === 'image/jpeg' || file.type === 'image/png');
+        const isLt2M = file.size / 1024 / 1024 < 2;
 
-                if (!isJPGOrPng) {
-                    this.$alert('只允许上传jpeg或png格式图片', '格式錯誤', {
-                        confirmButtonText: '确定',
-                        callback: action => {
-                            this.$message({
-                                type: 'info',
-                                message: `action: ${action}`
-                            });
-                        }
-                    });
-                }
-                if (!isLt2M) {
+        if (!isJPGOrPng) {
+          this.$alert('只允许上传jpeg或png格式图片', '格式錯誤', {
+            confirmButtonText: '确定',
+            callback: action => {
+              this.$message({
+                type: 'info',
+                message: `action: ${action}`
+              });
+            }
+          });
+        }
+        if (!isLt2M) {
 
-                    this.$alert('上传头像图片大小不能超过 2MB!', '图片大小错误', {
-                        confirmButtonText: '确定',
-                        callback: action => {
-                            this.$message({
-                                type: 'info',
-                                message: `action: ${action}`
-                            });
-                        }
-                    });
-                }
-                return isJPGOrPng && isLt2M;
-            },
-            build_page_data_to_timestamp(flag = true){
+          this.$alert('上传头像图片大小不能超过 2MB!', '图片大小错误', {
+            confirmButtonText: '确定',
+            callback: action => {
+              this.$message({
+                type: 'info',
+                message: `action: ${action}`
+              });
+            }
+          });
+        }
+        return isJPGOrPng && isLt2M;
+      },
+      build_page_data_to_timestamp(flag = true){
 
-                if (flag) {
+        if (flag) {
 
-                    for (let index in this.page_data.content) {
-                        if (this.page_data.content[index].type === 'time') {
-                            this.page_data.content[index].value = Date.parse(this.page_data.content[index].value) / 1000
-                        }
+          for (let index in this.page_data.content) {
+            if (this.page_data.content[index].type === 'time') {
+              this.page_data.content[index].value = Date.parse(this.page_data.content[index].value) / 1000
+            }
 
-                    }
+          }
 
-                }
-                else {
-                    for (let index in this.page_data.content) {
-                        if (this.page_data.content[index].type === 'time') {
-                            this.page_data.content[index].value = new Date(this.page_data.content[index].value * 1000)
-                        }
+        }
+        else {
+          for (let index in this.page_data.content) {
+            if (this.page_data.content[index].type === 'time') {
+              this.page_data.content[index].value = new Date(this.page_data.content[index].value * 1000)
+            }
 
-                    }
+          }
 
-                }
+        }
 
-            },
-            final_update_data(){
+      },
+      final_update_data(){
 
-                var formdata = resolveWidgetData2FormData(this.page_data.content)
-                var vm = this
-                this.$validator.validateAll().then(() => {
-                    vm.authing = true
-                    if(!this.final_update_action){
-                      vm.$notify.error({
-                        title: '禁止',
-                        message: '禁止此项目手动更新',
-                        type: 'error',
-                        offset: 100,
-                        duration: '2000'
-                      });
-                      vm.authing = false
-                    }
-                    else{
-                      vm.$http.post(this.wechat_marketing_store.apihost + this.final_update_action, formdata, vm.$http_config)
-                        .then((res) => {
+        var formdata = resolveWidgetData2FormData(this.page_data.content)
+        var vm = this
+        this.$validator.validateAll().then(() => {
+          vm.authing = true
+          if (!this.final_update_action) {
+            vm.$notify.error({
+              title: '禁止',
+              message: '禁止此项目手动更新',
+              type: 'error',
+              offset: 100,
+              duration: '2000'
+            });
+            vm.authing = false
+          }
+          else {
+            vm.$http.post(this.wechat_marketing_store.apihost + this.final_update_action, formdata, vm.$http_config)
+              .then((res) => {
 
-                          if (res.data.code === 0) {
-                            vm.$notify.success({
-                              title: '成功',
-                              message: res.data.desc,
-                              offset: 100,
-                              duration: '2000'
-                            });
-                            if (vm.page_data.content[0].key !== 'document_id') {
-                              vm.$root.eventHub.$emit('refresh_page_model', 1)
-                            }
-                            vm.close_page_model(1)
+                if (res.data.code === 0) {
+                  vm.$notify.success({
+                    title: '成功',
+                    message: res.data.desc,
+                    offset: 100,
+                    duration: '2000'
+                  });
+                  if (vm.page_data.content[0].key !== 'document_id') {
+                    vm.$root.eventHub.$emit('refresh_page_model', 1)
+                  }
+                  vm.close_page_model(1)
 
 //                setTimeout(function () {
 //                  vm.close_page_model(1)
 //                }, 600)
 
-                          }
-                          else {
-                            vm.$notify.error({
-                              title: '失败',
-                              message: res.data.code + ' ' + res.data.desc,
-                              type: 'error',
-                              offset: 100,
-                              duration: '2000'
-                            });
+                }
+                else {
+                  vm.$notify.error({
+                    title: '失败',
+                    message: res.data.code + ' ' + res.data.desc,
+                    type: 'error',
+                    offset: 100,
+                    duration: '2000'
+                  });
 
-                          }
-                          resolveWidgetData2FormData(this.page_data.content, false)
+                }
+                resolveWidgetData2FormData(this.page_data.content, false)
 
-                          this.authing = false
+                this.authing = false
 
-                        })
-                    }
+              })
+          }
 
-                }).catch(() => {
-                    // eslint-disable-next-line
-                    vm.$notify.error({
-                        title: '表单错误',
-                        message: '请检查不符合规定的数据录入',
-                        offset: document.body.clientHeight - 300,
-                        duration: '2000'
-                    });
-                });
-            },
-            fold_content_footer(){
-                this.show_content_footer = !this.show_content_footer
-            },
-            close_page_model(data = 0){
-               this.updateWechat_marketing_store({
-                    page_model:{
-                        type:'del'
-                    }
-                })
-                console.log('emit->refresh_table_model')
-                this.$root.eventHub.$emit('refresh_table_model');
-            },
-            str2arr(str){
+        }).catch(() => {
+          // eslint-disable-next-line
+          vm.$notify.error({
+            title: '表单错误',
+            message: '请检查不符合规定的数据录入',
+            offset: document.body.clientHeight - 300,
+            duration: '2000'
+          });
+        });
+      },
+      fold_content_footer(){
+        this.show_content_footer = !this.show_content_footer
+      },
+      close_page_model(data = 0){
+        this.updateWechat_marketing_store({
+          page_model: {
+            type: 'del'
+          }
+        })
+        console.log('emit->refresh_table_model')
+        this.$root.eventHub.$emit('refresh_table_model');
+      },
+      str2arr(str){
 
-            }
-        },
-        beforeDestroy(){
+      },
+
+      /*动态效果*/
+      beforeEnter(el) {
+        //console.log('beforeEnter')
+        el.style.opacity = 0
+        el.style.height = 0
+      },
+      enter(el, done) {
+        //console.log('enter')
+        var delay = el.dataset.index * 100
+        setTimeout(function () {
+          Velocity(
+            el,
+            {opacity: 1, height: '40px'},
+            {complete: done}
+          )
+        }, delay)
+      },
+      afterEnter(el) {
+        //console.log('afterenter')
+
+      },
+      enterCancelled(el) {
+        //console.log('enterCancelled')
+      },
+      beforeLeave(el){
+        //console.log('befaoreLeave')
+      },
+      leave(el, done){
+        //console.log('Leave')
+        var delay = el.dataset.index * 100
+        setTimeout(function () {
+          Velocity(
+            el,
+            {opacity: 0, height: 0},
+            {complete: done}
+          )
+        }, delay)
+      },
+      afterLeave(el){
+        //console.log('afterLeave')
+      },
+      leaveCancelled(el){
+        //console.log('leaveCancelled')
+      },
+    },
+    beforeDestroy(){
 //            this.$root.eventHub.$off('page_model_update_response_done')
 //            this.$root.eventHub.$off('editor_content');
-        },
+    },
 
-    }
+  }
 </script>
 <style lang="stylus" rel="stylesheet/stylus">
     .page_model .page_content ol {

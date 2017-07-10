@@ -68,7 +68,9 @@ class SiteInfoController extends AppBaseController {
         $condition['id'] = $params['document_id'];
         unset($params['document_id']);
         $doService = new SiteBaseConfigService();
-        $this->output2json($doService->Update($params,$condition));
+        $response = \Royal\Prof\TrueSignConst::SUCCESS('管理员账户信息获取成功');
+        $response['response'] = $doService->Update($params,$condition);
+        $this->output2json($response);
     }
 
 
