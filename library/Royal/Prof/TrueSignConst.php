@@ -28,4 +28,16 @@ class TrueSignConst
     static function DEBUG($info=''){return array('code' => 6000, 'desc' => empty($info)?'调试':$info);   }
 
     static function REQUIRE_AUTH($info=''){return array('code' => 10000, 'desc' => empty($info)?'需要登录认证':$info);   }
+
+    static function GET_DEBUG_BACKTRACE(){
+        $trace = debug_backtrace();
+        $i = 0;
+        $skipClasses = array('Royal\\Prof\\TrueSignConst');
+        foreach ($trace as $k=>$v){
+            if(in_array($v['class'],$skipClasses)){
+                unset($trace[$k]);
+            }
+        }
+        return $trace;
+    }
 }

@@ -146,6 +146,7 @@
       })
 
       this.getBusinessInfo(JSON.stringify(this.table_search_sort_by))
+      this.$root.eventHub.$off('refresh_table')
       this.$root.eventHub.$on('refresh_table', function (data) {
         console.log('on->refresh_table')
         if (data === 'resetselect') {
@@ -165,8 +166,6 @@
 //            console.log('this.table_search_sort_by',this.table_search_sort_by)
     },
     beforeDestroy(){
-      console.log('off->refresh_table')
-      this.$root.eventHub.$off('refresh_table')
 
 //            this.$root.eventHub.$off('refresh_businessinfo')
 //            this.$root.eventHub.$off('currect_row_index')

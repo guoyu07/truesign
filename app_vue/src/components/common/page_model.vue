@@ -541,7 +541,6 @@
                 required: false,
             },
             final_update_action: {
-                type: String,
                 default: 'SiteInfo/updateSiteBaseConfig',
                 required: false,
             },
@@ -779,43 +778,54 @@
                 var vm = this
                 this.$validator.validateAll().then(() => {
                     vm.authing = true
-//          formdata.token = this.wechat_marketing_store.token
-                    vm.$http.post(this.wechat_marketing_store.apihost + this.final_update_action, formdata, vm.$http_config)
-                    //          axios.post(this.wechat_marketing_store.apihost + this.final_update_action, formdata, axios_config)
+                    if(!this.final_update_action){
+                      vm.$notify.error({
+                        title: '禁止',
+                        message: '禁止此项目手动更新',
+                        type: 'error',
+                        offset: 100,
+                        duration: '2000'
+                      });
+                      vm.authing = false
+                    }
+                    else{
+                      vm.$http.post(this.wechat_marketing_store.apihost + this.final_update_action, formdata, vm.$http_config)
                         .then((res) => {
 
-                            if (res.data.code === 0) {
-                                vm.$notify.success({
-                                    title: '成功',
-                                    message: res.data.desc,
-                                    offset: 100,
-                                    duration: '2000'
-                                });
-                                if (vm.page_data.content[0].key !== 'document_id') {
-                                    vm.$root.eventHub.$emit('refresh_page_model', 1)
-                                }
-                                vm.close_page_model(1)
+                          if (res.data.code === 0) {
+                            vm.$notify.success({
+                              title: '成功',
+                              message: res.data.desc,
+                              offset: 100,
+                              duration: '2000'
+                            });
+                            if (vm.page_data.content[0].key !== 'document_id') {
+                              vm.$root.eventHub.$emit('refresh_page_model', 1)
+                            }
+                            vm.close_page_model(1)
 
 //                setTimeout(function () {
 //                  vm.close_page_model(1)
 //                }, 600)
 
-                            }
-                            else {
-                                vm.$notify.error({
-                                    title: '失败',
-                                    message: res.data.code + ' ' + res.data.desc,
-                                    type: 'error',
-                                    offset: 100,
-                                    duration: '2000'
-                                });
+                          }
+                          else {
+                            vm.$notify.error({
+                              title: '失败',
+                              message: res.data.code + ' ' + res.data.desc,
+                              type: 'error',
+                              offset: 100,
+                              duration: '2000'
+                            });
 
-                            }
-                            resolveWidgetData2FormData(this.page_data.content, false)
+                          }
+                          resolveWidgetData2FormData(this.page_data.content, false)
 
-                            this.authing = false
+                          this.authing = false
 
                         })
+                    }
+
                 }).catch(() => {
                     // eslint-disable-next-line
                     vm.$notify.error({

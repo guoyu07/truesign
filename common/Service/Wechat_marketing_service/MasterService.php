@@ -130,7 +130,7 @@ class MasterService extends BaseService
                 $db_reponse = 0;
                 $db_reponse = $fgservice->setFingerPrints($this->Adapter->table().'Adapter',
                     $db_response['document_id'],$params['username'],
-                    'login','','PC','ipv4');
+                    'login','','PC','ipv4',TrueSignConst::GET_DEBUG_BACKTRACE());
                 $userinfo = $this->Get(array('document_id'=>$db_response['document_id']));
                 $userinfo = $userinfo['data'][0];
                 unset($userinfo['password']);

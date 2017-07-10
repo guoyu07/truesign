@@ -228,7 +228,7 @@ class BusinessService extends BaseService
                         $db_reponse = 0;
                         $db_reponse = $fgservice->setFingerPrints($this->Adapter->table().'Adapter',
                             $db_data['document_id'],$params['username'],
-                            'reg','','PC','ipv4');
+                            'reg','','PC','ipv4',TrueSignConst::GET_DEBUG_BACKTRACE());
                         $userinfo = $this->getUserInfoCodeById($db_data['document_id']);
                         $userinfo['lable_type'] = '商户';
 
@@ -285,7 +285,7 @@ class BusinessService extends BaseService
 
                 $fgservice = new FingerPrintsService();
                 $db_reponse = 0;
-                $db_reponse = $fgservice->setFingerPrints('businessAdapter', $db_response['document_id'], $params['username'], 'login', '', 'PC', 'ipv4');
+                $db_reponse = $fgservice->setFingerPrints('businessAdapter', $db_response['document_id'], $params['username'], 'login', '', 'PC', 'ipv4',TrueSignConst::GET_DEBUG_BACKTRACE());
                 $userinfo = $this->getUserInfoCodeById($db_response['document_id']);
                 if (!empty($db_reponse)) {
                     $userinfo['lable_type'] = '商户';

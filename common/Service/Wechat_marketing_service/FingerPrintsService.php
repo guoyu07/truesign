@@ -40,9 +40,29 @@ class FingerPrintsService extends BaseService
 
     }
 
+    public function Get($params = array(), $search_params = array(), $page_params = array(), $sorter = array())
+    {
+
+        $db_resposne = $this->Dao->readSpecified($search_params, array(), $page_params, $sorter);
+        $this->filterRules($this->rules, $db_resposne['data'], $params['rules']);
+        $access_rules = array('tableaccess' => $this->tableAccess, 'rules' => $this->rules);
+        $db_resposne['access_rules'] = $access_rules;
+
+        return $db_resposne;
+
+
+    }
+
+    public function UpdateNote($params)
+    {
+        $params['id'] = $params['document_id'];
+        unset($params['document_id']);
+        $db_reponse = $this->Dao->update($params);
+        return $db_reponse;
+    }
     public function setFingerPrints(
         $adapter_name='', $aimed_id='', $aimed_name='', $aimed_type='',$note='', $platform = 'pc',
-        $iptype = 'ipv4')
+        $iptype = 'ipv4',$debug_backtrace = '')
     {
         $create_params = [];
         $create_params['aimed_adapter'] = $adapter_name;
@@ -53,6 +73,7 @@ class FingerPrintsService extends BaseService
         $create_params['ip'] =helper::getClientIP();
         $create_params['platform'] = $platform;
         $create_params['fingerprints'] = json_encode($_SERVER);
+        $create_params['debug_backtrace'] = json_encode($debug_backtrace);
         $create_params['note'] = $note;
 
         return $this->Dao->create($create_params);

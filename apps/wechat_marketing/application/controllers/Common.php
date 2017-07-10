@@ -2,6 +2,11 @@
 
 class CommonController extends AppBaseController {
 
+    public function indexAction()
+    {
+        $debug_backtrace = \Royal\Prof\TrueSignConst::GET_DEBUG_BACKTRACE();
+        echo json_encode($debug_backtrace);
+    }
 	public function updateimg2ossByClientAction() {
         $params = $this->getParams(array('filename','type'));
         $pre_data  = \Royal\Aliyun\Aliyun::AppSign($params['type'].'/'.$params['filename'],array(),'/common/cb_updateimg2ossByClient');

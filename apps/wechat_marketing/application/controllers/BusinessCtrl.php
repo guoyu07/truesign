@@ -22,7 +22,9 @@ class BusinessCtrlController extends AppBaseController {
     {
         $params = $this->getParams(array(),array('rules'));
         $doService = new BusinessService();
-        $this->output2json($doService->desc($params));
+        $response = \Royal\Prof\TrueSignConst::SUCCESS('初始化客户信息成功');
+        $response['response'] = $doService->desc($params);
+        $this->output2json($response);
 	}
     /*
      * @for 获取客户信息接口

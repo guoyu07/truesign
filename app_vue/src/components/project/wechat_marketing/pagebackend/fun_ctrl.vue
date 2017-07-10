@@ -254,7 +254,6 @@
               let analysis_data = dbResponseAnalysis2WidgetData(res.data.response)
 
               var siteinfo_content = analysis_data.widgetdata[0]
-//
               for (var index in siteinfo_content) {
                 if (siteinfo_content[index].key === 'fun_keyword') {
                   siteinfo_content[index].value = 'messageboard'

@@ -664,6 +664,7 @@
       },
       add_business_info(){
         var vm = this
+
         this.$http.post(this.apihost + this.info_transfer_action.add, {
 //        axios.post(this.apihost + this.info_transfer_action.add, {
           rules: 1,
@@ -678,7 +679,13 @@
                 title: vm.new_add_info + '信息',
                 content: content
               }
-              vm.updateWechat_marketing_store({})
+              vm.updateWechat_marketing_store({
+                page_model:{
+                  type:'update',
+                  value:true
+                }
+              })
+              console.log('wechat_marketing_store',vm.wechat_marketing_store.page_model)
             }
             else {
               vm.$notify.success({
@@ -790,13 +797,14 @@
       },
       handleCurrentChange(val) {
         this.isloading = true
-        this.search_sort_by.vue_search_way = 'self'
         this.search_sort_by.page = val
 
       },
       refresh_table_data(add_note){
         var vm = this
         if (add_note === 'resetselect') {
+          console.log('emit->refresh_table',add_note)
+
           this.$root.eventHub.$emit('refresh_table', 'resetselect')
         }
         else {
@@ -819,7 +827,7 @@
           del_ids.push(item.document_id)
         }
         console.log(del_ids)
-        axios.post(this.apihost + this.info_transfer_action.groupdel, {ids: del_ids}, axios_config)
+        this.$http.post(this.apihost + this.info_transfer_action.groupdel, {ids: del_ids}, this.$http_config)
           .then((res) => {
 //                        console.log('groupdel->',res.data)
             vm.$notify.success({
