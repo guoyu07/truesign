@@ -1,8 +1,6 @@
 <template>
   <div class="top_router_view" style="text-align: center">
-    <div style="position: absolute;left: 50%;width: 64px;height: 64px">
-      <div class="outer"></div>
-    </div>
+     <input type="button" @click="send" value="发送">
 
 
   </div>
@@ -17,7 +15,12 @@
 
         },
         methods:{
-
+          send(){
+            let uri = 'http://192.168.10.202:8081/jcstore/weixin/coupon/consumerList?usable=0';
+            $.get(uri,function (data) {
+              console.log(data)
+            })
+          }
         },
         components: {
         },
