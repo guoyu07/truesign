@@ -50,6 +50,10 @@ class ComposerStaticInit9a3ede72af7ff81950ab8fc3f5f30544
         array (
             'Doctrine\\Common\\Cache\\' => 22,
         ),
+        'B' => 
+        array (
+            'Browser\\' => 8,
+        ),
     );
 
     public static $prefixDirsPsr4 = array (
@@ -108,6 +112,10 @@ class ComposerStaticInit9a3ede72af7ff81950ab8fc3f5f30544
         'Doctrine\\Common\\Cache\\' => 
         array (
             0 => __DIR__ . '/..' . '/doctrine/cache/lib/Doctrine/Common/Cache',
+        ),
+        'Browser\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/phpcasperjs/phpcasperjs/src',
         ),
     );
 

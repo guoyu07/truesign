@@ -1,5 +1,5 @@
 <?php
-
+use Browser\Casper;
 class CommonController extends AppBaseController {
 
     public function indexAction()
@@ -47,6 +47,44 @@ class CommonController extends AppBaseController {
         }
         $this->output2json($cb_response);
 	}
+
+    public function testaddAction()
+    {
+        $params = $this->getParams(array('age','name'));
+        $doservices = new \Truesign\Service\Wechat_marketing_service\testService();
+        echo $doservices->add($params);
+	}
+	public function casperjsAction(){
+        $casper = new Casper();
+
+// forward options to phantomJS
+// for example to ignore ssl errors
+        $casper->setOptions([
+            'ignore-ssl-errors' => 'yes'
+        ]);
+
+// navigate to google web page
+        $casper->start('https://item.taobao.com/item.htm?spm=a21ig.146272.757693.1.1a44f7bREiEOT&id=543589675746');
+
+// fill the search form and submit it with input's name
+
+// check the urls casper get through
+        var_dump($casper->getRequestedUrls());
+
+// need to debug? just check the casper output
+        var_dump($casper->getOutput());
+    }
+
+    public function logAction()
+    {
+        $f = fopen('post.log','w') or die('Unable to open file!');
+        fwrite($f,date('Y-m-d H:i:s').PHP_EOL);
+        fwrite($f,json_encode(array_merge($_POST,$_GET),256));
+        fwrite($f,PHP_EOL);
+        fclose($f);
+        echo 'done';
+    }
+
 
 
 }

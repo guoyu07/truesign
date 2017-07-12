@@ -65,7 +65,6 @@
 <script>
     import effectlogo from '../../loading/effect_logo.vue'
     import { mapGetters,mapActions } from 'vuex'
-    const ramjet = require('ramjet');
     import particles from './../../effect/particles.vue'
     import threejs_wormhole from './../../effect/threejs_wormhole.vue'
 //    import LocalVoucher from '../../../api/LocalVoucherTools'

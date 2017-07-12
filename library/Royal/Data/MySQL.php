@@ -46,7 +46,7 @@ class MySQL {
                 PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
                 PDO::ATTR_AUTOCOMMIT => true,
             ));
-
+        $this->beginTransaction();
         TimeStack::end();
     }
 
@@ -76,7 +76,7 @@ class MySQL {
     {
         return $this->dbh->inTransaction();
     }
-    public function beginTransaction() {
+    public  function beginTransaction() {
         if (!$this->transactionNestable() || $this->transLevel == 0) {
             $this->dbh->beginTransaction();
         } else {
@@ -537,6 +537,7 @@ class MySQL {
         TimeStack::start(TimeStack::TAG_SQL, array('sql'=>$sql, 'values'=>$values));
         try
             {
+
             Logger::info('SQL_QUERY', array('sql'=>$sql, 'values'=>$values,'ip'=>$_SERVER['REMOTE_ADDR']));
 
                 $stmt = $this->dbh->prepare($sql);

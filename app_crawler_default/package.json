@@ -1,0 +1,12 @@
+{
+  "dependencies": {
+    "babel-polyfill": "^6.23.0",
+    "casperjs": "^1.1.4",
+    "caster": "^0.1.1",
+    "jquery": "^3.2.1",
+    "js-beautify": "^1.6.14",
+    "phantomjs": "^2.1.7+deprecated",
+    "process": "^0.11.10",
+    "request": "^2.81.0"
+  }
+}

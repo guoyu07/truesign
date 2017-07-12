@@ -57,6 +57,7 @@ class TimeStack {
         static::$current = $parent;
 
         if (!$parent) {
+
             $spent = TimeStack::timeSpent();
             $conf = \Yaf_Registry::get('config');
             if ($spent >= $conf->application->timeout) {
