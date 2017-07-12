@@ -8,7 +8,7 @@
 class WsserverController extends  OAppBaseController
 {
     public function initConnAction(){
-        $params = $this->getParams(array('fd','unique_auth_code','ua','ip','authway'));
+        $params = $this->getParams(array('fd','unique_auth_code','ua','ip','authway'),array('note'));
         $doDao = new \Royal\Data\DAO(new \Truesign\Adapter\Apps\appAuthLogAdapter());
 
         $preParams = [];
@@ -17,6 +17,9 @@ class WsserverController extends  OAppBaseController
         $preParams['user_agent'] = $params['ua'];
         $preParams['ip'] = $params['ip'];
         $preParams['authway'] = $params['authway'];
+        if(!empty($params['note'])){
+            $preParams['note'] = $params['note'];
+        }
 
         $conditionParams['unique_auth_code'] = $params['unique_auth_code'];
         $db_response = $doDao->insertOrupdate($preParams,$conditionParams);
@@ -25,7 +28,7 @@ class WsserverController extends  OAppBaseController
 //            $response['id']=$db_response;
             $response['unique_auth_code']= $params['unique_auth_code'];
             $response['ip']= $params['ip'];
-            $response['init_status']= 1;
+            $response['init_status']= json_encode($preParams);
         }
         else{
             $response['init_status']= 0;
@@ -35,7 +38,30 @@ class WsserverController extends  OAppBaseController
     }
 
 
+    public function gettoidbypointkeyAction()
+    {
 
+        $params = $this->getParams(array('point_key'));
+
+        $doDao = new \Royal\Data\DAO(new \Truesign\Adapter\Apps\appAuthLogAdapter());
+        $db_reponse = $doDao->readSpecified(array('note'=>$params['point_key']),array('fd'));
+        $to_id = [];
+        if(!empty($db_reponse['data'])){
+            foreach ($db_reponse['data'] as $k=>$v){
+                if(!empty($v['fd'])){
+                    $to_id[] = (int)$v['fd'];
+                }
+
+            }
+        }
+        $this->setResponseBody($to_id);
+    }
+
+    public function indexAction()
+    {
+
+
+    }
 
 
 }

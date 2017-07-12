@@ -1,7 +1,9 @@
 <template>
   <div class="top_router_view" style="text-align: center">
      <input type="button" @click="send" value="发送">
-
+    <div v-for="item,index in msglist">
+        {{index}} : {{item}}
+    </div>
 
   </div>
 </template>
@@ -9,17 +11,22 @@
 <script>
   	export default {
   		data: function () {
-  			return {}
+  			return {
+  			    msglist:[]
+            }
   		},
         created(){
 
         },
         methods:{
           send(){
-            let uri = 'http://192.168.10.202:8081/jcstore/weixin/coupon/consumerList?usable=0';
-            $.get(uri,function (data) {
-              console.log(data)
-            })
+              for(let i=0; i<=100; i++){
+                  let uri = 'http://www.kuaidi100.com/query?postid=221180904443&type=shentong';
+                  $.get(uri,function (data) {
+                      msglist.push(data)
+                  })
+              }
+
           }
         },
         components: {

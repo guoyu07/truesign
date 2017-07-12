@@ -1,12 +1,13 @@
 <template>
-  <div class="top_router_view" :style="{width: sysinfo.screenWidth,height:sysinfo.screenWidth,overflow:'hidden'}">
+  <div class="top_router_view"
+       :style="{width: sysinfo.screenWidth+'px',height:sysinfo.screenWidth+'px',overflow:'hidden'}">
     <div  id="live_ctrl_terminal">
       <div id="ctrl_conn">
-        <div id="link_server" style="box-shadow: 0 0 10px #57DCDF">
+        <div id="link_server" style="box-shadow: 0 0 10px #57DCDF;text-align: left">
           <div  @click="socket_init" class="ctrl_cls init_conn">连接伺服器</div>
           <div  @click="disconnect" class="ctrl_cls init_conn" style="background-color: rgba(231,129,83,0.52)">断开连接伺服器</div>
           <transition name="slide-fade-right" mode="out-in">
-            <div  v-if="website.conn_status" key="conn_on">
+            <div  v-if="website.conn_status" key="conn_on"  style="padding-top:20px">
 
               <div class="loader">
                 <div class="loading--1"></div>
@@ -16,7 +17,7 @@
               </div>
 
             </div>
-            <div  v-if="!website.conn_status" key="conn_off">
+            <div  v-if="!website.conn_status" key="conn_off"  style="padding-top:20px">
               <div class="loader">
                 <div class="loading-3"></div>
                 <!--<div class="loading-4">{{ conn_info }}</div>-->
@@ -100,7 +101,7 @@
 <script>
   import { mapGetters,mapActions } from 'vuex'
 
-  import SOCKET_CLIENT from '../api/SOCKET_CLIENT'
+  import SOCKET_CLIENT from '../api/socket_client'
 //    import LocalVoucher from '../../api/LocalVoucherTools'
     import { analysis_socket_response } from '../api/lib/helper/dataAnalysis'
 
@@ -318,103 +319,103 @@
              */
 //
             var i = 1;
-            this.$root.eventHub.$on('base_socket_response',function (data) {
-//                console.log('initSocket->socket_reponse',data)
-                var socket_reponse = analysis_socket_response(data)
-                if(socket_reponse.response_type === 'get_shadowsocks_node'){
-                    console.log('initsocket->get_shadowsocks_node')
-                }
-                if(socket_reponse.response_type === 'self_init' && socket_reponse.response_init_data.init_status){
-
-
-                    vm.updateWebSite({
-                        unique_auth_code:socket_reponse.response_init_data.unique_auth_code,
-                        conn_status:1,
-                        socket_id:socket_reponse.response_init_data.socket_id
-
-                    })
-                    vm.updateSysInfo({
-                        ip:socket_reponse.response_init_data.ip
-                    })
-                    vm.$root.eventHub.$emit('checkloginbykey',1)
-                    vm.fetchPreConnApps()
-                }
-                if(socket_reponse.response_type === 'fetchPreConnApps'){
-                    vm.doinitapps(socket_reponse.reponse_data)
-                }
-                if(socket_reponse.response_type === 'bind_apps'){
-                    if(socket_reponse.response_init_data.bind_status){
-                        vm.updateWebSite({
-                            encryption_key:socket_reponse.response_init_data.bind_status,
-                            access_user:socket_reponse.response_init_data.access_user,
-                            isbindapps:JSON.stringify(socket_reponse.response_init_data.isbindapps),
-
-                        })
-                        vm.$root.eventHub.$emit('init_bind_apps',socket_reponse.response_init_data.access_user)
-                    }
-                    else{
-                        vm.$root.eventHub.$emit('showtip',{
-                            content:'系统底层 -·'+socket_reponse.response_init_data.note+'·- 请联系【最高】级别管理员'
-                        })
-                    }
-                }
-                if(socket_reponse.response_type === 'ping'){
-//                    console.log('ping',i)
-                    i++
-                    if(!vm.website.login_status){
-
-                    }
-                    vm.updateWebSite({
-
-                        conn_status:1,
-
-                    })
-
-                    if(vm.website.conn_status && vm.eventfactory.init_socket_send_factory.length > 0){
-                        var init_data = vm.eventfactory.init_socket_send_factory.shift()
-//                        console.log('init_data->',init_data.payload_type,init_data)
-//                        vm.updateEventFactory({type:'shift_init_socket_send_factory'})
-                        if(init_data){
-//                        console.log('init_socket_send_factory',init_data.payload_type,init_data.yaf,init_data.payload_data)
-
-                            vm.to = init_data.to
-                            vm.payload_type = init_data.payload_type
-                            vm.payload_data = init_data.payload_data
-                            vm.module = init_data.yaf.module
-                            vm.controller = init_data.yaf.controller
-                            vm.action = init_data.yaf.action
-                            vm.send()
-                        }
-                    }
-//                    console.log('怎么不执行',vm.website.conn_status,vm.website.isbindapps.length,)
-
-                    if(vm.website.conn_status && vm.website.isbindapps.length > 0 &&  vm.eventfactory.socket_send_factory.length > 0){
-                        var event_data = vm.eventfactory.socket_send_factory.shift()
-//                        console.log('event_data->',event_data.payload_type,event_data)
-
-//                        vm.updateEventFactory({type:'shift_socket_send_factory'})
-
-
-                        if(event_data){
-                            if(event_data.payload_type === 'c2c_msg'){
-                                vm.send(true,event_data)
-                            }
-//                        console.log('socket_send_factory',data.payload_type,data.yaf,data.payload_data)
-                            else{
-                                vm.to = event_data.to
-                                vm.payload_type = event_data.payload_type
-                                vm.payload_data = event_data.payload_data
-                                vm.module = event_data.yaf.module
-                                vm.controller = event_data.yaf.controller
-                                vm.action = event_data.yaf.action
-                                vm.send()
-                            }
-
-                        }
-                    }
-                }
-
-            })
+//            this.$root.eventHub.$on('base_socket_response',function (data) {
+////                console.log('initSocket->socket_reponse',data)
+//                var socket_reponse = analysis_socket_response(data)
+//                if(socket_reponse.response_type === 'get_shadowsocks_node'){
+//                    console.log('initsocket->get_shadowsocks_node')
+//                }
+//                if(socket_reponse.response_type === 'self_init' && socket_reponse.response_init_data.init_status){
+//
+//
+//                    vm.updateWebSite({
+//                        unique_auth_code:socket_reponse.response_init_data.unique_auth_code,
+//                        conn_status:1,
+//                        socket_id:socket_reponse.response_init_data.socket_id
+//
+//                    })
+//                    vm.updateSysInfo({
+//                        ip:socket_reponse.response_init_data.ip
+//                    })
+//                    vm.$root.eventHub.$emit('checkloginbykey',1)
+//                    vm.fetchPreConnApps()
+//                }
+//                if(socket_reponse.response_type === 'fetchPreConnApps'){
+//                    vm.doinitapps(socket_reponse.reponse_data)
+//                }
+//                if(socket_reponse.response_type === 'bind_apps'){
+//                    if(socket_reponse.response_init_data.bind_status){
+//                        vm.updateWebSite({
+//                            encryption_key:socket_reponse.response_init_data.bind_status,
+//                            access_user:socket_reponse.response_init_data.access_user,
+//                            isbindapps:JSON.stringify(socket_reponse.response_init_data.isbindapps),
+//
+//                        })
+//                        vm.$root.eventHub.$emit('init_bind_apps',socket_reponse.response_init_data.access_user)
+//                    }
+//                    else{
+//                        vm.$root.eventHub.$emit('showtip',{
+//                            content:'系统底层 -·'+socket_reponse.response_init_data.note+'·- 请联系【最高】级别管理员'
+//                        })
+//                    }
+//                }
+//                if(socket_reponse.response_type === 'ping'){
+////                    console.log('ping',i)
+//                    i++
+//                    if(!vm.website.login_status){
+//
+//                    }
+//                    vm.updateWebSite({
+//
+//                        conn_status:1,
+//
+//                    })
+//
+//                    if(vm.website.conn_status && vm.eventfactory.init_socket_send_factory.length > 0){
+//                        var init_data = vm.eventfactory.init_socket_send_factory.shift()
+////                        console.log('init_data->',init_data.payload_type,init_data)
+////                        vm.updateEventFactory({type:'shift_init_socket_send_factory'})
+//                        if(init_data){
+////                        console.log('init_socket_send_factory',init_data.payload_type,init_data.yaf,init_data.payload_data)
+//
+//                            vm.to = init_data.to
+//                            vm.payload_type = init_data.payload_type
+//                            vm.payload_data = init_data.payload_data
+//                            vm.module = init_data.yaf.module
+//                            vm.controller = init_data.yaf.controller
+//                            vm.action = init_data.yaf.action
+//                            vm.send()
+//                        }
+//                    }
+////                    console.log('怎么不执行',vm.website.conn_status,vm.website.isbindapps.length,)
+//
+//                    if(vm.website.conn_status && vm.website.isbindapps.length > 0 &&  vm.eventfactory.socket_send_factory.length > 0){
+//                        var event_data = vm.eventfactory.socket_send_factory.shift()
+////                        console.log('event_data->',event_data.payload_type,event_data)
+//
+////                        vm.updateEventFactory({type:'shift_socket_send_factory'})
+//
+//
+//                        if(event_data){
+//                            if(event_data.payload_type === 'c2c_msg'){
+//                                vm.send(true,event_data)
+//                            }
+////                        console.log('socket_send_factory',data.payload_type,data.yaf,data.payload_data)
+//                            else{
+//                                vm.to = event_data.to
+//                                vm.payload_type = event_data.payload_type
+//                                vm.payload_data = event_data.payload_data
+//                                vm.module = event_data.yaf.module
+//                                vm.controller = event_data.yaf.controller
+//                                vm.action = event_data.yaf.action
+//                                vm.send()
+//                            }
+//
+//                        }
+//                    }
+//                }
+//
+//            })
 
 //
 
@@ -535,7 +536,8 @@
             socket_init()  {
                 
                 SOCKET_CLIENT.data.this_vue = this
-                SOCKET_CLIENT.init(this.website.unique_auth_code)
+                SOCKET_CLIENT.data.socket_type = 'debug_for_spider'
+                SOCKET_CLIENT.init(this.website.unique_auth_code,'debug_for_spider')
 
             },
             disconnect() {

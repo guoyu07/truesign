@@ -43,11 +43,13 @@
                     vm.updateSysInfo({screenWidth:vm.screenWidth,screenHeight:vm.screenHeight})
                 })()
             }
+            vm.updateSysInfo({screenWidth:vm.screenWidth,screenHeight:vm.screenHeight})
         },
         components:{
 
 
         },
+
 
         watch: {
             screenWidth (val) {

@@ -46,7 +46,6 @@ class MySQL {
                 PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
                 PDO::ATTR_AUTOCOMMIT => true,
             ));
-        $this->beginTransaction();
         TimeStack::end();
     }
 

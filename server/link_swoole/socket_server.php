@@ -358,6 +358,12 @@ class socket_server{
         $header_app = $request->server['path_info'];
         $query_string = $request->server['query_string'];
         parse_str($query_string,$query_arr);
+//        echo '$query_string'.PHP_EOL;
+//
+//        var_dump($query_string);
+//        echo '$query_arr'.PHP_EOL;
+//
+//        var_dump($query_arr);
 
         $from = [
             'fd_type'=>'server',
@@ -385,12 +391,14 @@ class socket_server{
                 echo "生成唯一识别id->".$unique_auth_code.PHP_EOL;
 
             }
+
             $sysinfo = [];
             $sysinfo['fd']=$request->fd;
-            $sysinfo['ua']=$request->data;
+            $sysinfo['ua']=json_encode($request->header);
             $sysinfo['ip']=$request->server['remote_addr'];
             $sysinfo['unique_auth_code']=$unique_auth_code;
             $sysinfo['authway']='Browser';
+            $sysinfo['note']=$query_arr['socket_type'];
             $yaf_payload=[
                 'moudle'=>'index',
                 'controller'=>'wsserver',
@@ -399,6 +407,8 @@ class socket_server{
                 's_task_id'=>'0'
             ];
             $init_response = $this->runYaf($yaf_payload,$reload=false);
+            echo '$init_response'.PHP_EOL;
+            var_dump($init_response);
             $init_response['response_data']->data['socket_id'] = $request->fd;
             $openmsg = $this->buildMsg($from,$to,$me,$init_response,'self_init');
 
@@ -429,7 +439,22 @@ class socket_server{
         if($receive['payload_type'] == 'c2c_msg'){
             $payload_type = $receive['payload_type'];
             $to_id = $receive['to'];
-            $response_content = array('msg'=>$receive['msg'],'website_user'=>$receive['payload_data']['website_user'],'timestamp'=>$receive['timestamp'],'connections'=>$connections);
+//            $response_content = array('msg'=>$receive['msg'],'website_user'=>$receive['payload_data']['website_user'],'timestamp'=>$receive['timestamp'],'connections'=>$connections);
+            $response_content = array('msg'=>$receive['msg'],'website_user'=>$receive['payload_data']['website_user'],'timestamp'=>$receive['timestamp']);
+        }
+        elseif($receive['payload_type'] == 'c_point2_c_msg'){
+            $point_key  = $receive['payload_data']['point_key'];
+            $payload_data = $receive['payload_data'];
+
+//            $yaf_payload = $this->buildYaf('index', 'Wsserver', 'getToidByPointkey', $payload_data);
+            $yaf_payload = self::buildYaf('index','Wsserver','getToidByPointkey',$payload_data);
+            $yaf_response = $this->runYaf($yaf_payload);
+            echo 'c_point2_c_msg->reponse->'.PHP_EOL;
+
+            echo json_encode($yaf_response);
+            $to_id = $yaf_response['response_data']->data;
+            $response_content = $payload_data;
+            $payload_type = $point_key;
         }
         else{
             if($receive['yaf'] != 'none'){
@@ -542,6 +567,9 @@ class socket_server{
 
 
         if (count($data['to']) > 0) {
+            echo "存在指定接收人,开始遍历发送消息".PHP_EOL;
+            echo json_encode($data);
+
             $clients = $data['to'];
             foreach ($clients as $fd) {
                 if (!in_array($fd, $data['except'])) {
@@ -583,7 +611,8 @@ class socket_server{
      */
     public function initYaf($app='o_app'){
 //        echo "initYaf".PHP_EOL;
-        $configs=new \Yaf_Config_Ini(APPLICATION_PATH.'/config/business.ini','dbserver');
+        define('CURRECT_APPLICATION_PATH', APPLICATION_PATH.DIRECTORY_SEPARATOR.'apps'.DIRECTORY_SEPARATOR.$app);
+        $configs=new \Yaf_Config_Ini(APPLICATION_PATH.'/config/business.ini','common');
         \Yaf_Registry::set('config', $configs);
         $application = ['application'=>$configs->get('application')->toArray()];
         $application['application']['directory']=APPLICATION_PATH.'/apps/'.$app.'/application';

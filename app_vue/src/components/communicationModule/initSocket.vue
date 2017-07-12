@@ -98,7 +98,7 @@
   </div>
 </template>
 <script>
-    import SOCKET_CLIENT from '../../api/SOCKET_CLIENT'
+    import SOCKET_CLIENT from '../../api/socket_client'
 //    import LocalVoucher from '../../api/LocalVoucherTools'
     import { mapGetters,mapActions } from 'vuex'
     import { analysis_socket_response } from '../../api/lib/helper/dataAnalysis'

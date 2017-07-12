@@ -14,7 +14,7 @@ class IndexController extends OAppBaseController {
      * 对于如下的例子, 当访问http://yourhost/i_app/index/index/index/name/ql_os 的时候, 你就会发现不同
      */
 	public function indexAction($name = "Stranger") {
-        echo '123';
+        \Royal\Logger\Logger::log('CODELOGIC',123);
 //       $of = new \Royal\offline();
 //        $of->indo();
 //        echo '123';

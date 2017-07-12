@@ -20,7 +20,7 @@ class appsController extends  OAppBaseController
             'unique_auth_code'=>$params['unique_auth_code']
         ),array());
         if($needData['data'][0]['document_id']){
-            $decode_encryption_key = \Royal\Util\Decrypt::encryption($params['encryption_key'],$needData['data'][0]['document_id'],1);
+            $decode_encryption_key = \Royal\Crypt\Decrypt::encryption($params['encryption_key'],$needData['data'][0]['document_id'],1);
             if(sizeof($decode_encryption_key) == 2){
                 [0=>$tmp_unique_auth_code,1=>$limit_time]=$decode_encryption_key;
                 if($limit_time>time()){
@@ -53,6 +53,7 @@ class appsController extends  OAppBaseController
     }
     public function bindappsAction(){
         $params = $this->getParams(array('apps','key','pass','unique_auth_code'),array('note'));
+
         $doDao = new \Royal\Data\DAO(new \Truesign\Adapter\Apps\appCtrlLevelAdapter());
         $db_response = $doDao->readSpecified(
             array('`key`'=>$params['key'],'`pass`'=>$params['pass']),
@@ -60,7 +61,10 @@ class appsController extends  OAppBaseController
         );
         if($db_response['data']){
             $update_param = [];
-            $update_param['note']=$params['note'];
+            if(!empty($params['note'])){
+                $update_param['note']=$params['note'];
+
+            }
             $update_param['apps']=implode(';',$params['apps']);
             $update_param['ctrlid']=$db_response['data'][0]['document_id'];
             $update_param['ctrlname']=$db_response['data'][0]['nickname'];
@@ -71,7 +75,7 @@ class appsController extends  OAppBaseController
                 $auth_log_db_response = $auth_dao->readSpecified(array('unique_auth_code'=>$params['unique_auth_code']),array('document_id'));
                 $db_auth_response = $auth_dao->updateByQuery($update_param,$condition_param);
                 if($db_auth_response){
-                    $db_auth_response = \Royal\Util\Decrypt::encryption($params['unique_auth_code'],$auth_log_db_response['data'][0]['document_id'],0);
+                    $db_auth_response = \Royal\Crypt\Decrypt::encryption($params['unique_auth_code'],$auth_log_db_response['data'][0]['document_id'],0);
 //                    $db_auth_response = \Royal\Util\Decrypt::encryption('CQ9UVVwHCEIHVlhFDlsLR0BWQAJaEEVdClAYUgIJV1VWAlYBBw==',$db_response['data'][0]['document_id'],1);
                 }
                 unset($db_response['data'][0]['pass']);

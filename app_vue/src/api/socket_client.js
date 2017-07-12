@@ -6,7 +6,7 @@ const SOCKET_CLIENT  =  {
         to       : '',
         message        : null,
         payload:null,
-        wsserver    : 'ws://iamsee.com:9501',
+        wsserver    : 'ws://127.0.0.1:9501',
         response : '',
         this_vue : null,
         conn_status : false,
@@ -18,8 +18,6 @@ const SOCKET_CLIENT  =  {
         if(!this.data.conn_status){
             this.ws(unique_auth_code);
         }
-
-
     },
 
     ws : function(unique_auth_code){
@@ -36,10 +34,6 @@ const SOCKET_CLIENT  =  {
             // this.loopCheckStatus()
 
         }
-
-
-
-
     },
     wsSend : function(){
 
