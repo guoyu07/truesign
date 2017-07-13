@@ -7,13 +7,20 @@
 phantom.outputEncoding = 'utf-8' //解决中文乱码
 var $ = require('../node_modules/jquery/dist/jquery.min.js')
 var config = {
-    waitTime: 5000,
+    waitTime: 15000,
 }
 var uri = 'https://item.taobao.com/item.htm?spm=a21ig.146272.757693.1.1a44f7bPVSpmH&id=549067387968'
 var post_result_uri = 'http://127.0.0.1:7000/common/log'
 var i = 1;
 
 
+var keyList = []
+var source_and_msg = {
+    key:'',
+    type:'',
+    comment_source:'',
+    comment:[],
+}
 /*
  * 编码：websocket post client 端
  * */
@@ -44,9 +51,7 @@ function ws(unique_auth_code,socket_type){
     console.log('准备连接到服务器=>')
 
     // this.data.wSock  =  new WebSocket('ws://iamsee.com:9501/?unique_auth_code='+unique_auth_code);
-    wSock  =  new WebSocket('ws://127.0.0.1:9501/?unique_auth_code='+unique_auth_code+'&socket_type='+socket_type);
-
-
+    wSock  =  new WebSocket('ws://127.0.0.1:9501/?unique_auth_code='+unique_auth_code+'&point_key='+point_key+'&receive_key='+receive_key);
     wsOpen();
     wsMessage();
     wsOnclose();
@@ -65,7 +70,6 @@ function wsMessage(){
 
 
     wSock.onmessage = function(event){
-        console.log('websocket 收到消息')
         var reader = new FileReader();
         reader.readAsText(event.data, 'utf-8');
         reader.onload = function (e) {
@@ -73,7 +77,10 @@ function wsMessage(){
             var response_data  =  JSON.parse(event.datastr)
             var status = response_data.status
             var type = response_data.type
+
+            if(type !== 'ping'){
             console.log('...............'+type+'...............')
+            }
 
         }
 
@@ -115,7 +122,7 @@ var loop = setInterval(function () {
     if(conn_status){
         clearInterval(loop)
         wsSend(payload)
-        // casper.run(repeat)
+        casper.run(repeat)
     }
 })
 
@@ -124,7 +131,7 @@ var loop = setInterval(function () {
  * */
 var casper = require('casper').create({
     clientScripts: [
-        '../node_modules/jquery/dist/jquery.min.js',
+        'lib/jquery.min.js',
     ],
     pageSettings: {
         webSecurityEnabled: false,
@@ -142,34 +149,39 @@ var casper = require('casper').create({
 // casper.options.clientScripts.push("../node_modules/babel-polyfill/dist/polyfill.js")
 function repeat() {
     casper.thenOpen(uri).then(function () {
-        out2png(this)
+
         this.echo('do something....')
         var page_content = this.getPageContent()
-        var tmp = this.evaluate(function () {
+        out2png(this,page_content)
+        this.click('li a[shortcut-label="查看累计评论"]');
+        casper.wait(1000, function() {
+            this.click('li a[shortcut-label="查看累计评论"]');
+            if (this.exists('#reviews-t-val1')){
+                this.click('#reviews-t-val1');
+            }
 
-            return $('#J_TabBar').html()
-        });
-        // console.log('tmp',tmp)
-        this.click("#J_TabBar li:eq(1)");
-        out2png(this)
-        this.click("#J_TabBar li:eq(1) a.tb-tab-anchor");
-        out2png(this)
+            var page_content = this.getPageContent()
+            // var tmp_content = $('div.tb-revbd ul').html
+            // var tmp_content = this.getHTML('.tb-revbd',true)
+            out2png(this,page_content)
+        })
+        casper.wait(1000, function() {
+            this.echo("I've waited for a second.");
 
-        var params = {page_content: page_content}
+            this.click('li a[shortcut-label="查看累计评论"]');
+            // if (this.exists('#reviews-t-val1')){
+            //     this.click('#reviews-t-val1');
+            // }
+            var page_content = this.getPageContent()
+            out2png(this,page_content)
+            // casper.wait(10000, function() {
+            //     var page_content = this.getPageContent()
+            //     out2png(this,page_content)
+            // })
 
-        // casper.wait(1000, function() {
-        //   this.echo("I've waited for a second.");
-        //   // var jsonObject_fields = casper.evaluate(function(post_result_uri, params) {
-        //   //   try {
-        //   //     return JSON.parse(__utils__.sendAJAX(post_result_uri, 'POST', params, false));
-        //   //   } catch (e) {
-        //   //     console.log("Error in fetching json object");
-        //   //   }
-        //   // }, post_result_uri, params);
-        //   //
-        //   // console.log(JSON.stringify(jsonObject_fields));
-        //   // this.echo('do something done->'+jsonObject_fields)
-        // })
+        })
+
+
 
 
     })
@@ -193,7 +205,10 @@ function handleTimeout(data) {
 function handleError(data) {
     console.log('handleError', data)
 }
-function out2png(obj) {
-    obj.capture(i + ".png");
+function out2png(obj,info) {
+    var imgname = i+".png"
+    obj.capture('imgs/'+imgname);
     i++
+    payload.payload_data.msg = {info:info,img:imgname}
+    wsSend(payload)
 }

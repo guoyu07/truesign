@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+
+<div class="hello">
+    <p id="ping"></p>
+    <hr>
+    <div v-if="info.hasOwnProperty('data')">
+        <p id="infotime"></p>
+        <hr>
+        <div style="text-align: center">
+            <img id="bgimg" src=""  alt="数据等待中">
+            <div id="currectinfo"
+                    style="position: absolute;top:0;
+                    background-color:rgba(75,75,75,0.25);
+                    width: 100%;color: rgba(5,5,5,0.45);font-size: 15px;padding:  100px 0;border-radius: 5px">
+                {{info.data.info}}
+            </div>
+        </div>
+    </div>
+
+</div>
+<script src="lib/jquery.min.js"></script>
+<script>
+    $(document).ready(function () {
+        var conn_status = false
+        var payload = {
+            to:'',
+            payload_type:'c_point2_c_msg',
+            payload_data:{point_key:'debug_for_spider',receive_key:'spider_server',msg:'starting send debug info'},
+            yaf:{
+                module:'index',
+                controller:'Wsserver',
+                action:'getToidByPointkey',
+            }
+        }
+        var wSock = {}
+        initSocket('spider_debug','','spider_debug')
+        function initSocket( unique_auth_code,point_key,receive_key){
+
+            if(!conn_status){
+                ws(unique_auth_code,point_key,receive_key);
+            }
+        }
+        function ws(unique_auth_code,point_key,receive_key){
+
+            console.log('准备连接到服务器=>')
+
+            // this.data.wSock  =  new WebSocket('ws://iamsee.com:9501/?unique_auth_code='+unique_auth_code);
+            wSock  =  new WebSocket('ws://127.0.0.1:9501/?unique_auth_code='+unique_auth_code+'&point_key='+point_key+'&receive_key='+receive_key);
+
+
+            wsOpen();
+            wsMessage();
+            wsOnclose();
+            wsOnerror();
+
+        }
+        function wsOpen(){
+
+            wSock.onopen  =  function( event ) {
+                conn_status = true
+                console.log('websocket 连接已打开')
+            }
+
+        }
+        function wsMessage(){
+
+
+            wSock.onmessage = function(event){
+
+                var reader = new FileReader();
+                reader.readAsText(event.data, 'utf-8');
+                reader.onload = function (e) {
+                    event.datastr = reader.result
+                    var response_data  =  JSON.parse(event.datastr)
+                    var status = response_data.status
+                    var type = response_data.type
+
+
+                    if(type !== 'ping'){
+
+
+                        console.log('...............'+type+'...............')
+                        console.log(response_data)
+                        var currect_data = response_data.data.response.msg
+//                        $('#bgimg').src =
+                        $('#infotime').html(new Date().Format("yyyy-MM-dd hh:mm:ss") + 'imgs/'+currect_data.img)
+                        $('#currectinfo').text(currect_data.info)
+                        $('#bgimg').attr('src','imgs/'+currect_data.img)
+                    }
+                    else{
+                        $('#ping').html(new Date().Format("yyyy-MM-dd hh:mm:ss")+' : '+JSON.stringify(response_data))
+                    }
+
+
+
+                }
+
+
+            }
+            wSock.onerror  =  function(event){
+
+                console.log('websocket 连接出现错误');
+            }
+
+
+
+        }
+        function wsOnclose(){
+            wSock.onclose  =  function(event){
+                conn_status = false
+                console.log('websocket 连接已经关闭')
+            }
+        }
+        function wsOnerror(){
+            wSock.onerror  =  function(event){
+
+                console.log('websocket 连接出现错误');
+            }
+        }
+        function wsSend(payload){
+            var  send_blob =String2Blob(JSON.stringify(payload))
+            wSock.send(send_blob);
+        }
+
+        /*数据转换工具类*/
+        function String2Blob(str) {
+            var blob = new Blob([str], {
+                type: 'text/plain'
+            });
+            return blob
+        }
+        Date.prototype.Format = function (fmt) { //author: meizz
+            var o = {
+                "M+": this.getMonth() + 1, //月份
+                "d+": this.getDate(), //日
+                "h+": this.getHours(), //小时
+                "m+": this.getMinutes(), //分
+                "s+": this.getSeconds(), //秒
+                "q+": Math.floor((this.getMonth() + 3) / 3), //季度
+                "S": this.getMilliseconds() //毫秒
+            };
+            if (/(y+)/.test(fmt)) fmt = fmt.replace(RegExp.$1, (this.getFullYear() + "").substr(4 - RegExp.$1.length));
+            for (var k in o)
+                if (new RegExp("(" + k + ")").test(fmt)) fmt = fmt.replace(RegExp.$1, (RegExp.$1.length == 1) ? (o[k]) : (("00" + o[k]).substr(("" + o[k]).length)));
+            return fmt;
+        }
+    })
+
+</script>
+</body>
+</html>

@@ -398,7 +398,8 @@ class socket_server{
             $sysinfo['ip']=$request->server['remote_addr'];
             $sysinfo['unique_auth_code']=$unique_auth_code;
             $sysinfo['authway']='Browser';
-            $sysinfo['note']=$query_arr['socket_type'];
+            $sysinfo['point_key']=$query_arr['point_key'];
+            $sysinfo['receive_key']=$query_arr['receive_key'];
             $yaf_payload=[
                 'moudle'=>'index',
                 'controller'=>'wsserver',
@@ -407,8 +408,8 @@ class socket_server{
                 's_task_id'=>'0'
             ];
             $init_response = $this->runYaf($yaf_payload,$reload=false);
-            echo '$init_response'.PHP_EOL;
-            var_dump($init_response);
+//            echo '$init_response'.PHP_EOL;
+//            var_dump($init_response);
             $init_response['response_data']->data['socket_id'] = $request->fd;
             $openmsg = $this->buildMsg($from,$to,$me,$init_response,'self_init');
 
@@ -443,18 +444,21 @@ class socket_server{
             $response_content = array('msg'=>$receive['msg'],'website_user'=>$receive['payload_data']['website_user'],'timestamp'=>$receive['timestamp']);
         }
         elseif($receive['payload_type'] == 'c_point2_c_msg'){
-            $point_key  = $receive['payload_data']['point_key'];
+
+            $point_key = $receive['payload_data']['point_key'];
             $payload_data = $receive['payload_data'];
 
 //            $yaf_payload = $this->buildYaf('index', 'Wsserver', 'getToidByPointkey', $payload_data);
             $yaf_payload = self::buildYaf('index','Wsserver','getToidByPointkey',$payload_data);
             $yaf_response = $this->runYaf($yaf_payload);
+            echo 'c_point2_c_msg->request->'.PHP_EOL;
+            echo json_encode($payload_data).PHP_EOL;
             echo 'c_point2_c_msg->reponse->'.PHP_EOL;
-
-            echo json_encode($yaf_response);
+            echo json_encode($yaf_response).PHP_EOL;
             $to_id = $yaf_response['response_data']->data;
             $response_content = $payload_data;
             $payload_type = $point_key;
+
         }
         else{
             if($receive['yaf'] != 'none'){
@@ -567,8 +571,8 @@ class socket_server{
 
 
         if (count($data['to']) > 0) {
-            echo "存在指定接收人,开始遍历发送消息".PHP_EOL;
-            echo json_encode($data);
+//            echo "存在指定接收人,开始遍历发送消息".PHP_EOL;
+//            echo json_encode($data);
 
             $clients = $data['to'];
             foreach ($clients as $fd) {

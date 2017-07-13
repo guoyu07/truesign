@@ -8,7 +8,7 @@
 class WsserverController extends  OAppBaseController
 {
     public function initConnAction(){
-        $params = $this->getParams(array('fd','unique_auth_code','ua','ip','authway'),array('note'));
+        $params = $this->getParams(array('fd','unique_auth_code','ua','ip','authway'),array('note','point_key','receive_key'));
         $doDao = new \Royal\Data\DAO(new \Truesign\Adapter\Apps\appAuthLogAdapter());
 
         $preParams = [];
@@ -17,6 +17,8 @@ class WsserverController extends  OAppBaseController
         $preParams['user_agent'] = $params['ua'];
         $preParams['ip'] = $params['ip'];
         $preParams['authway'] = $params['authway'];
+        $preParams['point_key'] = $params['point_key'];
+        $preParams['receive_key'] = $params['receive_key'];
         if(!empty($params['note'])){
             $preParams['note'] = $params['note'];
         }
@@ -44,7 +46,7 @@ class WsserverController extends  OAppBaseController
         $params = $this->getParams(array('point_key'));
 
         $doDao = new \Royal\Data\DAO(new \Truesign\Adapter\Apps\appAuthLogAdapter());
-        $db_reponse = $doDao->readSpecified(array('note'=>$params['point_key']),array('fd'));
+        $db_reponse = $doDao->readSpecified(array('receive_key'=>$params['point_key']),array('fd'));
         $to_id = [];
         if(!empty($db_reponse['data'])){
             foreach ($db_reponse['data'] as $k=>$v){
