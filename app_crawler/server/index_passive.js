@@ -6,6 +6,8 @@
 /*编码配置项端*/
 phantom.outputEncoding = 'utf-8' //解决中文乱码
 var $ = require('../node_modules/jquery/dist/jquery.min.js')
+var x = require('casper').selectXPath;
+var utils = require('utils');
 var config = {
     waitTime: 15000,
 }
@@ -178,15 +180,15 @@ function startHanlde() {
             loadPlugins: false
         },
 
-        logLevel: 'info',
+        logLevel: 'debug',
         verbose: false,
         waitTimeout: 1000000,
-        onWaitTimeout: handleWaitTimeout,
-        onTimeout: handleTimeout,
-        onError: handleError,
+        // onWaitTimeout: handleWaitTimeout,
+        // onTimeout: handleTimeout,
+        // onError: handleError,
 
     })
-    casper.options.pageSettings.proxy = 'http://192.168.2.1:9630';
+    // casper.options.pageSettings.proxy = 'http://192.168.2.1:9630';
     var currect_ua_index = parseInt((Math.random()*10)%userAgent.length)
     console.log('currect_ua_index',currect_ua_index)
     // casper.userAgent(userAgent[]);
@@ -204,78 +206,197 @@ function startHanlde() {
             response.type = search_key
             comment = {}
 
-            links = this.evaluate(getLinks);
+            links = this.evaluate(getLinks_BySearch);
             comment.source = 'http:'+links
 
 
 
         })
 
-        function getLinks() {
-            var links = document.querySelectorAll('.items div.J_MouserOnverReq[data-index="0"] div.pic a');
-            return Array.prototype.map.call(links, function(e) {
-                return e.getAttribute('href');
-            });
-        }
+       
     });
     casper.then(function () {
-        console.log('准备根据 search_key:'+search_key + ' => item_url: ')
-        console.log(comment.source+' 进行评论爬取')
 
-        casper.thenOpen(comment.source, function () {
-            // this.waitForSelector('li a[shortcut-label="查看累计评论"]');
-            // this.click('li a[shortcut-label="查看累计评论"]');
-           
-                // this.click('li a[shortcut-label="查看累计评论"]');
-                // console.log('进行[累计评论]点击')
-                // out2png(this,this.getPageContent())
-                console.log('提取评论request jsonp url')
+        if(comment.source.indexOf('taobao')>=0)
+        {
+            console.log('获取到 【淘宝】 商品连接 '+comment.source)
+
+            casper.thenOpen(comment.source, function () {
+
+                console.log('准备提取评论request jsonp url')
                 comment.request_url = 'http:'+this.getElementAttribute('#reviews','data-listapi')+'&currentPageNum=1&pageSize=50&rateType=1'
-                
+                console.log(comment.request_url)
                 this.evaluate(function (url) {
                     console.log('url->'+url)
                     $.ajax({
-                      async: false,
-                      url: url,      //跨域到http://www.wp.com，另，http://test.com也算跨域
-                      type:'GET',                                //jsonp 类型下只能使用GET,不能用POST,这里不写默认为GET
-                      dataType:'jsonp',                          //指定为jsonp类型
-                      success:function(result){  
-                          console.log('jsonp_response_comment'+JSON.stringify(result))
-                      },
-                      error:function(msg){
-                          console.log(msg)
-                      }
-                    }); 
+                        async: false,
+                        url: url,      //跨域到http://www.wp.com，另，http://test.com也算跨域
+                        type:'GET',                                //jsonp 类型下只能使用GET,不能用POST,这里不写默认为GET
+                        dataType:'jsonp',                          //指定为jsonp类型
+                        success:function(result){
+                            console.log('work!')
+                            console.log('jsonp_response_comment'+JSON.stringify(result))
+                        },
+                        error:function(msg){
+                            console.log(msg)
+                        }
+                    });
                 },comment.request_url);
 
-           
 
 
-        })
+
+            })
+        }
+        else if(comment.source.indexOf('tmall')>=0){
+            console.log('获取到 【天猫】 商品连接 '+comment.source)
+            if(false){
+                console.log('修改天猫商品链接为手机端天猫商品连接')
+                comment.source = comment.source.replace(/detail\./,'detail.m.')
+                console.log(comment.source)
+                casper.thenOpen(comment.source, function () {
+
+                    console.log('准备提取评论request jsonp url')
+                    casper.waitForSelector('header a:nth-child(3)', function() {
+                        console.log('评论链接出现，准备点击')
+                        var click_value = this.getHTML('header a:nth-child(3)')
+                        this.click('header a:nth-child(3)');
+
+                        this.click('div.toshop');
+                        // this.mouseEvent('click', 'div.toshop', "20%", "50%");
+                        var page_content = this.getPageContent();
+                        out2png(this,page_content)
+
+                    });
+
+                })
+            }
+            else{
+                console.log('进行tmall电脑端爬取')
+                console.log(comment.source)
+                casper.thenOpen(comment.source, function () {
+                    // var page_content = this.getPageContent();
+                    // out2png(this,page_content)
+                    console.log('准备提取评论request jsonp url')
+                    // casper.waitForSelector('#J_TabBar li:nth-child(2)', function() {
+                    //     console.log('评论链接出现，准备点击')
+                    //
+                    // });
+                    // console.log(this.getHTML('#J_ItemRates div span.tm-label'))
+                    this.echo(this.getHTML('#J_TabBar'))
+                    casper.waitFor(function check() {
+                        return this.evaluate(function() {
+                            console.log('debug  '+ $('head')[0].innerHTML)
+                        });
+                    }, function then() {
+                        this.echo('等待成功')
+                    });
+                    // getheader()
+                    // function getheader() {
+                    //     casper.waitForSelectorTextChange('head', function() {
+                    //         this.echo('头部内容改变了')
+                    //         if(this.getHTML('head').indexOf('listTryReport.htm')>=0){
+                    //             console.log('拿到最终head script')
+                    //             out2png(this,'success   '+this.getHTML('head'))
+                    //         }
+                    //         else{
+                    //             if (this.exists('#J_TabBar li')){
+                    //                 this.click('#J_ItemRates')
+                    //                 this.click('#J_TabBar li:nth-child(2)')
+                    //                 this.wait(2000, function() {
+                    //                     out2png(this,'error   '+this.getHTML('head'))
+                    //                 });
+                    //
+                    //                 getheader()
+                    //             }
+                    //             else{
+                    //                 this.wait(2000, function() {
+                    //                     out2png(this,'error   '+this.getHTML('head'))
+                    //                 });
+                    //                 getheader()
+                    //             }
+                    //
+                    //
+                    //         }
+                    //
+                    //     })
+                    // }
+
+                    // casper.waitForSelectorTextChange('.rate-grid', function() {
+                    //     this.echo('评论加载出来了')
+                    //     this.click('#J_ItemRates div span.tm-label')
+                    //
+                    //     // this.echo(this.getHTML('.rate-grid'))
+                    //     out2png(this,this.getHTML('head'))
+                    // })
+                    // casper.waitForSelectorTextChange('#J_TabBar', function() {
+                    //     this.echo('The text on .selector has been changed.');
+                    //     casper.waitForSelectorTextChange('.rate-grid', function() {
+                    //         this.echo('评论加载出来了')
+                    //         this.click('#J_ItemRates div span.tm-label')
+                    //
+                    //         // this.echo(this.getHTML('.rate-grid'))
+                    //         out2png(this,this.getHTML('head'))
+                    //     })
+                    // });
+                    // casper.wait(100, function() {
+                    //     out2png(this,100)
+                    //     casper.wait(1000, function() {
+                    //         out2png(this,1000)
+                    //         casper.wait(2000, function() {
+                    //             out2png(this,2000)
+                    //
+                    //         })
+                    //     })
+                    //
+                    // })
+
+                })
+            }
+
+        }
+
 
     })
     casper.on('remote.message', function(remote_console) {
 
-        console.log('remote_console',remote_console)
-        if(remote_console.indexOf('jsonp_response_comment')>0){
+        if(remote_console.indexOf('jsonp_response_comment')>=0){
             console.log('接收到jsonp 评论数据')
-            var build_remote_console = remote_console.replace('jsonp_response_comment','')
+            var build_remote_console = remote_console.replace(/jsonp_response_comment/,'')
+            console.log('------------------------')
             if(isJSON(build_remote_console)){
                 console.log('获取到评论数据!')
-                console.log(build_remote_console)
+                out2png(this,build_remote_console)
             }
             else{
                 console.log('IP封禁!')
             }
         }
-        // if(isJSON(remote_console)){
-        //
-        // }
-
+        if(remote_console.indexOf('debug')>=0){
+            console.log('remote->debug->',remote_console)
+        }
+    })
+    casper.on('error',function (err) {
+        console.log('err',err)
+    })
+    casper.on('timeout',function (out) {
+        console.log('timeout',out)
     })
     casper.run(function() {
         return true;
     });
+    function getLinks_BySearch() {
+        var links = document.querySelectorAll('.items div.J_MouserOnverReq[data-index="0"] div.pic a');
+        return Array.prototype.map.call(links, function(e) {
+            return e.getAttribute('href');
+        });
+
+    }
+    function getLinks_ByTmallItem() {
+         headhtml = window.document.head.innerHTML;
+        return headhtml
+    }
+    
 
 }
 
