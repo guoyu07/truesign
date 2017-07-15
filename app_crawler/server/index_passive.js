@@ -58,7 +58,7 @@ var payload = {
     }
 }
 var wSock = {}
-initSocket('spider_server','spider_server,spider_debug','spider_server')
+// initSocket('spider_server','spider_server,spider_debug','spider_server')
 function initSocket( unique_auth_code,point_key,receive_key){
 
     if(!conn_status){
@@ -148,7 +148,6 @@ function wsSend(payload){
     var  send_blob =String2Blob(JSON.stringify(payload))
     wSock.send(send_blob);
 }
-
 /*数据转换工具类*/
 function String2Blob(str) {
     var blob = new Blob([str], {
@@ -162,13 +161,29 @@ function String2Blob(str) {
 //     }
 // })
 
+
+/*
+*   编码 http webserver 服务端
+* */
+
+var ip_server = '127.0.0.1:6600';
+
+//includes web server modules
+var server = require('webserver').create();
+
+//start web server
+var service = server.listen(ip_server, function(request, response) {
+
+})
+console.log('Server running at http://' + ip_server+'/');
+
 /*
  * 编码逻辑端
  * */
 
 
 
-function startHanlde() {
+function startHanlde(type) {
 
     var casper = require('casper').create({
         clientScripts: [
@@ -275,52 +290,131 @@ function startHanlde() {
                 console.log('进行tmall电脑端爬取')
                 console.log(comment.source)
                 casper.thenOpen(comment.source, function () {
-                    // var page_content = this.getPageContent();
-                    // out2png(this,page_content)
                     console.log('准备提取评论request jsonp url')
-                    // casper.waitForSelector('#J_TabBar li:nth-child(2)', function() {
-                    //     console.log('评论链接出现，准备点击')
-                    //
-                    // });
-                    // console.log(this.getHTML('#J_ItemRates div span.tm-label'))
-                    this.echo(this.getHTML('#J_TabBar'))
+                    var links = document.querySelectorAll('head script');
+                    var currect_link = Array.prototype.map.call(links, function(e) {
+                        if (typeof e.getAttribute('src') === 'string') {
+                            return e.getAttribute('src')
+                        }
+                    })
+                    out2png(this,this.getPageContent())
+                        // casper.waitForSelectorTextChange('head', function() {
+                        //     this.echo('头部内容改变了')
+                        //     if(this.getHTML('head').indexOf('listTryReport.htm')>=0){
+                        //         console.log('拿到最终head script')
+                        //         out2png(this,'success   '+this.getHTML('head'))
+                        //     }
+                        //     else{
+                        //         if (this.exists('#J_TabBar li')){
+                        //             this.click('#J_ItemRates')
+                        //             this.click('#J_TabBar li:nth-child(2)')
+                        //             this.wait(4000, function() {
+                        //                 out2png(this,'error   '+this.getHTML('head'))
+                        //             });
+                        //
+                        //             getheader()
+                        //         }
+                        //         else{
+                        //             this.wait(4000, function() {
+                        //                 out2png(this,'error   '+this.getHTML('head'))
+                        //             });
+                        //             getheader()
+                        //         }
+                        //
+                        //
+                        //     }
+                        //
+                        // })
+                    this.click('#J_ItemRates')
                     casper.waitFor(function check() {
                         return this.evaluate(function() {
-                            console.log('debug  '+ $('head')[0].innerHTML)
+                            console.log('debug---------------------------')
+
+                            var links = document.querySelectorAll('head script');
+                            var currect_link = Array.prototype.map.call(links, function(e) {
+                                if (typeof e.getAttribute('src') === 'string') {
+                                    return e.getAttribute('src').indexOf('adapter.js')
+                                }
+                            })
+                            console.log(currect_link)
+                            for (var item in currect_link){
+                                if(currect_link[item] >= 0){
+                                    return true
+                                }
+                            }
+                            // console.log($('.rate-grid')[0].innerHTML)
+
                         });
                     }, function then() {
-                        this.echo('等待成功')
+                        this.echo('第一次加载完成，等待点击进入第二次加载')
+                        if (this.exists('#J_TabBar li')) {
+                            console.log('存在评论点击链接，准备点击')
+                            this.click('#J_ItemRates')
+                            this.click('#J_TabBar li:nth-child(2)')
+                            out2png(this,this.getPageContent())
+                            casper.waitFor(function check() {
+                                return this.evaluate(function() {
+                                    console.log('debug 第二次加载中---------------------------')
+
+                                    var links = document.querySelectorAll('head script');
+                                    var currect_link = Array.prototype.map.call(links, function(e) {
+                                        if (typeof e.getAttribute('src') === 'string') {
+                                            return e.getAttribute('src').indexOf('&currentPage=1&append=0&content=1&tagId=&posi=&picture=&ua')
+                                        }
+                                    })
+                                    console.log(currect_link)
+                                    for (var item in currect_link){
+                                        if(currect_link[item] >= 0){
+                                            return true
+                                        }
+                                    }
+                                    // console.log($('.rate-grid')[0].innerHTML)
+
+                                });
+                            },function then() {
+                                console.log('评论数据加载完成')
+                                var currect_links = this.evaluate(getlinksBycurrectDom)
+                                // console.log(currect_links)
+                                // console.log(typeof currect_links)
+                                for (var item in currect_links){
+
+                                    if(currect_links[item].indexOf('&currentPage=1&append=0&content=1&tagId=&posi=&picture=&ua') >= 0){
+                                        var jsonp_url = currect_links[item]
+                                        console.log('提取到jsonp 评论url => ')
+                                        // var jsonp_fun = jsonp_url.match(/callback=\S*/)[0].replace(/callback=/,'')
+                                        var jsonp_fun = jsonp_url.match(/callback=\S*/)[0]
+                                        jsonp_url = jsonp_url.replace(jsonp_fun,'jsonp_success')
+                                        console.log(jsonp_url)
+
+                                        this.evaluate(function (url) {
+                                            console.log('url->'+url)
+                                            $.ajax({
+                                                async: false,
+                                                url: url,      //跨域到http://www.wp.com，另，http://test.com也算跨域
+                                                type:'GET',                                //jsonp 类型下只能使用GET,不能用POST,这里不写默认为GET
+                                                dataType:'jsonp',
+                                                // jsonpCallback:jsonp_fun,
+                                                success:function(result){
+                                                    console.log('work!')
+                                                    console.log('jsonp_response_comment'+JSON.stringify(result))
+
+                                                },
+                                                error:function(msg){
+                                                    console.log('error')
+                                                    console.log(JSON.stringify(msg))
+                                                },
+
+                                            });
+                                            function jsonp_success(data) {
+                                                console.log('jsonp_success',data)
+                                            }
+                                        },jsonp_url);
+                                        console.log('done')
+                                    }
+                                }
+                            })
+                        }
                     });
-                    // getheader()
-                    // function getheader() {
-                    //     casper.waitForSelectorTextChange('head', function() {
-                    //         this.echo('头部内容改变了')
-                    //         if(this.getHTML('head').indexOf('listTryReport.htm')>=0){
-                    //             console.log('拿到最终head script')
-                    //             out2png(this,'success   '+this.getHTML('head'))
-                    //         }
-                    //         else{
-                    //             if (this.exists('#J_TabBar li')){
-                    //                 this.click('#J_ItemRates')
-                    //                 this.click('#J_TabBar li:nth-child(2)')
-                    //                 this.wait(2000, function() {
-                    //                     out2png(this,'error   '+this.getHTML('head'))
-                    //                 });
-                    //
-                    //                 getheader()
-                    //             }
-                    //             else{
-                    //                 this.wait(2000, function() {
-                    //                     out2png(this,'error   '+this.getHTML('head'))
-                    //                 });
-                    //                 getheader()
-                    //             }
-                    //
-                    //
-                    //         }
-                    //
-                    //     })
-                    // }
 
                     // casper.waitForSelectorTextChange('.rate-grid', function() {
                     //     this.echo('评论加载出来了')
@@ -359,6 +453,7 @@ function startHanlde() {
 
     })
     casper.on('remote.message', function(remote_console) {
+        console.log('remote->',remote_console)
 
         if(remote_console.indexOf('jsonp_response_comment')>=0){
             console.log('接收到jsonp 评论数据')
@@ -373,7 +468,7 @@ function startHanlde() {
             }
         }
         if(remote_console.indexOf('debug')>=0){
-            console.log('remote->debug->',remote_console)
+            // console.log('remote->debug->',remote_console)
         }
     })
     casper.on('error',function (err) {
@@ -392,9 +487,11 @@ function startHanlde() {
         });
 
     }
-    function getLinks_ByTmallItem() {
-         headhtml = window.document.head.innerHTML;
-        return headhtml
+    function getlinksBycurrectDom(selector,attr) {
+        var links = document.querySelectorAll('head script');
+        return Array.prototype.map.call(links, function(e) {
+            return e.getAttribute('src');
+        });
     }
     
 

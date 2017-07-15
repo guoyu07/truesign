@@ -28,6 +28,26 @@
 <script>
     $(document).ready(function () {
         console.log('head->',$('head')[0].innerHTML)
+        url = 'https://rate.tmall.com/list_detail_rate.htm?itemId=41006957020&spuId=324172734&sellerId=2104829837&order=3&currentPage=1&append=0&content=1&tagId=&posi=&picture=&ua=032UW5TcyMNYQwiAiwQRHhBfEF8QXtHcklnMWc%3D%7CUm5Ockp3SnZLc09wSHVLdyE%3D%7CU2xMHDJ5HzNPKUosSzVTfxVuCXcNYBs1FTtSNBhkAmEHYB54VCtGPUcmQScJKQdBIEY6S2UzZQ%3D%3D%7CVGhXd1llXWBdYVxkWGdfYlxgV2pIdUt%2FQXtPck9ySXJMdk50SnVMYjQ%3D%7CVWldfS0QMAU7BiYePhBAIx87ED5oPg%3D%3D%7CVmhIGCUFOBgsGCUFPAQ7ACAcIR4nBz0GMxMvEi0UNA41AFYA%7CV29PHzFxJWYbdhNKI14zSWdHFy0RLg43AzhuTnNTfVNzTHdNdSN1%7CWGFcYUF8XGNDf0Z6WmRcZkZ%2FX2NXAQ%3D%3D&needFold=0&_ksTS=1500105129769_1114'
+        $.ajax({
+            async: false,
+            url: url,      //跨域到http://www.wp.com，另，http://test.com也算跨域
+            type:'GET',                                //jsonp 类型下只能使用GET,不能用POST,这里不写默认为GET
+            dataType:'jsonp',                          //指定为jsonp类型
+            success:function(result){
+                console.log('work!')
+                console.log(typeof result)
+                console.log(result)
+                console.log('jsonp_response_comment'+JSON.stringify(result))
+            },
+            error:function(msg){
+                console.log('error')
+                console.log(JSON.stringify(msg))
+            }
+        });
+        function jsonp_success(data) {
+            console.log('jsonp_success',data)
+        }
         var conn_status = false
         var payload = {
             to:'',
