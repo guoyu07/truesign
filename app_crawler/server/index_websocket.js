@@ -386,29 +386,29 @@ function startHanlde(type) {
                                         jsonp_url = jsonp_url.replace(jsonp_fun,'jsonp_success')
                                         console.log(jsonp_url)
 
-                                        this.evaluate(function (url) {
-                                            console.log('url->'+url)
-                                            $.ajax({
-                                                async: false,
-                                                url: url,      //跨域到http://www.wp.com，另，http://test.com也算跨域
-                                                type:'GET',                                //jsonp 类型下只能使用GET,不能用POST,这里不写默认为GET
-                                                dataType:'jsonp',
-                                                // jsonpCallback:jsonp_fun,
-                                                success:function(result){
-                                                    console.log('work!')
-                                                    console.log('jsonp_response_comment'+JSON.stringify(result))
-
-                                                },
-                                                error:function(msg){
-                                                    console.log('error')
-                                                    console.log(JSON.stringify(msg))
-                                                },
-
-                                            });
-                                            function jsonp_success(data) {
-                                                console.log('jsonp_success',data)
-                                            }
-                                        },jsonp_url);
+                                        // this.evaluate(function (url) {
+                                        //     console.log('url->'+url)
+                                        //     $.ajax({
+                                        //         async: false,
+                                        //         url: url,      //跨域到http://www.wp.com，另，http://test.com也算跨域
+                                        //         type:'GET',                                //jsonp 类型下只能使用GET,不能用POST,这里不写默认为GET
+                                        //         dataType:'jsonp',
+                                        //         // jsonpCallback:jsonp_fun,
+                                        //         success:function(result){
+                                        //             console.log('work!')
+                                        //             console.log('jsonp_response_comment'+JSON.stringify(result))
+                                        //
+                                        //         },
+                                        //         error:function(msg){
+                                        //             console.log('error')
+                                        //             console.log(JSON.stringify(msg))
+                                        //         },
+                                        //
+                                        //     });
+                                        //     function jsonp_success(data) {
+                                        //         console.log('jsonp_success',data)
+                                        //     }
+                                        // },jsonp_url);
                                         console.log('done')
                                     }
                                 }

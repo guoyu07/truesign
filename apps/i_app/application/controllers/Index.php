@@ -13,7 +13,7 @@ class IndexController extends Yaf_Controller_Abstract {
      * 对于如下的例子, 当访问http://yourhost/i_app/index/index/index/name/ql_os 的时候, 你就会发现不同
      */
 	public function indexAction() {
-		echo 'i_app';
+		echo json_encode($_COOKIE);
 	}
 
     public function getRequestAction()
