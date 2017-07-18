@@ -204,7 +204,7 @@ function startHanlde(type) {
 
     })
     // casper.options.pageSettings.proxy = 'http://192.168.2.1:9630';
-    var currect_ua_index = parseInt((Math.random()*10)%userAgent.length)
+    var currect_ua = parseInt((Math.random()*10)%userAgent.length)
     console.log('currect_ua_index',currect_ua_index)
     // casper.userAgent(userAgent[]);
     casper.start().then(function () {
