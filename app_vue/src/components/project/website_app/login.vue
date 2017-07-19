@@ -364,7 +364,7 @@
 .signup-form
     position absolute
     top 30%
-    left 50%
+    left 0%
     width: 100%
     margin-left: -50%;
     text-align center

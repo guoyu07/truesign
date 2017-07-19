@@ -1,6 +1,6 @@
 <template>
 
-    <div class="top_router_view" style="background-color: transparent;" >
+    <div id="website_app_main" class="top_router_view" style="background-color: transparent;overflow: hidden" >
         <!--<p class="sec_router_tip">main</p>-->
 
         <div v-if="website.login_status && website.website_user.emailstatus" style="" >

@@ -1,5 +1,5 @@
 <template>
-    <div  :style="{height:screenHeight+'px',overflow:'auto'}">
+    <div  :style="{height:screenHeight+'px',overflowY:'auto',overflowX:'hidden'}">
         <window_resize style="display: none"></window_resize>
         <slidermenu v-if="show_menu" class="top_menu" style="z-index: 99999"></slidermenu>
         <!--<transition name="fade-top-down" mode="out-in">-->

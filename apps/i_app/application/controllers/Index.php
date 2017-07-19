@@ -20,6 +20,12 @@ class IndexController extends Yaf_Controller_Abstract {
     {
         $helper =  new \Royal\Util\helper();
         $ip = $helper::getClientIP();
-        echo '<h1>'.$ip.'</h1>';
+        $ip['HTTP_USER_AGENT'] = $_SERVER['HTTP_USER_AGENT'];
+        echo json_encode($ip,256);
+        $f = fopen('debug_ip.txt','a');
+        fwrite($f,date('Y-m-d H:i:s',time()).PHP_EOL);
+        fwrite($f,json_encode($ip,256).PHP_EOL);
+
+        fclose($f);
 	}
 }

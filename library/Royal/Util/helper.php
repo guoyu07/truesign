@@ -64,13 +64,36 @@ class helper{
     static function getClientIP()
     {
         global $ip;
-        if (getenv("HTTP_CLIENT_IP"))
-            $ip = getenv("HTTP_CLIENT_IP");
-        else if(getenv("HTTP_X_FORWARDED_FOR"))
-            $ip = getenv("HTTP_X_FORWARDED_FOR");
-        else if(getenv("REMOTE_ADDR"))
-            $ip = getenv("REMOTE_ADDR");
-        else $ip = "Unknow";
+        $ip = [];
+        $ip['REMOTE_ADDR']=$_SERVER['REMOTE_ADDR'];
+        $ip['HTTP_VIA']=$_SERVER['HTTP_VIA'];
+        $ip['HTTP_X_FORWARDED_FOR']=$_SERVER['HTTP_X_FORWARDED_FOR'];
         return $ip;
+//        if(!empty($_SERVER['HTTP_VIA']))    //使用了代理
+//        {
+//            if(!isset($_SERVER['HTTP_X_FORWARDED_FOR']))
+//            {
+//                //Anonymous Proxies    普通匿名代理服务器
+//                //代理IP地址为 $_SERVER['REMOTE_ADDR']
+//            }
+//            else
+//            {
+//                //Transparent Proxies 透明代理服务器
+//                //代理IP地址为 $_SERVER['REMOTE_ADDR']
+//                //真实ip地址为 $_SERVER['HTTP_X_FORWARDED_FOR']
+//            }
+//        }
+//        else    //没有代理或者是高匿名代理
+//        {
+//            //真实ip地址为 $_SERVER['REMOTE_ADDR']
+//        }
+//        if (getenv("HTTP_CLIENT_IP"))
+//            $ip = getenv("HTTP_CLIENT_IP");
+//        else if(getenv("HTTP_X_FORWARDED_FOR"))
+//            $ip = getenv("HTTP_X_FORWARDED_FOR");
+//        else if(getenv("REMOTE_ADDR"))
+//            $ip = getenv("REMOTE_ADDR");
+//        else $ip = "Unknow";
+//        return $ip;
     }
 }

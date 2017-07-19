@@ -105,7 +105,7 @@
                 required: false,
             },
             custom_margin_top:{
-                type: String,
+//                type: String,
                 default: '0', //left_top
                 required: false,
             }

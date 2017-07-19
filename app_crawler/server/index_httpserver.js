@@ -9,6 +9,7 @@ var ip_server = '127.0.0.1:6600';
 var server = require('webserver').create();
 var proxy_index = 0
 var proxy_data = []
+var build_search_url = ''
 //start web server
 var service = server.listen(ip_server, function (request, response) {
     var userAgent = [
@@ -73,7 +74,7 @@ var service = server.listen(ip_server, function (request, response) {
         }
     );
     var search_url = {
-        taobao: 'https://s.taobao.com/search?imgfile=&js=1&stats_click=search_radio_all%3A1&initiative_id=staobaoz_20170713&ie=utf8&sort=sale-desc&q=',
+        taobao: 'https://s.taobao.com/search?imgfile=&js=1&stats_click=search_radio_all&ie=utf8&sort=sale-desc&q=',
         jd: ''
     }
     casper.start().then(function () {
@@ -92,55 +93,39 @@ var service = server.listen(ip_server, function (request, response) {
     casper.then(function () {
         // this.page.settings.proxy = 'http://192.168.191.1:9630';
         console.log('准备根据 searchkey:' + response_data.response.searchkey + ' 爬取销量最高商品的URL')
-        var build_search_url = search_url.taobao + response_data.response.searchkey
+        build_search_url = search_url.taobao + response_data.response.searchkey
         console.log(build_search_url)
-        casper.thenOpen(build_search_url, function () {
 
+        console.log('获取代理池')
+        casper.thenOpen('http://localhost:8000/?types=0&count=100&country=%E5%9B%BD%E5%86%85').then(function () {
+
+            proxy_data = JSON.parse(this.getHTML('pre'))
+            console.log('代理数量=> ' + proxy_data.length + ' ')
+
+
+            // var proxy_index = Math.floor(Math.random() * (proxy_data.length))
+            //
+            // var proxy_url = 'http://' + proxy_data[proxy_index][0] + ':' + proxy_data[proxy_index][1]
+            // this.page.settings.proxy = proxy_url;
+            // this.echo('初始代理设置成 ' + proxy_url)
+
+
+        })
+        casper.thenOpen(build_search_url, function () {
             links = this.evaluate(getLinks_BySearch);
             response_data.response.source = 'http:' + links
-
-
         })
 
 
     });
+
     casper.then(function () {
 
         if (response_data.response.source.indexOf('taobao') >= 0) {
             console.log('获取到 【淘宝】 商品连接 ' + response_data.response.source)
-            if (proxy_data.length === 0) {
-                this.echo('获取代理数据池')
-                proxy_data = this.evaluate(function (wsurl) {
-                    while (true) {
-                        var get_proxy_url = 'http://127.0.0.1:8000/?types=0&count=100&country=%E5%9B%BD%E5%86%85'
-                        var tmp_proxy_data = JSON.parse(__utils__.sendAJAX(get_proxy_url, 'GET', null, false));
-                        if (tmp_proxy_data) {
 
-                            break
-                        }
 
-                    }
-                    return tmp_proxy_data
 
-                });
-            }
-            else {
-                this.echo('存在代理池')
-            }
-
-            // this.repeat(1, function () {
-            //     if (response_data.response.comment_req.length === 1) {
-            //         console.log('获取到足够评论，跳过循环')
-            //
-            //     }
-            //     else {
-            //         var proxy_index = Math.floor(Math.random() * (proxy_data.length))
-            //
-            //         var proxy_url = 'http://' + proxy_data[proxy_index][0] + ':' + proxy_data[proxy_index][1]
-            //         this.page.settings.proxy = proxy_url;
-            // this.page.settings.proxy = 'http://192.168.2.1:9630';
-
-            // this.echo('设置代理 '+proxy_url)
             casper.thenOpen(response_data.response.source, function () {
                 this.echo('检查url')
                 this.echo(response_data.response.source)
@@ -169,12 +154,14 @@ var service = server.listen(ip_server, function (request, response) {
                     }
                     else {
                         item_comment_req.comment_data = ''
-                        item_comment_req.request_url = item_comment_req.request_url.replace(/currentPageNum=1/, 'currentPageNum=' + (response_data.response.comment_req.length+1))
+                        item_comment_req.request_url = item_comment_req.request_url.replace(/currentPageNum=1/, 'currentPageNum=' + (response_data.response.comment_req.length + 1))
 
                         console.log('获取并解析第　 ' + (response_data.response.comment_req.length + 1) + '　页评论')
                         casper.thenOpen(item_comment_req.request_url, function () {
+                            this.echo('检查评论url')
+                            this.echo(item_comment_req.request_url)
                             var body_info = this.getHTML('body');
-                            this.echo(body_info)
+                            // this.echo(body_info)
                             fs.write('debug.txt', body_info, 'w');
                             body_info = iGetInnerText(body_info)
                             body_info = body_info.replace(/\(/, '')
@@ -185,12 +172,11 @@ var service = server.listen(ip_server, function (request, response) {
                                 this.echo('检查IP')
 
                                 var comment_proxy_ip = this.evaluate(function () {
-                                    // var  ip_cn_result = __utils__.sendAJAX('http://ip.cn', 'GET', false);
-                                    // var  test_ip = ''
-                                    // test_ip = ip_cn_result.match(/<code>\S*<\/code>/)[0]
-                                    // return test_ip
-                                    var  ip_cn_result = __utils__.sendAJAX('http://iamsee.com:5001/index/getrequest?app=i_app', 'GET', false);
-                                    return ip_cn_result
+                                    var  ip_cn_result = __utils__.sendAJAX('http://ip.cn', 'GET', false);
+                                    var  test_ip = ''
+                                    test_ip = ip_cn_result.match(/<code>\S*<\/code>/)[0]
+                                    return test_ip
+
 
 
                                 })
@@ -208,8 +194,8 @@ var service = server.listen(ip_server, function (request, response) {
 
                                 var proxy_url = 'http://' + proxy_data[proxy_index][0] + ':' + proxy_data[proxy_index][1]
                                 this.page.settings.proxy = proxy_url;
-                                this.page.settings.proxy = 'http://192.168.2.1:9630';
-
+                                this.page.settings.proxy = 'socks://127.0.0.1:1100';
+                                // this.page.settings.proxy = 'http://192.168.2.1:9630';
 
 
                                 var ua_index = Math.floor(Math.random() * (userAgent.length));
@@ -230,6 +216,8 @@ var service = server.listen(ip_server, function (request, response) {
                     }
                 })
             })
+
+
         }
         else if (response_data.response.source.indexOf('tmall') >= 0) {
             console.log('获取到 【天猫】 商品连接 ' + response_data.response.source)
