@@ -2,8 +2,13 @@
 // import Article from './components/Article.vue'
 // import Demo from './components/Demo.vue'
 // import DemoVuexState from './components/DemoVuexState.vue'
-import { router_spa } from '../components/project/spa/router-spa'
+import {router_spa} from '../components/project/spa/router-spa'
 const home = resolve => require(['../components/Home.vue'], resolve)
+
+
+const layout = resolve => require(['../components/layout/layout.vue'], resolve)
+
+
 // const demo = resolve => require(['../components/test/Demo.vue'], resolve)
 //
 // const semantic = resolve => require(['../components/test/semantic.vue'], resolve)
@@ -126,718 +131,727 @@ const wechat_marketing_fun = resolve => require(['../components/project/wechat_m
 const wechat_marketing_fun_aboutus = resolve => require(['../components/project/wechat_marketing/fun/aboutus.vue'], resolve)
 const wechat_marketing_template = resolve => require(['../components/project/wechat_marketing/template/template.vue'], resolve)
 
+
 const routes = [
-  // {
-  //     name: '天津世纪通泰科技有限公司',
-  //     path: '/',
-  //     meta: {
-  //         title: '天津世纪通泰科技有限公司'
-  //     },
-  //     component: siteshow_main
-  // },
-  // {
-  //     name: '世纪通泰科技有限公司后台',
-  //     path: '/siteshow_backend',
-  //     meta: {
-  //         title: '世纪通泰科技有限公司后台'
-  //     },
-  //     component: siteshow_backend
-  // },
-  {
-    name: 'draw_canvas',
-    path: '/',
-    meta: {
-      title: 'draw_canvas'
-    },
-    component: draw_canvas
-  },
-  {
-    name: 'tools',
-    path: '/tools',
-    meta: {
-      title: 'tools'
-    },
-    component: tools,
-    children: [
-      // {
-      //     name: 'VueQuillEditor',
-      //     path: 'VueQuillEditor',
-      //     meta: {
-      //         title: 'VueQuillEditor'
-      //     },
-      //     component: VueQuillEditor
-      // },
-      // {
-      //     name: 'vue2editor',
-      //     path: 'vue2editor',
-      //     meta: {
-      //         title: 'vue2editor'
-      //     },
-      //     component: vue2editor
-      // },
-      // {
-      //     name: 'wangeditor',
-      //     path: 'wangeditor',
-      //     meta: {
-      //         title: 'wangeditor'
-      //     },
-      //     component: wangeditor
-      //
-      // },
-      {
-        name: 'wangeditor_new',
-        path: 'wangeditor_new',
-        meta: {
-          title: 'wangeditor_new'
-        },
-        component: wangeditor_new
-
-      },
-      {
-        name: 'table_model',
-        path: 'table_model',
-        meta: {
-          title: 'table_model'
-        },
-        component: table_model
-
-      },
-      {
-        name: 'table_model_dev',
-        path: 'table_model_dev',
-        meta: {
-          title: 'table_model_dev'
-        },
-        component: table_model_dev
-
-      }
-
-    ]
-  },
-  // {
-  //     name: 'common',
-  //     path: '/common',
-  //     meta: {
-  //         title: 'common'
-  //     },
-  //     component: common,
-  //     children:[
-  //         {
-  //             name: 'echart',
-  //             path: 'echart',
-  //             meta: {
-  //                 title: 'echart'
-  //             },
-  //             component: echart
-  //         },
-  //
-  //     ]
-  // },
-  // {
-  //     name: 'mainpage',
-  //     path: '/mainpage',
-  //     meta: {
-  //         title: 'mainpage'
-  //     },
-  //     component:mainpage,
-  //     children:[
-  //         {
-  //             name: 'fullpage',
-  //             path: 'fullpage',
-  //             meta: {
-  //                 title: 'fullpage'
-  //             },
-  //             component: fullpage
-  //         },
-  //     ]
-  //
-  // },
-  {
-    name: 'Test',
-    path: '/test',
-    meta: {
-      title: 'test'
-    },
-    component: test
-  },
-  //     children:[
-  //         {
-  //             name: 'test_child1',
-  //             path: 'test_child1',
-  //             meta: {
-  //                 title: 'test_child1'
-  //             },
-  //             component: test_child1
-  //         },
-  //         {
-  //             name: 'test_child2',
-  //             path: 'test_child2',
-  //             meta: {
-  //                 title: 'test_child2'
-  //             },
-  //             component: test_child2
-  //         },
-  //         {
-  //             name: 'line',
-  //             path: 'line',
-  //             meta: {
-  //                 title: 'line'
-  //             },
-  //             component: line
-  //         },
-  //         {
-  //             name: 'Demo',
-  //             path: 'demo',
-  //             meta: {
-  //                 title: 'demo'
-  //             },
-  //             component: demo
-  //         },
-  //
-  //         {
-  //             name: 'semantic',
-  //             path: 'semantic',
-  //             meta: {
-  //                 title: 'semantic'
-  //             },
-  //             component: semantic
-  //         },
-  //         {
-  //             name: 'awesome',
-  //             path: 'awesome',
-  //             meta: {
-  //                 title: 'awesome'
-  //             },
-  //             component: awesome
-  //         },
-  // {
-  //     name: 'alert',
-  //     path: 'alert',
-  //     meta: {
-  //         title: 'alert'
-  //     },
-  //     component: alert
-  // },
-  // {
-  //     name: 'vuex',
-  //     path: 'vuex',
-  //     meta: {
-  //         title: 'vuex'
-  //     },
-  //     component: vuex
-  // },
-  // {
-  //     name: 'vuex2',
-  //     path: 'vuex2',
-  //     meta: {
-  //         title: 'vuex2'
-  //     },
-  //     component: vuex2
-  // },
-  //
-  //
-  // {
-  //     name: 'websocket',
-  //     path: 'websocket',
-  //     meta: {
-  //         title: 'websocket'
-  //     },
-  //     component: websocket
-  // },
-  // {
-  //     name: 'socket-io',
-  //     path: 'socket-io',
-  //     meta: {
-  //         title: 'socket-io'
-  //     },
-  //     component: socket_io
-  // },
-  //
-  // {
-  //     name: 'vux',
-  //     path: 'vux',
-  //     meta: {
-  //         title: 'vux'
-  //     },
-  //     component: vux
-  // },
-  // {
-  //     name: 'webgl',
-  //     path: 'webgl',
-  //     meta: {
-  //         title: 'webgl'
-  //     },
-  //     component: webgl
-  // },
-  // {
-  //     name: 'echat',
-  //     path: 'echat',
-  //     meta: {
-  //         title: 'echat'
-  //     },
-  //     component: echat
-  // },
-
-  // ]
-
-  // },
-  {
-    name: 'project',
-    path: '/project',
-    meta: {
-      title: 'project'
-    },
-    component: project,
-    children: [
-      // {
-      //     name: 'element',
-      //     path: 'element',
-      //     meta: {
-      //         title: 'element'
-      //     },
-      //     component: element
-      // },
-      // {
-      //     name: 'siteshow_main',
-      //     path: 'siteshow_main',
-      //     meta: {
-      //         title: '世纪通泰科技有限公司主页'
-      //     },
-      //     component: siteshow_main
-      // },
-      // {
-      //     name: 'siteshow_backend',
-      //     path: 'siteshow_backend',
-      //     meta: {
-      //         title: '世纪通泰科技有限公司后台'
-      //     },
-      //     component: siteshow_backend
-      // },
-      // {
-      //   name: 'gdmap',
-      //   path: 'gdmap',
-      //   meta: {
-      //     title: 'gdmap'
-      //   },
-      //   component: gdmap
-      // },
-      // {
-      //     name: 'video',
-      //     path: 'video',
-      //     meta: {
-      //         title: 'video'
-      //     },
-      //     component: video
-      // },
-      //
-      // {
-      //     name: 'mint-ui',
-      //     path: 'mint-ui',
-      //     meta: {
-      //         title: 'mint-ui'
-      //     },
-      //     component: mint_ui
-      // },
-      // {
-      //   name: 'canvas',
-      //   path: 'canvas',
-      //   meta: {
-      //     title: 'canvas'
-      //   },
-      //   component: canvas
-      // },
-      {
-        name: 'website_main',
-        path: 'website_main',
-        meta: {
-          title: 'website_main'
-        },
-        component: website_main,
-        children: [
-          {
-            name: 'website_index',
-            path: 'website_index',
-            meta: {
-              title: 'website_index'
-            },
-            component: website_index
-          },
-          {
-            name: 'website_app_square',
-            path: 'website_app_square',
-            meta: {
-              title: 'website_app_square'
-            },
-            component: website_app_square,
-          },
-          // {
-          //     name: 'wechat',
-          //     path: 'wechat',
-          //     meta: {
-          //         title: 'wechat'
-          //     },
-          //     component: wechat
-          // },
-          // {
-          //     name: 'apps/chat',
-          //     path: 'apps/chat',
-          //     meta: {
-          //         title: 'apps/chat'
-          //     },
-          //     component: chat
-          // },
-          {
-            name: 'apps/shadowsocks',
-            path: 'apps/shadowsocks',
-            meta: {
-              title: 'apps/shadowsocks'
-            },
-            component: shadowsocks
-          },
-        ]
-      },
-      {
-        name: 'website_ab0utme',
-        path: 'website_ab0utme',
-        meta: {
-          title: 'website_ab0utme'
-        },
-        component: website_ab0utme,
-
-      },
-      {
-        name: 'm_website_main',
-        path: 'm_website_main',
-        meta: {
-          title: 'm_website_main'
-        },
-        component: m_website_main,
-        // children:[
-        //     {
-        //         name: 'm_website_index',
-        //         path: 'm_website_index',
-        //         meta: {
-        //             title: 'm_website_index'
-        //         },
-        //         component: m_website_index
-        //     },
-        //     {
-        //         name: 'm_website_app_square',
-        //         path: 'm_website_app_square',
-        //         meta: {
-        //             title: 'm_website_app_square'
-        //         },
-        //         component: m_website_app_square,
-        //     },
-        // ]
-      },
-
-      // router_spa
-    ]
-  },
-
-  {
-    name: 'effect',
-    path: '/effect',
-    meta: {
-      title: 'effect'
-    },
-    component: effect,
-
-    children: [
-      {
-        name: 'loading_canvas',
-        path: 'loading_canvas',
-        meta: {
-          title: 'loading_canvas'
-        },
-        component: loading_canvas
-      },
-      {
+    // {
+    //     name: '天津世纪通泰科技有限公司',
+    //     path: '/',
+    //     meta: {
+    //         title: '天津世纪通泰科技有限公司'
+    //     },
+    //     component: siteshow_main
+    // },
+    // {
+    //     name: '世纪通泰科技有限公司后台',
+    //     path: '/siteshow_backend',
+    //     meta: {
+    //         title: '世纪通泰科技有限公司后台'
+    //     },
+    //     component: siteshow_backend
+    // },
+    {
         name: 'draw_canvas',
-        path: 'draw_canvas',
+        path: '/',
         meta: {
-          title: 'draw_canvas'
+            title: 'draw_canvas'
         },
         component: draw_canvas
-      },
-      {
-        name: 'canvas',
-        path: 'canvas',
-        meta: {
-          title: 'canvas'
-        },
-        component: canvas
-      },
-      {
-        name: 'threejs_wormhole',
-        path: 'threejs_wormhole',
-        meta: {
-          title: 'threejs_wormhole'
-        },
-        component: threejs_wormhole
-      },
-      {
-        name: 'css3d_periodictable',
-        path: 'css3d_periodictable',
-        meta: {
-          title: 'css3d_periodictable'
-        },
-        component: css3d_periodictable
-      },
-      {
-        name: 'canvas_materials_video',
-        path: 'canvas_materials_video',
-        meta: {
-          title: 'canvas_materials_video'
-        },
-        component: canvas_materials_video
-      },
-      {
-        name: 'threejs_dev',
-        path: 'threejs_dev',
-        meta: {
-          title: 'threejs_dev'
-        },
-        component: threejs_dev
-      },
-      {
-        name: 'threejs_dev_trackball',
-        path: 'threejs_dev_trackball',
-        meta: {
-          title: 'threejs_dev_trackball'
-        },
-        component: threejs_dev_trackball
-      },
-    ]
-  },
-  {
-    name: 'loading',
-    path: '/loading',
-    meta: {
-      title: 'loading'
     },
-    component: loading,
-    children: [
-      //         {
-      //             name: 'effect_line',
-      //             path: 'effect_line',
-      //             meta: {
-      //                 title: 'effect_line'
-      //             },
-      //             component: effect_line
-      //         },
-      {
-        name: 'effect_logo',
-        path: 'effect_logo',
+    {
+        name: 'layout',
+        path: '/layout',
         meta: {
-          title: 'effect_logo'
+            title: 'layout'
         },
-        component: effect_logo
-      },
-      {
-        name: 'effect_logo_Alfa',
-        path: 'effect_logo_Alfa',
+        component: layout
+    },
+    {
+        name: 'tools',
+        path: '/tools',
         meta: {
-          title: 'effect_logo_Alfa'
+            title: 'tools'
         },
-        component: effect_logo_Alfa
+        component: tools,
+        children: [
+            // {
+            //     name: 'VueQuillEditor',
+            //     path: 'VueQuillEditor',
+            //     meta: {
+            //         title: 'VueQuillEditor'
+            //     },
+            //     component: VueQuillEditor
+            // },
+            // {
+            //     name: 'vue2editor',
+            //     path: 'vue2editor',
+            //     meta: {
+            //         title: 'vue2editor'
+            //     },
+            //     component: vue2editor
+            // },
+            // {
+            //     name: 'wangeditor',
+            //     path: 'wangeditor',
+            //     meta: {
+            //         title: 'wangeditor'
+            //     },
+            //     component: wangeditor
+            //
+            // },
+            {
+                name: 'wangeditor_new',
+                path: 'wangeditor_new',
+                meta: {
+                    title: 'wangeditor_new'
+                },
+                component: wangeditor_new
 
-      }
+            },
+            {
+                name: 'table_model',
+                path: 'table_model',
+                meta: {
+                    title: 'table_model'
+                },
+                component: table_model
 
-      //         {
-      //             name: 'svg',
-      //             path: 'svg',
-      //             meta: {
-      //                 title: 'svg'
-      //             },
-      //             component: svg
-      //         },
-      //
-      //     ]
-      // },
-      // {
-      //     name: 'conn',
-      //     path: '/conn',
-      //     meta: {
-      //         title: 'conn'
-      //     },
-      //     component: conn,
-      //     children:[
-      //         {
-      //             name: 'initSocket',
-      //             path: 'initSocket',
-      //             meta: {
-      //                 title: 'initSocket'
-      //             },
-      //             component: initSocket
-      //         },
-      //     ]
-      // },
-      // {
-      //     name: 'help_window_resize',
-      //     path: '/help_window_resize',
-      //     meta: {
-      //         title: 'help_window_resize'
-      //     },
-      //     component: help_window_resize,
-      //
-      //
-    ]
-  },
+            },
+            {
+                name: 'table_model_dev',
+                path: 'table_model_dev',
+                meta: {
+                    title: 'table_model_dev'
+                },
+                component: table_model_dev
 
-  {
-    name: 'wechat_marketing',
-    path: '/wechat_marketing',
-    meta: {
-      title: 'wechat_marketing'
-    },
-    component: wechat_marketing,
-    children: [
-      {
-        name: 'form',
-        path: 'form',
-        meta: {
-          title: 'form'
-        },
-        component: form
-      },
-      {
-        name: 'main_page',
-        path: 'main_page',
-        meta: {
-          title: 'main_page'
-        },
-        component: main_page
-      },
-      {
-        name: 'marketing_product',
-        path: 'marketing_product',
-        meta: {
-          title: 'marketing_product'
-        },
-        component: marketing_product
-      },
+            }
 
-    ]
-  },
-  {
-    name: 'wechat_marketing_backend',
-    path: '/wechat_marketing_backend',
-    meta: {
-      title: 'wechat_marketing_backend'
+        ]
     },
-    component: wechat_marketing_backend,
-    children: [
-      {
-        name: 'accountinfo',
-        path: 'accountinfo',
+    // {
+    //     name: 'common',
+    //     path: '/common',
+    //     meta: {
+    //         title: 'common'
+    //     },
+    //     component: common,
+    //     children:[
+    //         {
+    //             name: 'echart',
+    //             path: 'echart',
+    //             meta: {
+    //                 title: 'echart'
+    //             },
+    //             component: echart
+    //         },
+    //
+    //     ]
+    // },
+    // {
+    //     name: 'mainpage',
+    //     path: '/mainpage',
+    //     meta: {
+    //         title: 'mainpage'
+    //     },
+    //     component:mainpage,
+    //     children:[
+    //         {
+    //             name: 'fullpage',
+    //             path: 'fullpage',
+    //             meta: {
+    //                 title: 'fullpage'
+    //             },
+    //             component: fullpage
+    //         },
+    //     ]
+    //
+    // },
+    {
+        name: 'Test',
+        path: '/test',
         meta: {
-          title: 'accountinfo'
+            title: 'test'
         },
-        component: accountinfo
-      },
-      {
-        name: 'w_m_b_site_ctrl',
-        path: 'w_m_b_site_ctrl',
-        meta: {
-          title: 'w_m_b_site_ctrl'
-        },
-        component: w_m_b_site_ctrl
-      },
-      {
-        name: 'w_m_b_business_client_ctrl',
-        path: 'w_m_b_business_client_ctrl',
-        meta: {
-          title: 'w_m_b_business_client_ctrl'
-        },
-        component: w_m_b_business_client_ctrl
-      },
-      {
-        name: 'w_m_b_weimob_ctrl',
-        path: 'w_m_b_weimob_ctrl',
-        meta: {
-          title: 'w_m_b_weimob_ctrl'
-        },
-        component: w_m_b_weimob_ctrl
-      },
-      // {
-      //     name: 'w_m_b_wechat_content_ctrl',
-      //     path: 'w_m_b_wechat_content_ctrl',
-      //     meta: {
-      //         title: 'w_m_b_wechat_content_ctrl'
-      //     },
-      //     component: w_m_b_wechat_content_ctrl
-      // },
-      {
-        name: 'w_m_b_fun_ctrl',
-        path: 'w_m_b_fun_ctrl',
-        meta: {
-          title: 'w_m_b_fun_ctrl'
-        },
-        component: w_m_b_fun_ctrl
-      },
-      {
-        name: 'w_m_b_agent_ctrl',
-        path: 'w_m_b_agent_ctrl',
-        meta: {
-          title: 'w_m_b_agent_ctrl'
-        },
-        component: w_m_b_agent_ctrl
-      },
-      {
-        name: 'w_m_b_extend_ctrl',
-        path: 'w_m_b_extend_ctrl',
-        meta: {
-          title: 'w_m_b_extend_ctrl'
-        },
-        component: w_m_b_extend_ctrl
-      },
+        component: test
+    },
+    //     children:[
+    //         {
+    //             name: 'test_child1',
+    //             path: 'test_child1',
+    //             meta: {
+    //                 title: 'test_child1'
+    //             },
+    //             component: test_child1
+    //         },
+    //         {
+    //             name: 'test_child2',
+    //             path: 'test_child2',
+    //             meta: {
+    //                 title: 'test_child2'
+    //             },
+    //             component: test_child2
+    //         },
+    //         {
+    //             name: 'line',
+    //             path: 'line',
+    //             meta: {
+    //                 title: 'line'
+    //             },
+    //             component: line
+    //         },
+    //         {
+    //             name: 'Demo',
+    //             path: 'demo',
+    //             meta: {
+    //                 title: 'demo'
+    //             },
+    //             component: demo
+    //         },
+    //
+    //         {
+    //             name: 'semantic',
+    //             path: 'semantic',
+    //             meta: {
+    //                 title: 'semantic'
+    //             },
+    //             component: semantic
+    //         },
+    //         {
+    //             name: 'awesome',
+    //             path: 'awesome',
+    //             meta: {
+    //                 title: 'awesome'
+    //             },
+    //             component: awesome
+    //         },
+    // {
+    //     name: 'alert',
+    //     path: 'alert',
+    //     meta: {
+    //         title: 'alert'
+    //     },
+    //     component: alert
+    // },
+    // {
+    //     name: 'vuex',
+    //     path: 'vuex',
+    //     meta: {
+    //         title: 'vuex'
+    //     },
+    //     component: vuex
+    // },
+    // {
+    //     name: 'vuex2',
+    //     path: 'vuex2',
+    //     meta: {
+    //         title: 'vuex2'
+    //     },
+    //     component: vuex2
+    // },
+    //
+    //
+    // {
+    //     name: 'websocket',
+    //     path: 'websocket',
+    //     meta: {
+    //         title: 'websocket'
+    //     },
+    //     component: websocket
+    // },
+    // {
+    //     name: 'socket-io',
+    //     path: 'socket-io',
+    //     meta: {
+    //         title: 'socket-io'
+    //     },
+    //     component: socket_io
+    // },
+    //
+    // {
+    //     name: 'vux',
+    //     path: 'vux',
+    //     meta: {
+    //         title: 'vux'
+    //     },
+    //     component: vux
+    // },
+    // {
+    //     name: 'webgl',
+    //     path: 'webgl',
+    //     meta: {
+    //         title: 'webgl'
+    //     },
+    //     component: webgl
+    // },
+    // {
+    //     name: 'echat',
+    //     path: 'echat',
+    //     meta: {
+    //         title: 'echat'
+    //     },
+    //     component: echat
+    // },
 
-    ]
-  },
-  {
-    name: 'wechat_marketing_fun',
-    path: '/wechat_marketing_fun',
-    meta: {
-      title: 'wechat_marketing_fun'
-    },
-    component: wechat_marketing_fun,
-    children: [
-      {
-        name: 'wechat_marketing_fun_aboutus',
-        path: 'wechat_marketing_fun_aboutus',
+    // ]
+
+    // },
+    {
+        name: 'project',
+        path: '/project',
         meta: {
-          title: 'wechat_marketing_fun_aboutus'
+            title: 'project'
         },
-        component: wechat_marketing_fun_aboutus
-      },
-    ]
-  },
-  {
-    name: 'wechat_marketing_template',
-    path: '/wechat_marketing_template',
-    meta: {
-      title: 'wechat_marketing_template'
+        component: project,
+        children: [
+            // {
+            //     name: 'element',
+            //     path: 'element',
+            //     meta: {
+            //         title: 'element'
+            //     },
+            //     component: element
+            // },
+            // {
+            //     name: 'siteshow_main',
+            //     path: 'siteshow_main',
+            //     meta: {
+            //         title: '世纪通泰科技有限公司主页'
+            //     },
+            //     component: siteshow_main
+            // },
+            // {
+            //     name: 'siteshow_backend',
+            //     path: 'siteshow_backend',
+            //     meta: {
+            //         title: '世纪通泰科技有限公司后台'
+            //     },
+            //     component: siteshow_backend
+            // },
+            // {
+            //   name: 'gdmap',
+            //   path: 'gdmap',
+            //   meta: {
+            //     title: 'gdmap'
+            //   },
+            //   component: gdmap
+            // },
+            // {
+            //     name: 'video',
+            //     path: 'video',
+            //     meta: {
+            //         title: 'video'
+            //     },
+            //     component: video
+            // },
+            //
+            // {
+            //     name: 'mint-ui',
+            //     path: 'mint-ui',
+            //     meta: {
+            //         title: 'mint-ui'
+            //     },
+            //     component: mint_ui
+            // },
+            // {
+            //   name: 'canvas',
+            //   path: 'canvas',
+            //   meta: {
+            //     title: 'canvas'
+            //   },
+            //   component: canvas
+            // },
+            {
+                name: 'website_main',
+                path: 'website_main',
+                meta: {
+                    title: 'website_main'
+                },
+                component: website_main,
+                children: [
+                    {
+                        name: 'website_index',
+                        path: 'website_index',
+                        meta: {
+                            title: 'website_index'
+                        },
+                        component: website_index
+                    },
+                    {
+                        name: 'website_app_square',
+                        path: 'website_app_square',
+                        meta: {
+                            title: 'website_app_square'
+                        },
+                        component: website_app_square,
+                    },
+                    // {
+                    //     name: 'wechat',
+                    //     path: 'wechat',
+                    //     meta: {
+                    //         title: 'wechat'
+                    //     },
+                    //     component: wechat
+                    // },
+                    // {
+                    //     name: 'apps/chat',
+                    //     path: 'apps/chat',
+                    //     meta: {
+                    //         title: 'apps/chat'
+                    //     },
+                    //     component: chat
+                    // },
+                    {
+                        name: 'apps/shadowsocks',
+                        path: 'apps/shadowsocks',
+                        meta: {
+                            title: 'apps/shadowsocks'
+                        },
+                        component: shadowsocks
+                    },
+                ]
+            },
+            {
+                name: 'website_ab0utme',
+                path: 'website_ab0utme',
+                meta: {
+                    title: 'website_ab0utme'
+                },
+                component: website_ab0utme,
+
+            },
+            {
+                name: 'm_website_main',
+                path: 'm_website_main',
+                meta: {
+                    title: 'm_website_main'
+                },
+                component: m_website_main,
+                // children:[
+                //     {
+                //         name: 'm_website_index',
+                //         path: 'm_website_index',
+                //         meta: {
+                //             title: 'm_website_index'
+                //         },
+                //         component: m_website_index
+                //     },
+                //     {
+                //         name: 'm_website_app_square',
+                //         path: 'm_website_app_square',
+                //         meta: {
+                //             title: 'm_website_app_square'
+                //         },
+                //         component: m_website_app_square,
+                //     },
+                // ]
+            },
+
+            // router_spa
+        ]
     },
-    component: wechat_marketing_template
-  },
-  {
-    name: 'phone_model',
-    path: '/phone_model',
-    meta: {
-      title: 'phone_model'
+
+    {
+        name: 'effect',
+        path: '/effect',
+        meta: {
+            title: 'effect'
+        },
+        component: effect,
+
+        children: [
+            {
+                name: 'loading_canvas',
+                path: 'loading_canvas',
+                meta: {
+                    title: 'loading_canvas'
+                },
+                component: loading_canvas
+            },
+            {
+                name: 'draw_canvas',
+                path: 'draw_canvas',
+                meta: {
+                    title: 'draw_canvas'
+                },
+                component: draw_canvas
+            },
+            {
+                name: 'canvas',
+                path: 'canvas',
+                meta: {
+                    title: 'canvas'
+                },
+                component: canvas
+            },
+            {
+                name: 'threejs_wormhole',
+                path: 'threejs_wormhole',
+                meta: {
+                    title: 'threejs_wormhole'
+                },
+                component: threejs_wormhole
+            },
+            {
+                name: 'css3d_periodictable',
+                path: 'css3d_periodictable',
+                meta: {
+                    title: 'css3d_periodictable'
+                },
+                component: css3d_periodictable
+            },
+            {
+                name: 'canvas_materials_video',
+                path: 'canvas_materials_video',
+                meta: {
+                    title: 'canvas_materials_video'
+                },
+                component: canvas_materials_video
+            },
+            {
+                name: 'threejs_dev',
+                path: 'threejs_dev',
+                meta: {
+                    title: 'threejs_dev'
+                },
+                component: threejs_dev
+            },
+            {
+                name: 'threejs_dev_trackball',
+                path: 'threejs_dev_trackball',
+                meta: {
+                    title: 'threejs_dev_trackball'
+                },
+                component: threejs_dev_trackball
+            },
+        ]
     },
-    component: phone_model,
-  },
-  {
-    name: 'page_model',
-    path: '/page_model',
-    meta: {
-      title: 'page_model'
+    {
+        name: 'loading',
+        path: '/loading',
+        meta: {
+            title: 'loading'
+        },
+        component: loading,
+        children: [
+            //         {
+            //             name: 'effect_line',
+            //             path: 'effect_line',
+            //             meta: {
+            //                 title: 'effect_line'
+            //             },
+            //             component: effect_line
+            //         },
+            {
+                name: 'effect_logo',
+                path: 'effect_logo',
+                meta: {
+                    title: 'effect_logo'
+                },
+                component: effect_logo
+            },
+            {
+                name: 'effect_logo_Alfa',
+                path: 'effect_logo_Alfa',
+                meta: {
+                    title: 'effect_logo_Alfa'
+                },
+                component: effect_logo_Alfa
+
+            }
+
+            //         {
+            //             name: 'svg',
+            //             path: 'svg',
+            //             meta: {
+            //                 title: 'svg'
+            //             },
+            //             component: svg
+            //         },
+            //
+            //     ]
+            // },
+            // {
+            //     name: 'conn',
+            //     path: '/conn',
+            //     meta: {
+            //         title: 'conn'
+            //     },
+            //     component: conn,
+            //     children:[
+            //         {
+            //             name: 'initSocket',
+            //             path: 'initSocket',
+            //             meta: {
+            //                 title: 'initSocket'
+            //             },
+            //             component: initSocket
+            //         },
+            //     ]
+            // },
+            // {
+            //     name: 'help_window_resize',
+            //     path: '/help_window_resize',
+            //     meta: {
+            //         title: 'help_window_resize'
+            //     },
+            //     component: help_window_resize,
+            //
+            //
+        ]
     },
-    component: page_model,
-  },
+
+    {
+        name: 'wechat_marketing',
+        path: '/wechat_marketing',
+        meta: {
+            title: 'wechat_marketing'
+        },
+        component: wechat_marketing,
+        children: [
+            {
+                name: 'form',
+                path: 'form',
+                meta: {
+                    title: 'form'
+                },
+                component: form
+            },
+            {
+                name: 'main_page',
+                path: 'main_page',
+                meta: {
+                    title: 'main_page'
+                },
+                component: main_page
+            },
+            {
+                name: 'marketing_product',
+                path: 'marketing_product',
+                meta: {
+                    title: 'marketing_product'
+                },
+                component: marketing_product
+            },
+
+        ]
+    },
+    {
+        name: 'wechat_marketing_backend',
+        path: '/wechat_marketing_backend',
+        meta: {
+            title: 'wechat_marketing_backend'
+        },
+        component: wechat_marketing_backend,
+        children: [
+            {
+                name: 'accountinfo',
+                path: 'accountinfo',
+                meta: {
+                    title: 'accountinfo'
+                },
+                component: accountinfo
+            },
+            {
+                name: 'w_m_b_site_ctrl',
+                path: 'w_m_b_site_ctrl',
+                meta: {
+                    title: 'w_m_b_site_ctrl'
+                },
+                component: w_m_b_site_ctrl
+            },
+            {
+                name: 'w_m_b_business_client_ctrl',
+                path: 'w_m_b_business_client_ctrl',
+                meta: {
+                    title: 'w_m_b_business_client_ctrl'
+                },
+                component: w_m_b_business_client_ctrl
+            },
+            {
+                name: 'w_m_b_weimob_ctrl',
+                path: 'w_m_b_weimob_ctrl',
+                meta: {
+                    title: 'w_m_b_weimob_ctrl'
+                },
+                component: w_m_b_weimob_ctrl
+            },
+            // {
+            //     name: 'w_m_b_wechat_content_ctrl',
+            //     path: 'w_m_b_wechat_content_ctrl',
+            //     meta: {
+            //         title: 'w_m_b_wechat_content_ctrl'
+            //     },
+            //     component: w_m_b_wechat_content_ctrl
+            // },
+            {
+                name: 'w_m_b_fun_ctrl',
+                path: 'w_m_b_fun_ctrl',
+                meta: {
+                    title: 'w_m_b_fun_ctrl'
+                },
+                component: w_m_b_fun_ctrl
+            },
+            {
+                name: 'w_m_b_agent_ctrl',
+                path: 'w_m_b_agent_ctrl',
+                meta: {
+                    title: 'w_m_b_agent_ctrl'
+                },
+                component: w_m_b_agent_ctrl
+            },
+            {
+                name: 'w_m_b_extend_ctrl',
+                path: 'w_m_b_extend_ctrl',
+                meta: {
+                    title: 'w_m_b_extend_ctrl'
+                },
+                component: w_m_b_extend_ctrl
+            },
+
+        ]
+    },
+    {
+        name: 'wechat_marketing_fun',
+        path: '/wechat_marketing_fun',
+        meta: {
+            title: 'wechat_marketing_fun'
+        },
+        component: wechat_marketing_fun,
+        children: [
+            {
+                name: 'wechat_marketing_fun_aboutus',
+                path: 'wechat_marketing_fun_aboutus',
+                meta: {
+                    title: 'wechat_marketing_fun_aboutus'
+                },
+                component: wechat_marketing_fun_aboutus
+            },
+        ]
+    },
+    {
+        name: 'wechat_marketing_template',
+        path: '/wechat_marketing_template',
+        meta: {
+            title: 'wechat_marketing_template'
+        },
+        component: wechat_marketing_template
+    },
+    {
+        name: 'phone_model',
+        path: '/phone_model',
+        meta: {
+            title: 'phone_model'
+        },
+        component: phone_model,
+    },
+    {
+        name: 'page_model',
+        path: '/page_model',
+        meta: {
+            title: 'page_model'
+        },
+        component: page_model,
+    },
 
 ]
 

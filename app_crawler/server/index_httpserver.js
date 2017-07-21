@@ -253,7 +253,7 @@ var service = server.listen(ip_server, function (request, response) {
                             return e.getAttribute('src')
                         }
                     })
-                    out2png(this, this.getPageContent())
+                    // out2png(this, this.getPageContent())
 
                     this.click('#J_ItemRates')
                     casper.waitFor(function check() {
@@ -281,7 +281,7 @@ var service = server.listen(ip_server, function (request, response) {
                             console.log('存在评论点击链接，准备点击')
                             this.click('#J_ItemRates')
                             this.click('#J_TabBar li:nth-child(2)')
-                            out2png(this, this.getPageContent())
+                            // out2png(this, this.getPageContent())
                             casper.waitFor(function check() {
                                 return this.evaluate(function () {
                                     console.log('debug 第二次加载中---------------------------')
