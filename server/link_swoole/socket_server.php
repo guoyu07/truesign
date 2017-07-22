@@ -613,7 +613,7 @@ class socket_server{
     /*
      * 调用yaf层函数
      */
-    public function initYaf($app='o_app'){
+    public function initYaf($app='server_app'){
 //        echo "initYaf".PHP_EOL;
         define('CURRECT_APPLICATION_PATH', APPLICATION_PATH.DIRECTORY_SEPARATOR.'apps'.DIRECTORY_SEPARATOR.$app);
         $configs=new \Yaf_Config_Ini(APPLICATION_PATH.'/config/business.ini','common');

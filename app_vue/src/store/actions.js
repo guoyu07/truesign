@@ -27,6 +27,9 @@ const actions = {
   updateWechat_marketing_store({commit}, data){
       commit(types.wechat_marketing_store,data);
   },
+  updateSocketInfo({commit}, data){
+      commit(types.SOCKETINFO,data);
+  },
 
 }
 

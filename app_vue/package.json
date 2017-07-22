@@ -23,6 +23,7 @@
     "gsap": "^1.19.1",
     "is-json": "^2.0.1",
     "jquery": "^3.2.1",
+    "layui-layer": "^1.0.9",
     "less": "^2.7.2",
     "less-loader": "^4.0.4",
     "lodash": "^4.17.4",

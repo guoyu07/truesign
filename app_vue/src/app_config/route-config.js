@@ -33,6 +33,8 @@ const test = resolve => require(['../components/test/test.vue'], resolve)
 // 工具组件工作区
 //  */
 const tools = resolve => require(['../components/tools/tools.vue'], resolve)
+const websocket = resolve => require(['../components/tools/websocket.vue'], resolve)
+
 // const VueQuillEditor = resolve => require(['../components/tools/VueQuillEditor.vue'], resolve)
 // const vue2editor = resolve => require(['../components/tools/vue2-editor.vue'], resolve)
 // const wangeditor = resolve => require(['../components/tools/wangeditor.vue'], resolve)
@@ -173,14 +175,14 @@ const routes = [
         },
         component: tools,
         children: [
-            // {
-            //     name: 'VueQuillEditor',
-            //     path: 'VueQuillEditor',
-            //     meta: {
-            //         title: 'VueQuillEditor'
-            //     },
-            //     component: VueQuillEditor
-            // },
+            {
+                name: 'websocket',
+                path: 'websocket',
+                meta: {
+                    title: 'websocket'
+                },
+                component: websocket
+            },
             // {
             //     name: 'vue2editor',
             //     path: 'vue2editor',

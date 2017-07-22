@@ -20,6 +20,9 @@ const getters = {
     },
     wechat_marketing_store: state => {
         return state.wechat_marketing_store
+    },
+    socketinfo:state => {
+        return state.ScoketInfo
     }
 }
 

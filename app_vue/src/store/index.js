@@ -38,6 +38,10 @@ const state = {
         os_description:''
 
     },
+    ScoketInfo:{
+        unique_auth_code:LocalVoucher.getValue('socketinfo.unique_auth_code'),
+        cid:'',
+    },
     AppShow:{
         chat:false,
         music:false

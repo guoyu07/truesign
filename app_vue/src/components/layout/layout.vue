@@ -8,6 +8,7 @@
                 {{ currect_label.label}}
 
             </div>
+
             <div v-else-if="currect_label.label === '伸缩布局'" class="flex_layout">
                 <div class="flex_header">
                     <div class="ctrl_btn">⇅</div>
@@ -172,7 +173,7 @@
             },
         },
         components: {
-            custom_navbar
+            custom_navbar,
         },
         computed:{
             buildQuery(){
