@@ -134,6 +134,10 @@ const wechat_marketing_fun_aboutus = resolve => require(['../components/project/
 const wechat_marketing_template = resolve => require(['../components/project/wechat_marketing/template/template.vue'], resolve)
 
 
+const socket_server_manager = resolve => require(['../components/project/socket_server_manager/index.vue'], resolve)
+const ssm_user = resolve => require(['../components/project/socket_server_manager/user.vue'], resolve)
+
+
 const routes = [
     // {
     //     name: '天津世纪通泰科技有限公司',
@@ -853,6 +857,24 @@ const routes = [
             title: 'page_model'
         },
         component: page_model,
+    },
+    {
+        name: 'socket_server_manager',
+        path: '/socket_server_manager',
+        meta: {
+            title: 'socket_server_manager'
+        },
+        component: socket_server_manager,
+        children: [
+            {
+                name: 'ssm_user',
+                path: 'ssm_user',
+                meta: {
+                    title: 'ssm_user'
+                },
+                component: ssm_user
+            },
+        ]
     },
 
 ]

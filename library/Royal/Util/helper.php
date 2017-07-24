@@ -17,6 +17,7 @@ class helper{
         return 0;
     }
     static function run_mem($smem) {
+
         $smem = array_sum(explode(' ', $smem));
         $emem = array_sum(explode(' ', memory_get_usage()));
         return number_format(($emem - $smem) / 1024) . 'kb';

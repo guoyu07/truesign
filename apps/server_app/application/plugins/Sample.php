@@ -16,62 +16,34 @@ class SamplePlugin extends Yaf_Plugin_Abstract {
 	public function dispatchLoopStartup(Yaf_Request_Abstract $request, Yaf_Response_Abstract $response) {
         $controller = strtolower($request->getControllerName());
         $action = strtolower($request->getActionName());
-        if($controller == 'index'){
-            return;
-        }
-        if($controller == 'website' && $action == 'regorlogin'){
-            return;
-        }
-        if($controller == 'website' && $action == 'dislinksocketid'){
-            return;
-        }
-        if($controller == 'website' && $action == 'checkloginbykey'){
-            return;
-        }
-        if($controller == 'website' && $action == 'getchatlist'){
-            return;
-        }
-        if($controller == 'website' && $action == 'dealcheckemailcode'){
-            return;
-        }
-        if($controller == 'shadowsocks'){
-            return;
-        }
-        if($controller == 'common' || $controller == 'wechat'  ){
-            return;
-        }
 
-        if($controller == 'apps' && ($action=='getapprule' || $action=='bindapps' || $action== 'getfdbyapp' || $action== 'disconnapp' || $action=='checklogin')){
+        if( $controller == 'user' ){
             return;
         }
-        if( $controller == 'wsserver' ){
-            return;
-        }
-        if($action == 'getFdByApp' || $action == 'saveorupdateuserinfoanddanmu'){
-
-            return;
-        }
-        $params = $request->getParams();
-        $website_encryption_key = $request->get('website_encryption_key');
-        $encryption_key = $request->get('encryption_key');
-        $unique_auth_code = $request->get('unique_auth_code');
-        if(empty($unique_auth_code)){
-            throw new Exception('请求非法.无法确定唯一识别码, no access',-100);
-        }
-        elseif(empty($encryption_key) && empty($website_encryption_key)){
-            throw new Exception('请求非法.无法确定任何一种授权序列key, no access',-100);
-        }
-        else{
-            $check_encryption_key = self::check_encryption_key($unique_auth_code,$encryption_key);
-            $check_website_encryption_key = self::check_encryption_key($unique_auth_code,$website_encryption_key,true);
-            if(!empty($check_encryption_key['status']) && (!empty($check_website_encryption_key[status]))){
-                return;
+        if(false){
+            $params = $request->getParams();
+            $website_encryption_key = $request->get('website_encryption_key');
+            $encryption_key = $request->get('encryption_key');
+            $unique_auth_code = $request->get('unique_auth_code');
+            if(empty($unique_auth_code)){
+                throw new Exception('请求非法.无法确定唯一识别码, no access',-100);
+            }
+            elseif(empty($encryption_key) && empty($website_encryption_key)){
+                throw new Exception('请求非法.无法确定任何一种授权序列key, no access',-100);
             }
             else{
+                $check_encryption_key = self::check_encryption_key($unique_auth_code,$encryption_key);
+                $check_website_encryption_key = self::check_encryption_key($unique_auth_code,$website_encryption_key,true);
+                if(!empty($check_encryption_key['status']) && (!empty($check_website_encryption_key[status]))){
+                    return;
+                }
+                else{
 //                throw new Exception(123,-100);
-            }
+                }
 
+            }
         }
+
 	}
 
 	public function check_encryption_key($unique_auth_code,$key,$website=false){

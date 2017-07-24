@@ -46,10 +46,7 @@
                 console.log('socket_response',data)
                 vm.socket_response = data
             })
-            this.$root.eventHub.$on('conn_status',function (data) {
-                vm.conn_status = data
 
-            })
         },
         data () {
             return {

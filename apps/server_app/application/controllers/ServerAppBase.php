@@ -61,7 +61,15 @@ class ServerAppBaseController extends \ReInit\YafBase\Controller
 
     protected function inputError($code, $msg)
     {
-        echo json_encode(array('code' => $code, 'desc' => $msg));
+        $start_exec_time = \Yaf_Registry::get('START_EXEC_TIME');
+        $start_exec_memory = \Yaf_Registry::get('START_EXEC_MEMORY');
+
+
+        $exec=[
+            'execTime'=>\Royal\Util\helper::exeTime($start_exec_time),
+            'runMem'=>\Royal\Util\helper::run_mem($start_exec_memory)
+        ];
+        echo json_encode(array('code' => $code, 'desc' => $msg,'exec'=>$exec));
         \Yaf_Dispatcher::getInstance()->autoRender(FALSE);
     }
 

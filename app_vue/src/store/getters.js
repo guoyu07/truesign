@@ -21,6 +21,9 @@ const getters = {
     wechat_marketing_store: state => {
         return state.wechat_marketing_store
     },
+    socket_server_store: state => {
+        return state.socket_server_store
+    },
     socketinfo:state => {
         return state.ScoketInfo
     }

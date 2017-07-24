@@ -63,6 +63,7 @@ const SOCKET_CLIENT = {
         this.data.wSock.onopen = function (event) {
             that.data.status = '连接正常'
             that.data.conn_status = true
+            that.data.this_vue.conn_status = true
             SOCKET_CLIENT.print('wsopen', event);
         }
     },
@@ -110,7 +111,7 @@ const SOCKET_CLIENT = {
             console.log('[c]close=>');
             console.log(event)
             that.data.conn_status = false
-            that.data.this_vue.$root.eventHub.$emit('conn_status', that.data.conn_status)
+            that.data.this_vue.conn_status = false
 
             // if(event.type === 'close'){
             //     // that.data.wSock = null

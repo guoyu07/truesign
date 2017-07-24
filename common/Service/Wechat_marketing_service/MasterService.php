@@ -65,7 +65,6 @@ class MasterService extends BaseService
     {
 
         $db_resposne = $this->Dao->readSpecified($search_params,array(),$page_params,$sorter);
-
         $this->filterRules($this->rules,$db_resposne['data'],$params['rules']);
         $access_rules = array('tableaccess'=>$this->tableAccess,'rules'=>$this->rules);
         $db_resposne['access_rules'] = $access_rules;

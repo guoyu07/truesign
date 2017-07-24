@@ -1,94 +1,71 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: ql-win
- * Date: 2017/3/10
- * Time: 13:20
- */
-class userController extends  OAppBaseController
-{
-    public function saveOrUpdateUserinfoAndDanmuAction()
+use  \Truesign\Service\Socket_server\UserService;
+class UserController extends ServerAppBaseController {
+
+
+	public function indexAction() {
+
+	    $this->throwException(\Royal\Prof\TrueSignConst::SUCCESS('User'));
+	}
+
+    public function descAction($rules=0)
     {
-        $params = $this->getParams(array('nickname','source'),array('content'));
-        $doDao_User = new \Royal\Data\DAO(new \Truesign\Adapter\User\userInfoAdapter());
-        $search_param = [];
-        $search_param['username']=$params['nickname'];
-        $search_param['source']=$params['source'];
-        $pre_db_user_response = $doDao_User->readSpecified($search_param,array());
-        if($pre_db_user_response['statistic']['count'] != 1){
-            $pre_user_param = $search_param;
-            $pre_user_param['coins']=5000;
+        $params = $this->getParams(array(),array('rules'));
+        if(empty($params['rules'])){
+            $params['rules'] = $rules;
+        }
+        $doService = new UserService();
+        $response = \Royal\Prof\TrueSignConst::SUCCESS('初始化客户信息成功');
+        $response['response'] = $doService->desc($params);
+        $this->output2json($response);
+    }
+    /*
+     * @for 获取客户信息接口
+     *
+     */
+    public function getAction()
+    {
+        $params = $this->getParams(array(),array('rules','document_id','search_sort_by'));
+        $search_sort_by = $this->analysis_search_sort_by($params['search_sort_by']);
+        if(!empty($search_sort_by)){
+            $page_params = $search_sort_by['page_params'];
+            $search_params = $search_sort_by['search_params'];
+            $sorter_params = $search_sort_by['sorter_params'];
+        }
 
-            $db_user_response = $doDao_User->insertOrupdate($pre_user_param,$search_param);
 
-//        $doDao_Danmu = new \Royal\Data\DAO(new \Truesign\Adapter\Volume\danmuLogAdapter());
-//        $pre_danmu_param = $pre_user_param;
-//        $pre_danmu_param['danmu']=$params['content'];
-//        $db_danmu_response = $doDao_Danmu->create($pre_danmu_param);
+        if($params['document_id']){
+            $search_params['document_id'] = $params['document_id'];
 
-            $db_response['db_user_response']=$db_user_response;
-//        $db_response['db_danmu_response']=$db_danmu_response;
+        }
 
-            $this->setResponseBody($db_response);
+        $doService = new UserService();
+        $response = \Royal\Prof\TrueSignConst::SUCCESS('获取客户信息成功');
+        $response['response'] = $doService->get($params,$search_params,$page_params,$sorter_params);
+        if(empty($response['response']['statistic']['count'])){
+            $this->descAction(1);
         }
         else{
-            $this->setResponseBody(0);
+            $this->output2json($response);
+
         }
 
 
     }
-
-    public function demandLiveVideoAction()
-    {
-        $params = $this->getParams(array('unique_auth_code','nickname','match_movie','match_ticket','source'),array());
-        $do_userDao = new \Royal\Data\DAO(new \Truesign\Adapter\User\userInfoAdapter());
-        $db_user_response = $do_userDao->readSpecified(array('username'=>$params['nickname'],'source'=>$params['source']),array('coins'));
-        $db_livevideoDao = new \Royal\Data\DAO(new \Truesign\Adapter\Apps\appLiveVideoAdapter());
-        if($db_user_response['statistic']['count'] == 1){
-            if((int)$db_user_response['data'][0]['coins'] >= (int)$params['match_ticket']){
-                $searchParam['videoname'] = array('operation'=>'prefix','value'=>$params['match_movie']);
-                $db_livevideo_response = $db_livevideoDao->readSpecified($searchParam,array());
-                if($db_livevideo_response['statistic']['count']==1){
-                    $db_reponse = [];
-                    $drop_coins =  (int)$db_user_response['data'][0]['coins']-(int)$params['match_ticket'];
-                    $update_param = [];
-                    $update_param['coins'] = $drop_coins;
-                    $db_updateuser_response = $do_userDao->updateByQuery(array('coins'=>$drop_coins),array('username'=>$params['nickname']));
-                    if($db_updateuser_response){
-                        $db_reponse = [];
-                        $db_reponse['status']=1;
-                        $db_reponse['note']='硬币扣除成功';
-                        $danmu = [];
-                        $danmu['nickname'] = $params['nickname'];
-                        $danmu['match_movie'] = $params['match_movie'];
-                        $danmu['match_ticket'] = $params['match_ticket'];
-                        $db_reponse['danmu'] = $danmu;
-                    }
-                    else{
-                        $db_reponse['status']=0;
-                        $db_reponse['note']='硬币扣除失败';
-                    }
-                }
-                else{
-                    $db_reponse['status']=0;
-                    $db_reponse['note']='视频查询数目不唯一';
-                }
-
-
-            }
-            else{
-                $db_reponse['status'] = 0;
-                $db_reponse['note'] = '硬币不足';
-
-            }
-        }
-        else{
-            $db_reponse['status']=0;
-            $db_reponse['note']='无法确定唯一用户';
-        }
-
-        $this->setResponseBody($db_reponse);
-
+    /*
+         * @for 客户信息更新、软删除接口
+         *
+         */
+    public function UpdateAction(){
+        $params = $_POST;
+        $doAdapter = new UserService();
+        $doDao = new DAO($doAdapter);
+        $condition['id'] = $params['document_id'];
+        $doService = new BusinessService();
+        $response = \Royal\Prof\TrueSignConst::SUCCESS('更新客户信息成功');
+        $response['response'] = $doService->Update($params,$condition);
+        $this->output2json($response);
     }
+
 
 }

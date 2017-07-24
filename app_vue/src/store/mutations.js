@@ -205,6 +205,61 @@ export const mutations = {
         }
 
     },
+    [types.socket_server_store](state, data){
+        // console.log('preupdate->wechat_marketing_store', data)
+
+        if (data.apihost) {
+            state.socket_server_store.apihost = data.apihost
+        }
+        if (data.hasOwnProperty('token')) {
+            if (data.token.type === 'update') {
+                state.socket_server_store.token = data.token.value
+                LocalVoucher.setKeyValue('socket_server_store.token', data.token.value)
+            }
+            if (data.token.type === 'del') {
+                console.log('del->token', data.token)
+                state.socket_server_store.token = ''
+                // LocalVoucher.setKeyValue('socket_server_store.token','')
+                LocalVoucher.removeKey('socket_server_store.token')
+
+            }
+        }
+        if (data.hasOwnProperty('userinfo')) {
+            if (data.userinfo.type === 'update') {
+                state.socket_server_store.userinfo = data.userinfo.value
+                LocalVoucher.setKeyValue('socket_server_store.userinfo', JSON.stringify(data.userinfo.value))
+            }
+            if (data.userinfo.type === 'del') {
+                state.socket_server_store.userinfo = ''
+                // LocalVoucher.setKeyValue('socket_server_store.userinfo',JSON.stringify([]))
+                LocalVoucher.removeKey('socket_server_store.userinfo')
+
+            }
+        }
+        if (data.hasOwnProperty('last_reponse')) {
+            if (data.last_reponse.type === 'update') {
+                state.socket_server_store.last_response = data.last_reponse.value
+
+            }
+            if (data.last_reponse.type === 'del') {
+                state.socket_server_store.last_response = {}
+
+
+            }
+        }
+        if (data.hasOwnProperty('page_model')) {
+            if (data.page_model.type === 'update') {
+                state.socket_server_store.page_model = data.page_model.value
+
+            }
+            if (data.page_model.type === 'del') {
+                state.socket_server_store.page_model = false
+
+
+            }
+        }
+
+    },
     [types.SOCKETINFO](state, data){
         console.log('vuex=>socketinfo')
         console.log(data)

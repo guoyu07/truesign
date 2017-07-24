@@ -11,4 +11,5 @@ export const SOCKETINFO = 'SOCKETINFO'
 export const EVENTFACTORY = 'EVENTFACTORY'
 export const APPSHOW = 'APPSHOW'
 export const wechat_marketing_store = 'wechat_marketing_store'
+export const socket_server_store = 'socket_server_store'
 

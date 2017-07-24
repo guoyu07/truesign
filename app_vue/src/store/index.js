@@ -52,6 +52,13 @@ const state = {
         userinfo:isJson(LocalVoucher.getValue('wechat_marketing_store.userinfo'))?(JSON.parse(LocalVoucher.getValue('wechat_marketing_store.userinfo'))):'',
         last_response:{},
         page_model:false
+    },
+    socket_server_store:{
+        apihost:'',
+        token:isEmpty(LocalVoucher.getValue('socket_server_store.token'))?'':(LocalVoucher.getValue('socket_server_store.token')),
+        userinfo:isJson(LocalVoucher.getValue('socket_server_store.userinfo'))?(JSON.parse(LocalVoucher.getValue('socket_server_store.userinfo'))):'',
+        last_response:{},
+        page_model:false
     }
 
 }

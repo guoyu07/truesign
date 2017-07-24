@@ -70,8 +70,6 @@ class new_socket_server{
 
         $this->sw->start();
 
-
-
     }
 
     /*
