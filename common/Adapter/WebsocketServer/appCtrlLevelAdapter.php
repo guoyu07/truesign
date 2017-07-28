@@ -44,12 +44,12 @@ class appCtrlLevelAdapter extends DbLibraryAdapter
     public function tableInit()
     {
         return Field::start()
-            ->def('document_id')->map('id')->int()->desc('ctrl id')
+            ->def('document_id')->map('id')->int()->desc('id')
+            ->def('nickname')->map('nickname')->varchar(100)->desc('昵称')->issearch(true)
+            ->def('username')->map('username')->varchar(100)->desc('用户名')
+            ->def('password')->map('password')->varchar(100)->desc('密码')
             ->def('level')->map('level')->varchar(100)->desc('权限等级')
-            ->def('nickname')->map('nickname')->varchar(100)->desc('昵称')
             ->def('img')->map('img')->varchar(1000)->desc('头像')
-            ->def('username')->map('username')->varchar(100)->desc('username')
-            ->def('password')->map('password')->varchar(100)->desc('password')
             ->end();
     }
 

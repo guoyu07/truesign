@@ -126,6 +126,10 @@ class ComposerStaticInit9a3ede72af7ff81950ab8fc3f5f30544
             array (
                 0 => __DIR__ . '/..' . '/pimple/pimple/src',
             ),
+            'PhpConsole' => 
+            array (
+                0 => __DIR__ . '/..' . '/php-console/php-console/src',
+            ),
         ),
     );
 

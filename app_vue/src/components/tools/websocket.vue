@@ -1,18 +1,32 @@
 <template>
   <div id="tools_websocket" style="text-align: left">
         <div style="left:50%;position: absolute;top:0;transform:translate(-50%);min-width: 1000px">
-            <input id="username" placeholder="用户名" v-model="socket_account.username"  >
-            <input id="pass" placeholder="密码"  v-model="socket_account.password">
+
             <button type="button" class="btn btn-default" @click="socket_init">连接socket</button>
             <button type="button" class="btn btn-default" @click="disconnect">断开socket</button>
             <input value="已经连接" v-if="conn_status">
             <input value="已经断开" v-else="conn_status">
+            <input id="username" placeholder="用户名" v-model="socket_account.username"  >
+            <input id="pass" placeholder="密码"  v-model="socket_account.password">
+            <input type="button" @click="login_socket" value="登录">
+            <el-select v-if="socketinfo.apps" @change="app_change" clearable filterable style="position: absolute;margin-left: 10px;width: 200px;background-color: white" v-model="app_selected" multiple placeholder="请选择">
+                <el-option
+                        v-for="item,index in socketinfo.apps"
+                        :key="item"
+                        :label="item.document_id+ '  ' +item.appname"
+                        :value='"{\""+item.document_id+"\":\""+item.appname+"\"}"'>
+                </el-option>
+            </el-select>
 
         </div>
         <div style="left:50%;top:50px;position: absolute;transform:translate(-50%);min-width: 1000px">
             {{socketinfo.unique_auth_code }} cid: {{socketinfo.cid}}
+            <p v-if="socketinfo.token">{{socketinfo.userinfo }} token: {{socketinfo.token }}</p>
+            <hr>
+
+            {{socketinfo.ping }}
         </div>
-        <div style="left:50%;position: absolute;top:100px;transform:translate(-50%);min-width: 1000px">
+        <div style="left:50%;position: absolute;top:150px;transform:translate(-50%);min-width: 1000px">
             <label for="module">module</label><input v-model="yaf.module" id="module">
             <label for="controller">controller</label><input v-model="yaf.controller" id="controller">
             <label for="action">action</label><input v-model="yaf.action" id="action">
@@ -25,11 +39,14 @@
 
         </div>
 
-      <div style="width: 800px;height: 300px;min-width: 900px;margin: 0 auto;position: absolute;top:200px;left:50%;transform: translateX(-50%);text-align: center;border-radius: 8px;min-width: 1000px">
-
+      <div style="width: 800px;height: 300px;min-width: 900px;margin: 0 auto;position: absolute;top:230px;left:50%;transform: translateX(-50%);text-align: center;border-radius: 8px;min-width: 1000px">
+          {{ socketinfo.apps }}
+          {{ app_selected }}
           <pre style="width: 100%;height: 100%;background-color: transparent;box-shadow: 0 0 15px #fff">
-          {{ socket_response }}
+          {{ socketinfo.socket_response }}
           </pre>
+
+
       </div>
 
   </div>
@@ -61,7 +78,8 @@
                     action:'test',
                     payload:''
                 },
-                socket_response:'...'
+
+                app_selected: []
             }
         },
         computed: {
@@ -84,6 +102,22 @@
 
                 SOCKET_CLIENT.wsClose()
 
+
+            },
+            login_socket(){
+                let login_yaf ={
+                    module:'index',
+                    controller:'Socketauth',
+                    action:'auth',
+                }
+                var params = {
+                    to:'self',
+                    payload_type:'login',
+                    payload_data:this.socket_account,
+                    yaf:login_yaf
+                }
+                SOCKET_CLIENT.data.payload = params
+                SOCKET_CLIENT.wsSend()
             },
             send(){
                 var vm = this
@@ -95,6 +129,23 @@
                 }
                 SOCKET_CLIENT.data.payload = params
                 SOCKET_CLIENT.wsSend()
+            },
+            app_change(data){
+                var vm = this
+                let login_yaf ={
+                    module:'index',
+                    controller:'Socketauth',
+                    action:'update_apps',
+                }
+                var params = {
+                    to:'self',
+                    payload_type:'update_apps',
+                    payload_data:{app:this.app_selected},
+                    yaf:login_yaf
+                }
+                SOCKET_CLIENT.data.payload = params
+                SOCKET_CLIENT.wsSend()
+
             }
 
 
@@ -118,4 +169,7 @@
             width 100px
         #send:hover
             background-color #2bdb8d
+    #tools_websocket .el-select input
+        background-color white
+        color black !important
 </style>

@@ -15,7 +15,7 @@
                 {{item}}
             </el-menu-item>
 
-            <el-menu-item v-if='wechat_marketing_store.userinfo.username' :style="{color: menu_item_color}"
+            <el-menu-item v-if='wechat_marketing_store.userinfo.username && showaccount' :style="{color: menu_item_color}"
                           :index="accunt_info">
                 <img style="border-radius: 200px;width: 60px;height: 60px"
                      :src='get_headpic(wechat_marketing_store.userinfo.headpic)'>
@@ -32,89 +32,90 @@
 
 
 <script>
-  //    import router_build from '../../app_config/router-build'
-  import { mapGetters, mapActions } from 'vuex'
-  import Velocity from 'velocity-animate'
-  import Vue from 'vue'
-  import ElMenuItem from "../../../node_modules/element-ui/packages/menu/src/menu-item";
+    //    import router_build from '../../app_config/router-build'
+    import {mapGetters, mapActions} from 'vuex'
+    import Velocity from 'velocity-animate'
+    import Vue from 'vue'
+    import ElMenuItem from "../../../node_modules/element-ui/packages/menu/src/menu-item";
 
-  export default {
-    components: {ElMenuItem},
-    data() {
-      return {
-        activeIndex: 'w_m_b_site_ctrl',
-        navmenu_list: [],
+    export default {
+        components: {ElMenuItem},
+        data() {
+            return {
+                activeIndex: 'w_m_b_site_ctrl',
+                navmenu_list: [],
 
-      };
-    },
-    props: {
-      logo: {
-        type: String,
-        default: 'https://res.wx.qq.com/mpres/htmledition/images/bg/bg_logo318e8e.png', //left_top
-        required: false,
+            };
+        },
+        props: {
+            showaccount: true,
+            logo: {
+                type: String,
+                default: 'https://res.wx.qq.com/mpres/htmledition/images/bg/bg_logo318e8e.png', //left_top
+                required: false,
 
-      },
-      menulist: {
-        default: [1, 2, 3, 4],
-        required: false,
+            },
+            menulist: {
+                default: [1, 2, 3, 4],
+                required: false,
 
-      },
-      navmenu_theme_color: {
-        default: 'rgba(255,255,255,0.33)',
-        required: false,
+            },
+            navmenu_theme_color: {
+                default: 'rgba(255,255,255,0.33)',
+                required: false,
 
-      },
-      menu_item_color: {
-        default: 'black',
-        required: false,
-      },
-      accunt_info: {
-        default: '/wechat_marketing_backend/accountInfo',
-        required: false,
-      },
+            },
+            menu_item_color: {
+                default: 'black',
+                required: false,
+            },
+            accunt_info: {
+                default: '/wechat_marketing_backend/accountInfo',
+                required: false,
+            },
 
 
-    },
-    methods: {
-      handleSelect(key, keyPath) {
-        console.log(key, keyPath);
-        this.$root.eventHub.$emit('changeNavMenu', key)
+        },
+        methods: {
+            handleSelect(key, keyPath) {
+//        console.log(key, keyPath);
+                this.$root.eventHub.$emit('changeNavMenu', key)
 
-      },
-      get_headpic(headpic){
-        if (headpic) {
-          return headpic
+            },
+            get_headpic(headpic){
+                if (headpic) {
+                    return headpic
+                }
+                else {
+                    if (this.wechat_marketing_store.userinfo.lable_type === '管理员') {
+                        return "http://truesign-app.oss-cn-beijing.aliyuncs.com/headpic/avatar.png"
+                    }
+                    else if (this.wechat_marketing_store.userinfo.lable_type === '商户') {
+                        return "http://truesign-app.oss-cn-beijing.aliyuncs.com/headpic/demo.jpg"
+                    }
+                    else {
+                    }
+                }
+            },
+        },
+        created(){
+            var vm = this
+            this.$root.eventHub.$on('init_navmenu', (data) => {
+                console.log('on->init_navmemnu', data)
+                vm.activeIndex = data
+            })
+        },
+        mounted(){
+
+        },
+
+        computed: {
+            ...mapGetters([
+                'wechat_marketing_store',
+            ]),
         }
-        else {
-          if (this.wechat_marketing_store.userinfo.lable_type === '管理员') {
-            return "http://truesign-app.oss-cn-beijing.aliyuncs.com/headpic/avatar.png"
-          }
-          else if (this.wechat_marketing_store.userinfo.lable_type === '商户') {
-            return "http://truesign-app.oss-cn-beijing.aliyuncs.com/headpic/demo.jpg"
-          }
-          else {
-          }
-        }
-      },
-    },
-    created(){
-      var vm = this
-      this.$root.eventHub.$on('init_navmenu', (data) => {
-        console.log('on->init_navmemnu', data)
-        vm.activeIndex = data
-      })
-    },
-    mounted(){
 
-    },
-
-    computed: {
-      ...mapGetters([
-        'wechat_marketing_store',
-      ]),
     }
-
-  }
 </script>
 <style lang="stylus" rel="stylesheet/stylus">
     #navmenu_bg

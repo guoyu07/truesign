@@ -136,6 +136,9 @@ const wechat_marketing_template = resolve => require(['../components/project/wec
 
 const socket_server_manager = resolve => require(['../components/project/socket_server_manager/index.vue'], resolve)
 const ssm_user = resolve => require(['../components/project/socket_server_manager/user.vue'], resolve)
+const ssm_app = resolve => require(['../components/project/socket_server_manager/app.vue'], resolve)
+const ssm_authlog = resolve => require(['../components/project/socket_server_manager/authlog.vue'], resolve)
+const ssm_msglog = resolve => require(['../components/project/socket_server_manager/msglog.vue'], resolve)
 
 
 const routes = [
@@ -873,6 +876,30 @@ const routes = [
                     title: 'ssm_user'
                 },
                 component: ssm_user
+            },
+            {
+                name: 'ssm_app',
+                path: 'ssm_app',
+                meta: {
+                    title: 'ssm_app'
+                },
+                component: ssm_app
+            },
+            {
+                name: 'ssm_authlog',
+                path: 'ssm_authlog',
+                meta: {
+                    title: 'ssm_authlog'
+                },
+                component: ssm_authlog
+            },
+            {
+                name: 'ssm_msglog',
+                path: 'ssm_msglog',
+                meta: {
+                    title: 'ssm_msglog'
+                },
+                component: ssm_msglog
             },
         ]
     },

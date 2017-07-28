@@ -47,11 +47,19 @@ class appRuleAdapter extends DbLibraryAdapter
             ->def('document_id')->map('id')->int()->desc('app id')
             ->def('apptype')->map('apptype')->varchar(100)->desc('app类型')->key()
             ->def('appimg')->map('appimg')->varchar(100)->desc('app图标LOGO')->key()
-            ->def('appname')->map('appname')->varchar(100)->desc('app名称')
+            ->def('appname')->map('appname')->varchar(100)->desc('app名称')->issearch(true)
             ->def('apptitle')->map('apptitle')->text()->desc('app标题')
             ->def('applevel')->map('applevel')->varchar(20)->desc('app级别')
             ->def('apptable')->map('apptable')->varchar(100)->desc('app主表名')->noTrace()->key()
             ->def('appusername')->map('appusername')->varchar(100)->desc('app主管用户')
+                ->widgetType('radio',array(new appCtrlLevelAdapter(),array('nickname')))
+                ->widgetStyle(
+                    array(
+                        'backgroundColor'=>'gray',
+                        'color'=>'#fff',
+                    )
+                )
+                ->tag(true)
             ->def('apppassword')->map('apppassword')->varchar(100)->desc('app主管密码')
             ->end();
     }

@@ -5,6 +5,7 @@
 
         <navmenu :logo="logo" :menulist="menulist"
                  :navmenu_theme_color="navmenu_theme_color" :menu_item_color="'#cbcfe4'"
+                 :showaccount="false"
                  :account_info="'/wechat_marketing_backend/accountInfo'"
         ></navmenu>
 
@@ -34,7 +35,7 @@
                     ssm_user: '用户管理',
                     ssm_app: 'app管理',
                     ssm_authlog: '认证日志',
-                    ssm_signallog: '消息日志',
+                    ssm_msglog: '消息日志',
                 },
                 navmenu_theme_color: '#324157',
 
@@ -60,28 +61,28 @@
         },
         mounted(){
             var vm = this
-            this.$root.eventHub.$on('changeNavMenu', function (data) {
-                switch (data) {
-                    case 0:
-                        console.log(data)
-                        break;
-                    case 1:
-                        console.log(data)
-
-                        break;
-                    case 2:
-                        console.log(data)
-
-                        break;
-                    case 3:
-                        console.log(data)
-
-                        break;
-                    default:
-                        console.log(data)
-
-                }
-            })
+//            this.$root.eventHub.$on('changeNavMenu', function (data) {
+//                switch (data) {
+//                    case 0:
+//                        console.log(data)
+//                        break;
+//                    case 1:
+//                        console.log(data)
+//
+//                        break;
+//                    case 2:
+//                        console.log(data)
+//
+//                        break;
+//                    case 3:
+//                        console.log(data)
+//
+//                        break;
+//                    default:
+//                        console.log(data)
+//
+//                }
+//            })
 
         },
         updated(){

@@ -214,8 +214,9 @@
                         :final_update_btn_desc="'提交修改'"
                         :page_data="detail_page_model_data"
                         source_way="table"
+                        :param_apihost="param_apihost"
                         style="position:absolute;z-index:100;
-            width:98.5%;text-align: center;bottom: 10px;height:auto;max-height: 600px;overflow-y: auto;overflow-x: hidden">
+            width:100%;text-align: center;bottom: 10px;height:auto;max-height: 600px;overflow-y: auto;overflow-x: hidden">
 
             </page_model>
 
@@ -228,615 +229,624 @@
 </template>
 
 <script>
-  import page_model from './page_model.vue'
-  import phone_model from './phone_model.vue'
-  import { mapGetters, mapActions } from 'vuex'
-  import axios from 'axios'
-  import { axios_config } from '../../api/axiosApi'
-  import {
-    dbResponseAnalysis2WidgetData,
-    deleteEmptyObj,
-    deleteEmptyString,
-    timestamp2datetime
-  } from '../../api/lib/helper/dataAnalysis'
-  import Vue from 'vue'
-  import { focus } from 'vue-focus';
+    import page_model from './page_model.vue'
+    import phone_model from './phone_model.vue'
+    import {mapGetters, mapActions} from 'vuex'
+    import axios from 'axios'
+    import {axios_config} from '../../api/axiosApi'
+    import {
+        dbResponseAnalysis2WidgetData,
+        deleteEmptyObj,
+        deleteEmptyString,
+        timestamp2datetime
+    } from '../../api/lib/helper/dataAnalysis'
+    import Vue from 'vue'
+    import {focus} from 'vue-focus';
 
-  export default {
-    data() {
-      return {
-        apihost: '',
-        multipleSelection: [],
-        screenWidth: document.body.clientWidth,   // 这里是给到了一个默认值 （这个很重要）
-        screenHeight: document.body.clientHeight,  // 这里是给到了一个默认值 （这个很重要）
-        tableData3: [
-          {
-            date: '2016-05-03',
-            name: '王小虎',
-            province: '上海',
-            city: '普陀区',
-            address: '上海市普陀区金沙江路 1518 弄',
-            zip: 200333
-          }, {
-            date: '2016-05-02',
-            name: '王小虎',
-            province: '上海',
-            city: '普陀区',
-            address: '上海市普陀区金沙江路 1518 弄',
-            zip: 200333
-          }, {
-            date: '2016-05-04',
-            name: '王小虎',
-            province: '上海',
-            city: '普陀区',
-            address: '上海市普陀区金沙江路 1518 弄',
-            zip: 200333
-          }, {
-            date: '2016-05-01',
-            name: '王小虎',
-            province: '上海',
-            city: '普陀区',
-            address: '上海市普陀区金沙江路 1518 弄',
-            zip: 200333
-          }, {
-            date: '2016-05-08',
-            name: '王小虎',
-            province: '上海',
-            city: '普陀区',
-            address: '上海市普陀区金沙江路 1518 弄',
-            zip: 200333
-          }, {
-            date: '2016-05-06',
-            name: '王小虎',
-            province: '上海',
-            city: '普陀区',
-            address: '上海市普陀区金沙江路 1518 弄',
-            zip: 200333
-          }, {
-            date: '2016-05-07',
-            name: '王小虎',
-            province: '上海',
-            city: '普陀区',
-            address: '上海市普陀区金沙江路 1518 弄',
-            zip: 200333
-          }, {
-            date: '2016-05-03',
-            name: '王小虎',
-            province: '上海',
-            city: '普陀区',
-            address: '上海市普陀区金沙江路 1518 弄',
-            zip: 200333
-          }, {
-            date: '2016-05-02',
-            name: '王小虎',
-            province: '上海',
-            city: '普陀区',
-            address: '上海市普陀区金沙江路 1518 弄',
-            zip: 200333
-          }, {
-            date: '2016-05-04',
-            name: '王小虎',
-            province: '上海',
-            city: '普陀区',
-            address: '上海市普陀区金沙江路 1518 弄',
-            zip: 200333
-          }, {
-            date: '2016-05-01',
-            name: '王小虎',
-            province: '上海',
-            city: '普陀区',
-            address: '上海市普陀区金沙江路 1518 弄',
-            zip: 200333
-          }, {
-            date: '2016-05-08',
-            name: '王小虎',
-            province: '上海',
-            city: '普陀区',
-            address: '上海市普陀区金沙江路 1518 弄',
-            zip: 200333
-          }, {
-            date: '2016-05-06',
-            name: '王小虎',
-            province: '上海',
-            city: '普陀区',
-            address: '上海市普陀区金沙江路 1518 弄',
-            zip: 200333
-          }, {
-            date: '2016-05-07',
-            name: '王小虎',
-            province: '上海',
-            city: '普陀区',
-            address: '上海市普陀区金沙江路 1518 弄',
-            zip: 200333
-          }, {
-            date: '2016-05-03',
-            name: '王小虎',
-            province: '上海',
-            city: '普陀区',
-            address: '上海市普陀区金沙江路 1518 弄',
-            zip: 200333
-          }, {
-            date: '2016-05-02',
-            name: '王小虎',
-            province: '上海',
-            city: '普陀区',
-            address: '上海市普陀区金沙江路 1518 弄',
-            zip: 200333
-          }, {
-            date: '2016-05-04',
-            name: '王小虎',
-            province: '上海',
-            city: '普陀区',
-            address: '上海市普陀区金沙江路 1518 弄',
-            zip: 200333
-          }, {
-            date: '2016-05-01',
-            name: '王小虎',
-            province: '上海',
-            city: '普陀区',
-            address: '上海市普陀区金沙江路 1518 弄',
-            zip: 200333
-          }, {
-            date: '2016-05-08',
-            name: '王小虎',
-            province: '上海',
-            city: '普陀区',
-            address: '上海市普陀区金沙江路 1518 弄',
-            zip: 200333
-          }, {
-            date: '2016-05-06',
-            name: '王小虎',
-            province: '上海',
-            city: '普陀区',
-            address: '上海市普陀区金沙江路 1518 弄',
-            zip: 200333
-          }, {
-            date: '2016-05-07',
-            name: '王小虎',
-            province: '上海',
-            city: '普陀区',
-            address: '上海市普陀区金沙江路 1518 弄',
-            zip: 200333
-          }
-        ],
-        tableField: {
-          date: {
-            title: '日期',
+    export default {
+        data() {
+            return {
+                multipleSelection: [],
+                screenWidth: document.body.clientWidth,   // 这里是给到了一个默认值 （这个很重要）
+                screenHeight: document.body.clientHeight,  // 这里是给到了一个默认值 （这个很重要）
+                tableData3: [
+                    {
+                        date: '2016-05-03',
+                        name: '王小虎',
+                        province: '上海',
+                        city: '普陀区',
+                        address: '上海市普陀区金沙江路 1518 弄',
+                        zip: 200333
+                    }, {
+                        date: '2016-05-02',
+                        name: '王小虎',
+                        province: '上海',
+                        city: '普陀区',
+                        address: '上海市普陀区金沙江路 1518 弄',
+                        zip: 200333
+                    }, {
+                        date: '2016-05-04',
+                        name: '王小虎',
+                        province: '上海',
+                        city: '普陀区',
+                        address: '上海市普陀区金沙江路 1518 弄',
+                        zip: 200333
+                    }, {
+                        date: '2016-05-01',
+                        name: '王小虎',
+                        province: '上海',
+                        city: '普陀区',
+                        address: '上海市普陀区金沙江路 1518 弄',
+                        zip: 200333
+                    }, {
+                        date: '2016-05-08',
+                        name: '王小虎',
+                        province: '上海',
+                        city: '普陀区',
+                        address: '上海市普陀区金沙江路 1518 弄',
+                        zip: 200333
+                    }, {
+                        date: '2016-05-06',
+                        name: '王小虎',
+                        province: '上海',
+                        city: '普陀区',
+                        address: '上海市普陀区金沙江路 1518 弄',
+                        zip: 200333
+                    }, {
+                        date: '2016-05-07',
+                        name: '王小虎',
+                        province: '上海',
+                        city: '普陀区',
+                        address: '上海市普陀区金沙江路 1518 弄',
+                        zip: 200333
+                    }, {
+                        date: '2016-05-03',
+                        name: '王小虎',
+                        province: '上海',
+                        city: '普陀区',
+                        address: '上海市普陀区金沙江路 1518 弄',
+                        zip: 200333
+                    }, {
+                        date: '2016-05-02',
+                        name: '王小虎',
+                        province: '上海',
+                        city: '普陀区',
+                        address: '上海市普陀区金沙江路 1518 弄',
+                        zip: 200333
+                    }, {
+                        date: '2016-05-04',
+                        name: '王小虎',
+                        province: '上海',
+                        city: '普陀区',
+                        address: '上海市普陀区金沙江路 1518 弄',
+                        zip: 200333
+                    }, {
+                        date: '2016-05-01',
+                        name: '王小虎',
+                        province: '上海',
+                        city: '普陀区',
+                        address: '上海市普陀区金沙江路 1518 弄',
+                        zip: 200333
+                    }, {
+                        date: '2016-05-08',
+                        name: '王小虎',
+                        province: '上海',
+                        city: '普陀区',
+                        address: '上海市普陀区金沙江路 1518 弄',
+                        zip: 200333
+                    }, {
+                        date: '2016-05-06',
+                        name: '王小虎',
+                        province: '上海',
+                        city: '普陀区',
+                        address: '上海市普陀区金沙江路 1518 弄',
+                        zip: 200333
+                    }, {
+                        date: '2016-05-07',
+                        name: '王小虎',
+                        province: '上海',
+                        city: '普陀区',
+                        address: '上海市普陀区金沙江路 1518 弄',
+                        zip: 200333
+                    }, {
+                        date: '2016-05-03',
+                        name: '王小虎',
+                        province: '上海',
+                        city: '普陀区',
+                        address: '上海市普陀区金沙江路 1518 弄',
+                        zip: 200333
+                    }, {
+                        date: '2016-05-02',
+                        name: '王小虎',
+                        province: '上海',
+                        city: '普陀区',
+                        address: '上海市普陀区金沙江路 1518 弄',
+                        zip: 200333
+                    }, {
+                        date: '2016-05-04',
+                        name: '王小虎',
+                        province: '上海',
+                        city: '普陀区',
+                        address: '上海市普陀区金沙江路 1518 弄',
+                        zip: 200333
+                    }, {
+                        date: '2016-05-01',
+                        name: '王小虎',
+                        province: '上海',
+                        city: '普陀区',
+                        address: '上海市普陀区金沙江路 1518 弄',
+                        zip: 200333
+                    }, {
+                        date: '2016-05-08',
+                        name: '王小虎',
+                        province: '上海',
+                        city: '普陀区',
+                        address: '上海市普陀区金沙江路 1518 弄',
+                        zip: 200333
+                    }, {
+                        date: '2016-05-06',
+                        name: '王小虎',
+                        province: '上海',
+                        city: '普陀区',
+                        address: '上海市普陀区金沙江路 1518 弄',
+                        zip: 200333
+                    }, {
+                        date: '2016-05-07',
+                        name: '王小虎',
+                        province: '上海',
+                        city: '普陀区',
+                        address: '上海市普陀区金沙江路 1518 弄',
+                        zip: 200333
+                    }
+                ],
+                tableField: {
+                    date: {
+                        title: '日期',
 
-          },
-          name: {
-            title: '名称',
+                    },
+                    name: {
+                        title: '名称',
 
-          },
-          province: {
-            title: '省份',
-          },
-          city: {
-            title: '城市',
-          },
-          address: {
-            title: '地址',
-          },
-          zip: {
-            title: '编码',
-          }
-        },
-        show_page_model_ctrl_by_table: false,
-        detail_page_model_data: {},
-        isloading: false,
-        loading_text: '数据加载中',
-        currect_select: '',
+                    },
+                    province: {
+                        title: '省份',
+                    },
+                    city: {
+                        title: '城市',
+                    },
+                    address: {
+                        title: '地址',
+                    },
+                    zip: {
+                        title: '编码',
+                    }
+                },
+                show_page_model_ctrl_by_table: false,
+                detail_page_model_data: {},
+                isloading: false,
+                loading_text: '数据加载中',
+                currect_select: '',
 
-        options4: [],
-        value9: [],
-        list: [],
-        loading: false,
-        states: ["Alabama", "Alaska", "Arizona",
-          "Arkansas", "California", "Colorado",
-          "Connecticut", "Delaware", "Florida",
-          "Georgia", "Hawaii", "Idaho", "Illinois",
-          "Indiana", "Iowa", "Kansas", "Kentucky",
-          "Louisiana", "Maine", "Maryland",
-          "Massachusetts", "Michigan", "Minnesota",
-          "Mississippi", "Missouri", "Montana",
-          "Nebraska", "Nevada", "New Hampshire",
-          "New Jersey", "New Mexico", "New York",
-          "North Carolina", "North Dakota", "Ohio",
-          "Oklahoma", "Oregon", "Pennsylvania",
-          "Rhode Island", "South Carolina",
-          "South Dakota", "Tennessee", "Texas",
-          "Utah", "Vermont", "Virginia",
-          "Washington", "West Virginia", "Wisconsin",
-          "Wyoming"],
-        focused: false,
-        ready_refresh: 0,
-        show_phone_model_uri: 'http://wap.baidu.com'
-      }
-
-    },
-    props: {
-      show_phone_model_key: {
-        defult: 'uri'
-      },
-      groupdelable: {
-        default: false
-      },
-      show_phone_model: {
-        default: false
-      },
-      test_props: '123',
-      new_add_info: {
-        type: String,
-        default: ''
-      },
-      search_sort_by: {
-        type: Object,
-        default: function () {
-          return {
-            vue_search_way: 'self',
-            page: 1,
-            page_size: 20,
-          }
-        }
-      },
-      table_design: {
-        type: Object,
-        default: function () {
-          return {
-            height: this.screenHeight
-          }
-        },
-        required: false,
-      },
-      all_data_count: {
-        default: 0
-
-      },
-      table_data: {
-        type: Array,
-        default: function () {
-          return []
-        },
-        required: false,
-      },
-      table_nodatadesc: {
-        default: '暂无数据',
-        required: false,
-      },
-      table_field: {
-        type: Object,
-        default: function () {
-          return {}
+                options4: [],
+                value9: [],
+                list: [],
+                loading: false,
+                states: ["Alabama", "Alaska", "Arizona",
+                    "Arkansas", "California", "Colorado",
+                    "Connecticut", "Delaware", "Florida",
+                    "Georgia", "Hawaii", "Idaho", "Illinois",
+                    "Indiana", "Iowa", "Kansas", "Kentucky",
+                    "Louisiana", "Maine", "Maryland",
+                    "Massachusetts", "Michigan", "Minnesota",
+                    "Mississippi", "Missouri", "Montana",
+                    "Nebraska", "Nevada", "New Hampshire",
+                    "New Jersey", "New Mexico", "New York",
+                    "North Carolina", "North Dakota", "Ohio",
+                    "Oklahoma", "Oregon", "Pennsylvania",
+                    "Rhode Island", "South Carolina",
+                    "South Dakota", "Tennessee", "Texas",
+                    "Utah", "Vermont", "Virginia",
+                    "Washington", "West Virginia", "Wisconsin",
+                    "Wyoming"],
+                focused: false,
+                ready_refresh: 0,
+                show_phone_model_uri: 'http://wap.baidu.com',
+                apihost: ''
+            }
 
         },
-        required: false,
-      },
-      info_transfer_action: {
-        type: Object,
-        default: function () {
-          return {
-            get: '',
-            update: ''
-          }
+        props: {
+            param_apihost: {
+                default: ''
+            },
+            show_phone_model_key: {
+                defult: 'uri'
+            },
+            groupdelable: {
+                default: false
+            },
+            show_phone_model: {
+                default: false
+            },
+            test_props: '123',
+            new_add_info: {
+                type: String,
+                default: ''
+            },
+            search_sort_by: {
+                type: Object,
+                default: function () {
+                    return {
+                        vue_search_way: 'self',
+                        page: 1,
+                        page_size: 20,
+                    }
+                }
+            },
+            table_design: {
+                type: Object,
+                default: function () {
+                    return {
+                        height: this.screenHeight
+                    }
+                },
+                required: false,
+            },
+            all_data_count: {
+                default: 0
+
+            },
+            table_data: {
+                type: Array,
+                default: function () {
+                    return []
+                },
+                required: false,
+            },
+            table_nodatadesc: {
+                default: '暂无数据',
+                required: false,
+            },
+            table_field: {
+                type: Object,
+                default: function () {
+                    return {}
+
+                },
+                required: false,
+            },
+            info_transfer_action: {
+                type: Object,
+                default: function () {
+                    return {
+                        get: '',
+                        update: ''
+                    }
+
+                },
+                required: false,
+            },
 
         },
-        required: false,
-      },
+        watch: {
+            search_sort_by: {
+                handler: function (val, oldVal) {
+                    this.isloading = true
 
-    },
-    watch: {
-      search_sort_by: {
-        handler: function (val, oldVal) {
-          this.isloading = true
+                },
+                deep: true
+            },
+            table_data: {
+                handler: function (val, oldVal) {
+                    this.isloading = false
+
+                },
+                deep: true
+            },
+            multipleSelection(val, oldVal){
+                console.log('multipleSelection change')
+                console.log(val.length, oldVal.length)
+
+            }
+        },
+        computed: {
+            ...mapGetters([
+                'wechat_marketing_store',
+            ]),
+            get_sorter_arr(){
+                var sorter_arr = []
+                for (var index in this.search_sort_by.sorter) {
+                    sorter_arr.push(index)
+                }
+                return sorter_arr
+            },
 
         },
-        deep: true
-      },
-      table_data: {
-        handler: function (val, oldVal) {
-          this.isloading = false
-
+        created(){
+            var vm = this
+            if (!this.param_apihost) {
+                this.apihost = this.wechat_marketing_store.apihost
+            }
+            else {
+                this.apihost = this.param_apihost
+            }
+            console.log(this.apihost)
+            this.$root.eventHub.$off('refresh_table_model')
+            this.$root.eventHub.$on('refresh_table_model', (data) => {
+                console.log('on->refresh_table_model')
+                this.refresh_table_data()
+            })
         },
-        deep: true
-      },
-      multipleSelection(val, oldVal){
-        console.log('multipleSelection change')
-        console.log(val.length, oldVal.length)
-
-      }
-    },
-    computed: {
-      ...mapGetters([
-        'wechat_marketing_store',
-      ]),
-      get_sorter_arr(){
-        var sorter_arr = []
-        for (var index in this.search_sort_by.sorter) {
-          sorter_arr.push(index)
-        }
-        return sorter_arr
-      },
-
-    },
-    created(){
-      var vm = this
-      this.apihost = this.wechat_marketing_store.apihost
-      this.$root.eventHub.$off('refresh_table_model')
-      this.$root.eventHub.$on('refresh_table_model', (data) => {
-        console.log('on->refresh_table_model')
-        this.refresh_table_data()
-      })
-    },
-    updated(){
+        updated(){
 
 //            console.log('updated->props->search_sort_by->',this.search_sort_by)
 
-      Vue.nextTick(() => {
+            Vue.nextTick(() => {
 //                console.log('this.table_data',this.table_data)
-      })
-      $(".table_select_bar>div.el-input>input").focus((e) => {
+            })
+            $(".table_select_bar>div.el-input>input").focus((e) => {
 
-        this.currect_select = e.currentTarget.parentNode.parentNode.dataset.key
+                this.currect_select = e.currentTarget.parentNode.parentNode.dataset.key
 
-      })
-      $("#table_button_bar .el-input>input").focus((e) => {
+            })
+            $("#table_button_bar .el-input>input").focus((e) => {
 
-        var $div_node = e.currentTarget.parentNode
-        this.currect_select = $div_node.dataset.key
-      })
+                var $div_node = e.currentTarget.parentNode
+                this.currect_select = $div_node.dataset.key
+            })
 
-    },
-    mounted(){
+        },
+        mounted(){
 
 //            console.log('mounted->props->search_sort_by->',this.search_sort_by)
 //            this.watchSearchSortBy()
 
-      this.list = this.states.map(item => {
-        return {value: item, label: item};
-      });
-      var vm = this
-      this.$root.eventHub.$on('screenWidth2screenHeight', function (data) {
-        var width2height = data.split(",")
-        vm.screenWidth = parseInt(width2height[0])
-        vm.screenHeight = parseInt(width2height[1])
-      })
+            this.list = this.states.map(item => {
+                return {value: item, label: item};
+            });
+            var vm = this
+            this.$root.eventHub.$on('screenWidth2screenHeight', function (data) {
+                var width2height = data.split(",")
+                vm.screenWidth = parseInt(width2height[0])
+                vm.screenHeight = parseInt(width2height[1])
+            })
 
-    },
-    components: {
-      page_model,
-      phone_model,
-    },
-    methods: {
-      ...mapActions([
-        'updateWechat_marketing_store',
-      ]),
-      handleViewDetailClick(index, rows) {
+        },
+        components: {
+            page_model,
+            phone_model,
+        },
+        methods: {
+            ...mapActions([
+                'updateWechat_marketing_store',
+            ]),
+            handleViewDetailClick(index, rows) {
 
-        var currect_row = rows[index]
-        var document_id = currect_row.document_id
-        var username = ''
-        if (currect_row.hasOwnProperty('username')) {
-          username = currect_row.username
-        }
+                var currect_row = rows[index]
+                var document_id = currect_row.document_id
+                var username = ''
+                if (currect_row.hasOwnProperty('username')) {
+                    username = currect_row.username
+                }
 //        console.log(rows)
 //        console.log(index)
 //        console.log(currect_row)
-        this.getCurrectBusinessDetail(document_id, username)
+                this.getCurrectBusinessDetail(document_id, username)
 //                this.$root.eventHub.$emit('currect_row_index',row)
-      },
-      handleDelRowClick(index, rows) {
-        var currect_row = rows.slice(index, index + 1);
-        var document_id = currect_row.document_id
-        var username = currect_row.username
-        this.updateCurrectBusinessDetail(index, username, true)
+            },
+            handleDelRowClick(index, rows) {
+                var currect_row = rows.slice(index, index + 1);
+                var document_id = currect_row.document_id
+                var username = currect_row.username
+                this.updateCurrectBusinessDetail(index, username, true)
 //                this.$root.eventHub.$emit('currect_row_index',row)
-      },
-      rowClick(row, event, column){
-        if (this.show_phone_model) {
-          this.show_phone_model_uri = 'http://' + row[this.show_phone_model_key]
-        }
-      },
-      rowDblClick(row, event, column){
-//                this.show_page_model_ctrl_by_table = false
-        this.updateWechat_marketing_store({
-          page_model: {
-            type: 'del',
-          }
-        })
-      },
-      toggleSelection(rows) {
-        if (rows) {
-          rows.forEach(row => {
-            this.$refs.multipleTable.toggleRowSelection(row);
-          });
-        } else {
-          this.$refs.multipleTable.clearSelection();
-        }
-      },
-      handleSelectionChange(val) {
-        this.multipleSelection = val;
-      },
-      formatter(row, column) {
-        return row.address;
-      },
-      filterTag(value, row) {
-        return row.tag === value;
-      },
-      add_business_info(){
-        var vm = this
-
-        this.$http.post(this.apihost + this.info_transfer_action.add, {
-//        axios.post(this.apihost + this.info_transfer_action.add, {
-          rules: 1,
-          token: this.wechat_marketing_store.token
-        }, this.$http_config)
-          .then((res) => {
-            if (res.data.code === 0) {
-              let analysis_data = dbResponseAnalysis2WidgetData(res.data.response)
-
-              var content = analysis_data.widgetdata[0]
-              vm.detail_page_model_data = {
-                title: vm.new_add_info + '信息',
-                content: content
-              }
-              vm.updateWechat_marketing_store({
-                page_model:{
-                  type:'update',
-                  value:true
+            },
+            rowClick(row, event, column){
+                if (this.show_phone_model) {
+                    this.show_phone_model_uri = 'http://' + row[this.show_phone_model_key]
                 }
-              })
-              console.log('wechat_marketing_store',vm.wechat_marketing_store.page_model)
-            }
-            else {
-              vm.$notify.success({
-                title: '失败',
-                message: res.data.code + ' ' + res.data.desc,
-                type: 'error',
-                offset: 100,
-                duration: '2000'
-              });
+            },
+            rowDblClick(row, event, column){
+//                this.show_page_model_ctrl_by_table = false
+                this.updateWechat_marketing_store({
+                    page_model: {
+                        type: 'del',
+                    }
+                })
+            },
+            toggleSelection(rows) {
+                if (rows) {
+                    rows.forEach(row => {
+                        this.$refs.multipleTable.toggleRowSelection(row);
+                    });
+                } else {
+                    this.$refs.multipleTable.clearSelection();
+                }
+            },
+            handleSelectionChange(val) {
+                this.multipleSelection = val;
+            },
+            formatter(row, column) {
+                return row.address;
+            },
+            filterTag(value, row) {
+                return row.tag === value;
+            },
+            add_business_info(){
+                var vm = this
 
-            }
+                this.$http.post(this.apihost + this.info_transfer_action.add, {
+//        axios.post(this.apihost + this.info_transfer_action.add, {
+                    rules: 1,
+                    token: this.wechat_marketing_store.token
+                }, this.$http_config)
+                    .then((res) => {
+                        if (res.data.code === 0) {
+                            let analysis_data = dbResponseAnalysis2WidgetData(res.data.response)
 
-          })
-      },
-      getCurrectBusinessDetail(id, username){
-        var vm = this
-        var search_param = ''
-        var show_title = ''
-        if (id) {
-          search_param = {document_id: id, rules: 1}
-        }
-        else {
-          search_param = {rules: 1}
-        }
-        if (username) {
-          show_title = username + ' 详细信息'
-        }
-        else {
-          show_title = '详细数据信息'
-        }
-        vm.isloading = true
-        console.log('start->loading')
-        this.$http.post(this.apihost + this.info_transfer_action.get, search_param, this.$http_config)
-        //        axios.post(this.apihost + this.info_transfer_action.get, search_param, axios_config)
-          .then((res) => {
-            let analysis_data = dbResponseAnalysis2WidgetData(res.data.response)
-            var content = analysis_data.widgetdata[0]
-            console.log(analysis_data)
-            vm.detail_page_model_data = {
-              title: show_title,
-              content: content
-            }
-            vm.updateWechat_marketing_store({
-              page_model: {
-                type: 'update',
-                value: true
-              }
-            })
-            vm.isloading = false
-            console.log('end->loading')
+                            var content = analysis_data.widgetdata[0]
+                            vm.detail_page_model_data = {
+                                title: vm.new_add_info + '信息',
+                                content: content
+                            }
+                            vm.updateWechat_marketing_store({
+                                page_model: {
+                                    type: 'update',
+                                    value: true
+                                }
+                            })
+                            console.log('wechat_marketing_store', vm.wechat_marketing_store.page_model)
+                        }
+                        else {
+                            vm.$notify.success({
+                                title: '失败',
+                                message: res.data.code + ' ' + res.data.desc,
+                                type: 'error',
+                                offset: 100,
+                                duration: '2000'
+                            });
 
-          })
-          .catch((error) => {
-            vm.isloading = error
-          });
-      },
-      updateCurrectBusinessDetail(index, name, del = false){
-        var vm = this
+                        }
 
-        var update_params = {}
-        if (del) {
+                    })
+            },
+            getCurrectBusinessDetail(id, username){
+                var vm = this
+                var search_param = ''
+                var show_title = ''
+                if (id) {
+                    search_param = {document_id: id, rules: 1}
+                }
+                else {
+                    search_param = {rules: 1}
+                }
+                if (username) {
+                    show_title = username + ' 详细信息'
+                }
+                else {
+                    show_title = '详细数据信息'
+                }
+                vm.isloading = true
+                console.log('start->loading')
+                this.$http.post(this.apihost + this.info_transfer_action.get, search_param, this.$http_config)
+                //        axios.post(this.apihost + this.info_transfer_action.get, search_param, axios_config)
+                    .then((res) => {
+                        let analysis_data = dbResponseAnalysis2WidgetData(res.data.response)
+                        var content = analysis_data.widgetdata[0]
+                        console.log(analysis_data)
+                        vm.detail_page_model_data = {
+                            title: show_title,
+                            content: content
+                        }
+                        vm.updateWechat_marketing_store({
+                            page_model: {
+                                type: 'update',
+                                value: true
+                            }
+                        })
+                        vm.isloading = false
+                        console.log('end->loading')
 
-          update_params.document_id = this.table_data[index].document_id
-          update_params.if_delete = 1
-        }
-        else {
-          update_params = this.table_data[index]
-          update_params.rules = 1
-        }
-        vm.isloading = true
-        this.$http.post(this.apihost + this.info_transfer_action.update, update_params, this.$http_config)
-        //        axios.post(this.apihost + this.info_transfer_action.update, update_params, axios_config)
-          .then((res) => {
-            if (res.data.code === 0) {
+                    })
+                    .catch((error) => {
+                        vm.isloading = error
+                    });
+            },
+            updateCurrectBusinessDetail(index, name, del = false){
+                var vm = this
 
-              vm.$notify.success({
-                title: '成功',
-                message: '删除成功',
-                offset: 100,
-                duration: '2000'
-              });
-              vm.refresh_table_data()
+                var update_params = {}
+                if (del) {
 
-            }
-            else {
-              vm.$notify.success({
-                title: '失败',
-                message: res.data.code + ' ' + res.data.desc,
-                type: 'error',
-                offset: 100,
-                duration: '2000'
-              });
+                    update_params.document_id = this.table_data[index].document_id
+                    update_params.if_delete = 1
+                }
+                else {
+                    update_params = this.table_data[index]
+                    update_params.rules = 1
+                }
+                vm.isloading = true
+                this.$http.post(this.apihost + this.info_transfer_action.update, update_params, this.$http_config)
+                //        axios.post(this.apihost + this.info_transfer_action.update, update_params, axios_config)
+                    .then((res) => {
+                        if (res.data.code === 0) {
 
-            }
-            vm.isloading = false
+                            vm.$notify.success({
+                                title: '成功',
+                                message: '删除成功',
+                                offset: 100,
+                                duration: '2000'
+                            });
+                            vm.refresh_table_data()
 
-          })
-          .catch((error) => {
-            vm.isloading = error
-          });
-      },
-      handleSizeChange(val) {
-        this.isloading = true
-        console.log(`每页 ${val} 条`);
-        this.search_sort_by.vue_search_way = 'self'
-        this.search_sort_by.page_size = val
-        this.handleCurrentChange(1)
+                        }
+                        else {
+                            vm.$notify.success({
+                                title: '失败',
+                                message: res.data.code + ' ' + res.data.desc,
+                                type: 'error',
+                                offset: 100,
+                                duration: '2000'
+                            });
 
-      },
-      handleCurrentChange(val) {
-        this.isloading = true
-        this.search_sort_by.page = val
+                        }
+                        vm.isloading = false
 
-      },
-      refresh_table_data(add_note){
-        var vm = this
-        if (add_note === 'resetselect') {
-          console.log('emit->refresh_table',add_note)
+                    })
+                    .catch((error) => {
+                        vm.isloading = error
+                    });
+            },
+            handleSizeChange(val) {
+                this.isloading = true
+                console.log(`每页 ${val} 条`);
+                this.search_sort_by.vue_search_way = 'self'
+                this.search_sort_by.page_size = val
+                this.handleCurrentChange(1)
 
-          this.$root.eventHub.$emit('refresh_table', 'resetselect')
-        }
-        else {
-          console.log('emit->refresh_table')
-          this.$root.eventHub.$emit('refresh_table', JSON.stringify(vm.search_sort_by))
-        }
+            },
+            handleCurrentChange(val) {
+                this.isloading = true
+                this.search_sort_by.page = val
 
-      },
-      clickCurrectSelect(e){
-      },
-      remoteSearchMethod(query) {
-        this.search_sort_by[this.currect_select] = query
-      },
-      focusCurrectSelect(e){
-      },
-      delSelectOption(){
-        var vm = this
-        var del_ids = []
-        for (var item of this.multipleSelection) {
-          del_ids.push(item.document_id)
-        }
-        console.log(del_ids)
-        this.$http.post(this.apihost + this.info_transfer_action.groupdel, {ids: del_ids}, this.$http_config)
-          .then((res) => {
+            },
+            refresh_table_data(add_note){
+                var vm = this
+                if (add_note === 'resetselect') {
+                    console.log('emit->refresh_table', add_note)
+
+                    this.$root.eventHub.$emit('refresh_table', 'resetselect')
+                }
+                else {
+                    console.log('emit->refresh_table')
+                    this.$root.eventHub.$emit('refresh_table', JSON.stringify(vm.search_sort_by))
+                }
+
+            },
+            clickCurrectSelect(e){
+            },
+            remoteSearchMethod(query) {
+                this.search_sort_by[this.currect_select] = query
+            },
+            focusCurrectSelect(e){
+            },
+            delSelectOption(){
+                var vm = this
+                var del_ids = []
+                for (var item of this.multipleSelection) {
+                    del_ids.push(item.document_id)
+                }
+                console.log(del_ids)
+                this.$http.post(this.apihost + this.info_transfer_action.groupdel, {ids: del_ids}, this.$http_config)
+                    .then((res) => {
 //                        console.log('groupdel->',res.data)
-            vm.$notify.success({
-              title: '成功',
-              message: '删除成功',
-              offset: 100,
-              duration: '2000'
-            });
-            vm.refresh_table_data()
+                        vm.$notify.success({
+                            title: '成功',
+                            message: '删除成功',
+                            offset: 100,
+                            duration: '2000'
+                        });
+                        vm.refresh_table_data()
 //                        if((typeof res.data === 'object' && res.data.statistic.count>=1) || res.data>=1){
 //                            vm.$notify.success({
 //                                title: '成功',
@@ -857,61 +867,61 @@
 //                        }
 //                        vm.$root.eventHub.$emit('refresh_businessinfo',JSON.stringify(vm.search_sort_by))
 //                        vm.isloading = false
-          })
-          .catch((error) => {
-            vm.isloading = error
-          });
+                    })
+                    .catch((error) => {
+                        vm.isloading = error
+                    });
 
-      },
-      resetSelect(){
-        this.handleCurrentChange(1)
+            },
+            resetSelect(){
+                this.handleCurrentChange(1)
 //                $('li.number').eq(0).click()
 //                this.$root.eventHub.$emit('refresh_table','resetselect')
-        this.refresh_table_data('resetselect')
+                this.refresh_table_data('resetselect')
 
-      },
-      sortChange(column){
-        var default_sorter = this.search_sort_by.sorter
-        for (var index in default_sorter) {
-          default_sorter[index] = ''
-        }
-        default_sorter[column.prop] = column.order
-        console.log(default_sorter)
+            },
+            sortChange(column){
+                var default_sorter = this.search_sort_by.sorter
+                for (var index in default_sorter) {
+                    default_sorter[index] = ''
+                }
+                default_sorter[column.prop] = column.order
+                console.log(default_sorter)
 
-      },
-      is_sortable(key, e){
+            },
+            is_sortable(key, e){
 
-        if (this.search_sort_by.sorter.hasOwnProperty(key)) {
-          return 'custom'
-        }
+                if (this.search_sort_by.sorter.hasOwnProperty(key)) {
+                    return 'custom'
+                }
 
-      },
-      summaryfunction(columns, data){
-        console.log(columns, data)
-      },
-      get_timestamp2datetime(timestamp){
-        return timestamp2datetime(timestamp)
-      },
-      get_str2json(str){
-        if (str.length >= 2) {
-          return JSON.parse(str)
-        }
-        else return ''
-      }
+            },
+            summaryfunction(columns, data){
+                console.log(columns, data)
+            },
+            get_timestamp2datetime(timestamp){
+                return timestamp2datetime(timestamp)
+            },
+            get_str2json(str){
+                if (str.length >= 2) {
+                    return JSON.parse(str)
+                }
+                else return ''
+            }
 
-    },
-    beforeDestroy(){
-      this.$root.eventHub.$off('close_page_model')
+        },
+        beforeDestroy(){
+            this.$root.eventHub.$off('close_page_model')
 //            console.log('table_model->beforedestroy')
 //            this.$root.eventHub.$off('refresh_table')
 //            this.$root.eventHub.$off('page_model_update_response_done')
 
-    },
-    destroyed(){
+        },
+        destroyed(){
 //            console.log('table_model->destroyed')
 
+        }
     }
-  }
 </script>
 <style lang="stylus" rel="stylesheet/stylus">
     #table_button_bar button {

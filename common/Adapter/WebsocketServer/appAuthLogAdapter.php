@@ -43,15 +43,11 @@ class appAuthLogAdapter extends DbLibraryAdapter
     public function tableInit()
     {
         return Field::start()
-            ->def('document_id')->map('id')->int()->desc('auth id')
-            ->def('apps')->map('apps')->varchar(100)->desc('绑定app')
-            ->def('ctrlid')->map('ctrlid')->varchar(100)->desc('控制级别id')
+            ->def('document_id')->map('id')->int()->desc('id')
+            ->def('app')->map('app')->varchar(100)->desc('绑定app')
             ->def('ctrlname')->map('ctrlname')->varchar(100)->desc('控制人员名称')
-            ->def('ctrllevel')->map('ctrllevel')->varchar(100)->desc('控制人员级别')
             ->def('authway')->map('authway')->varchar(255)->desc('认证方式') //web 、客户端
             ->def('note')->map('note')->varchar(255)->desc('备注')
-            ->def('point_key')->map('point_key')->varchar(255)->desc('指定发送key')
-            ->def('receive_key')->map('receive_key')->varchar(255)->desc('指定接收key')
             ->def('user_agent')->map('user_agent')->varchar(1000)->desc('系统信息')
             ->def('ip')->map('ip')->varchar(255)->desc('认证ip')
             ->def('unique_auth_code')->map('unique_auth_code')->varchar(100)->desc('唯一序列码')->unique()

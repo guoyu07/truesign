@@ -41,6 +41,12 @@ const state = {
     ScoketInfo:{
         unique_auth_code:LocalVoucher.getValue('socketinfo.unique_auth_code'),
         cid:'',
+        ping:'',
+        socket_response:'',
+        relation:'',
+        token:LocalVoucher.getValue('ScoketInfo.token'),
+        userinfo:LocalVoucher.getValue('ScoketInfo.userinfo'),
+        apps:'',
     },
     AppShow:{
         chat:false,

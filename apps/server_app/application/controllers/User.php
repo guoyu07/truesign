@@ -42,13 +42,9 @@ class UserController extends ServerAppBaseController {
         $doService = new UserService();
         $response = \Royal\Prof\TrueSignConst::SUCCESS('获取客户信息成功');
         $response['response'] = $doService->get($params,$search_params,$page_params,$sorter_params);
-        if(empty($response['response']['statistic']['count'])){
-            $this->descAction(1);
-        }
-        else{
-            $this->output2json($response);
 
-        }
+        $this->output2json($response);
+
 
 
     }
@@ -58,10 +54,8 @@ class UserController extends ServerAppBaseController {
          */
     public function UpdateAction(){
         $params = $_POST;
-        $doAdapter = new UserService();
-        $doDao = new DAO($doAdapter);
         $condition['id'] = $params['document_id'];
-        $doService = new BusinessService();
+        $doService = new UserService();
         $response = \Royal\Prof\TrueSignConst::SUCCESS('更新客户信息成功');
         $response['response'] = $doService->Update($params,$condition);
         $this->output2json($response);

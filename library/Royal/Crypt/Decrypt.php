@@ -27,7 +27,6 @@ class Decrypt
         }
         else{ /*解密操作*/
             /*解析id*/
-
             $flag_length_id = substr($info,3,1);
 
             $id_lenght = self::numMapKey($flag_length_id,true)+1;/*拿到id长度*/
@@ -36,20 +35,18 @@ class Decrypt
             /*解析加密字符码,去除附着的 id长度标志 和id*/
             $info = substr_replace($info,'',6,$id_lenght);/*去除id*/
             $info = substr_replace($info,'',3,1);/*去除id长度标志*/
-
             $salt = md5($id);
             $key = sha1($saltkey.$salt);
 
             $info = base64_decode($info);
             $info = $info ^ $key;
-
             [$account_type,$name,$limit_time] = explode(',',$info);
             $decode_info['id'] = (int)$id;
             $decode_info['account_type'] = $account_type;
             $decode_info['name'] = $name;
             $decode_info['limit_time'] = (int)$limit_time;
             /*进行第一层加密码解密数据校验*/
-            if(strlen($decode_info['limit_time']) !== 10 || !$decode_info['id']>0 || empty(json_encode($name)) || !in_array($account_type,array('master','business','worker'))){
+            if(strlen($decode_info['limit_time']) !== 10 || !$decode_info['id']>0 || empty(json_encode($name)) || !in_array($account_type,array('master','business','worker','socket'))){
                 return false;
             }
             else{

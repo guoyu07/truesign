@@ -1,6 +1,5 @@
 <template>
     <div class="top_router_view" id="business_client_ctrl" style="overflow: auto">
-        {{ socket_server_store }}
         <table_model v-loading="isloading"
                      :currect_select="table_currect_select"
                      :element-loading-text="loading_text"
@@ -11,6 +10,7 @@
                      :info_transfer_action="info_transfer_action"
                      :new_add_info="'新增用户'"
                      groupdelable="true"
+                     :param_apihost = "socket_server_store.apihost"
         >
 
         </table_model>
@@ -40,9 +40,9 @@
                 show_page_model_ctrl_by_table: false,
                 show_adddata_page_model_ctrl: false,
                 info_transfer_action: {
-                    add: 'User/Desc',
-                    get: 'User/Get',
-                    update: 'User/Update',
+                    add: 'User/Desc?app=server_app',
+                    get: 'User/Get?app=server_app',
+                    update: 'User/Update?app=server_app',
                     groupdel: false
                 },
                 table_search_sort_by: {
@@ -62,7 +62,7 @@
         watch: {
             table_search_sort_by: {
                 handler: function (val, oldVal) {
-                    this.refresh_table_data(JSON.stringify(this.table_search_sort_by))
+                    this.getUser(JSON.stringify(this.table_search_sort_by))
 
                 },
                 deep: true
@@ -95,9 +95,15 @@
                     vm.reset_search_sort_by()
                 }
                 else {
-                    vm.refresh_table_data(data)
+                    vm.getUser(data)
                 }
 
+            })
+            this.$root.eventHub.$off('changeNavMenu')
+            this.$root.eventHub.$on('changeNavMenu', function (data) {
+                if(data  === 'ssm_user'){
+                    vm.getUser()
+                }
             })
         },
         mounted(){
@@ -122,7 +128,7 @@
                 }
                 search_param.rules = 1
 //        search_param.token = this.socket_server_store.token
-                this.$http.post('http://127.0.0.1:8089/common/', search_param, this.$http_config)
+                this.$http.post(this.report_api + 'get?app=server_app', search_param, this.$http_config)
                 //        axios.post(this.report_api + 'getUser', search_param, axios_config)
                     .then((res) => {
                         if (res.data.code === 0) {

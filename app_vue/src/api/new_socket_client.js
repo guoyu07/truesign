@@ -46,6 +46,10 @@ const SOCKET_CLIENT = {
 
         // console.log('send=>')
         // console.log(JSON.stringify(this.data.payload))
+        let unique_auth_code = isEmptyValue(store.getters.socketinfo.unique_auth_code)?'':store.getters.socketinfo.unique_auth_code
+        let token = isEmptyValue(store.getters.socketinfo.token)?'':store.getters.socketinfo.token
+        this.data.payload.payload_data.unique_auth_code = unique_auth_code
+        this.data.payload.payload_data.token = token
         var send_blob = String2Blob(JSON.stringify(this.data.payload))
         // console.log('this.data.wSock',this.data.wSock)
         this.data.wSock.send(send_blob);
@@ -78,9 +82,9 @@ const SOCKET_CLIENT = {
                 reader.onload = function (e) {
                     event.datastr = JSON.parse(reader.result)
                     let type = event.datastr.type
-                    console.log('-----------'+type+'------------')
+                    // console.log('-----------'+type+'------------')
                     if(type === 'open'){
-                        console.log(event.datastr.msg.unique_auth_code)
+                        // console.log(event.datastr.msg.unique_auth_code)
 
                         store.dispatch('updateSocketInfo',{
                             unique_auth_code:{
@@ -90,8 +94,56 @@ const SOCKET_CLIENT = {
                             cid:{
                                 type: 'update',
                                 value: event.datastr.msg.cid
+                            },
+                            socket_response:{
+                                type: 'update',
+                                value: event.datastr.socket_response
                             }
                         })
+                    }
+                    else if(type === 'ping'){
+                        store.dispatch('updateSocketInfo',{
+                            ping:{
+                                type: 'update',
+                                value: event.datastr
+                            }
+                        })
+                    }
+                    else{
+                        store.dispatch('updateSocketInfo',{
+                            socket_response:{
+                                type: 'update',
+                                value: event.datastr.socket_response
+                            },
+                            relation:{
+                                type: 'update',
+                                value: event.datastr.relation
+                            }
+                        })
+                    }
+                    /*
+                    * 判定存储token
+                    * */
+                    if(type === 'login'){
+                        console.log(event.datastr)
+                        if(event.datastr.socket_response.code === 0){
+                            let login_info = JSON.parse(event.datastr.socket_response.desc)
+                            store.dispatch('updateSocketInfo',{
+                                token:{
+                                    type: 'update',
+                                    value: login_info.token
+                                },
+                                userinfo:{
+                                    type: 'update',
+                                    value: login_info.ctrlname
+                                },
+                                apps:{
+                                    type: 'update',
+                                    value: login_info.apps
+                                }
+
+                            })
+                        }
                     }
                 }
             }

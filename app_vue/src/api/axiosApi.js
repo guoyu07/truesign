@@ -42,7 +42,7 @@ const axios_config =
     headers: {
       // 'X-Requested-With': 'XMLHttpRequest',
       'Content-Type': 'application/x-www-form-urlencoded',
-       Authorization :store.state.wechat_marketing_store.token,
+       Authorization :store.state.wechat_marketing_store.token || store.state.socket_server_store.token,
     },
     responseType: 'json', // 默认的
 

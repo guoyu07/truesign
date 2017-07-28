@@ -261,8 +261,8 @@ export const mutations = {
 
     },
     [types.SOCKETINFO](state, data){
-        console.log('vuex=>socketinfo')
-        console.log(data)
+        // console.log('vuex=>socketinfo')
+        // console.log(data)
         if (data.hasOwnProperty('unique_auth_code')) {
             if (data.unique_auth_code.type === 'update') {
                 state.ScoketInfo.unique_auth_code = data.unique_auth_code.value
@@ -281,6 +281,67 @@ export const mutations = {
             if (data.cid.type === 'del') {
                 state.ScoketInfo.cid = ''
 
+            }
+        }
+        if (data.hasOwnProperty('ping')) {
+            if (data.ping.type === 'update') {
+                state.ScoketInfo.ping = data.ping.value
+
+            }
+            if (data.ping.type === 'del') {
+                state.ScoketInfo.ping = ''
+
+            }
+        }
+        if (data.hasOwnProperty('socket_response')) {
+            if (data.socket_response.type === 'update') {
+                state.ScoketInfo.socket_response = data.socket_response.value
+
+            }
+            if (data.socket_response.type === 'del') {
+                state.ScoketInfo.socket_response = ''
+
+            }
+        }
+        if (data.hasOwnProperty('relation')) {
+            if (data.relation.type === 'update') {
+                state.ScoketInfo.relation = data.relation.value
+
+            }
+            if (data.relation.type === 'del') {
+                state.ScoketInfo.relation = ''
+
+            }
+        }
+        if (data.hasOwnProperty('token')) {
+            if (data.token.type === 'update') {
+                state.ScoketInfo.token = data.token.value
+                LocalVoucher.setKeyValue('ScoketInfo.token', data.token.value)
+            }
+            if (data.token.type === 'del') {
+                state.ScoketInfo.token = ''
+                LocalVoucher.removeKey('ScoketInfo.token')
+
+            }
+        }
+        if (data.hasOwnProperty('userinfo')) {
+            if (data.userinfo.type === 'update') {
+                state.ScoketInfo.userinfo = data.userinfo.value
+                LocalVoucher.setKeyValue('ScoketInfo.userinfo', data.userinfo.value)
+
+            }
+            if (data.userinfo.type === 'del') {
+                state.ScoketInfo.userinfo = ''
+                LocalVoucher.removeKey('ScoketInfo.userinfo')
+
+            }
+        }
+        if (data.hasOwnProperty('apps')) {
+            if (data.apps.type === 'update') {
+                state.ScoketInfo.apps = data.apps.value
+            }
+            if (data.apps.type === 'del') {
+                state.ScoketInfo.apps = ''
             }
         }
     }

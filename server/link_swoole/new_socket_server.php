@@ -370,10 +370,21 @@ class new_socket_server{
             echo "生成唯一识别id->".$unique_auth_code.PHP_EOL;
 
         }
+
+        $sysinfo = [];
+        $sysinfo['fd']=$request->fd;
+        $sysinfo['user_agent']=json_encode($request->header,JSON_UNESCAPED_SLASHES);
+        $sysinfo['ip']=$request->server['remote_addr'];
+        $sysinfo['unique_auth_code']=$unique_auth_code;
+        $sysinfo['authway']='Browser';
+        $yaf_payload = $this->buildYaf('index','Socketauth','conn',array('sysinfo'=>$sysinfo));
+        $conn_yaf_response = $this->runYaf($yaf_payload);
+        var_dump($conn_yaf_response);
+
         $serv->task([
             'to' => [$request->fd],
             'except' => [],
-            'data' => json_encode(array('type'=>'open','msg'=>array('unique_auth_code'=>$unique_auth_code,'cid'=>$request->fd)))
+            'data' => json_encode(array('type'=>'open','msg'=>array('unique_auth_code'=>$unique_auth_code,'cid'=>$request->fd),'socket_response'=>$conn_yaf_response))
         ]);
 
 
@@ -389,47 +400,45 @@ class new_socket_server{
     public function onMessage( $serv , $request ){
         echo '====================》【onmessage】'.PHP_EOL;
         $receive = json_decode($request->data,true);
-        $to_id = [];
-        $from = [
-            'fd_type'=>'client',
-            'fd'=>$request->fd,
-        ];
-        $to = [
-            'id_type'=>'client',
-            'id'=>$to_id
-        ];
-        if(!empty($to_id)){
-            $me_id = $to_id;
-//            $me_nickname = $this->table->get($to);
+        echo 'receive=>'.PHP_EOL,
+        var_dump($receive);
+        $yaf_payload = self::buildYaf($receive['yaf']['module'],$receive['yaf']['controller'],$receive['yaf']['action'],$receive['payload_data']);
+
+        $yaf_response = $this->runYaf($yaf_payload);
+        echo 'response=>'.PHP_EOL,
+        var_dump($yaf_response);
+//        $to_id = [];
+//        $from = [
+//            'fd_type'=>'client',
+//            'fd'=>$request->fd,
+//        ];
+//        $to = [
+//            'id_type'=>'client',
+//            'id'=>$to_id
+//        ];
+        $to_id = $receive['to'];
+
+        if($to_id == 'self'){
+            $to_id = [$request->fd];
         }
-        else{
-            $me_id = 'unknow';
-//            $me_nickname = 'unknow';
-        }
-        $me = [
-            'id'=>$me_id,
-//            'nickname'=>$me_nickname
-        ];
-        $msg = [];
-        if(empty($to_id)){
-            $task = [
-                'to' => [],
-//            'except' => [$request->fd],
-                'except' => [],
-                'data' => $msg
-            ];
+        else if(empty($to_id)){
+            $to_id = [];
         }
         else{
             $to_id = gettype($to_id) == 'array'?$to_id:[$to_id];
-
-            $task = [
-                'to' => $to_id,
-//            'except' => [$request->fd],
-                'except' => [],
-                'data' => $msg
-            ];
         }
+        $relation['from'] = $request->fd;
+        $relation['to'] = $to_id;
 
+        $msg = json_encode(array('type'=>$receive['payload_type'],'socket_response'=>$yaf_response,'relation'=>$relation));
+
+        $task = [
+            'to' => $to_id,
+//            'except' => [$request->fd],
+            'except' => [],
+            'data' => $msg
+        ];
+        var_dump($task);
 
 
         $serv->task($task);
@@ -443,7 +452,7 @@ class new_socket_server{
 
         if (count($data['to']) > 0) {
             echo "存在指定接收人,开始遍历发送消息".PHP_EOL;
-            echo json_encode($data);
+            echo json_encode($data).PHP_EOL;
 
             $clients = $data['to'];
             foreach ($clients as $fd) {
@@ -466,7 +475,6 @@ class new_socket_server{
         /*
          * 处理shadowsocks服务端通信
          */
-
         $this->sw->reload();
 
 
@@ -478,7 +486,9 @@ class new_socket_server{
         $this->unlinkfd($fd);
         unset($this->ids[$fd]);
 //        $this->table->del($fd);
-        echo 'fd=>'.$fd;
+        echo 'fd=>'.$fd.PHP_EOL;
+        $this->sw->reload();
+
     }
 
     /*
@@ -552,14 +562,18 @@ class new_socket_server{
      */
     public function heartbeat($serv,$request)
     {
+//        echo '================>heartbeat=>'.PHP_EOL;
+        $AccessClientList = $this->getAccessClientList();
         if($request){
             $fd = $request->fd;
+//            echo '向指定人发送心跳=>'.$fd.PHP_EOL;
             if(!empty($fd)){
-                $serv->tick(1500, function() use ($fd, $serv) {
-                    $chat_list = $this->getChatList();
+                $serv->tick(1500, function() use ($fd, $serv,$AccessClientList) {
+
                     $ping_reponse = array();
                     $ping_reponse['type'] = 'ping';
                     $ping_reponse['accompany'] = [];
+                    $ping_reponse['accompany']['accessClientList'] = $AccessClientList;
                     $serv->push($fd,json_encode($ping_reponse),2);
                 });
             }
@@ -568,11 +582,14 @@ class new_socket_server{
 
             foreach($serv->connections as $fd)
             {
-                $serv->tick(1500, function() use ($fd, $serv) {
-                    $chat_list = $this->getChatList();
+//                echo '循环向所有人发送心跳，当前=>'.$fd.PHP_EOL;
+                $serv->tick(1500, function() use ($fd, $serv,$AccessClientList) {
+//                    var_dump($AccessClientList);
+
                     $ping_reponse = array();
                     $ping_reponse['type'] = 'ping';
                     $ping_reponse['accompany'] = [];
+                    $ping_reponse['accompany']['accessClientList'] = $AccessClientList;
                     $serv->push($fd,json_encode($ping_reponse),2);
                 });
             }
@@ -583,10 +600,10 @@ class new_socket_server{
     }
 
     /*
-     * 获取聊天列表 并通过心跳发送
+     * 获取权限内联系人列表，并通过心跳返回
      */
-    public function getChatList(){
-        $yaf_payload = self::buildYaf('index', 'website', 'getchatlist', array());
+    public function getAccessClientList(){
+        $yaf_payload = self::buildYaf('index', 'Socketcommon', 'getAccessClientList', array());
         $db_response = $this->runYaf($yaf_payload);
         return $db_response;
     }

@@ -1,8 +1,8 @@
 <template>
-    <div>
-        <transition name="el-zoom-in-top">
+    <div id="common_page_model">
+        <transition name="el-zoom-in-top" id="common_page_model_body">
             <div v-if="page_data.title" key="haspagedata" class="page_model" :style="page_design" v-loading="authing"
-                 :element-loading-text="laoding_text">
+                 :element-loading-text="laoding_text" style="background-color: transparent">
                 <div :style="{paddingLeft: page_model_padding_left}">
 
                     <div class="page_title" :style="page_title_design">
@@ -14,7 +14,7 @@
                     <div class="ctrl_bar close_bar" v-if="source_way==='table'" @click="close_page_model">
                         <i class="fa fa-window-close-o" style="display:block;width: 100%;height: 100%"></i>
                     </div>
-                    <transition name="fade-right" style="background-color: rgba(220,220,220,0.65)">
+                    <transition name="fade-right" style="">
                         <div class="page_content" v-if="show_content_footer" :style="page_content_design">
                             <ol>
 
@@ -258,9 +258,9 @@
                             <div v-else-if="update_response === '0'" class="show_db_reponse" key="update_err"
                                  style="width: 100px;height: 35px;border-radius: 5px;background-color: rgba(182,82,64,0);position: absolute;right: 100px;bottom: 36px;"></div>
                         </transition>
-                        <button @click="final_update_data" :class="{ui:ClassisActive, inverted:ClassisActive, teal:ClassisActive, basic:ClassisActive,
+                        <button @click="final_update_data" id="final_update_btn" :class="{ui:ClassisActive, inverted:ClassisActive, teal:ClassisActive, basic:ClassisActive,
                    button:ClassisActive,loading:authing,    forminput:ClassisActive}" :disabled="authing"
-                                style="background-color:rgba(132,132,132,0.54) !important;border-radius:3px;margin: 0px;font-size: 20px;padding: 10px;">
+                                style="">
                             {{final_update_btn_desc}}
                         </button>
                     </div>
@@ -375,7 +375,8 @@
                         color: '#000000',
                         overflow: 'hidden',
                         display: 'inline-block',
-                        boxShadow: '0 0 15px gray',
+                        border:' 2px gray black',
+                        boxShadow: '0 0 15px 0  black '
 
                     }
                 },
@@ -393,10 +394,11 @@
                         height: '30px',
                         lineHeight: '30px',
                         backgroundColor: '#b6b6b6',
-                        color: '#000000',
-                        textAlign: 'right',
+                        textAlign: 'center',
                         paddingRight: '10px',
-                        boxShadow: '0 0 10px #000000'
+                        boxShadow: '0 0 10px 0 #ffffff inset',
+                        color:'#fff',
+                        fontSize:'16px',
 
                     }
                 },
@@ -552,6 +554,9 @@
             final_update_btn_desc: {
                 type: String,
                 default: '提交数据'
+            },
+            param_apihost:{
+                default:''
             }
         },
         components: {
@@ -574,7 +579,13 @@
             var vm = this
 //            var currect_width = this.show_phone_model === true?'60%':'100%'
 //            this.page_design.width = currect_width
-            this.report_api = this.wechat_marketing_store.apihost
+            if (!this.param_apihost) {
+                this.report_api = this.wechat_marketing_store.apihost
+
+            }
+            else {
+                this.report_api = this.param_apihost
+            }
             this.$root.eventHub.$on('editor_content', function (data) {
 //                console.log('editor_content->',data)
                 for (var item in vm.page_data.content) {
@@ -820,7 +831,7 @@
                                 vm.authing = false
                             }
                             else {
-                                vm.$http.post(this.wechat_marketing_store.apihost + this.final_update_action, formdata, vm.$http_config)
+                                vm.$http.post(this.report_api + this.final_update_action, formdata, vm.$http_config)
                                     .then((res) => {
 
                                         if (res.data.code === 0) {
@@ -946,6 +957,9 @@
     }
 </script>
 <style lang="stylus" rel="stylesheet/stylus">
+    #common_page_model{
+        background-color transition
+    }
     .page_model .page_content ol {
 
         width: 100%;
@@ -1415,6 +1429,7 @@
 
     .close_bar {
         position absolute
+        right:0
         width 36px
         height 36px /*
         box-shadow 0 0 10px rgba(53, 53, 53, 0.53)
@@ -1422,10 +1437,9 @@
         */
         border-radius 5px
         top 3px
-        margin-left 5px
+        margin-right 15px
 
         transition all 1.5s
-        right 20px
         cursor pointer
     }
 
@@ -1439,5 +1453,13 @@
     .el-select {
         width 100%
     }
+    #final_update_btn{
+        padding:10px 20px;background-color: slategrey;box-shadow: 0 0 5px 0 #fff ;
+        border-radius: 3px;font-size: 18px
+        transition all 0.8s
+    }
+    #final_update_btn:hover{
+        background-color rgba(187, 187, 187, 0.8)
 
+    }
 </style>

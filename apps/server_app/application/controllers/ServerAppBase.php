@@ -90,10 +90,12 @@ class ServerAppBaseController extends \ReInit\YafBase\Controller
 //            $response_data['response_data']=$rev;
             $response->contentBody=$data;
         }else{
+            $start_exec_time = \Yaf_Registry::get('START_EXEC_TIME');
+            $start_exec_memory = \Yaf_Registry::get('START_EXEC_MEMORY');
             $rev['argv']=$this->getData();
             $rev['serv']=[
-                'execTime'=>\exeTime(SYS_START_TIME),
-                'runMem'=>\run_mem(SYS_MEMORY_USE)
+                'execTime'=>\exeTime($start_exec_time),
+                'runMem'=>\run_mem($start_exec_memory)
             ];
 //            r($rev);
         }
