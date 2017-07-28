@@ -113,5 +113,14 @@ class AuthlogService extends BaseService
 
     }
 
+    /*
+     * 获取消息发送fd
+     * */
+    public function GetFdByUAC($unique_auth_code)
+    {
+        self::setParam('ctrlname','neq','',$search_params);
+        self::setParam('app','neq','',$search_params);
+    }
+
 
 }
