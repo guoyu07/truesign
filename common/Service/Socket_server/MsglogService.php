@@ -25,7 +25,7 @@ class MsglogService extends BaseService
 
     public function __construct()
     {
-        $this->Adapter = new \Truesign\Adapter\WebsocketServer\appAuthLogAdapter();
+        $this->Adapter = new \Truesign\Adapter\WebsocketServer\appMsgLogAdapter();
         $this->Dao = new DAO($this->Adapter);
         $this->tableAccess = $this->Adapter->getTableAccess();
         $this->rules = $this->Adapter->paramRules();

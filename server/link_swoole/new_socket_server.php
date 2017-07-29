@@ -425,7 +425,11 @@ class new_socket_server{
             $to_id = [];
         }
         else{
-            $to_id = gettype($to_id) == 'array'?$to_id:[$to_id];
+//            $to_id = gettype($to_id) == 'array'?$to_id:[$to_id];
+            $to_id = json_decode($yaf_response['desc'],true)['to_id'];
+            $yaf_response = $receive['payload_data'];
+            unset($yaf_response['unique_auth_code']);
+            unset($yaf_response['token']);
         }
         $relation['from'] = $request->fd;
         $relation['to'] = $to_id;
@@ -438,7 +442,7 @@ class new_socket_server{
             'except' => [],
             'data' => $msg
         ];
-        var_dump($task);
+//        var_dump($task);
 
 
         $serv->task($task);
@@ -487,6 +491,10 @@ class new_socket_server{
         unset($this->ids[$fd]);
 //        $this->table->del($fd);
         echo 'fd=>'.$fd.PHP_EOL;
+        $yaf_payload = $this->buildYaf('index','Socketauth','disAuthApp',array('fd'=>$fd));
+        $disconn_yaf_response = $this->runYaf($yaf_payload);
+        var_dump($disconn_yaf_response);
+
         $this->sw->reload();
 
     }

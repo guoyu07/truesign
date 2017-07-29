@@ -12,7 +12,7 @@
             <el-select v-if="socketinfo.apps" @change="app_change" clearable filterable style="position: absolute;margin-left: 10px;width: 200px;background-color: white" v-model="app_selected" multiple placeholder="请选择">
                 <el-option
                         v-for="item,index in socketinfo.apps"
-                        :key="item"
+                        :key="item.document_id"
                         :label="item.document_id+ '  ' +item.appname"
                         :value='"{\""+item.document_id+"\":\""+item.appname+"\"}"'>
                 </el-option>
@@ -33,15 +33,16 @@
             <br>
 
             <div style="float: left;margin-top: 10px;">
-                <label for="action">payload</label><input style="width: 600px" v-model="yaf.payload" id="payload">
+                <label for="action">payload</label><input style="width: 600px" v-model="payload_data" id="payload">
                 <input id="send" value="提交" @click="send" type="button" >
             </div>
 
         </div>
 
       <div style="width: 800px;height: 300px;min-width: 900px;margin: 0 auto;position: absolute;top:230px;left:50%;transform: translateX(-50%);text-align: center;border-radius: 8px;min-width: 1000px">
-          {{ socketinfo.apps }}
-          {{ app_selected }}
+          <!--{{ socketinfo.apps }}-->
+          <!--{{ app_selected }}-->
+          {{ socketinfo.relation }}
           <pre style="width: 100%;height: 100%;background-color: transparent;box-shadow: 0 0 15px #fff">
           {{ socketinfo.socket_response }}
           </pre>
@@ -74,10 +75,10 @@
                 conn_status:false,
                 yaf:{
                     module:'index',
-                    controller:'index',
-                    action:'test',
-                    payload:''
+                    controller:'Logic',
+                    action:'chat',
                 },
+                payload_data:'{"msg":123}',
 
                 app_selected: []
             }
@@ -122,9 +123,9 @@
             send(){
                 var vm = this
                 var params = {
-                    to:null,
-                    payload_type:'test',
-                    payload_data:{},
+                    to:'todo',
+                    payload_type:'send',
+                    payload_data:JSON.parse(this.payload_data),
                     yaf:this.yaf
                 }
                 SOCKET_CLIENT.data.payload = params
@@ -132,19 +133,23 @@
             },
             app_change(data){
                 var vm = this
-                let login_yaf ={
-                    module:'index',
-                    controller:'Socketauth',
-                    action:'update_apps',
-                }
+                let login_yaf = {
+                    module: 'index',
+                    controller: 'Socketauth',
+                    action: 'update_apps',
+                };
+
                 var params = {
-                    to:'self',
-                    payload_type:'update_apps',
-                    payload_data:{app:this.app_selected},
-                    yaf:login_yaf
+                    to: 'self',
+                    payload_type: 'update_apps',
+                    payload_data: {app: this.app_selected},
+                    yaf: login_yaf
                 }
-                SOCKET_CLIENT.data.payload = params
-                SOCKET_CLIENT.wsSend()
+
+                SOCKET_CLIENT.data.payload = params;
+                SOCKET_CLIENT.wsSend();
+
+
 
             }
 

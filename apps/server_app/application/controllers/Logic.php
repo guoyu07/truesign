@@ -10,10 +10,10 @@ class LogicController extends ServerAppBaseController {
 
     public function chatAction()
     {
-        $params = $this->getParams('unique_auth_code');
+        $params = $this->getParams(array('unique_auth_code'));
         $doService = new \Truesign\Service\Socket_server\AuthlogService();
         $service_response = $doService->GetFdByUAC($params['unique_auth_code']);
-        $this->setResponseBody(\Royal\Prof\TrueSignConst::DEBUG($service_response));
+        $this->setResponseBody(\Royal\Prof\TrueSignConst::SUCCESS(json_encode(array('to_id'=>$service_response))));
     }
 
 

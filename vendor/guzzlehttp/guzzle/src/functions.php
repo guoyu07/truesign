@@ -295,7 +295,7 @@ function is_host_in_noproxy($host, array $noProxyArray)
  * @throws \InvalidArgumentException if the JSON cannot be decoded.
  * @link http://www.php.net/manual/en/function.json-decode.php
  */
-function json_decode($json, $assoc = false, $depth = 512, $options = 0)
+function json_decode_custom($json, $assoc = false, $depth = 512, $options = 0)
 {
     $data = \json_decode($json, $assoc, $depth, $options);
     if (JSON_ERROR_NONE !== json_last_error()) {

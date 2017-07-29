@@ -120,6 +120,53 @@ class AuthlogService extends BaseService
     {
         self::setParam('ctrlname','neq','',$search_params);
         self::setParam('app','neq','',$search_params);
+        self::setParam('unique_auth_code','eq','',$unique_auth_code);
+        $self_db_reponse = $this->Dao->get($search_params,array('app'));
+        $self_app = $self_db_reponse['app'];
+        $self_app_ids = [];
+        if(!empty($self_app)){
+            $self_app = json_decode($self_app,true);
+            foreach ($self_app as $k=>$v){
+                $self_app_ids[] = (integer)implode('',array_keys($v));
+            }
+        }
+        $to_id = [];
+        if(!empty($self_app_ids)){
+            unset($search_params['unique_auth_code']);
+            $all_db_reponse = $this->Dao->readSpecified($search_params,array('app','fd'));
+            if(!empty($all_db_reponse['statistic']['count'])){
+                $all_db_reponse = $all_db_reponse['data'];
+                foreach ($all_db_reponse as $k=>$v){
+                    $id_list = $this->getIdListfromDataList(json_decode($v['app'],true));
+                    foreach ($id_list as $index=>$id){
+                        if(in_array($id,$self_app_ids)){
+                            $to_id[] = (integer)$v['fd'];
+                        }
+                    }
+                }
+            }
+
+//            if(!empty($all_db_reponse)){
+//                foreach ($all_db_reponse as $k=>$v) {
+//
+//                    return $v;
+//                }
+//            }
+
+        }
+        return array_values(array_unique($to_id));
+    }
+
+    public function getIdListfromDataList($datalist)
+    {
+        $id_list = [];
+        if(!empty($datalist)){
+            foreach ($datalist as $k=>$v){
+                $id_list[] = (integer)implode('',array_keys($v));
+            }
+        }
+        return $id_list;
+
     }
 
 
