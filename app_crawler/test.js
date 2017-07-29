@@ -1,9 +1,12 @@
-casper.start(function () {
-    this.echo('Starting...')
-})
-casper.then(function () {
-    console.log('开始根据 search_key:'+search_key+ ' 获取具体商品url')
-    casper.thenOpen(search_url.taobao+'123', function () {
-        this.echo(this.getPageContent());
-    })
-})
+var casper = require('casper').create();
+casper.options.pageSettings.proxy = 'http://192.168.2.1:9630';
+
+casper.start('http://casperjs.org/', function() {
+    this.echo(this.getTitle());
+});
+
+casper.thenOpen('http://phantomjs.org', function() {
+    this.echo(this.getTitle());
+});
+
+casper.run();
