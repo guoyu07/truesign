@@ -422,11 +422,12 @@ class new_socket_server{
             $to_id = [$request->fd];
         }
         else if(empty($to_id)){
-            $to_id = [];
+            $to_id = [$request->fd];
         }
         else{
 //            $to_id = gettype($to_id) == 'array'?$to_id:[$to_id];
             $to_id = json_decode($yaf_response['desc'],true)['to_id'];
+            $to_id = empty($to_id)?[$request->fd]:$to_id;
             $yaf_response = $receive['payload_data'];
             unset($yaf_response['unique_auth_code']);
             unset($yaf_response['token']);
