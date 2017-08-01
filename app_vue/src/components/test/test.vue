@@ -1,8 +1,8 @@
 <template>
     <div class="top_router_view" style="text-align: center;overflow: auto">
-        <input type="text" style="padding: 5px 15px;width: 30%;background-color: grey;color: white" v-model="url">
-        <input type="button" style="padding: 5px 15px;background-color: gray;" value="发送" @click = send>
-        <div>{{res}}</div>
+        <textarea v-model="text" style="width: 600px;height: 300px"></textarea>
+        <hr>
+        <div>{{ find }}</div>
     </div>
 </template>
 
@@ -10,15 +10,25 @@
     export default {
         data: function () {
             return {
-                url:'',
-                res:''
+                text:'## DispatcherServlet  \n'+
+                '# 321fwaervlet  \n'+
+                '# fwaervlet  \n'+
+                '# 321321afwaervlet  \n'+
+                '# 321321afwaervlet  \n'+
+                '>1. DispatcherServlet  的初始化过程中，Spring MVC会在你web应用的 WEB-INF  目录下查找一个名为[servlet-name]-servlet.xml的配置文件，并创建其中所定义的bean。如果在全局上下文中存在相同名字的bean，则它们将被新定义的同名bean覆盖。'+
+            '>2. `WebApplicationContext`被绑定在`ServletContext`中.如果需要获取它，你可以通过 RequestContextUtils工具类中的静态方法来拿到这个web应用的上下文`WebApplicationContext',
+                res:'',
+                find:'',
+                regex:/[!#]+((#){1})+((\s){1})+(.+)/
             }
         },
         created(){
 
         },
         mounted(){
-            let list = []
+
+
+            this.find = this.regex.exec(this.text)
 
         },
         methods: {
@@ -31,6 +41,9 @@
                     })
             }
         },
+        updated(){
+        },
+
         components: {},
         watch: {},
 

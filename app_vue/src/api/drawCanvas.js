@@ -185,6 +185,7 @@ class DrawCanvas {
             }
             if(cls.dots[v].z<-1000){
                 cls.dots[v].z=cls.dots[v].fl
+
             }
             cls.dots[v].scale = {
                 scale_X:cls.dots[v].scale_fn,

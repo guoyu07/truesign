@@ -5,7 +5,7 @@
                 <input style="" v-model="is_line_percent">
                 {{ drawParams }}
 
-                <pre  id="loading_canvas_help_pre" :style="{height:screenHeight-30} ">{{ help  }}</pre>
+                <pre v-if="help"  id="loading_canvas_help_pre" :style="{height:screenHeight-30} ">{{ help  }}</pre>
             </div>
             <canvas id="canvas" :width='screenWidth-10' :height='screenHeight-10' style="margin:0 auto;"></canvas>
         </div>
@@ -95,7 +95,7 @@
 
 //                this.drawParams.dots_count = (parseInt(this.drawParams.xy_line)/is_pixel) * (parseInt(this.is_line_percent)/100)
                 this.drawParams.dots_count = vm.drawParams.xy_line * (parseInt(this.is_line_percent)/100)
-//            this.help = this.drawParams.dots_count
+            this.help = this.drawParams.dots_count
 
 //                for(let i = 0; i <this.drawParams.dots_count; i++){
 //                    vm.drawCanvas.initDot(
@@ -104,6 +104,35 @@
 //                            init_center:{x:-vm.screenWidth/2 + i*2,
 //                                y:vm.screenHeight/2-8 - this.drawParams.tan*i*2},
 //                            z:400,
+//                            scale_fn_base:2,
+//                            radius:is_pixel,
+//                            colors:[
+//                                {key:0,value:'#53DFD6'}
+//                            ]
+//                        })
+//
+//                }
+                this.drawCanvas.initDot(
+                        {
+                            g:{down:0,right:0,out:0},
+                            init_center:{x:0,
+                                y:0},
+//                            z:100,
+                            scale_fn_base:2,
+                            radius:is_pixel,
+                            colors:[
+                                {key:0,value:'#53DFD6'}
+                            ]
+                        })
+                this.help = this.drawCanvas.dots
+
+//                for(let i = 0; i <this.drawParams.dots_count; i++){
+//                    vm.drawCanvas.initDot(
+//                        {
+//                            g:{down:0,right:0,out:0},
+//                            init_center:{x:0,
+//                                y:0},
+////                            z:100,
 //                            scale_fn_base:1,
 //                            radius:is_pixel,
 //                            colors:[
@@ -112,22 +141,6 @@
 //                        })
 //
 //                }
-                for(let i = 0; i <this.drawParams.dots_count; i++){
-                    vm.drawCanvas.initDot(
-                        {
-                            g:{down:0,right:0,out:0},
-                            init_center:{x:0,
-                                y:0},
-//                            z:100,
-                            scale_fn_base:1,
-                            radius:is_pixel,
-                            colors:[
-                                {key:0,value:'#53DFD6'}
-                            ]
-                        })
-
-                }
-                this.help = this.drawCanvas.dots[this.drawParams.dots_count-1]
             },
             draw(){
                 this.drawCanvas.drawDots()
