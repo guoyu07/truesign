@@ -9,8 +9,9 @@ import {
     Text,
     View
 } from 'react-native';
-import TabBarExample from './components/common/TabBarIOS'
-import TabBarExampleIcon from './components/common/elicon'
+// import TabBarExample from './components/common/TabBarIOS'
+// import TabBarExampleIcon from './components/common/elicon'
+import MainPage from './components/pages/mainPage'
 import Icon from 'react-native-vector-icons/FontAwesome';
 export default class App extends Component {
     constructor(props) {
@@ -23,7 +24,7 @@ export default class App extends Component {
 
     render() {
         return (
-            <TabBarExampleIcon />
+            <MainPage />
 
             //
             // <View style={styles.container}>

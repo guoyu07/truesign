@@ -12,31 +12,6 @@ import {
 
 import Icon from 'react-native-vector-icons/Ionicons';
 
-const styles = StyleSheet.create({
-    navigator: {
-        flex: 1,
-    },
-    container: {
-        flex: 1,
-        justifyContent: 'center',
-        alignItems: 'center',
-        backgroundColor: '#F5FCFF',
-    },
-    tabContent: {
-        flex: 1,
-        alignItems: 'center',
-        justifyContent: 'center',
-    },
-    tabText: {
-        color: 'white',
-    },
-    button: {
-        marginTop: 20,
-        padding: 8,
-        backgroundColor: 'white',
-        borderRadius: 4,
-    },
-});
 
 class ColoredView extends Component {
     componentWillMount() {
@@ -65,12 +40,12 @@ class ColoredView extends Component {
     }
 }
 
-export default class TabBarExampleIcon extends Component {
+export default class MainPage extends Component {
     constructor(props) {
         super(props);
 
         this.state = {
-            selectedTab: 'home',
+            selectedTab: 'videoshow',
         };
     }
 
@@ -101,47 +76,35 @@ export default class TabBarExampleIcon extends Component {
         return (
             <TabBarIOS
                 tintColor="black"
-                barTintColor="#3abeff">
+                barTintColor="#535353">
                 <Icon.TabBarItemIOS
                     title="Home"
-                    iconName="ios-home-outline"
-                    selectedIconName="ios-home"
-                    selected={this.state.selectedTab === 'home'}
+                    iconName="ios-videocam-outline"
+                    selectedIconName="ios-videocam"
+                    selected={this.state.selectedTab === 'videoshow'}
                     onPress={() => {
                         this.setState({
-                            selectedTab: 'home',
+                            selectedTab: 'videoshow',
                         });
                     }}>
-                    {this._renderContent('#414A8C', 'Home')}
+                    {this._renderContent('#e8e8e8', 'Home')}
                 </Icon.TabBarItemIOS>
                 <Icon.TabBarItemIOS
                     title="Profile"
-                    iconName="ios-person-outline"
-                    selectedIconName="ios-person"
+                    iconName="ios-recording-outline"
+                    selectedIconName="ios-recording"
                     selected={this.state.selectedTab === 'profile'}
                     onPress={() => {
                         this.setState({
                             selectedTab: 'profile',
                         });
                     }}>
-                    {this._renderContent('#090', 'Profile')}
-                </Icon.TabBarItemIOS>
-                <Icon.TabBarItemIOS
-                    title="Starred"
-                    iconName="ios-star-outline"
-                    selectedIconName="ios-star"
-                    selected={this.state.selectedTab === 'starred'}
-                    onPress={() => {
-                        this.setState({
-                            selectedTab: 'starred',
-                        });
-                    }}>
-                    {this._renderContent('#900', 'Starred')}
+                    {this._renderContent('#e8e8e8', 'Profile')}
                 </Icon.TabBarItemIOS>
                 <Icon.TabBarItemIOS
                     title="Settings"
-                    iconName="ios-settings-outline"
-                    selectedIconName="ios-settings"
+                    iconName="ios-more-outline"
+                    selectedIconName="ios-more"
                     iconColor="#ffffff"
                     selectedIconColor="#000099"
                     selected={this.state.selectedTab === 'settings'}
@@ -151,10 +114,36 @@ export default class TabBarExampleIcon extends Component {
                             selectedTab: 'settings',
                         });
                     }}>
-                    {this._renderContent('#009', 'Settings')}
+                    {this._renderContent('#e8e8e8', 'Settings')}
                 </Icon.TabBarItemIOS>
             </TabBarIOS>
         );
     }
 }
 
+
+const styles = StyleSheet.create({
+    navigator: {
+        flex: 1,
+    },
+    container: {
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+        backgroundColor: '#F5FCFF',
+    },
+    tabContent: {
+        flex: 1,
+        alignItems: 'center',
+        justifyContent: 'center',
+    },
+    tabText: {
+        color: 'black',
+    },
+    button: {
+        marginTop: 20,
+        padding: 8,
+        backgroundColor: 'white',
+        borderRadius: 4,
+    },
+});
