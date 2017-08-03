@@ -9,16 +9,80 @@ import {
     View,
     ListView,
     Image,
+    ImageBackground,
     TabBarIOS,
     NavigatorIOS,
     TouchableOpacity,
     TouchableHighlight,
+    ActivityIndicator,
+    RefreshControl,
     Dimensions
 } from 'react-native';
 
 import Icon from 'react-native-vector-icons/Ionicons';
-// import Mock from 'mockjs'
+import request from '../../common/request'
+import config from '../../common/request_config'
 var width = Dimensions.get('window').width
+
+var cachedResults = {
+    nextPage:1,
+    items:[],
+    total:0
+}
+
+class Item extends Component {
+    constructor(props) {
+        super(props);
+        this.state = {
+            row:this.props.row
+        }
+    }
+    componentDidMount(){
+    }
+    componentWillReceiveProps(nextProps) {
+        console.log('componentWillReceiveProps')
+        this.setState({
+            row:nextProps.row
+        })
+    }
+
+    render(){
+        var row = this.state.row
+        return (
+            <TouchableHighlight>
+                <View style={styles.item}>
+                    <Text style={styles.title}>{row.title}</Text>
+                    <ImageBackground style={styles.thumb}
+                                     source={{url: row.thumb}}>
+                        <Icon
+                            name="ios-play"
+                            size={28}
+                            style={styles.play}
+                        />
+                    </ImageBackground>
+                    <View style={styles.itemFooter}>
+                        <View style={styles.handleBox}>
+                            <Icon
+                                name="ios-heart-outline"
+                                size={28}
+                                style={styles.up}
+                            />
+                            <Text style={styles.handleText} numberOfLines={1}>喜欢</Text>
+                        </View>
+                        <View style={styles.handleBox}>
+                            <Icon
+                                name="ios-chatboxes-outline"
+                                size={28}
+                                style={styles.commentIcon}
+                            />
+                            <Text style={styles.handleText}>评论</Text>
+                        </View>
+                    </View>
+                </View>
+            </TouchableHighlight>
+        )
+    }
+}
 export default class List extends Component {
     constructor(props) {
         super(props);
@@ -48,7 +112,9 @@ export default class List extends Component {
         //     })
         // }
         this.state = {
-            dataSource: ds.cloneWithRows(m_data)
+            dataSource: ds.cloneWithRows([]),
+            isLoadingTail:false,
+            isRefreshing:false
         };
         // super(props);
         // var ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
@@ -58,66 +124,118 @@ export default class List extends Component {
 
     }
     componentDidMount(){
-        this._fetchData2()
+        this._fetchData(1)
     }
-    _fetchData1(){
-        fetch('https://mywebsite.com/endpoint/', {
-            method: 'POST',
-            headers: {
-                'Accept': 'application/json',
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({
-                firstParam: 'yourValue',
-                secondParam: 'yourOtherValue',
+
+    _fetchData(page){
+        console.log('_fetchData=>'+ page)
+
+        var that = this
+        if(page !== 0){
+            this.setState({
+                isLoadingTail:true
             })
-        })
-    }
-    _fetchData2(){
-        fetch('http://rapapi.org/mockjs/23666/api/creations?accessToken=23')
-            .then((response) => response.json())
-            .then((responseJson) => {
-                console.log(responseJson)
+        }
+        else{
+            this.setState({
+                isRefreshing:true
+            })
+        }
+
+        request.get(config.api.base + config.api.createions ,
+            {
+                accessToken:23,
+                page:page,
+            }
+        )
+            .then((data) => {
+                console.log('data',data)
+                if (data.success) {
+                    var items = cachedResults.items.slice()
+
+                    if(page !== 0){
+                        items = items.concat(data.data)
+                        cachedResults.nextPage = cachedResults.nextPage+1
+
+                    }
+                    else{
+                        items = data.data.concat(items)
+                    }
+                    cachedResults.items = items
+                    cachedResults.total = data.total
+
+                    setTimeout(function () {
+                        if(page !== 0){
+                            that.setState({
+                                isLoadingTail : false,
+                                dataSource: that.state.dataSource.cloneWithRows(cachedResults.items)
+                            })
+                        }
+                        else{
+                            that.setState({
+                                isRefreshing : false,
+                                dataSource: that.state.dataSource.cloneWithRows(cachedResults.items)
+                            })
+                        }
+
+                    },2000)
+
+                }
             })
             .catch((error) => {
+            if(page !== 0){
+                this.setState({
+                    isLoadingTail : false,
+                })
+            }
+            else{
+                this.setState({
+                    isRefreshing : false,
+                })
+            }
+
                 console.error(error);
             });
     }
-    reanderRow(row){
-        return (
-            <TouchableHighlight>
-                <View style={styles.item}>
-                    <Text style={styles.title}>{row.title}</Text>
-                    <Image style={styles.thumb}
-                    source={{url: row.thumb}}>
-                    <Icon
-                        name="ios-play"
-                        size={28}
-                        style={styles.play}
-                    />
-                    </Image>
-                    <View style={styles.itemFooter}>
-                        <View style={styles.handleBox}>
-                            <Icon
-                                name="ios-heart-outline"
-                                size={28}
-                                style={styles.up}
-                            />
-                            <Text style={styles.handleText} numberOfLines={1}>喜欢a2321321321aaa</Text>
-                        </View>
-                        <View style={styles.handleBox}>
-                            <Icon
-                                name="ios-chatboxes-outline"
-                                size={28}
-                                style={styles.commentIcon}
-                            />
-                            <Text style={styles.handleText}>评论</Text>
-                        </View>
-                    </View>
-                </View>
-            </TouchableHighlight>
+    _reanderRow(row){
+        return  (<Item row={row}/>)
+    }
 
+    _fetchMoreData(){
+
+        if(!this._hasMore() || this.state.isLoadingTail){
+            return;
+        }
+        this._fetchData(cachedResults.nextPage)
+    }
+
+    _hasMore(){
+        return cachedResults.items.length !== cachedResults.total
+    }
+    _renderFooter(){
+        if(!this._hasMore() && cachedResults.total !== 0){
+            return (
+                <View style={styles.loadingMore}>
+                    <Text style={styles.loadingText}>没有更多了
+                    </Text>
+                </View>
+            )
+        }
+        if(!this.state.isLoadingTail){
+            return <View style={styles.loadingMore}></View>
+        }
+        return (
+            <ActivityIndicator
+                style={styles.loadingMore}
+            />
         )
+    }
+    _onRefresh(){
+        if(this.state.isRefreshing || !this._hasMore()){
+            return
+        }
+
+        this._fetchData(0)
     }
     render() {
         return (
@@ -127,8 +245,25 @@ export default class List extends Component {
                 </View>
                 <ListView
                     dataSource={this.state.dataSource}
-                    renderRow={this.reanderRow}
+                    renderRow={this._reanderRow}
                     enableEmptySections={true}
+                    onEndReached={this._fetchMoreData.bind(this)}
+                    refreshControl={
+                        <RefreshControl
+                            refreshing={this.state.isRefreshing}
+                            onRefresh={this._onRefresh.bind(this)}
+                            tintColor="#ed7b66"
+                            title="刷新中..."
+                            titleColor="#ed7b66"
+                            // colors={['#ff0000', '#00ff00', '#0000ff']}
+                            // progressBackgroundColor="#ffff00"
+                        />
+                    }
+                    onEndReachedThreshold={20}
+                    renderFooter={this._renderFooter.bind(this)}
+
+                    showsVerticalScrollIndicator={false} //竖直滚动条
+
                 />
             </View>
 
@@ -166,7 +301,6 @@ const styles = StyleSheet.create({
     thumb:{
         width:width,
         height: width * 0.56,
-        resizeMode: 'cover'
     },
     title:{
         padding:10,
@@ -212,6 +346,13 @@ const styles = StyleSheet.create({
     commentIcon:{
         fontSize:22,
         color:'#333'
+    },
+    loadingMore:{
+        marginVertical:20
+    },
+    loadingText:{
+        color:'#777',
+        textAlign:'center'
     }
 
 
