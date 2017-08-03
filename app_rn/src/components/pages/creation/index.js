@@ -16,7 +16,8 @@ import {
     TouchableHighlight,
     ActivityIndicator,
     RefreshControl,
-    Dimensions
+    Dimensions,
+    AlertIOS
 } from 'react-native';
 
 import Icon from 'react-native-vector-icons/Ionicons';
@@ -34,7 +35,8 @@ class Item extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            row:this.props.row
+            row:this.props.row,
+            up:this.props.row.voted,
         }
     }
     componentDidMount(){
@@ -45,7 +47,35 @@ class Item extends Component {
             row:nextProps.row
         })
     }
+    _up(){
+        var vm = this
+        var up = !this.state.up
+        var row = this.state.row
+        var url = config.api.base + config.api.up
+        var body = {
+            id: row._id,
+            up: up? 'yes' : 'no',
+            accessToken: 'abc'
+        }
+        request.post(url,body)
+            .then(function (data) {
+                // AlertIOS.alert('点赞失败，稍后重试')
+                console.log('data',data)
+                if(data && data.success){
+                    vm.setState({
+                        up:up
+                    })
+                }
+                else{
+                    AlertIOS.alert('点赞失败，稍后重试')
+                }
+            })
+            .catch(function (err) {
+                console.log(err)
+                AlertIOS.alert(err)
 
+            })
+    }
     render(){
         var row = this.state.row
         return (
@@ -63,11 +93,19 @@ class Item extends Component {
                     <View style={styles.itemFooter}>
                         <View style={styles.handleBox}>
                             <Icon
-                                name="ios-heart-outline"
+                                name={this.state.up ? "ios-heart" : "ios-heart-outline"}
                                 size={28}
-                                style={styles.up}
+                                style={this.state.up ? styles.up: styles.down}
+                                onPress={this._up.bind(this)}
+
                             />
-                            <Text style={styles.handleText} numberOfLines={1}>喜欢</Text>
+                            <Text
+                                style = {styles.handleText}
+                                numberOfLines={1}
+                                onPress={this._up.bind(this)}
+                            >
+                                喜欢
+                            </Text>
                         </View>
                         <View style={styles.handleBox}>
                             <Icon
@@ -178,7 +216,7 @@ export default class List extends Component {
                             })
                         }
 
-                    },2000)
+                    },10)
 
                 }
             })
@@ -340,6 +378,10 @@ const styles = StyleSheet.create({
         color:'#333'
     },
     up:{
+        fontSize:22,
+        color:'#ed7b66',
+    },
+    down:{
         fontSize:22,
         color:'#333',
     },

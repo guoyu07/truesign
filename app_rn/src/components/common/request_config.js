@@ -12,6 +12,7 @@ module.exports = {
     },
     api:{
         base: 'http://rapapi.org/mockjs/23666/',
-        createions:'api/creations'
+        createions:'api/creations',
+        up: 'api/up'
     }
 }
