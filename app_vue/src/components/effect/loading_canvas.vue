@@ -89,21 +89,22 @@
                 this.drawCanvas.dots = []
                 var is_pixel = 8
 
-                this.drawParams.dots_count = (parseInt(this.drawParams.xy_line) / (is_pixel/4)) * (parseInt(this.is_line_percent) / 100)
+                this.drawParams.dots_count = parseInt((parseInt(this.drawParams.xy_line) / (is_pixel/4)) * (parseInt(this.is_line_percent) / 100))
 //                this.drawParams.dots_count = vm.drawParams.xy_line * (parseInt(this.is_line_percent)/100)
 //            this.help = this.drawParams.dots_count
                 console.log(vm.screenWidth)
                 console.log(vm.screenHeight)
-                for (let i = 0; i < this.drawParams.dots_count; i++) {
+                for (let i = 0; i <=this.drawParams.dots_count; i++) {
                     setTimeout(function () {
                         vm.drawCanvas.initDot(
                             {
+                                cid:i,
                                 g: {down: 0, right: 0, out: 0},
 //                            init_center:{x:-vm.screenWidth/2 + i*2,
 //                                y:vm.screenHeight/2-8 - this.drawParams.tan*i*2},
                                 init_center: {
-                                    x:-vm.screenWidth/2 +i *4,
-                                    y:vm.screenHeight/2-8 - vm.drawParams.tan*i*4 + 8
+                                    x:-vm.screenWidth/2 +i *4 ,
+                                    y:vm.screenHeight/2 - vm.drawParams.tan*i*4
                                 },
                                 z: 0,
                                 scale_fn_base: 1,
@@ -115,7 +116,8 @@
                                 move_way:{
                                     type:'loading_line',
                                     params:{
-                                        count:vm.drawParams.dots_count
+                                        count:vm.drawParams.dots_count,
+                                        percent:parseInt(vm.is_line_percent)
                                     }
                                 },
                                 visible:true
@@ -145,6 +147,7 @@
                 for(let i = 1; i <= cross_count; i++){
                     vm.drawCanvas.initDot(
                         {
+                            cid:i,
                             g:{down:0,right:0,out:0},
                             init_center:{
                                 x: 0+cross_radius*Math.cos((2*Math.PI/360 * (angle*i)) ),
@@ -214,7 +217,7 @@
 </script>
 <style>
     .canvas_container {
-        border: 5px solid rgba(255, 255, 255, 0.11)
+
     }
 
     #loading_canval_help_div {

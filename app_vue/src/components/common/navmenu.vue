@@ -36,10 +36,8 @@
     import {mapGetters, mapActions} from 'vuex'
     import Velocity from 'velocity-animate'
     import Vue from 'vue'
-    import ElMenuItem from "../../../node_modules/element-ui/packages/menu/src/menu-item";
 
     export default {
-        components: {ElMenuItem},
         data() {
             return {
                 activeIndex: 'w_m_b_site_ctrl',

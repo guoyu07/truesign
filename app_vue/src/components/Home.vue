@@ -16,7 +16,7 @@
     export default {
         data(){
             return{
-                is_line_percent:20
+                is_line_percent:100
             }
         },
         mounted(){

@@ -35,6 +35,7 @@ class DrawCanvas {
         this.height = height
     }
     initDot({
+                cid=1,
                 fl = 200,
                 start_time=Date.parse(new Date()),
                 end_time=false,
@@ -89,7 +90,7 @@ class DrawCanvas {
     ){
         // console.log(g)
         let dot = {}
-
+        dot.cid = cid
         dot.start_time = start_time
         dot.end_time = end_time
         if(!radius){
@@ -211,6 +212,36 @@ class DrawCanvas {
                     //         cls.dots[v].visible = false
                     //   
                     // }
+                    var params = ''
+                    if(!params){
+                        params = cls.dots[v].move_way.params
+                    }
+                    if(params && params.percent === 100 && cls.dots[v].cid === params.count){
+                        var left_x = -cls.canvas.width/2
+                        var right_x = cls.canvas.width/2
+                        var top_y = -cls.canvas.height/2
+                        var bottom_y = cls.canvas.height/2
+
+
+                        cls.dots.forEach(function (kk,vv){
+                            if(cls.dots[vv].move_way.type=== 'loading_line') {
+                                // var speed = (1/(1 + -cls.dots[vv].cid/params.count)-1)
+                                if (cls.dots[vv].center.x < 0 && cls.dots[vv].center.x > left_x) {
+                                    let speed_lenght = (cls.dots[vv].center.x - left_x) / 10
+                                    cls.dots[vv].center.x -= speed_lenght
+                                }
+                                else{
+                                }
+                                if (cls.dots[vv].center.x > 0 && cls.dots[vv].center.x < right_x - 10) {
+                                    let speed_lenght = (right_x - 10 - cls.dots[vv].center.x) / 10
+                                    cls.dots[vv].center.x += speed_lenght
+                                }
+                            }
+                        })
+
+
+                    }
+
 
                 }
                 else{
