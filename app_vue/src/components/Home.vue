@@ -6,7 +6,7 @@
             <!--<h1>可控</h1>-->
             <!--<h1>你知道的,一切皆可查询...</h1>-->
         <!--</div>-->
-        <input  v-model="is_line_percent" style="border: 2px solid black;color:black !important;display: block;position: absolute;z-index:100;left:48%">
+        <input  v-model="is_line_percent" style="border: 2px solid black;color:black !important;display: block;position: absolute;z-index:100;left:20%">
         <loading_canvas style="position: absolute;top:0" :is_line_percent="is_line_percent+''"></loading_canvas>
 
     </div>

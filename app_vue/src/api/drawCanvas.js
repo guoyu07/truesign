@@ -158,6 +158,8 @@ class DrawCanvas {
 
     }
     move_3D(x=0,y=0.2,z=0){
+
+
         var cls = this
         // console.log(x,y,z)
         this.dots.forEach(function (k,v) {
@@ -183,7 +185,7 @@ class DrawCanvas {
                     if(cls.dots[v].z>=0){
                         cls.dots[v].z = 0
                     }
-                    cls.dots[v].z = 0
+                    // cls.dots[v].z = 0
                     cls.dots[v].scale_fn = 1/(1 + -cls.dots[v].z/cls.dots[v].fl)
 
 
@@ -199,7 +201,13 @@ class DrawCanvas {
                         scale_X:cls.dots[v].scale_fn,
                         scale_Y:cls.dots[v].scale_fn
                     }
+                    if(cls.ctrl_mode.mode_z===0){
+                        cls.dots[v].ctrl_v.c_z *= 0.98
 
+                    }
+                    // if(cls.dots[v].ctrl_v.c_z < 0.2){
+                    //     cls.dots[v].visible = false
+                    // }
 
                 }
                 else if(cls.dots[v].move_way.type=== 'loading_line'){
@@ -227,14 +235,33 @@ class DrawCanvas {
                             if(cls.dots[vv].move_way.type=== 'loading_line') {
                                 // var speed = (1/(1 + -cls.dots[vv].cid/params.count)-1)
                                 if (cls.dots[vv].center.x < 0 && cls.dots[vv].center.x > left_x) {
+                                    cls.ctrl_mode.mode_z = 1
                                     let speed_lenght = (cls.dots[vv].center.x - left_x) / 10
-                                    cls.dots[vv].center.x -= speed_lenght
+                                    if(speed_lenght > 1){
+                                        cls.dots[vv].center.x -= speed_lenght
+
+                                    }
+                                    else{
+                                        let speed_lenght = (cls.dots[vv].center.y - top_y) / 20
+                                        cls.dots[vv].center.y -= speed_lenght
+                                        if(speed_lenght <= 1){
+                                            cls.dots[vv].center.x -= speed_lenght
+                                            cls.ctrl_mode.mode_z = 0
+
+                                        }
+                                    }
+
                                 }
-                                else{
-                                }
-                                if (cls.dots[vv].center.x > 0 && cls.dots[vv].center.x < right_x - 10) {
+
+                                else if (cls.dots[vv].center.x > 0 && cls.dots[vv].center.x < right_x - 10) {
                                     let speed_lenght = (right_x - 10 - cls.dots[vv].center.x) / 10
-                                    cls.dots[vv].center.x += speed_lenght
+                                    if(speed_lenght > 1) {
+                                        cls.dots[vv].center.x += speed_lenght
+                                    }
+                                    else{
+                                        let speed_lenght = -(cls.dots[vv].center.y - bottom_y) / 20
+                                        cls.dots[vv].center.y += speed_lenght
+                                    }
                                 }
                             }
                         })

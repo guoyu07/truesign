@@ -1,6 +1,9 @@
 <template>
     <div style="width: 100%;height: 100%;overflow: hidden">
-        <div class="canvas_container" style="">
+
+
+        <div style="position: absolute;margin-left: 300px">{{timeOutEvent}}</div>
+        <div class="canvas_container" style="" v-tap="{method:test}"  v-longtouch="timeOutEvent">
             <div v-if="help" id="loading_canval_help_div" :style="{height:screenHeight-30+'px',overflow:'auto'}">
                 <input style="" v-model="is_line_percent">
                 {{ drawParams }}
@@ -9,16 +12,15 @@
             </div>
             <canvas id="canvas" :width='screenWidth-10' :height='screenHeight-10' style="margin:0 auto;"></canvas>
         </div>
+
     </div>
 </template>
-
-
 <script>
     //    import ArrayCanvas from '../../../api/array_canvas.js'
     import DrawCanvas from '../../api/drawCanvas.js'
     import {syntaxHighlightJSON} from '../../api/lib/helper/prettyOnHtml'
     import Vue from 'vue'
-
+    import vue_longpress from 'vue-longpress';
     export default{
 
         data() {
@@ -31,7 +33,8 @@
                     xy_line: 0,
                     tan: 0,
                     dots_count: 0,
-                }
+                },
+                timeOutEvent: 0
             }
         },
         props: {
@@ -67,7 +70,16 @@
 
 
         },
+        components:{
+            vue_longpress
+        },
         methods: {
+            doDelete(){
+                alert(1)
+            },
+            test:function(ee){
+
+            },
             start(){
                 console.log('start')
                 this.initBase();
@@ -90,11 +102,13 @@
                 var is_pixel = 8
 
                 this.drawParams.dots_count = parseInt((parseInt(this.drawParams.xy_line) / (is_pixel/4)) * (parseInt(this.is_line_percent) / 100))
+                this.drawParams.dots_count -= 6
 //                this.drawParams.dots_count = vm.drawParams.xy_line * (parseInt(this.is_line_percent)/100)
 //            this.help = this.drawParams.dots_count
                 console.log(vm.screenWidth)
                 console.log(vm.screenHeight)
                 for (let i = 0; i <=this.drawParams.dots_count; i++) {
+                    vm.drawCanvas.ctrl_mode.mode_z = 1
                     setTimeout(function () {
                         vm.drawCanvas.initDot(
                             {
@@ -126,6 +140,7 @@
                     },i*10)
 
                 }
+
                 this.drawCanvas.initDot(
                         {
                             g:{down:0,right:0,out:0},
@@ -140,18 +155,17 @@
                             move:false,
 
                         })
-                var cross_count = 6
+                var cross_count = 2
                 var angle = 360/cross_count
                 var cross_radius = 80
-
                 for(let i = 1; i <= cross_count; i++){
                     vm.drawCanvas.initDot(
                         {
                             cid:i,
                             g:{down:0,right:0,out:0},
                             init_center:{
-                                x: 0+cross_radius*Math.cos((2*Math.PI/360 * (angle*i)) ),
-                                y: 0+-cross_radius*Math.sin(2*Math.PI/360 * (angle*i)) },
+                                x: 100+cross_radius*Math.cos((2*Math.PI/360 * (angle*i)) ),
+                                y: 1000+-cross_radius*Math.sin(2*Math.PI/360 * (angle*i)) },
                             z:0,
                             scale_fn_base:1,
                             radius:12,
