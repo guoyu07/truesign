@@ -81,7 +81,9 @@ class DrawCanvas {
                     {key:0.2,value:'rgba(0,255,255,1)'},
                     {key:0.3,value:'rgba(0,0,100,1)'},
                     {key:1,value:'rgba(0,0,0,0.1)'}
-                ]
+                ],
+                move=true,
+                move_way=false
             }
 
     ){
@@ -146,6 +148,8 @@ class DrawCanvas {
         dot.g = g
         dot.friction = friction
         dot.v = v
+        dot.move = move
+        dot.move_way = move_way
         this.dots.push(dot)
     }
     test({a=1}){
@@ -156,52 +160,106 @@ class DrawCanvas {
         var cls = this
         // console.log(x,y,z)
         this.dots.forEach(function (k,v) {
-            cls.dots[v].ctrl_v.c_x += cls.ctrl_mode.mode_x
-            cls.dots[v].ctrl_v.c_x -= cls.dots[v].friction.x * (typeof x === 'undefined'?0:x)
-            cls.dots[v].ctrl_v.c_y += cls.ctrl_mode.mode_y
-            cls.dots[v].ctrl_v.c_y -= cls.dots[v].friction.y * (typeof y === 'undefined'?0:y)
-            cls.dots[v].ctrl_v.c_z += cls.ctrl_mode.mode_z
+            if(cls.dots[v].move){
+                cls.dots[v].ctrl_v.c_x += cls.ctrl_mode.mode_x
+                cls.dots[v].ctrl_v.c_x -= cls.dots[v].friction.x * (typeof x === 'undefined'?0:x)
+                cls.dots[v].ctrl_v.c_y += cls.ctrl_mode.mode_y
+                cls.dots[v].ctrl_v.c_y -= cls.dots[v].friction.y * (typeof y === 'undefined'?0:y)
+                cls.dots[v].ctrl_v.c_z += cls.ctrl_mode.mode_z
 
-            cls.dots[v].ctrl_v.c_z -= cls.dots[v].friction.z * (typeof z === 'undefined'?0:z)
-            // cls.dots[v].ctrl_v.c_x = cls.ctrl_mode.mode_x
-            // cls.dots[v].ctrl_v.c_y = cls.ctrl_mode.mode_y
-            // cls.dots[v].ctrl_v.c_z = cls.ctrl_mode.mode_z
+                cls.dots[v].ctrl_v.c_z -= cls.dots[v].friction.z * (typeof z === 'undefined'?0:z)
+                if(cls.dots[v].move_way.type=== 'clockwise'){
 
-            cls.dots[v].init_center.x += cls.dots[v].ctrl_v.c_x
-            cls.dots[v].init_center.y += cls.dots[v].ctrl_v.c_y
+                    // console.log(v,cls.dots[v].move_way)
+                    cls.dots[v].move_way.params.base_angle += cls.dots[v].ctrl_v.c_z
+                    cls.dots[v].center.x = cls.dots[v].move_way.params.center.x +
+                        cls.dots[v].move_way.params.cross_radius*Math.cos((2*Math.PI/360 * cls.dots[v].move_way.params.base_angle) )
+                    cls.dots[v].center.y = cls.dots[v].move_way.params.center.y +
+                         cls.dots[v].move_way.params.cross_radius*Math.sin((2*Math.PI/360 * cls.dots[v].move_way.params.base_angle) )
 
-            cls.dots[v].z += cls.dots[v].ctrl_v.c_z
+                    cls.dots[v].z += cls.dots[v].ctrl_v.c_z*10
 
-            cls.dots[v].scale_fn = 1/(1 + -cls.dots[v].z/cls.dots[v].fl)
+                    if(cls.dots[v].z>=0){
+                        cls.dots[v].z = 0
+                    }
+                    cls.dots[v].z = 0
+                    cls.dots[v].scale_fn = 1/(1 + -cls.dots[v].z/cls.dots[v].fl)
 
-            if(cls.dots[v].init_center.y < -(cls.height/1.5)){
-                cls.dots[v].init_center.y = cls.height/1.5;
+
+
+                    if(cls.dots[v].scale_fn>1000){
+                        cls.dots[v].scale_fn=1000
+                    }
+                    if(cls.dots[v].z<-1000){
+                        cls.dots[v].z=-1000
+
+                    }
+                    cls.dots[v].scale = {
+                        scale_X:cls.dots[v].scale_fn,
+                        scale_Y:cls.dots[v].scale_fn
+                    }
+
+
+                }
+                else if(cls.dots[v].move_way.type=== 'loading_line'){
+                    // if(!cls.dots[v].visible && cls.ctrl_mode.mode_z === 1){
+                    //   
+                    //         cls.dots[v].visible = true
+                    //    
+                    // else if(cls.dots[v].visible && cls.ctrl_mode.mode_z === -1){
+                    //   
+                    //         cls.dots[v].visible = false
+                    //   
+                    // }
+
+                }
+                else{
+
+                    // cls.dots[v].ctrl_v.c_x = cls.ctrl_mode.mode_x
+                    // cls.dots[v].ctrl_v.c_y = cls.ctrl_mode.mode_y
+                    // cls.dots[v].ctrl_v.c_z = cls.ctrl_mode.mode_z
+
+                    cls.dots[v].init_center.x += cls.dots[v].ctrl_v.c_x
+                    cls.dots[v].init_center.y += cls.dots[v].ctrl_v.c_y
+
+                    cls.dots[v].z += cls.dots[v].ctrl_v.c_z
+
+                    cls.dots[v].scale_fn = 1/(1 + -cls.dots[v].z/cls.dots[v].fl)
+
+                    if(cls.dots[v].init_center.y < -(cls.height/1.5)){
+                        cls.dots[v].init_center.y = cls.height/1.5;
+                    }
+                    if(cls.dots[v].z>cls.dots[v].fl){
+                        cls.dots[v].z = -1000
+                    }
+                    if(cls.dots[v].scale_fn>1000){
+                        cls.dots[v].scale_fn=1000
+                    }
+                    if(cls.dots[v].z<-1000){
+                        cls.dots[v].z=cls.dots[v].fl
+
+                    }
+                    cls.dots[v].scale = {
+                        scale_X:cls.dots[v].scale_fn,
+                        scale_Y:cls.dots[v].scale_fn
+                    }
+
+
+
+                    cls.dots[v].center.x = cls.dots[v].init_center.x * cls.dots[v].scale_fn;
+                    cls.dots[v].center.y = cls.dots[v].init_center.y * cls.dots[v].scale_fn;
+                    // console.log(cls.dots[v].scale)
+                    // console.log(cls.dots[v].center)
+
+                    cls.dots[v].ctrl_v.c_x *= cls.dots[v].friction.x
+                    cls.dots[v].ctrl_v.c_y *= cls.dots[v].friction.y
+                    cls.dots[v].ctrl_v.c_z *= cls.dots[v].friction.z
+                }
+
+
             }
-            if(cls.dots[v].z>cls.dots[v].fl){
-                cls.dots[v].z = -1000
-            }
-            if(cls.dots[v].scale_fn>1000){
-                cls.dots[v].scale_fn=1000
-            }
-            if(cls.dots[v].z<-1000){
-                cls.dots[v].z=cls.dots[v].fl
-
-            }
-            cls.dots[v].scale = {
-                scale_X:cls.dots[v].scale_fn,
-                scale_Y:cls.dots[v].scale_fn
-            }
 
 
-
-            cls.dots[v].center.x = cls.dots[v].init_center.x * cls.dots[v].scale_fn;
-            cls.dots[v].center.y = cls.dots[v].init_center.y * cls.dots[v].scale_fn;
-            // console.log(cls.dots[v].scale)
-            // console.log(cls.dots[v].center)
-
-            cls.dots[v].ctrl_v.c_x *= cls.dots[v].friction.x
-            cls.dots[v].ctrl_v.c_y *= cls.dots[v].friction.y
-            cls.dots[v].ctrl_v.c_z *= cls.dots[v].friction.z
 
         });
 

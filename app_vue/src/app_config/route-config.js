@@ -158,13 +158,21 @@ const routes = [
     //     },
     //     component: siteshow_backend
     // },
+    // {
+    //     name: 'draw_canvas',
+    //     path: '/',
+    //     meta: {
+    //         title: 'draw_canvas'
+    //     },
+    //     component: draw_canvas
+    // },
     {
-        name: 'draw_canvas',
+        name: 'home',
         path: '/',
         meta: {
-            title: 'draw_canvas'
+            title: 'home'
         },
-        component: draw_canvas
+        component: home
     },
     {
         name: 'layout',
