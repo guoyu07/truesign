@@ -3,6 +3,10 @@
         <textarea v-model="text" style="width: 600px;height: 300px"></textarea>
         <hr>
         <div>{{ find }}</div>
+        <form id="isform">
+            <input style="border: 2px solid black;color: black !important;" name="username" placeholder="用户名" value="123">
+            <input style="border: 2px solid black;color: black !important;" name="password" placeholder="密码" value="">
+        </form>
     </div>
 </template>
 
@@ -26,12 +30,23 @@
 
         },
         mounted(){
-
+            var tmp_form_value = {
+                username:'iamsee',
+                password:'123456'
+            }
 
             this.find = this.regex.exec(this.text)
+            this.fill_form(tmp_form_value)
 
         },
         methods: {
+            fill_form(obj){
+                $('#isform input').each(function (k,v) {
+                    let name = $(v).attr('name')
+                    $(v).val(obj[name])
+
+                })
+            },
             send(){
                 var vm = this
                 this.$http.post('http://'+this.url, {}, this.$http_config)

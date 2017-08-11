@@ -14,6 +14,7 @@
     "lint": "eslint --ext .js,.vue src test/unit/specs test/e2e/specs"
   },
   "dependencies": {
+    "@tweenjs/tween.js": "^17.1.0",
     "animate.css": "^3.5.2",
     "axios": "^0.16.1",
     "bootstrap": "^3.3.7",
@@ -41,8 +42,6 @@
     "stylus": "^0.54.5",
     "stylus-loader": "^3.0.1",
     "three": "^0.85.2",
-    "tween": "^0.9.0",
-    "tween.js": "^16.6.0",
     "ua-parser-js": "^0.7.13",
     "vee-validate": "^2.0.0-rc.5",
     "velocity-animate": "^1.5.0",

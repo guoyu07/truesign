@@ -14,7 +14,7 @@
                           v-on:leave="leave"
                           v-bind:css="false"
         >
-            <li class="menu_item" v-for="(item,index) in buildMenuList" :key="item" :data-index="index" :data-id="item.id"
+            <li class="menu_item" v-for="(item,index) in buildMenuList" :key="index" :data-index="index" :data-id="item.id"
                 style="width: 100%;text-align: left;background-color:rgba(51, 62, 75, 0.8);color:rgba(105,210,231,0.69);padding-left: 10px">
                 <!--<a :href="item.path" >{{item.name}}</a>-->
                 <router-link :to="item.path" style="color:rgba(105,210,231,0.69)">{{item.name}}</router-link>

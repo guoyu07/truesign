@@ -2,7 +2,6 @@
     <div style="width: 100%;height: 100%;overflow: hidden">
 
 
-        <div style="position: absolute;margin-left: 300px">{{timeOutEvent}}</div>
         <div class="canvas_container" style="" v-tap="{method:test}"  v-longtouch="timeOutEvent">
             <div v-if="help" id="loading_canval_help_div" :style="{height:screenHeight-30+'px',overflow:'auto'}">
                 <input style="" v-model="is_line_percent">
@@ -21,6 +20,8 @@
     import {syntaxHighlightJSON} from '../../api/lib/helper/prettyOnHtml'
     import Vue from 'vue'
     import vue_longpress from 'vue-longpress';
+    const TWEEN = require('@tweenjs/tween.js');
+
     export default{
 
         data() {
@@ -34,7 +35,23 @@
                     tan: 0,
                     dots_count: 0,
                 },
-                timeOutEvent: 0
+                timeOutEvent: 0,
+                color:[
+                    {key: 0, value: '#ee735c'},
+                    {key: 1, value: '#ee735c'},
+                ],
+                i_point_color:[
+                    {key: 0, value: '#32daee'},
+                    {key: 0.3, value: 'black'},
+                    {key: 0.8, value: 'black'},
+                    {key: 1, value: '#ffffff'},
+                ],
+                i_body_color:[
+                    {key: 0, value: '#32daee'},
+                    {key: 0.3, value: 'black'},
+                    {key: 0.8, value: 'black'},
+                    {key: 1, value: '#000000'},
+                ]
             }
         },
         props: {
@@ -84,6 +101,7 @@
                 console.log('start')
                 this.initBase();
                 this.initDots();
+                this.initMove()
                 this.animate()
 
             },
@@ -97,35 +115,30 @@
 
             },
             initDots(){
+
+
+
                 var vm = this
                 this.drawCanvas.dots = []
                 var is_pixel = 8
 
                 this.drawParams.dots_count = parseInt((parseInt(this.drawParams.xy_line) / (is_pixel/4)) * (parseInt(this.is_line_percent) / 100))
-                this.drawParams.dots_count -= 6
-//                this.drawParams.dots_count = vm.drawParams.xy_line * (parseInt(this.is_line_percent)/100)
-//            this.help = this.drawParams.dots_count
                 console.log(vm.screenWidth)
                 console.log(vm.screenHeight)
-                for (let i = 0; i <=this.drawParams.dots_count; i++) {
-                    vm.drawCanvas.ctrl_mode.mode_z = 1
-                    setTimeout(function () {
-                        vm.drawCanvas.initDot(
+                for (let i = 1; i <=this.drawParams.dots_count; i++) {
+                    vm.drawCanvas.initDot(
                             {
                                 cid:i,
+                                group:'loading_line',
                                 g: {down: 0, right: 0, out: 0},
-//                            init_center:{x:-vm.screenWidth/2 + i*2,
-//                                y:vm.screenHeight/2-8 - this.drawParams.tan*i*2},
                                 init_center: {
-                                    x:-vm.screenWidth/2 +i *4 ,
-                                    y:vm.screenHeight/2 - vm.drawParams.tan*i*4
+                                    x:-vm.screenWidth/2 ,
+                                    y:vm.screenHeight/2
                                 },
                                 z: 0,
                                 scale_fn_base: 1,
                                 radius: is_pixel,
-                                colors: [
-                                    {key: 0, value: '#53DFD6'}
-                                ],
+                                colors: vm.color,
                                 move:true,
                                 move_way:{
                                     type:'loading_line',
@@ -136,47 +149,32 @@
                                 },
                                 visible:true
                             })
-
-                    },i*10)
-
                 }
 
-                this.drawCanvas.initDot(
-                        {
-                            g:{down:0,right:0,out:0},
-                            init_center:{x:0,
-                                y:0},
-                            z:0,
-                            scale_fn_base:1,
-                            radius:36,
-                            colors:[
-                                {key:0,value:'#50d8d0'}
-                            ],
-                            move:false,
 
-                        })
-                var cross_count = 2
+                var cross_count = 80
                 var angle = 360/cross_count
                 var cross_radius = 80
                 for(let i = 1; i <= cross_count; i++){
                     vm.drawCanvas.initDot(
                         {
                             cid:i,
+                            group:'loading_line',
                             g:{down:0,right:0,out:0},
                             init_center:{
-                                x: 100+cross_radius*Math.cos((2*Math.PI/360 * (angle*i)) ),
-                                y: 1000+-cross_radius*Math.sin(2*Math.PI/360 * (angle*i)) },
+                                x:(parseInt(Math.random()*10)%2===1)?-vm.screenWidth/2:vm.screenWidth/2 ,
+                                y:(parseInt(Math.random()*10)%2===1)?-vm.screenHeight/2:vm.screenHeight/2
+                            },
+//                                x: 100+cross_radius*Math.cos((2*Math.PI/360 * (angle*i)) ),
+//                                y: 1000+-cross_radius*Math.sin(2*Math.PI/360 * (angle*i)) },
                             z:0,
                             scale_fn_base:1,
                             radius:12,
-                            colors:[
-                                {key:0,value:'#50d8d0'}
-                            ],
+                            colors:vm.color,
                             move:true,
                             move_way:{
                                 type:'clockwise',
                                 params:{
-                                    center:{x:0,y:0},
                                     cross_count:cross_count,
                                     angle : angle,
                                     cross_radius:cross_radius,
@@ -185,23 +183,74 @@
                             }
                         })
                 }
-//                this.help = this.drawCanvas.dots
+                var i_point_count =2
+                var i_point_angle = 360/i_point_count
+                var i_point_radius = 80
+                for(let i = 1; i <= i_point_count; i++){
+                    vm.drawCanvas.initDot(
+                        {
+                            cid:i,
+                            group:'loading_line',
+                            g:{down:0,right:0,out:0},
+                            init_center:{
+                                x:(parseInt(Math.random()*10)%2===1)?-vm.screenWidth/2:vm.screenWidth/2 ,
+                                y:(parseInt(Math.random()*10)%2===1)?-vm.screenHeight/2:vm.screenHeight/2
+                            },
+//                                x: 100+cross_radius*Math.cos((2*Math.PI/360 * (angle*i)) ),
+//                                y: 1000+-cross_radius*Math.sin(2*Math.PI/360 * (angle*i)) },
+                            z:10,
+                            scale_fn_base:1,
+                            radius:12,
+                            colors:vm.i_point_color,
+                            move:true,
+                            move_way:{
+                                type:'i_point',
+                                params:{
+                                    cross_count:i_point_count,
+                                    angle : i_point_angle,
+                                    cross_radius:i_point_radius,
+                                    base_angle: i_point_angle*i
+                                }
+                            }
+                        })
+                }
 
-//                for(let i = 0; i <this.drawParams.dots_count; i++){
-//                    vm.drawCanvas.initDot(
-//                        {
-//                            g:{down:0,right:0,out:0},
-//                            init_center:{x:0,
-//                                y:0},
-////                            z:100,
-//                            scale_fn_base:1,
-//                            radius:is_pixel,
-//                            colors:[
-//                                {key:0,value:'#53DFD6'}
-//                            ]
-//                        })
-//
-//                }
+
+                var i_body_count = 50
+                var i_body_length = 80
+                for(let i = 1; i <= i_body_count; i++){
+                    vm.drawCanvas.initDot(
+                        {
+                            cid:i,
+                            group:'loading_line',
+                            g:{down:0,right:0,out:0},
+                            init_center:{
+                                x:(parseInt(Math.random()*10)%2===1)?-vm.screenWidth/2:vm.screenWidth/2 ,
+                                y:(parseInt(Math.random()*10)%2===1)?-vm.screenHeight/2:vm.screenHeight/2
+                            },
+                            z:10,
+                            scale_fn_base:1,
+                            radius:5,
+                            colors:vm.i_body_color,
+                            move:true,
+                            move_way:{
+                                type:'i_body',
+                                params:{
+                                    cross_count:i_body_count,
+                                    angle : i_point_angle,
+                                    cross_radius:60,
+                                    base_angle: 60*i
+                                }
+                            }
+                        })
+                }
+
+
+
+            },
+            initMove(){
+                this.drawCanvas.move_3D(0, 0, 0)
+
             },
             draw(){
                 this.drawCanvas.drawDots()
@@ -211,13 +260,13 @@
                 this.drawCanvas.initWidthHeight(this.screenWidth, this.screenHeight)
                 this.drawCanvas.initCtrl()
                 this.drawCanvas.drawDots()
-                this.drawCanvas.move_3D(0, 0, 0)
-                this.drawCanvas.move_line()
+//                this.drawCanvas.move_line()
             },
             animate(){
                 var vm = this
                 this.render();
                 requestAnimationFrame(this.animate);
+
 
 //                setInterval(function () {
 //                    vm.animate()
