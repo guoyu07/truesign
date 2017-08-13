@@ -5985,6 +5985,10 @@ tween.js@^16.6.0:
   version "16.6.0"
   resolved "https://registry.yarnpkg.com/tween.js/-/tween.js-16.6.0.tgz#739104c9336cc4f11ee53f9ce7cede51e6723624"
 
+tween@^0.9.0:
+  version "0.9.0"
+  resolved "http://registry.npm.taobao.org/tween/download/tween-0.9.0.tgz#f856c7a9c9ab85ca9a2bc02282591aa2513a20ed"
+
 tweetnacl@^0.14.3, tweetnacl@~0.14.0:
   version "0.14.5"
   resolved "https://registry.yarnpkg.com/tweetnacl/-/tweetnacl-0.14.5.tgz#5ae68177f192d4456269d108afa93ff8743f4f64"
@@ -6238,6 +6242,12 @@ vue-loader@^12.1.0:
     vue-style-loader "^3.0.0"
     vue-template-es2015-compiler "^1.2.2"
 
+vue-longpress@^1.0.1:
+  version "1.0.1"
+  resolved "http://registry.npm.taobao.org/vue-longpress/download/vue-longpress-1.0.1.tgz#ccb98a4fff28ce4dedeb7a073db79dc5717b8c9f"
+  dependencies:
+    vue "^2.1.10"
+
 vue-parallaxy@^1.0.3:
   version "1.0.3"
   resolved "https://registry.yarnpkg.com/vue-parallaxy/-/vue-parallaxy-1.0.3.tgz#092b903f37ba59ecda8f484756c0374d31a04313"
@@ -6271,7 +6281,7 @@ vue2-editor@^2.0.24:
     axios "^0.16.2"
     quill "^1.2.3"
 
-vue@^2.3.3:
+vue@^2.1.10, vue@^2.3.3:
   version "2.4.2"
   resolved "https://registry.yarnpkg.com/vue/-/vue-2.4.2.tgz#a9855261f191c978cc0dc1150531b8d08149b58c"
 
