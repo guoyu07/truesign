@@ -210,7 +210,7 @@ class DrawCanvas {
                                 .to(
                                     {
                                         // x: -cls.canvas.width/2,
-                                        x: -cls.canvas.width/2
+                                        x: -cls.canvas.width/2+5
                                     }, 200)
                                 .delay(parseInt(params.count - cls.dots[v].cid + '00') / 10)
                                 .easing(TWEEN.Easing.Linear.None)
@@ -228,10 +228,51 @@ class DrawCanvas {
                                 .onUpdate(function () {
 
                                 })
-                            if(params.percent === 100){
-                                    init_loading_line.chain(left_recovery_loading_line,rigth_recovery_loading_line)
-                                    init_loading_line.start()
+                            var mid_height = new TWEEN.Tween((cls.dots[v].center))
+                                .to(
+                                    {
+                                        x:-cls.canvas.width/2+5,
+                                        y:cls.canvas.height/4
+                                    },200
+                                )
+                                .easing(TWEEN.Easing.Linear.None)
+                                .onUpdate(function () {
 
+                                })
+                            var mid_height_left = new TWEEN.Tween((cls.dots[v].center))
+                                .to(
+                                    {
+                                        x:-cls.canvas.width/6,
+                                    },100
+                                )
+                                .delay(800)
+                                .easing(TWEEN.Easing.Linear.None)
+                                .onUpdate(function () {
+
+                                })
+                            var mid_height_top = new TWEEN.Tween((cls.dots[v].center))
+                                .to(
+                                    {
+                                        x:-cls.canvas.width/12,
+                                        y:cls.canvas.height/12,
+                                    },100
+                                )
+                                .delay(2800)
+                                .easing(TWEEN.Easing.Linear.None)
+                                .onUpdate(function () {
+
+                                })
+
+                            if(params.percent >= 100){
+                                init_loading_line.chain(left_recovery_loading_line,rigth_recovery_loading_line)
+                                left_recovery_loading_line.chain(rigth_recovery_loading_line)
+                                rigth_recovery_loading_line.chain(mid_height)
+                                mid_height.chain(mid_height_left)
+                                init_loading_line.start()
+
+                            }
+                            else{
+                                init_loading_line.start()
                             }
                         }
                         if(cls.dots[v].move_way.type === 'clockwise'){
@@ -264,11 +305,11 @@ class DrawCanvas {
                             init_cross.chain(move_cross)
                             init_cross.start()
 
-                            if(cls.ctrl_mode.mode_z){
-                                params.angle += cls.dots[v].ctrl_v.c_z
-                                cls.dots[v].x =  params.cross_radius*Math.cos((2*Math.PI/360 * (params.angle*cls.dots[v].cid)) )
-                                cls.dots[v].y =  params.cross_radius*Math.sin((2*Math.PI/360 * (params.angle*cls.dots[v].cid)) )
-                            }
+                            // if(cls.ctrl_mode.mode_z){
+                            //     params.angle += cls.dots[v].ctrl_v.c_z
+                            //     cls.dots[v].x =  params.cross_radius*Math.cos((2*Math.PI/360 * (params.angle*cls.dots[v].cid)) )
+                            //     cls.dots[v].y =  params.cross_radius*Math.sin((2*Math.PI/360 * (params.angle*cls.dots[v].cid)) )
+                            // }
                         }
                         if(cls.dots[v].move_way.type === 'i_point'){
 
@@ -561,8 +602,12 @@ class DrawCanvas {
         var cls = this
         this.dots.forEach(function (k, v) {
 
-
-            if (cls.dots[v].move && cls.ctrl_mode.mode_z) {
+            // if(cls.dots[v].move_way.type === 'loading_line'){
+            //     if(cls.dots[v].move_way.params.percent >= 100){
+            //         cls.move_3D()
+            //     }
+            // }
+            if (cls.dots[v].move && (cls.ctrl_mode.mode_z || Math.abs(cls.dots[v].ctrl_v.c_z)>=1)) {
                 cls.dots[v].ctrl_v.c_x += cls.ctrl_mode.mode_x
                 cls.dots[v].ctrl_v.c_x -= cls.dots[v].friction.x * (typeof x === 'undefined' ? 0 : x)
                 cls.dots[v].ctrl_v.c_y += cls.ctrl_mode.mode_y
@@ -582,12 +627,18 @@ class DrawCanvas {
                     var bottom_y = cls.canvas.height / 2
                     var tan = cls.canvas.height / cls.canvas.width
 
+
                     if(cls.dots[v].move_way.type === 'clockwise'){
-                        // console.log( cls.dots[v].ctrl_v.c_z)
                         params.angle += cls.dots[v].ctrl_v.c_z
                         cls.dots[v].center.x =  params.cross_radius*Math.cos((2*Math.PI/360 * (params.angle*cls.dots[v].cid)) )
                         cls.dots[v].center.y =  params.cross_radius*Math.sin((2*Math.PI/360 * (params.angle*cls.dots[v].cid)) )
                         cls.dots[v].ctrl_v.c_z *= 0.98
+                        // cls.dots[v].move_way.params.base_angle += cls.dots[v].ctrl_v.c_z
+                        // cls.dots[v].center.x =
+                        //     cls.dots[v].move_way.params.cross_radius*Math.cos((2*Math.PI/360 * cls.dots[v].move_way.params.base_angle) )
+                        // cls.dots[v].center.y =
+                        //     cls.dots[v].move_way.params.cross_radius*Math.sin((2*Math.PI/360 * cls.dots[v].move_way.params.base_angle) )
+                        // cls.dots[v].ctrl_v.c_z *= 0.98
                     }
                     if(cls.dots[v].move_way.type === 'i_point'){
                         // console.log( cls.dots[v].ctrl_v.c_z)
@@ -599,11 +650,17 @@ class DrawCanvas {
                         cls.dots[v].ctrl_v.c_z *= 0.98
                     }
                     if(cls.dots[v].move_way.type === 'i_body'){
-                        // console.log( cls.dots[v].ctrl_v.c_z)
+
                         params.angle += cls.dots[v].ctrl_v.c_z
                         cls.dots[v].center.x =  (params.cross_radius-cls.dots[v].cid)*Math.cos((2*Math.PI/360 * (params.angle*cls.dots[v].cid)) )
                         cls.dots[v].center.y =  (params.cross_radius-cls.dots[v].cid)*Math.sin((2*Math.PI/360 * (params.angle*cls.dots[v].cid)) )
                         cls.dots[v].ctrl_v.c_z *= 0.98
+                        // cls.dots[v].move_way.params.base_angle += cls.dots[v].ctrl_v.c_z
+                        // cls.dots[v].center.x =
+                        //     cls.dots[v].move_way.params.cross_radius*Math.cos((2*Math.PI/360 * cls.dots[v].move_way.params.base_angle) )
+                        // cls.dots[v].center.y =
+                        //     cls.dots[v].move_way.params.cross_radius*Math.sin((2*Math.PI/360 * cls.dots[v].move_way.params.base_angle) )
+                        // cls.dots[v].ctrl_v.c_z *= 0.98
                     }
                 }
 

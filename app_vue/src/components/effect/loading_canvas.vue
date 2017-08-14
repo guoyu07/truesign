@@ -51,7 +51,8 @@
                     {key: 0.3, value: 'black'},
                     {key: 0.8, value: 'black'},
                     {key: 1, value: '#000000'},
-                ]
+                ],
+                pageTimeout:[]
             }
         },
         props: {
@@ -64,7 +65,7 @@
         watch: {
             is_line_percent(curVal, oldVal){
                 console.log(curVal, oldVal)
-                this.start()
+                this.updateLoadingLineDots()
             }
         },
         mounted(){
@@ -121,7 +122,6 @@
                 var vm = this
                 this.drawCanvas.dots = []
                 var is_pixel = 8
-
                 this.drawParams.dots_count = parseInt((parseInt(this.drawParams.xy_line) / (is_pixel/4)) * (parseInt(this.is_line_percent) / 100))
                 console.log(vm.screenWidth)
                 console.log(vm.screenHeight)
@@ -152,7 +152,7 @@
                 }
 
 
-                var cross_count = 80
+                var cross_count = 60
                 var angle = 360/cross_count
                 var cross_radius = 80
                 for(let i = 1; i <= cross_count; i++){
@@ -216,7 +216,7 @@
                 }
 
 
-                var i_body_count = 50
+                var i_body_count = 40
                 var i_body_length = 80
                 for(let i = 1; i <= i_body_count; i++){
                     vm.drawCanvas.initDot(
@@ -245,6 +245,70 @@
                         })
                 }
 
+                var LastLoadingLineDots =  this.drawCanvas.dots.filter((dot) => {
+                    return dot.move_way.type === 'loading_line'
+                })
+
+
+
+
+
+            },
+            updateLoadingLineDots(){
+                var vm = this
+                var tan = vm.screenHeight / vm.screenWidth
+
+                var is_pixel = 8
+                var LastLoadingLineDots =  this.drawCanvas.dots.filter((dot) => {
+                    return dot.move_way.type === 'loading_line'
+                })
+                var hasdots = LastLoadingLineDots.length
+
+                var tmp_dots = LastLoadingLineDots.slice()
+                tmp_dots.sort((a,b) => {
+                    return a.cid - b.cid
+                } )
+                var lastdot = tmp_dots[LastLoadingLineDots.length-1]
+                var update_dots_count = parseInt((parseInt(this.drawParams.xy_line) / (is_pixel/4)) * (parseInt(this.is_line_percent) / 100))-hasdots
+
+                for (let i = 1; i <=update_dots_count; i++) {
+                    vm.pageTimeout[lastdot.cid+i] = setTimeout(function () {
+                        vm.drawCanvas.initDot(
+                            {
+                                cid:lastdot.cid+i,
+                                group:'loading_line',
+                                g: {down: 0, right: 0, out: 0},
+                                init_center: {
+                                    x: -vm.screenWidth / 2 + (lastdot.cid+i) * 4,
+                                    y: vm.screenHeight / 2 - tan * (lastdot.cid+i) * 4
+                                },
+                                z: 0,
+                                scale_fn_base: 1,
+                                radius: is_pixel,
+                                colors: vm.color,
+                                move:true,
+                                move_way:{
+                                    type:'loading_line',
+                                    params:{
+                                        count:update_dots_count+hasdots,
+                                        percent:parseInt(vm.is_line_percent)
+                                    }
+                                },
+                                visible:true
+                            })
+                    },parseInt(i+'00')/8)
+
+
+                }
+
+                setTimeout(function () {
+                    if(parseInt(vm.is_line_percent)>=100){
+                        vm.pageTimeout.forEach(function (k,v) {
+                            clearTimeout(vm.pageTimeout[v])
+                        })
+                        vm.start()
+                    }
+                },200)
 
 
             },
