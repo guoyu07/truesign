@@ -293,10 +293,7 @@ class DrawCanvas {
                                             }, 800)
                                         .easing(TWEEN.Easing.Linear.None)
                                         .onUpdate(function () {
-                                            cls.dots[v].colors = [
-                                                {key: 0, value: '#32daee'},
 
-                                                ]
                                         })
 
                                         .start()
@@ -310,24 +307,15 @@ class DrawCanvas {
                                 )
                                 .delay(1000)
                                 .easing(TWEEN.Easing.Linear.None)
+                                .onStart(function() {
+                                    cls.dots[v].colors = [
+                                        {key: 0, value: '#32daee'},
+
+                                    ]
+                                    cls.ctrl_mode.mode_z = 1
+                                })
                                 .onUpdate(function () {
-                                    var start_i_point = new TWEEN.Tween(cls.dots[v])
-                                        .to(
-                                            {
-                                                // x: -cls.canvas.width/2,
-                                                radius: 4,
 
-                                            }, 800)
-                                        .easing(TWEEN.Easing.Linear.None)
-                                        .onUpdate(function () {
-                                            cls.dots[v].colors = [
-                                                {key: 0, value: '#32daee'},
-
-                                            ]
-                                            cls.ctrl_mode.mode_z = 1
-                                        })
-
-                                        .start()
                                 })
                             var bottom_mid_height_left_top = new TWEEN.Tween((cls.dots[v].center))
                                 .to(

@@ -185,15 +185,7 @@
                 }
             },
             refresh_table_data(data){
-                if (this.defaultTab === '客户数据') {
-                    this.getApp(JSON.stringify(this.table_search_sort_by))
-                }
-                else if (this.defaultTab === '级别套餐') {
-                    this.getAppLevel(JSON.stringify(this.table_search_sort_by))
-                }
-                else if (this.defaultTab === '支付方式') {
-                    this.getPayInterface(JSON.stringify(this.table_search_sort_by))
-                }
+
             }
 
         },

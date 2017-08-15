@@ -9,7 +9,6 @@
         <input  v-model="is_line_percent" style="border: 2px solid black;color:black !important;display: block;position: absolute;z-index:100;left:20%">
         <input type="button" @click="add" value="增加" style="border: 2px solid black;color:black !important;display: block;position: absolute;z-index:100;left:40%">
         <loading_canvas style="position: absolute;top:0;" :is_line_percent="is_line_percent+''"></loading_canvas>
-
     </div>
 </template>
 <script>
@@ -17,7 +16,7 @@
     export default {
         data(){
             return{
-                is_line_percent:100
+                is_line_percent:10
             }
         },
         mounted(){
