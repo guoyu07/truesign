@@ -2,7 +2,7 @@
     <div class="top_router_view" id="business_client_ctrl" style="overflow: auto">
         <el-tabs type="border-card" style="background-color: #dcdcdc;box-shadow: none" @tab-click="tabclick"
                  v-model="defaultTab">
-            <el-tab-pane v-for="(item,index) in tab_menu_list" :key="item" :label="item.value" :data-name="item.name"
+            <el-tab-pane v-for="(item,index) in tab_menu_list" :key="index" :label="item.value" :data-name="item.name"
                          :name="item.name">
 
                 <div style="width: 100%;height: auto;min-height: 600px;text-align: left;"

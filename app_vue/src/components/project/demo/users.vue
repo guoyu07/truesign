@@ -12,7 +12,6 @@
                      groupdelable="true"
                      :param_apihost = "report_api+'?app=demo'"
         >
-
         </table_model>
 
     </div>
@@ -40,10 +39,6 @@
                 show_page_model_ctrl_by_table: false,
                 show_adddata_page_model_ctrl: false,
                 info_transfer_action: {
-                    add: 'Users/Desc?app=demo',
-                    get: 'Users/Get?app=demo',
-                    update: 'Users/Update?app=demo',
-                    groupdel: 'Users/GroupDel?app=demo',
                 },
                 table_search_sort_by: {
                     page_size: 20,
@@ -129,7 +124,7 @@
                 }
                 search_param.rules = 1
 //        search_param.token = this.socket_server_store.token
-                this.$http.post(this.report_api + 'users/getUsers?app=demo', search_param, this.$http_config)
+                this.$http.post(this.report_api + 'Users/getUsers?app=demo', search_param, this.$http_config)
                 //        axios.post(this.report_api + 'getUsers', search_param, axios_config)
                     .then((res) => {
                         if (res.data.code === 0) {

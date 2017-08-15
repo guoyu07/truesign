@@ -35,12 +35,14 @@ class GenerateMVCCommand extends Command
 
     private $modulePath = CURRECT_APPLICATION_PATH . DIRECTORY_SEPARATOR . 'application' . DIRECTORY_SEPARATOR . 'modules';
 
-    private $vuePath = TEMPLATE_PATH . '/vue.vue';
+    private $vuePath = TEMPLATE_PATH . '/vue.php';
+    private $targetViewPath = '';
 
     public function __construct()
     {
         $this->appName = basename(CURRECT_APPLICATION_PATH);
         $this->targetServicePath = APPLICATION_PATH . DIRECTORY_SEPARATOR . 'common' . DIRECTORY_SEPARATOR . 'Service' . DIRECTORY_SEPARATOR . ucfirst($this->appName);
+        $this->targetViewPath = APPLICATION_PATH.DIRECTORY_SEPARATOR.'app_vue'.DIRECTORY_SEPARATOR.'src'.DIRECTORY_SEPARATOR.'components'.DIRECTORY_SEPARATOR.'project'.DIRECTORY_SEPARATOR.($this->appName);
     }
 
 
@@ -74,12 +76,10 @@ class GenerateMVCCommand extends Command
 
         if (!is_writable(dirname($this->outputControllerName))) {
             echo "控制器文件不可写" . PHP_EOL;
-            return;
         }
 
         if (file_exists($this->outputControllerName)) {
             echo "控制器 " . $controllerName . " 文件存在" . PHP_EOL;
-            return;
 
 
         } else {
@@ -109,7 +109,6 @@ class GenerateMVCCommand extends Command
         $serviceFilePath = $this->targetServicePath . DIRECTORY_SEPARATOR . ucfirst($controllerName) . 'Service.php';
         if (file_exists($serviceFilePath)) {
             echo "服务 " . $serviceFilePath . " 文件存在" . PHP_EOL;
-            return;
         } else {
             $base_service = require_once $this->baseServiceTemplatePath;
             file_put_contents($this->targetServicePath . DIRECTORY_SEPARATOR . 'BaseService.php', sprintf($base_service, ucfirst($this->appName)));
@@ -126,6 +125,42 @@ class GenerateMVCCommand extends Command
             file_put_contents($serviceFilePath, $service_data);
             echo "Service 创建完成".PHP_EOL;
         }
+
+
+        echo "开始处理 View =================================".PHP_EOL;
+        $targetViewDir = $this->targetViewPath;
+        echo $targetViewDir.PHP_EOL;
+        if (!is_dir($targetViewDir)) {
+            mkdir($targetViewDir);
+            echo $targetViewDir.'文件夹创建完成'.PHP_EOL;
+        }
+        $targetViewFile = $targetViewDir.DIRECTORY_SEPARATOR.$controllerName.'.vue';
+        $viewTemplateFile = require_once $this->vuePath;
+        $view_data = sprintf($viewTemplateFile,
+            ucfirst($controllerName),
+            ucfirst($controllerName),
+            ucfirst($controllerName),
+            ucfirst($controllerName),
+            ucfirst($controllerName),
+            ucfirst($controllerName),
+            ucfirst($controllerName),
+            ucfirst($controllerName),
+            ucfirst($controllerName),
+            ucfirst($controllerName),
+            ucfirst($controllerName),
+            ucfirst($controllerName),
+            ucfirst($controllerName),
+            ucfirst($controllerName),
+            ucfirst($controllerName),
+            ucfirst($controllerName),
+            ucfirst($controllerName),
+            ucfirst($controllerName),
+            ucfirst($controllerName),
+            ucfirst($controllerName),
+            ucfirst($controllerName)
+            );
+        file_put_contents($targetViewFile, $view_data);
+        echo "View 创建完成".PHP_EOL;
 
 
     }

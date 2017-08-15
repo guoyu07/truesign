@@ -1,3 +1,5 @@
+<?php
+$str =  <<< TEMPLATE
 <template>
     <div class="top_router_view" id="business_client_ctrl" style="overflow: auto">
         <table_model v-loading="isloading"
@@ -58,7 +60,7 @@
         watch: {
             table_search_sort_by: {
                 handler: function (val, oldVal) {
-                    this.getUsers(JSON.stringify(this.table_search_sort_by))
+                    this.get%s(JSON.stringify(this.table_search_sort_by))
 
                 },
                 deep: true
@@ -76,30 +78,30 @@
         },
         created(){
             var vm = this
-            this.report_api = this.socket_server_store.apihost + 'Users/'
+            this.report_api = this.socket_server_store.apihost + '%s/'
             this.report_api = 'http://localhost:8089/'
-            this.$root.eventHub.$emit('init_navmenu', 'Users')
-            this.$root.eventHub.$off('currect_row_index')
-            this.$root.eventHub.$on('currect_row_index', () => {
+            this.\$root.eventHub.\$emit('init_navmenu', '%s')
+            this.\$root.eventHub.\$off('currect_row_index')
+            this.\$root.eventHub.\$on('currect_row_index', () => {
                 this.show_page_model_ctrl_by_table = !this.show_page_model_ctrl_by_table
             })
 
-            this.getUsers(JSON.stringify(this.table_search_sort_by))
-            this.$root.eventHub.$off('refresh_table')
-            this.$root.eventHub.$on('refresh_table', function (data) {
+            this.get%s(JSON.stringify(this.table_search_sort_by))
+            this.\$root.eventHub.\$off('refresh_table')
+            this.\$root.eventHub.\$on('refresh_table', function (data) {
                 console.log('on->refresh_table')
                 if (data === 'resetselect') {
                     vm.reset_search_sort_by()
                 }
                 else {
-                    vm.getUsers(data)
+                    vm.get%s(data)
                 }
 
             })
-            this.$root.eventHub.$off('changeNavMenu')
-            this.$root.eventHub.$on('changeNavMenu', function (data) {
-                if(data  === 'ssm_Users'){
-                    vm.getUsers()
+            this.\$root.eventHub.\$off('changeNavMenu')
+            this.\$root.eventHub.\$on('changeNavMenu', function (data) {
+                if(data  === 'ssm_%s'){
+                    vm.get%s()
                 }
             })
         },
@@ -110,13 +112,13 @@
         },
         beforeDestroy(){
 
-//            this.$root.eventHub.$off('refresh_businessinfo')
-//            this.$root.eventHub.$off('currect_row_index')
+//            this.\$root.eventHub.\$off('refresh_businessinfo')
+//            this.\$root.eventHub.\$off('currect_row_index')
 
         },
         methods: {
 
-            getUsers(search_sort_by){
+            get%s(search_sort_by){
                 var vm = this
                 var search_param = {}
                 if (search_sort_by) {
@@ -125,8 +127,8 @@
                 }
                 search_param.rules = 1
 //        search_param.token = this.socket_server_store.token
-                this.$http.post(this.report_api + 'users/getUsers?app=demo', search_param, this.$http_config)
-                //        axios.post(this.report_api + 'getUsers', search_param, axios_config)
+                this.\$http.post(this.report_api + '%s/get%s?app=demo', search_param, this.\$http_config)
+                //        axios.post(this.report_api + 'get%s', search_param, axios_config)
                     .then((res) => {
                         if (res.data.code === 0) {
 
@@ -136,7 +138,7 @@
                                 //1.0版本
                                 if (!vm.table_search_sort_by.search.hasOwnProperty(analysis_data.searchWidget[index].search_key)) {
 
-                                    vm.$set(vm.table_search_sort_by.search, analysis_data.searchWidget[index].search_key, analysis_data.searchWidget[index])
+                                    vm.\$set(vm.table_search_sort_by.search, analysis_data.searchWidget[index].search_key, analysis_data.searchWidget[index])
 
                                 }
                             }
@@ -144,15 +146,15 @@
 //                                      进行响应式set key
                                 //1.0版本
                                 if (!vm.table_search_sort_by.sorter.hasOwnProperty(analysis_data.sorterWidget[index].key)) {
-                                    vm.$set(vm.table_search_sort_by.sorter, analysis_data.sorterWidget[index].key, analysis_data.sorterWidget[index].way)
+                                    vm.\$set(vm.table_search_sort_by.sorter, analysis_data.sorterWidget[index].key, analysis_data.sorterWidget[index].way)
 
                                 }
                             }
                             vm.info_transfer_action = {
-                                add: 'Users/DescUsers?app=demo',
-                                get: 'Users/GetUsers?app=demo',
-                                update: 'Users/UpdateUsers?app=demo',
-                                groupdel: 'Users/GroupDelUsers?app=demo',
+                                add: '%s/Desc%s?app=demo',
+                                get: '%s/Get%s?app=demo',
+                                update: '%s/Update%s?app=demo',
+                                groupdel: '%s/GroupDel%s?app=demo',
                             }
                             vm.table_model_field = analysis_data.rules
                             vm.table_model_data = analysis_data.data
@@ -161,7 +163,7 @@
 //                            console.log(vm.table_search_sort_by)
                         }
                         else {
-                            vm.$notify.error({
+                            vm.\$notify.error({
                                 title: '失败',
                                 message: res.data.code + ' ' + res.data.desc,
                                 offset: 100,
@@ -183,10 +185,10 @@
             },
             refresh_table_data(data){
                 if (this.defaultTab === '客户数据') {
-                    this.getUsers(JSON.stringify(this.table_search_sort_by))
+                    this.get%s(JSON.stringify(this.table_search_sort_by))
                 }
                 else if (this.defaultTab === '级别套餐') {
-                    this.getUsersLevel(JSON.stringify(this.table_search_sort_by))
+                    this.get%sLevel(JSON.stringify(this.table_search_sort_by))
                 }
                 else if (this.defaultTab === '支付方式') {
                     this.getPayInterface(JSON.stringify(this.table_search_sort_by))
@@ -205,3 +207,5 @@
     }
 
 </style>
+TEMPLATE;
+return $str;
