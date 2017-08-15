@@ -32,7 +32,7 @@ foreach ($filesnames as $name){
     $adapterFiles =APPLICATION_PATH.'/common/Adapter/'.$name.'/*Adapter.php';
 
     foreach (glob($adapterFiles) as $realfile) {
-        var_dump($realfile);
+//        var_dump($realfile);
 
         if (preg_match('/([^\/]*Adapter).php$/', $realfile, $matched)) {
             $class = 'Truesign\\Adapter\\'.$name.'\\' . $matched[1];

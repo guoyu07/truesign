@@ -13,7 +13,7 @@ namespace Truesign\Service\%s;
 
 
 use Royal\Data\DAO;
-use Truesign\Adapter\%s\%sAdapter;
+use Truesign\Adapter\%s\%s;
 
 
 class %sService extends BaseService
@@ -25,7 +25,7 @@ class %sService extends BaseService
 
     public function __construct()
     {
-        \$this->Adapter = new %sAdapter();
+        \$this->Adapter = new %s();
         \$this->Dao = new DAO(\$this->Adapter);
         \$this->tableAccess = \$this->Adapter->getTableAccess();
         \$this->rules = \$this->Adapter->paramRules();
@@ -97,8 +97,7 @@ class %sService extends BaseService
         else{
             \$params_ids = array();
         }
-        \$doAdapter = new businessAdapter();
-        \$doDao = new DAO(\$doAdapter);
+        
         \$updatedata = [];
         foreach (\$params_ids as \$k=>\$v){
             \$updatedata_item['id'] = \$v;
@@ -106,7 +105,7 @@ class %sService extends BaseService
             \$updatedata[] = \$updatedata_item;
         }
 
-        \$db_reponse = \$doDao->groupUpdate(\$params['ids'],\$updatedata,'if_delete');
+        \$db_reponse = \$this->Dao->groupUpdate(\$params['ids'],\$updatedata,'if_delete');
         return \$db_reponse;
 
     }

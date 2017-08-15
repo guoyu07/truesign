@@ -16,10 +16,10 @@ class usersAdapter extends DbLibraryAdapter
 
     public function database()
     {
-        return 'sjtt_app';
+        return 'demo';
     }
     public function dbConfig(){
-        return 'sjtt_app';
+        return 'demo';
     }
     public function table_Prefix()
     {
@@ -45,10 +45,10 @@ class usersAdapter extends DbLibraryAdapter
     {
         return Field::start()
             ->def('document_id')->map('id')->int()->desc('id')
-            ->def('username')->map('username')->varchar(500)->desc('用户名')
+            ->def('username')->map('username')->varchar(500)->desc('用户名')->issearch(true)
             ->def('pass')->map('pass')->varchar(500)->desc('密码')
-            ->def('tel')->map('tel')->varchar(50)->desc('联系电话')
-            ->def('email')->map('email')->varchar(50)->desc('联系邮箱')
+            ->def('tel')->map('tel')->varchar(50)->desc('联系电话')->isPhone()
+            ->def('email')->map('email')->varchar(50)->desc('联系邮箱')->issearch(true)
             ->def('ip')->map('ip')->varchar(50)->desc('ip')
             ->end();
     }

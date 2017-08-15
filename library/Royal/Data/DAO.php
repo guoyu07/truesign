@@ -1183,6 +1183,7 @@ class DAO
         return Remote::getDb($db,$mysql_user);
     }
 
+
     public function getDbOld($mysql_user = null)
     {
         $adapter = $this->adapter;

@@ -26,6 +26,7 @@ const layout = resolve => require(['../components/layout/layout.vue'], resolve)
 // const element = resolve => require(['../components/project/element.vue'], resolve)
 // const spa = resolve => require(['../components/project/spa/spa.vue'], resolve)
 const test = resolve => require(['../components/test/test.vue'], resolve)
+const demo = resolve => require(['../components/project/demo/Users.vue'], resolve)
 // const test_child1 = resolve => require(['../components/test/test_child1.vue'], resolve)
 // const test_child2 = resolve => require(['../components/test/test_child2.vue'], resolve)
 
@@ -290,6 +291,14 @@ const routes = [
             title: 'test'
         },
         component: test
+    },
+    {
+        name: 'demo',
+        path: '/demo',
+        meta: {
+            title: 'demo'
+        },
+        component: demo
     },
     //     children:[
     //         {

@@ -15,7 +15,7 @@ $str =  <<< TEMPLATE
  * @desc 默认控制器
  * @see http://www.php.net/manual/en/class.yaf-controller-abstract.php
  */
-
+use Truesign\Service\%s\%sService;
 class %s extends AppBaseController
 {
     /**
@@ -33,8 +33,9 @@ class %s extends AppBaseController
      */
     public function indexAction(\$name = "Stranger")
     {
-        \$this->getView()->assign("name", %s);
-        \$this->getView()->display('index/index',['content'=>'Hello World!']);
+        echo "%s";
+        echo '<hr>';
+        echo 'hello world';
         return false;
     }
     
@@ -46,7 +47,7 @@ class %s extends AppBaseController
     {
         \$params = \$this->getParams(array(),array('rules'));
         \$doService = new %sService();
-        \$response = \Royal\Prof\TrueSignConst::SUCCESS('初始化信息成功');
+        \$response = \Royal\Prof\TrueSignConst::SUCCESS('初始%s化信息成功');
         \$response['response'] = \$doService->desc(\$params);
         \$this->output2json(\$response);
 	}
@@ -71,7 +72,7 @@ class %s extends AppBaseController
         }
 
         \$doService = new %sService();
-        \$response = \Royal\Prof\TrueSignConst::SUCCESS('获取信息成功');
+        \$response = \Royal\Prof\TrueSignConst::SUCCESS('获取%s信息成功');
         \$response['response'] = \$doService->get(\$params,\$search_params,\$page_params,\$sorter_params);
         \$this->output2json(\$response);
 
@@ -83,11 +84,9 @@ class %s extends AppBaseController
          */
     public function Update%sAction(){
         \$params = \$_POST;
-        \$doAdapter = new %sAdapter();
-        \$doDao = new DAO(\$doAdapter);
         \$condition['id'] = \$params['document_id'];
         \$doService = new %sService();
-        \$response = \Royal\Prof\TrueSignConst::SUCCESS('更新信息成功');
+        \$response = \Royal\Prof\TrueSignConst::SUCCESS('更新%s信息成功');
         \$response['response'] = \$doService->Update(\$params,\$condition);
         \$this->output2json(\$response);
     }
@@ -105,8 +104,6 @@ class %s extends AppBaseController
         else{
             \$params_ids = array();
         }
-        \$doAdapter = new %sAdapter();
-        \$doDao = new DAO(\$doAdapter);
         \$updatedata = [];
         foreach (\$params_ids as \$k=>\$v){
             \$updatedata_item['id'] = \$v;
@@ -114,7 +111,7 @@ class %s extends AppBaseController
             \$updatedata[] = \$updatedata_item;
         }
         \$doService = new %sService();
-        \$response = \Royal\Prof\TrueSignConst::SUCCESS('批量删除成功');
+        \$response = \Royal\Prof\TrueSignConst::SUCCESS('批量删除%s成功');
         \$response['response'] = \$doService->GroupDel(\$params);
         \$this->output2json(\$response);
 
@@ -127,4 +124,4 @@ class %s extends AppBaseController
 
 
 TEMPLATE;
-return \$str;
+return $str;

@@ -37,8 +37,8 @@
                 },
                 timeOutEvent: 0,
                 color:[
-                    {key: 0, value: '#ee735c'},
-                    {key: 1, value: '#ee735c'},
+                    {key: 0, value: '#32daee'},
+                    {key: 1, value: '#32daee'},
                 ],
                 i_point_color:[
                     {key: 0, value: '#32daee'},
@@ -139,6 +139,9 @@
                                 scale_fn_base: 1,
                                 radius: is_pixel,
                                 colors: vm.color,
+                                friction:{
+                                    z:0.6
+                                },
                                 move:true,
                                 move_way:{
                                     type:'loading_line',
@@ -202,6 +205,9 @@
                             scale_fn_base:1,
                             radius:12,
                             colors:vm.i_point_color,
+                            friction:{
+                                z:0.88
+                            },
                             move:true,
                             move_way:{
                                 type:'i_point',
@@ -232,6 +238,9 @@
                             scale_fn_base:1,
                             radius:5,
                             colors:vm.i_body_color,
+                            friction:{
+                                z:0.88
+                            },
                             move:true,
                             move_way:{
                                 type:'i_body',

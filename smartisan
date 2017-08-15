@@ -1,20 +1,21 @@
 #!/usr/bin/env php
 <?php
-require_once dirname(__FILE__).DIRECTORY_SEPARATOR.'vendor'.DIRECTORY_SEPARATOR.'autoload.php';
-
-use Symfony\Component\Console\Application;
-use Command\GenerateModelCommand;
-use Command\GeneratePluginCommand;
-use Command\GenerateControllerCommand;
 define('APPLICATION_PATH', dirname(__FILE__));
-define('MODEL_PATH',APPLICATION_PATH.'/application/models');
-define('TEMPLATE_PATH',APPLICATION_PATH.'/command/templates');
+$classLoader = require(APPLICATION_PATH . '/vendor/autoload.php');
+$classLoader->setPsr4('ReInit\\', APPLICATION_PATH . '/library/ReInit/');
+$classLoader->setPsr4('Royal\\', APPLICATION_PATH . '/library/Royal/');
+$classLoader->setPsr4('Truesign\\', APPLICATION_PATH . '/common');
+$classLoader->setPsr4('Server\\', APPLICATION_PATH . '/server');
 
-$application = new Application();
+define('MODEL_PATH',APPLICATION_PATH.'/application/models');
+define('TEMPLATE_PATH',APPLICATION_PATH.'/library/Royal/InitCommand/templates');
+
+$application = new \Symfony\Component\Console\Application();
 
 // ... register commands
-$application->add(new GenerateModelCommand());
-$application->add(new GeneratePluginCommand());
-$application->add(new GenerateControllerCommand());
+
+$application->add(new \Royal\InitCommand\GenerateControllerCommand());
+$application->add(new \Royal\InitCommand\GeneratePluginCommand());
+$application->add(new \Royal\InitCommand\GenerateModelCommand());
 $application->run();
 

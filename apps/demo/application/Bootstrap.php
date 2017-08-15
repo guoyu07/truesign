@@ -36,6 +36,16 @@ class Bootstrap extends Yaf_Bootstrap_Abstract{
 	
 	public function _initView(Yaf_Dispatcher $dispatcher){
 		//在这里注册自己的view控制器，例如smarty,firekylin
+//        if (REQUEST_METHOD !== 'CLI') {
+//            $modules_names = explode(',', $this->config->application->modules);
+//            $paths = [CURRECT_APPLICATION_PATH . '/application/views'];
+//            array_walk($modules_names, function ($v) use (&$paths) {
+//                if (is_dir(APPLICATION_PATH . '/application/modules/' . $v . '/views')) {
+//                    array_push($paths, APPLICATION_PATH . '/application/modules/' . $v . '/views');
+//                }
+//            });
+//            $dispatcher->setView(new \ReInit\YafBase\TwigView($paths, Yaf_Registry::get('config')->twig->toArray()));
+//        }
         $dispatcher->disableView();
 	}
 }

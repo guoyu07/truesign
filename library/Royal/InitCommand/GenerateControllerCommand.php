@@ -6,7 +6,7 @@
  * Date: 16/12/16
  * Time: 上午11:22
  */
-namespace Roya\Command;
+namespace Royal\InitCommand;
 
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
@@ -76,6 +76,7 @@ class GenerateControllerCommand extends Command
                 break;
             default:
                 if (!is_dir($this->moduleDir)) {
+
                     mkdir($this->moduleDir);
                 } else if (!is_dir($this->moduleDir . '/' . $moduleName)) {
                     mkdir($this->moduleDir . '/' . $moduleName);
@@ -117,7 +118,7 @@ class GenerateControllerCommand extends Command
             $output->writeln('Congratulation!');
             $output->writeln('Create a ' . ucfirst($arg) . ' ' . $this->type . ' successfully');
         } else {
-            throw new Exception('Dirctory not exists!' . dirname($this->outputFileName));
+            throw new \Exception('Dirctory not exists!' . dirname($this->outputFileName));
         }
     }
 }

@@ -8,7 +8,7 @@
         <!--</div>-->
         <input  v-model="is_line_percent" style="border: 2px solid black;color:black !important;display: block;position: absolute;z-index:100;left:20%">
         <input type="button" @click="add" value="增加" style="border: 2px solid black;color:black !important;display: block;position: absolute;z-index:100;left:40%">
-        <loading_canvas style="position: absolute;top:0" :is_line_percent="is_line_percent+''"></loading_canvas>
+        <loading_canvas style="position: absolute;top:0;" :is_line_percent="is_line_percent+''"></loading_canvas>
 
     </div>
 </template>
@@ -28,7 +28,7 @@
                 console.log(e)
             },
             add(){
-                this.is_line_percent += 10
+                this.is_line_percent += 30
             }
         },
         components:{

@@ -17,6 +17,9 @@ abstract class DbLibraryAdapter extends \Royal\Data\DAOAdapter
 
     protected $_fieldConstruct = null;
 
+    public function belongApp(){
+        return 'null';
+    }
     public function db_Prefix()
     {
         return null;

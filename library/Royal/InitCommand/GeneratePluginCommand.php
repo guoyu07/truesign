@@ -6,7 +6,7 @@
  * Date: 16/12/16
  * Time: 上午11:22
  */
-namespace Roya\Command;
+namespace Royal\InitCommand;
 
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
@@ -15,7 +15,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Question\ConfirmationQuestion;
 use Yaf\Exception;
 
-class BBEE extends Command
+class GeneratePluginCommand extends Command
 {
     //Argument 需要自己在configure()中设置
     private $type = 'Plugin';

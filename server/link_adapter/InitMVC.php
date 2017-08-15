@@ -53,12 +53,15 @@ foreach ($adapters as $adapter) {
     $app = $adp->belongApp();
 
     $database = $adp->database();
+    $table = $adp->table();
+
     $desc = $adp->tableDesc();
+
 
     define('TEMPLATE_PATH',APPLICATION_PATH.'/library/Royal/InitCommand/templates');
     define('CURRECT_APPLICATION_PATH',APPLICATION_PATH.DIRECTORY_SEPARATOR.'apps'.DIRECTORY_SEPARATOR.$app );
     $application = new \Royal\InitCommand\GenerateMVCCommand();
-    $application->execute('index',$database,$desc,$adpName);
+    $application->execute('index',$table,$desc,$adpName);
 
 
 }

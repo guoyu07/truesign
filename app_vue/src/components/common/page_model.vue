@@ -207,7 +207,22 @@
 
                                         </div>
 
-                                        <input v-if=" page_data.content[index].type !=='password'"
+                                        <input v-if=" page_data.content[index].type !=='password' && page_data.content[index].label === 'id'"
+                                               class=""
+                                               :disabled="!page_data.content[index].able_modify"
+                                               v-model="page_data.content[index].value"
+                                               :readonly="!page_data.content[index].access  || page_data.content[index].key === 'document_id' || !page_data.content[index].able_modify"
+                                               :style=" {
+                                    borderBottom:page_data.content[index].access?'1px solid rgba(255,255,255,0.41)':'none',
+                                    backgroundColor:(page_data.content[index].access && page_data.content[index].able_modify)?'rgba(150, 150, 150, 0.19)':''
+                                    }"
+                                               :name="page_data.content[index].label"
+                                               type="text"
+                                               :class="{'input': true, 'is-danger': errors.has(page_data.content[index].label) }"
+
+
+                                        />
+                                        <input v-else=" page_data.content[index].type !=='password' && page_data.content[index].label === 'id'"
                                                class=""
                                                :disabled="!page_data.content[index].able_modify"
                                                v-model="page_data.content[index].value"

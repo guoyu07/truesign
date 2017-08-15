@@ -7,6 +7,7 @@ abstract class DAOAdapter {
 
     abstract public function db_Prefix();
     abstract public function dbAccess();
+    abstract public function belongApp();
     abstract public function database();
     abstract public function dbConfig();
     abstract public function dbDesc();

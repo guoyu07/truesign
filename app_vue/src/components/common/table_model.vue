@@ -12,7 +12,7 @@
             <div style="display: inline-block">
                 <el-input v-focus:currect_select="currect_select" :name="item.search_title" :data-key="item.search_key"
                           style="display: inline-block;width: 180px;" v-for="(item,index) in search_sort_by.search"
-                          :key="item"
+                          :key="index"
 
                           :placeholder="'请输入'+item.search_title"
                           icon="search"
@@ -25,7 +25,7 @@
             </div>
 
             <el-button v-if="new_add_info" type="primary" style="position: absolute;right: 15px"
-                       @click="add_business_info">{{ new_add_info }}
+                       @click="add_info">{{ new_add_info }}
             </el-button>
 
         </div>
@@ -63,7 +63,7 @@
 
 
                     <el-table-column v-for="(item,index) in table_field"
-                                     v-if="" :key="item"
+                                     v-if="" :key="index"
                                      :show-overflow-tooltip="true"
                                      :fixed="index === 'document_id' || index === 'username'"
                                      :sortable="is_sortable(index)"
@@ -451,7 +451,8 @@
                 focused: false,
                 ready_refresh: 0,
                 show_phone_model_uri: 'http://wap.baidu.com',
-                apihost: ''
+                apihost: '',
+                add_app_param:''
             }
 
         },
@@ -569,8 +570,11 @@
             }
             else {
                 this.apihost = this.param_apihost
+                let arr = this.param_apihost.split('?')
+                this.apihost = arr[0]
+                this.add_app_param = arr[1]
             }
-            console.log(this.apihost)
+            console.log('apihost=>',this.apihost)
             this.$root.eventHub.$off('refresh_table_model')
             this.$root.eventHub.$on('refresh_table_model', (data) => {
                 console.log('on->refresh_table_model')
@@ -672,9 +676,8 @@
             filterTag(value, row) {
                 return row.tag === value;
             },
-            add_business_info(){
+            add_info(){
                 var vm = this
-
                 this.$http.post(this.apihost + this.info_transfer_action.add, {
 //        axios.post(this.apihost + this.info_transfer_action.add, {
                     rules: 1,
