@@ -1,19 +1,23 @@
 <template>
     <div class="root_home" style="overflow:hidden;background-color: transparent" >
         <!--<div class="word_show">-->
-            <!--<h1>数据</h1>-->
-            <!--<h1>可视</h1>-->
-            <!--<h1>可控</h1>-->
-            <!--<h1>你知道的,一切皆可查询...</h1>-->
+        <!--<h1>数据</h1>-->
+        <!--<h1>可视</h1>-->
+        <!--<h1>可控</h1>-->
+        <!--<h1>你知道的,一切皆可查询...</h1>-->
         <!--</div>-->
         <!--<input  v-model="is_line_percent" style="border: 2px solid black;color:black !important;display: block;position: absolute;z-index:100;left:20%">-->
         <!--<input type="button" @click="add" value="增加" style="border: 2px solid black;color:black !important;display: block;position: absolute;z-index:100;left:40%">-->
-        <main_page></main_page>
+        <threejs_wormhole></threejs_wormhole>
+        <loading_canvas style="position: absolute;top:0;" :is_line_percent="is_line_percent+''"></loading_canvas>
+        <blackhole></blackhole>
+
     </div>
 </template>
 <script>
-    import main_page from './pages/main_page_20170816.vue'
-
+    import loading_canvas from '../effect/loading_canvas.vue'
+    import blackhole from '../effect/blackhole.vue'
+    import threejs_wormhole from '../effect/threejs_wormhole.vue'
     export default {
         data(){
             return{
@@ -32,7 +36,10 @@
             }
         },
         components:{
-            main_page,
+            loading_canvas,
+            blackhole,
+            threejs_wormhole
+
         }
     }
 </script>

@@ -9,7 +9,7 @@
 
                 <pre v-if="help" id="loading_canvas_help_pre" :style="{height:screenHeight-30} ">{{ help }}</pre>
             </div>
-            <canvas id="canvas" :width='screenWidth-10' :height='screenHeight-10' style="margin:0 auto;"></canvas>
+            <canvas id="canvas" :width='screenWidth' :height='screenHeight' style="margin:0 auto; background-color: transparent"></canvas>
         </div>
 
     </div>
@@ -37,14 +37,12 @@
                 },
                 timeOutEvent: 0,
                 color:[
-                    {key: 0, value: '#32daee'},
-                    {key: 1, value: '#32daee'},
+                    {key: 0, value: 'rgba(142,142,142,80)'},
                 ],
                 i_point_color:[
                     {key: 0, value: '#32daee'},
                     {key: 0.3, value: 'black'},
                     {key: 0.8, value: 'black'},
-                    {key: 1, value: '#ffffff'},
                 ],
                 i_body_color:[
                     {key: 0, value: '#32daee'},
@@ -109,7 +107,7 @@
             initBase(){
                 var vm = this
 //                vm.drawParams.xy_line = Math.floor(Math.sqrt(Math.pow(vm.screenHeight,2)+Math.pow(vm.screenWidth,2)))
-                vm.drawParams.xy_line = vm.screenWidth / 2
+
 
                 vm.drawCanvas = new DrawCanvas('canvas', vm.screenWidth - 10, vm.screenHeight - 10)
                 vm.drawParams.tan = vm.screenHeight / vm.screenWidth
@@ -121,10 +119,9 @@
 
                 var vm = this
                 this.drawCanvas.dots = []
-                var is_pixel = 8
-                this.drawParams.dots_count = parseInt((parseInt(this.drawParams.xy_line) / (is_pixel/4)) * (parseInt(this.is_line_percent) / 100))
-                console.log(vm.screenWidth)
-                console.log(vm.screenHeight)
+                var is_pixel = 4
+                this.drawParams.dots_count = parseInt((parseInt(vm.screenWidth) / (is_pixel*2/2)) * (parseInt(this.is_line_percent) / 100))
+                console.log(vm.screenWidth,vm.screenHeight,this.drawParams.dots_count)
                 for (let i = 1; i <=this.drawParams.dots_count; i++) {
                     vm.drawCanvas.initDot(
                             {
@@ -154,109 +151,109 @@
                             })
                 }
 
-
-                var cross_count = 60
-                var angle = 360/cross_count
-                var cross_radius = 80
-                for(let i = 1; i <= cross_count; i++){
-                    vm.drawCanvas.initDot(
-                        {
-                            cid:i,
-                            group:'loading_line',
-                            g:{down:0,right:0,out:0},
-                            init_center:{
-                                x:(parseInt(Math.random()*10)%2===1)?-vm.screenWidth/2:vm.screenWidth/2 ,
-                                y:(parseInt(Math.random()*10)%2===1)?-vm.screenHeight/2:vm.screenHeight/2
-                            },
-//                                x: 100+cross_radius*Math.cos((2*Math.PI/360 * (angle*i)) ),
-//                                y: 1000+-cross_radius*Math.sin(2*Math.PI/360 * (angle*i)) },
-                            z:0,
-                            scale_fn_base:1,
-                            radius:12,
-                            colors:vm.color,
-                            move:true,
-                            move_way:{
-                                type:'clockwise',
-                                params:{
-                                    cross_count:cross_count,
-                                    angle : angle,
-                                    cross_radius:cross_radius,
-                                    base_angle: angle*i
-                                }
-                            }
-                        })
-                }
-                var i_point_count =2
-                var i_point_angle = 360/i_point_count
-                var i_point_radius = 80
-                for(let i = 1; i <= i_point_count; i++){
-                    vm.drawCanvas.initDot(
-                        {
-                            cid:i,
-                            group:'loading_line',
-                            g:{down:0,right:0,out:0},
-                            init_center:{
-                                x:(parseInt(Math.random()*10)%2===1)?-vm.screenWidth/2:vm.screenWidth/2 ,
-                                y:(parseInt(Math.random()*10)%2===1)?-vm.screenHeight/2:vm.screenHeight/2
-                            },
-//                                x: 100+cross_radius*Math.cos((2*Math.PI/360 * (angle*i)) ),
-//                                y: 1000+-cross_radius*Math.sin(2*Math.PI/360 * (angle*i)) },
-                            z:10,
-                            scale_fn_base:1,
-                            radius:12,
-                            colors:vm.i_point_color,
-                            friction:{
-                                z:0.88
-                            },
-                            move:true,
-                            move_way:{
-                                type:'i_point',
-                                params:{
-                                    cross_count:i_point_count,
-                                    angle : i_point_angle,
-                                    cross_radius:i_point_radius,
-                                    base_angle: i_point_angle*i
-                                }
-                            }
-                        })
-                }
-
-
-                var i_body_count = 40
-                var i_body_length = 80
-                for(let i = 1; i <= i_body_count; i++){
-                    vm.drawCanvas.initDot(
-                        {
-                            cid:i,
-                            group:'loading_line',
-                            g:{down:0,right:0,out:0},
-                            init_center:{
-                                x:(parseInt(Math.random()*10)%2===1)?-vm.screenWidth/2:vm.screenWidth/2 ,
-                                y:(parseInt(Math.random()*10)%2===1)?-vm.screenHeight/2:vm.screenHeight/2
-                            },
-                            z:10,
-                            scale_fn_base:1,
-                            radius:5,
-                            colors:vm.i_body_color,
-                            friction:{
-                                z:0.88
-                            },
-                            move:true,
-                            move_way:{
-                                type:'i_body',
-                                params:{
-                                    cross_count:i_body_count,
-                                    angle : i_point_angle,
-                                    cross_radius:60,
-                                    base_angle: 60*i
-                                }
-                            }
-                        })
-                }
-
-                var LastLoadingLineDots =  this.drawCanvas.dots.filter((dot) => {
-                    return dot.move_way.type === 'loading_line'
-                })
+//
+//                var cross_count = 60
+//                var angle = 360/cross_count
+//                var cross_radius = 80
+//                for(let i = 1; i <= cross_count; i++){
+//                    vm.drawCanvas.initDot(
+//                        {
+//                            cid:i,
+//                            group:'loading_line',
+//                            g:{down:0,right:0,out:0},
+//                            init_center:{
+//                                x:(parseInt(Math.random()*10)%2===1)?-vm.screenWidth/2:vm.screenWidth/2 ,
+//                                y:(parseInt(Math.random()*10)%2===1)?-vm.screenHeight/2:vm.screenHeight/2
+//                            },
+////                                x: 100+cross_radius*Math.cos((2*Math.PI/360 * (angle*i)) ),
+////                                y: 1000+-cross_radius*Math.sin(2*Math.PI/360 * (angle*i)) },
+//                            z:0,
+//                            scale_fn_base:1,
+//                            radius:12,
+//                            colors:vm.color,
+//                            move:true,
+//                            move_way:{
+//                                type:'clockwise',
+//                                params:{
+//                                    cross_count:cross_count,
+//                                    angle : angle,
+//                                    cross_radius:cross_radius,
+//                                    base_angle: angle*i
+//                                }
+//                            }
+//                        })
+//                }
+//                var i_point_count =2
+//                var i_point_angle = 360/i_point_count
+//                var i_point_radius = 80
+//                for(let i = 1; i <= i_point_count; i++){
+//                    vm.drawCanvas.initDot(
+//                        {
+//                            cid:i,
+//                            group:'loading_line',
+//                            g:{down:0,right:0,out:0},
+//                            init_center:{
+//                                x:(parseInt(Math.random()*10)%2===1)?-vm.screenWidth/2:vm.screenWidth/2 ,
+//                                y:(parseInt(Math.random()*10)%2===1)?-vm.screenHeight/2:vm.screenHeight/2
+//                            },
+////                                x: 100+cross_radius*Math.cos((2*Math.PI/360 * (angle*i)) ),
+////                                y: 1000+-cross_radius*Math.sin(2*Math.PI/360 * (angle*i)) },
+//                            z:10,
+//                            scale_fn_base:1,
+//                            radius:12,
+//                            colors:vm.i_point_color,
+//                            friction:{
+//                                z:0.88
+//                            },
+//                            move:true,
+//                            move_way:{
+//                                type:'i_point',
+//                                params:{
+//                                    cross_count:i_point_count,
+//                                    angle : i_point_angle,
+//                                    cross_radius:i_point_radius,
+//                                    base_angle: i_point_angle*i
+//                                }
+//                            }
+//                        })
+//                }
+//
+//
+//                var i_body_count = 40
+//                var i_body_length = 80
+//                for(let i = 1; i <= i_body_count; i++){
+//                    vm.drawCanvas.initDot(
+//                        {
+//                            cid:i,
+//                            group:'loading_line',
+//                            g:{down:0,right:0,out:0},
+//                            init_center:{
+//                                x:(parseInt(Math.random()*10)%2===1)?-vm.screenWidth/2:vm.screenWidth/2 ,
+//                                y:(parseInt(Math.random()*10)%2===1)?-vm.screenHeight/2:vm.screenHeight/2
+//                            },
+//                            z:10,
+//                            scale_fn_base:1,
+//                            radius:5,
+//                            colors:vm.i_body_color,
+//                            friction:{
+//                                z:0.88
+//                            },
+//                            move:true,
+//                            move_way:{
+//                                type:'i_body',
+//                                params:{
+//                                    cross_count:i_body_count,
+//                                    angle : i_point_angle,
+//                                    cross_radius:60,
+//                                    base_angle: 60*i
+//                                }
+//                            }
+//                        })
+//                }
+//
+//                var LastLoadingLineDots =  this.drawCanvas.dots.filter((dot) => {
+//                    return dot.move_way.type === 'loading_line'
+//                })
 
 
 

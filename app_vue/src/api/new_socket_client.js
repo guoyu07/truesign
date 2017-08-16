@@ -9,7 +9,7 @@ const SOCKET_CLIENT = {
         to: '',
         message: null,
         payload: null,
-        wsserver: 'ws://127.0.0.1:9501',
+        wsserver: 'ws://120.24.54.208:9501',
         response: '',
         this_vue: null,
         conn_status: false,
@@ -20,7 +20,7 @@ const SOCKET_CLIENT = {
         this.copyright();
         unique_auth_code = isEmptyValue(store.getters.socketinfo.unique_auth_code)?'':store.getters.socketinfo.unique_auth_code
         console.log('unique_auth_code=>',unique_auth_code)
-        let socket_url = 'ws://127.0.0.1:9501/?unique_auth_code=' + unique_auth_code
+        let socket_url = this.data.wsserver+'/?unique_auth_code=' + unique_auth_code
         if (!this.data.conn_status) {
             this.ws(socket_url);
         }

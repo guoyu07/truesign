@@ -25,8 +25,11 @@ abstract class Bootstrap {
         $dbconfig = array_merge($db_arr,$currect_db_arr);
         \Yaf_Registry::set('dbconfig',$dbconfig);
 
-        $currect_access_arr = $currect_config->get('access')->toArray();
-        \Yaf_Registry::set('accessconfig',$currect_access_arr);
+        if(!empty($currect_config->get('access'))){
+            $currect_access_arr = $currect_config->get('access')->toArray();
+            \Yaf_Registry::set('accessconfig',$currect_access_arr);
+        }
+
 
         return $config;
     }

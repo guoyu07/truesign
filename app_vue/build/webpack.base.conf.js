@@ -48,6 +48,7 @@ const webpackConfig = {
         loader: 'eslint-loader',
         enforce: 'pre',
         include: [resolve('src'), resolve('test')],
+        exclude: [resolve('src/api/lib')],
         options: {
           formatter: require('eslint-friendly-formatter')
         }

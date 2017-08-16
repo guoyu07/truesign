@@ -1,6 +1,5 @@
 <template>
     <div id="threejs_dev" style="overflow: hidden;text-align: center;background-color: white">
-        <input type="button" value="change" @click="do_change_render()">
     </div>
 </template>
 
@@ -107,7 +106,7 @@
                 this.threejs_dev.controls.panSpeed = 0.8;
                 this.threejs_dev.controls.noZoom = false;
                 this.threejs_dev.controls.noPan = false;
-                this.threejs_dev.controls.staticMoving = true;
+                this.threejs_dev.controls.staticMoving = false;
                 this.threejs_dev.controls.dynamicDampingFactor = 0.3;
                 this.threejs_dev.controls.keys = [ 65, 83, 68 ];
                 this.threejs_dev.controls.addEventListener( 'change', this.do_render );

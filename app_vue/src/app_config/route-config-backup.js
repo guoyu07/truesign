@@ -26,7 +26,8 @@ const layout = resolve => require(['../components/layout/layout.vue'], resolve)
 // const element = resolve => require(['../components/project/element.vue'], resolve)
 // const spa = resolve => require(['../components/project/spa/spa.vue'], resolve)
 const test = resolve => require(['../components/test/test.vue'], resolve)
-const demo = resolve => require(['../components/project/demo/Users.vue'], resolve)
+
+const demo = resolve => require(['../components/project/demo/users.vue'], resolve)
 // const test_child1 = resolve => require(['../components/test/test_child1.vue'], resolve)
 // const test_child2 = resolve => require(['../components/test/test_child2.vue'], resolve)
 
@@ -159,14 +160,14 @@ const routes = [
     //     },
     //     component: siteshow_backend
     // },
-    // {
-    //     name: 'draw_canvas',
-    //     path: '/',
-    //     meta: {
-    //         title: 'draw_canvas'
-    //     },
-    //     component: draw_canvas
-    // },
+    {
+        name: 'dynamic_effect',
+        path: '/',
+        meta: {
+            title: 'dynamic_effect'
+        },
+        component: dynamic_effect
+    },
     {
         name: 'home',
         path: '/',

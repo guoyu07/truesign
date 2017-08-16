@@ -10,7 +10,7 @@ if(strtoupper($_SERVER['REQUEST_METHOD'])== 'OPTIONS'){
     exit;
 };
 header('Access-Control-Allow-Methods: GET, POST, PUT,DELETE');
-$app = 'wechat_marketing';
+$app = 'o_app';
 foreach ($_REQUEST as $k=>$v){
     if($k=='app'){
         $app = $v;

@@ -40,7 +40,7 @@ class AppController extends ServerAppBaseController {
         }
 
         $doService = new AppService();
-        $response = \Royal\Prof\TrueSignConst::SUCCESS('获取客户信息成功');
+        $response = \Royal\Prof\TrueSignConst::SUCCESS('获取App信息成功');
         $response['response'] = $doService->get($params,$search_params,$page_params,$sorter_params);
 
         $this->output2json($response);
