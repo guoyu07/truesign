@@ -99,7 +99,7 @@ export default {
                 renderer.setSize(ww, wh);
                 var camera = new THREE.PerspectiveCamera(85, ww / wh, 0.001, 1000);
                 camera.position.z = 400;
-                percentage += 0.001;
+                percentage += 0.0002;
                 var p1 = path.getPointAt(percentage%1);
                 var p2 = path.getPointAt((percentage + 0.01)%1);
                 var p3 = path.getPointAt((percentage + 0.07)%1);

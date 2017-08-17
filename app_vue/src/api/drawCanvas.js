@@ -152,7 +152,20 @@ class DrawCanvas {
         dot.edge_touch_test = edge_touch_test
         dot.z = z
         dot.g = g
-        dot.friction = friction
+
+
+        dot.friction = {
+            x:friction.hasOwnProperty('x')?friction.x:0.98,
+            y:friction.hasOwnProperty('y')?friction.y:0.98,
+            z:friction.hasOwnProperty('z')?friction.z:0.98
+        }
+        // dot.friction ={
+        //     x : 1321
+            // y : friction.hasOwnProperty(y)?friction.y:0.98,
+            // z : friction.hasOwnProperty(z)?friction.z:0.98
+        // }
+        // dot.friction.y = friction.hasOwnProperty(y)?friction.y:0.98
+        // dot.friction.z = friction.hasOwnProperty(z)?friction.z:0.98
         dot.v = v
         dot.move = move
         dot.move_way = move_way
@@ -189,245 +202,238 @@ class DrawCanvas {
                         var bottom_y = cls.canvas.height / 2
                         var tan = cls.canvas.height / cls.canvas.width
                         // var init_dot = {center_x: cls.dots[v].center.x, center_y: cls.dots[v].center.y}
-                        if(cls.dots[v].move_way.type === 'loading_line'){
-                            var fix_dot =
-                                new TWEEN.Tween(cls.dots[v].center)
-                                    .to(
-                                        {
-                                            x: -cls.canvas.width / 2 + cls.dots[v].cid *2,
-                                            y: -cls.canvas.height / 2
+                        if (cls.dots[v].move_way.type === 'loading_line') {
 
-                                        }, cls.dots[v].cid*10)
-                                    .easing(TWEEN.Easing.Quadratic.In)
-                                    .onUpdate(function () {
-
-                                        // console.log(cls.dots[v].center)
-                                        // cls.dots[v].center.x = cls.dots[v].center.tween_x
-                                        // cls.dots[v].center.y = cls.dots[v].center.tween_y
-                                    })
                             var init_loading_line = new TWEEN.Tween(cls.dots[v].center)
                                 .to(
                                     {
-                                        x: -cls.canvas.width / 2 + (cls.dots[v].cid *cls.dots[v].radius+(cls.dots[v].cid-1)*cls.dots[v].radius)/2,
-                                        y: cls.canvas.height / 2 - tan * (cls.dots[v].cid *cls.dots[v].radius+(cls.dots[v].cid-1)*cls.dots[v].radius)/2
+                                        x: -cls.canvas.width / 2 + (cls.dots[v].cid * cls.dots[v].radius + (cls.dots[v].cid - 1) * cls.dots[v].radius) / 2,
+                                        y: cls.canvas.height / 2 - tan * (cls.dots[v].cid * cls.dots[v].radius + (cls.dots[v].cid - 1) * cls.dots[v].radius) / 2
 
-                                    }, cls.dots[v].cid*6)
+                                    }, cls.dots[v].cid * 6)
                                 .easing(TWEEN.Easing.Quadratic.In)
                                 .onUpdate(function () {
-                                })
-
-                            var top_right_point = new TWEEN.Tween(cls.dots[v].center)
-                                .to(
-                                    {
-                                        // x: -cls.canvas.width/2,
-                                        x: cls.canvas.width/2-15,
-                                        y: -cls.canvas.height/2+8
-                                    }, 800)
-                                .easing(TWEEN.Easing.Linear.None)
-                                .onUpdate(function () {
-
                                 })
                             var line_to_bottom = new TWEEN.Tween(cls.dots[v].center)
                                 .to(
                                     {
                                         // x: -cls.canvas.width/2,
 
-                                        y: cls.canvas.height/2-8
-                                    }, Math.abs(Math.random())*(params.count-cls.dots[v].cid)*20)
-                                .delay(params.count*6)
+                                        y: cls.canvas.height / 2 - 8
+                                    }, Math.abs(Math.random()) * (params.count - cls.dots[v].cid) * 20)
+                                .delay(params.count * 6)
                                 .easing(TWEEN.Easing.Linear.None)
                                 .onUpdate(function () {
-                                    console.log(params.count)
                                 })
-                            var bottom_center_right_point = new TWEEN.Tween(cls.dots[v].center)
-                                .to(
-                                    {
-                                        // x: -cls.canvas.width/2,
-                                        y: cls.canvas.height/4
-                                    }, 1200)
-                                .easing(TWEEN.Easing.Linear.None)
-                                .onUpdate(function () {
 
-                                })
-                            var bottom_right_point = new TWEEN.Tween(cls.dots[v].center)
-                                .to(
-                                    {
-                                        // x: -cls.canvas.width/2,
-                                        y: cls.canvas.height/2-15
-                                    }, 600)
-                                .delay(1000)
-                                .easing(TWEEN.Easing.Linear.None)
-                                .onUpdate(function () {
-                                    var change_start = new TWEEN.Tween(cls.dots[v])
-                                        .to(
-                                            {
-                                                // x: -cls.canvas.width/2,
-                                                radius: 4
-                                            }, 800)
-                                        .easing(TWEEN.Easing.Linear.None)
-                                        .onUpdate(function () {
-                                            cls.dots[v].colors = [
-                                                {key: 0, value: 'transparent'},
-
-                                            ]
-                                            cls.ctrl_mode.mode_z = 0
-                                        })
-
-                                        .start()
-
-                                })
-                            var bottom_left_point = new TWEEN.Tween(cls.dots[v].center)
-                                .to(
-                                    {
-                                        // x: -cls.canvas.width/2,
-                                        x: -cls.canvas.width/2+15
-                                    }, 600)
-                                .easing(TWEEN.Easing.Linear.None)
-                                .onUpdate(function () {
-
-                                })
 
                             var bottom_center_left_point = new TWEEN.Tween(cls.dots[v].center)
                                 .to(
                                     {
-                                        // x: -cls.canvas.width/2,
-                                        y: cls.canvas.height/4
+                                        x: -cls.canvas.width / 2 + 2,
+                                        y: cls.canvas.height / 4
                                     }, 600)
                                 // .delay(parseInt(cls.dots[v].cid + '00') / 20)
                                 .easing(TWEEN.Easing.Linear.None)
                                 .onUpdate(function () {
-                                    var change_start = new TWEEN.Tween(cls.dots[v])
-                                        .to(
-                                            {
-                                                // x: -cls.canvas.width/2,
-                                                radius: 4,
+                                })
+                            //
+                            var bottom_left_point = new TWEEN.Tween(cls.dots[v].center)
+                                .to(
+                                    {
+                                        // x: -cls.canvas.width/2,
+                                        x: -cls.canvas.width / 2 + 8
+                                    }, 600)
+                                .easing(TWEEN.Easing.Linear.None)
+                                .onUpdate(function () {
 
-                                            }, 800)
-                                        .easing(TWEEN.Easing.Linear.None)
-                                        .onUpdate(function () {
+                                })
+                            var disvisible = new TWEEN.Tween(cls.dots[v].center)
+                                .to(
+                                    {
+                                        x: -cls.canvas.width / 2 + 2,
+                                        y: cls.canvas.height / 4
+                                    }, 600)
+                                // .delay(parseInt(cls.dots[v].cid + '00') / 20)
+                                .easing(TWEEN.Easing.Linear.None)
+                                .onStart(function () {
 
-                                        })
-
-                                        .start()
+                                    cls.dots[v].visible = false
+                                })
+                                .onUpdate(function () {
+                                    cls.dots[v].visible = false
                                 })
 
+                            if (params.percent >= 100) {
+                                // fix_dot.chain(init_loading_line)
+                                init_loading_line.chain(line_to_bottom)
+                                line_to_bottom.chain(bottom_left_point)
+                                bottom_left_point.chain(bottom_center_left_point)
+                                bottom_center_left_point.chain(disvisible)
+                                init_loading_line.start()
+                            }
+                            else {
+                                init_loading_line.start()
+                            }
+                        }
+                        if (cls.dots[v].move_way.type === 'beat_line') {
+
+                            var time_x = 460,
+                                time_y = 10.5,
+                                time_z = 10
+                            var start_dot =
+                                new TWEEN.Tween(cls.dots[v].center)
+                                    .to(
+                                        {
+                                            x: -cls.canvas.width / 2 + 2,
+                                            y: cls.canvas.height / 4
+
+                                        }, time_z
+                                    )
+                                    .easing(TWEEN.Easing.Linear.None)
+                                    .onStart(function () {
+                                        cls.dots[v].visible = false
+                                    })
+                                    .onUpdate(function () {
+                                        cls.dots[v].visible = false
+                                    })
+                            var fix_dot =
+                                new TWEEN.Tween(cls.dots[v].center)
+                                    .to(
+                                        {
+                                            x: -cls.canvas.width / 2 + ((cls.canvas.width / 2 - 130) / params.count) * cls.dots[v].cid,
+                                            y: cls.canvas.height / 4
+
+                                        }, (cls.dots[v].cid) * time_y)
+                                    .easing(TWEEN.Easing.Linear.None)
+                                    .onStart(function () {
+                                        // console.log(params.count,cls.canvas.width / 2-130,parseInt((cls.canvas.width / 2-130)/params.count))
+                                        cls.dots[v].visible = true
+                                    })
+                                    .onUpdate(function () {
+                                        cls.dots[v].visible = true
+                                    })
                             var bottom_mid_height_left_left = new TWEEN.Tween((cls.dots[v].center))
                                 .to(
                                     {
-                                        x:-130,
-                                    },parseInt(cls.dots[v].cid*6)
+                                        x: -130,
+                                        y: cls.canvas.height / 4
+                                    }, time_x
                                 )
-                                .delay(1000)
                                 .easing(TWEEN.Easing.Linear.None)
-                                .onStart(function() {
-                                    cls.dots[v].colors = [
-                                        {key: 0, value: 'rgba(142,142,142,80)'},
-
-                                    ]
-                                    cls.ctrl_mode.mode_z = 1
+                                .onStart(function () {
+                                    cls.dots[v].visible = true
                                 })
                                 .onUpdate(function () {
-
+                                    cls.dots[v].visible = true
                                 })
                             var bottom_mid_height_left_top = new TWEEN.Tween((cls.dots[v].center))
                                 .to(
                                     {
-                                        x:-100 ,
-                                        y:cls.canvas.height/6,
-                                    },500
+                                        x: -100,
+                                        y: cls.canvas.height / 6,
+                                    }, time_x
                                 )
                                 .easing(TWEEN.Easing.Linear.None)
                                 .onUpdate(function () {
+                                    cls.dots[v].visible = true
                                 })
                             var bottom_mid_height_left_bottom = new TWEEN.Tween((cls.dots[v].center))
                                 .to(
                                     {
-                                        x:-60,
-                                        y:cls.canvas.height/4+(cls.canvas.height/4-cls.canvas.height/6)
-                                    },500
+                                        x: -60,
+                                        y: cls.canvas.height / 4 + (cls.canvas.height / 4 - cls.canvas.height / 6)
+                                    }, time_x * 2
                                 )
                                 .easing(TWEEN.Easing.Linear.None)
                                 .onUpdate(function () {
+                                    cls.dots[v].visible = true
 
                                 })
                             var bottom_mid_height_left_rigth = new TWEEN.Tween((cls.dots[v].center))
                                 .to(
                                     {
-                                        x:-30,
-                                        y:cls.canvas.height/4
-                                    },500
+                                        x: -30,
+                                        y: cls.canvas.height / 4
+                                    }, time_x
                                 )
                                 .easing(TWEEN.Easing.Linear.None)
                                 .onUpdate(function () {
+                                    cls.dots[v].visible = true
 
                                 })
 
                             var bottom_mid_height_right_left = new TWEEN.Tween((cls.dots[v].center))
                                 .to(
                                     {
-                                        x:30,
-                                    },300
+                                        x: 30,
+                                        y: cls.canvas.height / 4
+                                    }, time_x
                                 )
                                 .easing(TWEEN.Easing.Linear.None)
                                 .onUpdate(function () {
-
+                                    cls.dots[v].visible = true
                                 })
                             var bottom_mid_height_right_top = new TWEEN.Tween((cls.dots[v].center))
                                 .to(
                                     {
-                                        x:60,
-                                        y:cls.canvas.height/8,
-                                    },300
+                                        x: 60,
+                                        y: cls.canvas.height / 8,
+                                    }, time_x
                                 )
                                 .easing(TWEEN.Easing.Linear.None)
                                 .onUpdate(function () {
-
+                                    cls.dots[v].visible = true
                                 })
                             var bottom_mid_height_right_bottom = new TWEEN.Tween((cls.dots[v].center))
                                 .to(
                                     {
-                                        x:100,
-                                        y:cls.canvas.height/4+(cls.canvas.height/4-cls.canvas.height/8)
-                                    },parseInt((params.count-cls.dots[v].cid)*6)
+                                        x: 100,
+                                        y: cls.canvas.height / 4 + (cls.canvas.height / 4 - cls.canvas.height / 8)
+                                    }, time_x * 2
                                 )
                                 .easing(TWEEN.Easing.Linear.None)
                                 .onUpdate(function () {
-
+                                    cls.dots[v].visible = true
                                 })
                             var bottom_mid_height_right_right = new TWEEN.Tween((cls.dots[v].center))
                                 .to(
                                     {
-                                        x:130,
-                                        y:cls.canvas.height/4
-                                    },300
+                                        x: 130,
+                                        y: cls.canvas.height / 4
+                                    }, time_x
                                 )
                                 .easing(TWEEN.Easing.Linear.None)
                                 .onUpdate(function () {
-
+                                    cls.dots[v].visible = true
                                 })
                             var bottom_center_right_point_end = new TWEEN.Tween(cls.dots[v].center)
                                 .to(
                                     {
                                         // x: -cls.canvas.width/2,
-                                        x: cls.canvas.width/2-15
-                                    }, 800)
+                                        x: cls.canvas.width / 2 - 15
+                                    }, (params.count - cls.dots[v].cid) * time_y)
                                 .easing(TWEEN.Easing.Linear.None)
+
                                 .onUpdate(function () {
-
+                                    cls.dots[v].visible = true
                                 })
-                            if(params.percent >= 100){
-                                // fix_dot.chain(init_loading_line)
-                                init_loading_line.chain(line_to_bottom)
-                                // init_loading_line.chain(top_right_point)
-                                // top_right_point.chain(bottom_center_right_point)
-
-                                // bottom_center_right_point.chain(bottom_right_point)
-                                bottom_right_point.chain(bottom_left_point)
-                                line_to_bottom.chain(bottom_left_point)
-                                bottom_left_point.chain(bottom_center_left_point)
-
-                                bottom_center_left_point.chain(bottom_mid_height_left_left)
-
+                            var v_disvisible = new TWEEN.Tween(cls.dots[v].center)
+                                .to(
+                                    {
+                                        // x: -cls.canvas.width/2,
+                                        x: cls.canvas.width / 2 - 15
+                                    }, time_z)
+                                .easing(TWEEN.Easing.Linear.None)
+                                .onStart(function () {
+                                    cls.dots[v].visible = false
+                                })
+                                .onUpdate(function () {
+                                    cls.dots[v].visible = false
+                                })
+                            if (params.percent >= 100) {
+                                start_dot.chain(fix_dot)
+                                fix_dot.chain(bottom_mid_height_left_left)
                                 bottom_mid_height_left_left.chain(bottom_mid_height_left_top)
                                 bottom_mid_height_left_top.chain(bottom_mid_height_left_bottom)
                                 bottom_mid_height_left_bottom.chain(bottom_mid_height_left_rigth)
@@ -436,15 +442,30 @@ class DrawCanvas {
                                 bottom_mid_height_right_top.chain(bottom_mid_height_right_bottom)
                                 bottom_mid_height_right_bottom.chain(bottom_mid_height_right_right)
                                 bottom_mid_height_right_right.chain(bottom_center_right_point_end)
-                                bottom_center_right_point_end.chain(bottom_right_point)
-                                init_loading_line.start()
+                                bottom_center_right_point_end.chain(v_disvisible)
+                                v_disvisible.chain(start_dot)
+                                start_dot.start()
+
+
+                                // init_loading_line.chain(top_right_point)
+                                // top_right_point.chain(bottom_center_right_point)
+
+                                // bottom_center_right_point.chain(bottom_right_point)
+                                // bottom_right_point.chain(bottom_left_point)
+                                // line_to_bottom.chain(bottom_left_point)
+                                // bottom_left_point.chain(bottom_center_left_point)
+                                //
+                                // bottom_center_left_point.chain(bottom_mid_height_left_left)
+                                //
+
+                                // bottom_center_right_point_end.chain(bottom_right_point)
 
                             }
-                            else{
+                            else {
                                 init_loading_line.start()
                             }
                         }
-                        if(cls.dots[v].move_way.type === 'clockwise'){
+                        if (cls.dots[v].move_way.type === 'clockwise') {
                             var init_cross = new TWEEN.Tween((cls.dots[v].center))
                                 .to(
                                     {
@@ -462,8 +483,8 @@ class DrawCanvas {
                             var move_cross = new TWEEN.Tween((cls.dots[v].center))
                                 .to(
                                     {
-                                        x: params.cross_radius*Math.cos((2*Math.PI/360 * (params.angle*cls.dots[v].cid)) ),
-                                        y: params.cross_radius*Math.sin((2*Math.PI/360 * (params.angle*cls.dots[v].cid)) ),
+                                        x: params.cross_radius * Math.cos((2 * Math.PI / 360 * (params.angle * cls.dots[v].cid))),
+                                        y: params.cross_radius * Math.sin((2 * Math.PI / 360 * (params.angle * cls.dots[v].cid))),
 
                                     }, 200)
                                 .delay(200)
@@ -480,7 +501,7 @@ class DrawCanvas {
                             //     cls.dots[v].y =  params.cross_radius*Math.sin((2*Math.PI/360 * (params.angle*cls.dots[v].cid)) )
                             // }
                         }
-                        if(cls.dots[v].move_way.type === 'i_point'){
+                        if (cls.dots[v].move_way.type === 'i_point') {
 
                             var init_i_point = new TWEEN.Tween((cls.dots[v].center))
                                 .to(
@@ -495,8 +516,8 @@ class DrawCanvas {
                                 .onUpdate(function () {
 
                                 })
-                            var to_x = params.cross_radius*Math.cos((2*Math.PI/360 * (params.angle*cls.dots[v].cid)) )
-                            var to_y = params.cross_radius*Math.sin((2*Math.PI/360 * (params.angle*cls.dots[v].cid)) )
+                            var to_x = params.cross_radius * Math.cos((2 * Math.PI / 360 * (params.angle * cls.dots[v].cid)))
+                            var to_y = params.cross_radius * Math.sin((2 * Math.PI / 360 * (params.angle * cls.dots[v].cid)))
                             var move_i_point = new TWEEN.Tween((cls.dots[v].center))
                                 .to(
                                     {
@@ -512,7 +533,7 @@ class DrawCanvas {
                             init_i_point.chain(move_i_point)
                             init_i_point.start()
                         }
-                        if(cls.dots[v].move_way.type === 'i_body'){
+                        if (cls.dots[v].move_way.type === 'i_body') {
 
                             var init_i_body = new TWEEN.Tween((cls.dots[v].center))
                                 .to(
@@ -527,9 +548,9 @@ class DrawCanvas {
                                 .onUpdate(function () {
 
                                 })
-                            let to_x = (params.cross_radius-cls.dots[v].cid)*Math.cos((2*Math.PI/360 * (params.angle*cls.dots[v].cid)) )
-                            let to_y = (params.cross_radius-cls.dots[v].cid)*Math.sin((2*Math.PI/360 * (params.angle*cls.dots[v].cid)) )
-                             to_x = (to_x >0)?to_x-cls.dots[v].cid:to_x+cls.dots[v].cid
+                            let to_x = (params.cross_radius - cls.dots[v].cid) * Math.cos((2 * Math.PI / 360 * (params.angle * cls.dots[v].cid)))
+                            let to_y = (params.cross_radius - cls.dots[v].cid) * Math.sin((2 * Math.PI / 360 * (params.angle * cls.dots[v].cid)))
+                            to_x = (to_x > 0) ? to_x - cls.dots[v].cid : to_x + cls.dots[v].cid
                             var move_i_body = new TWEEN.Tween((cls.dots[v].center))
                                 .to(
                                     {
@@ -544,18 +565,13 @@ class DrawCanvas {
                                 })
 
 
-
-
                             init_i_body.chain(move_i_body)
                             move_i_body.chain(init_i_body)
                             init_i_body.start()
                         }
 
 
-
-
                         // recovery_loading_line.chain(init_loading_line)
-
 
 
                         // if(params && params.percent === 100 && cls.dots[v].cid === params.count){
@@ -605,9 +621,40 @@ class DrawCanvas {
 
 
                     }
+                    else if(cls.dots[v].group === 'demo'){
+                        cls.dots[v].init_center.x += cls.dots[v].ctrl_v.c_x
+                        cls.dots[v].init_center.y += cls.dots[v].ctrl_v.c_y
 
+                        cls.dots[v].z += cls.dots[v].ctrl_v.c_z
+
+                        cls.dots[v].scale_fn = 1 / (1 + -cls.dots[v].z / cls.dots[v].fl)
+                        if (cls.dots[v].init_center.y < -(cls.height / 1.5)) {
+                            cls.dots[v].init_center.y = cls.height / 1.5;
+                        }
+                        if (cls.dots[v].z > cls.dots[v].fl) {
+                            cls.dots[v].z = -1000
+                        }
+                        if (cls.dots[v].scale_fn > 1000) {
+                            cls.dots[v].scale_fn = 1000
+                        }
+                        if (cls.dots[v].z < -1000) {
+                            cls.dots[v].z = cls.dots[v].fl
+
+                        }
+                        cls.dots[v].scale = {
+                            scale_X: cls.dots[v].scale_fn,
+                            scale_Y: cls.dots[v].scale_fn
+                        }
+                        cls.dots[v].center.x = cls.dots[v].init_center.x * cls.dots[v].scale_fn;
+                        cls.dots[v].center.y = cls.dots[v].init_center.y * cls.dots[v].scale_fn;
+
+                        cls.dots[v].ctrl_v.c_x *= cls.dots[v].friction.x
+                        cls.dots[v].ctrl_v.c_y *= cls.dots[v].friction.y
+                        cls.dots[v].ctrl_v.c_z *= cls.dots[v].friction.z
+
+
+                    }
                     else {
-
                         // cls.dots[v].ctrl_v.c_x = cls.ctrl_mode.mode_x
                         // cls.dots[v].ctrl_v.c_y = cls.ctrl_mode.mode_y
                         // cls.dots[v].ctrl_v.c_z = cls.ctrl_mode.mode_z
@@ -651,15 +698,23 @@ class DrawCanvas {
 
                 }
                 if (cls.dots[v].move_way.type === 'test') {
-                    var coords = {center_x: cls.dots[v].center.x, center_y: cls.dots[v].center.y}; // Start at (0, 0)
-                    var tween = new TWEEN.Tween(coords)
-                        .to({center_x: cls.canvas.width / 2, center_y: cls.canvas.height / 2}, 3000)
+
+                    var left = new TWEEN.Tween(cls.dots[v].center)
+                        .to({x: -cls.canvas.width / 2, y: 0}, 3000)
                         .easing(TWEEN.Easing.Linear.None)
                         .onUpdate(function () {
-                            cls.dots[v].center.x = coords.center_x
-                            cls.dots[v].center.y = coords.center_y
+
                         })
-                        .start()
+                    var right = new TWEEN.Tween(cls.dots[v].center)
+                        .to({x: cls.canvas.width / 2 - 10, y: 0}, 3000)
+                        .easing(TWEEN.Easing.Linear.None)
+                        .onUpdate(function () {
+
+                        })
+                    left.chain(right)
+                    right.chain(left)
+                    left.start()
+
 
                 }
 
@@ -668,15 +723,17 @@ class DrawCanvas {
         );
 
     }
-    reckon_millisecond(cid,count,center_data,boundary) {
+
+    reckon_millisecond(cid, count, center_data, boundary) {
         if (center_data.x < 0 && center_data.x > boundary[3]) {
-            return parseInt(cid+'00')
+            return parseInt(cid + '00')
         }
         else if (center_data.x > 0 && center_data.x < boundary[1]) {
-            return parseInt(count + 1 - cid +'00')
+            return parseInt(count + 1 - cid + '00')
         }
 
     }
+
     move_line(type = 'left_right_center') {
     }
 
@@ -735,16 +792,13 @@ class DrawCanvas {
     initStyle(center, radius, add_cmd = false,
               colors) {
         let style = {}
+
         let per_style = this.ctx.createRadialGradient(center.x, center.y, radius * 0.1, center.x, center.y, radius)
-        // // per_style.addColorStop(0,this.randomColor())
-        // // per_style.addColorStop(1,"white")
+
         for (var item_style of colors) {
             per_style.addColorStop(item_style.key, item_style.value)
         }
-        // per_style.addColorStop(0,"rgba(255,255,255,1)");
-        // per_style.addColorStop(0.2,"rgba(0,255,255,1)");
-        // per_style.addColorStop(0.3,"rgba(0,0,100,1)");
-        // per_style.addColorStop(1,"rgba(0,0,0,0.1)");
+
         style.RadialGradient = per_style
         return style
 
@@ -776,7 +830,7 @@ class DrawCanvas {
             //         cls.move_3D()
             //     }
             // }
-            if (cls.dots[v].move && (cls.ctrl_mode.mode_z || Math.abs(cls.dots[v].ctrl_v.c_z)>=1)) {
+            if (cls.dots[v].move && (cls.ctrl_mode.mode_z || Math.abs(cls.dots[v].ctrl_v.c_z) >= 1)) {
                 cls.dots[v].ctrl_v.c_x += cls.ctrl_mode.mode_x
                 cls.dots[v].ctrl_v.c_x -= cls.dots[v].friction.x * (typeof x === 'undefined' ? 0 : x)
                 cls.dots[v].ctrl_v.c_y += cls.ctrl_mode.mode_y
@@ -797,7 +851,7 @@ class DrawCanvas {
                     var tan = cls.canvas.height / cls.canvas.width
 
 
-                    if(cls.dots[v].move_way.type === 'clockwise'){
+                    if (cls.dots[v].move_way.type === 'clockwise') {
                         // params.angle += cls.dots[v].ctrl_v.c_z
                         // cls.dots[v].center.x =  params.cross_radius*Math.cos((2*Math.PI/360 * (params.angle*cls.dots[v].cid)) )
                         // cls.dots[v].center.y =  params.cross_radius*Math.sin((2*Math.PI/360 * (params.angle*cls.dots[v].cid)) )
@@ -809,16 +863,16 @@ class DrawCanvas {
                         //     cls.dots[v].move_way.params.cross_radius*Math.sin((2*Math.PI/360 * cls.dots[v].move_way.params.base_angle) )
                         // cls.dots[v].ctrl_v.c_z *= 0.98
                     }
-                    if(cls.dots[v].move_way.type === 'i_point'){
+                    if (cls.dots[v].move_way.type === 'i_point') {
                         // console.log( cls.dots[v].ctrl_v.c_z)
                         cls.dots[v].move_way.params.base_angle += cls.dots[v].ctrl_v.c_z
                         cls.dots[v].center.x =
-                            cls.dots[v].move_way.params.cross_radius*Math.cos((2*Math.PI/360 * cls.dots[v].move_way.params.base_angle) )
+                            cls.dots[v].move_way.params.cross_radius * Math.cos((2 * Math.PI / 360 * cls.dots[v].move_way.params.base_angle))
                         cls.dots[v].center.y =
-                            cls.dots[v].move_way.params.cross_radius*Math.sin((2*Math.PI/360 * cls.dots[v].move_way.params.base_angle) )
+                            cls.dots[v].move_way.params.cross_radius * Math.sin((2 * Math.PI / 360 * cls.dots[v].move_way.params.base_angle))
                         cls.dots[v].ctrl_v.c_z *= cls.dots[v].friction.z
                     }
-                    if(cls.dots[v].move_way.type === 'i_body'){
+                    if (cls.dots[v].move_way.type === 'i_body') {
 
                         // params.angle += cls.dots[v].ctrl_v.c_z
                         // cls.dots[v].center.x =  (params.cross_radius-cls.dots[v].cid)*Math.cos((2*Math.PI/360 * (params.angle*cls.dots[v].cid)) )

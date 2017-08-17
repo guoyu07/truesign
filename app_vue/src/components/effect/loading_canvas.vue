@@ -1,5 +1,5 @@
 <template>
-    <div style="width: 100%;height: 100%;overflow: hidden">
+    <div id="loading_canvas" style="width: 100%;height: 100%;overflow: hidden">
 
 
         <div class="canvas_container" style="" v-tap="{method:test}"  v-longtouch="timeOutEvent">
@@ -9,7 +9,7 @@
 
                 <pre v-if="help" id="loading_canvas_help_pre" :style="{height:screenHeight-30} ">{{ help }}</pre>
             </div>
-            <canvas id="canvas" :width='screenWidth' :height='screenHeight' style="margin:0 auto; background-color: transparent"></canvas>
+            <canvas id="loading-canvas" :width='screenWidth' :height='screenHeight' style="margin:0 auto; background-color: transparent"></canvas>
         </div>
 
     </div>
@@ -109,7 +109,7 @@
 //                vm.drawParams.xy_line = Math.floor(Math.sqrt(Math.pow(vm.screenHeight,2)+Math.pow(vm.screenWidth,2)))
 
 
-                vm.drawCanvas = new DrawCanvas('canvas', vm.screenWidth - 10, vm.screenHeight - 10)
+                vm.drawCanvas = new DrawCanvas('loading-canvas', vm.screenWidth - 10, vm.screenHeight - 10)
                 vm.drawParams.tan = vm.screenHeight / vm.screenWidth
 
             },
@@ -150,6 +150,34 @@
                                 visible:true
                             })
                 }
+//                for (let i = 1; i <=this.drawParams.dots_count*2; i++) {
+//                    vm.drawCanvas.initDot(
+//                        {
+//                            cid:i,
+//                            group:'loading_line',
+//                            g: {down: 0, right: 0, out: 0},
+//                            init_center: {
+//                                x:-vm.screenWidth/2 ,
+//                                y:vm.screenHeight/4
+//                            },
+//                            z: 0,
+//                            scale_fn_base: 1,
+//                            radius: is_pixel/1.2,
+//                            colors: vm.color,
+//                            friction:{
+//                                z:0.6
+//                            },
+//                            move:true,
+//                            move_way:{
+//                                type:'beat_line',
+//                                params:{
+//                                    count:vm.drawParams.dots_count*2,
+//                                    percent:parseInt(vm.is_line_percent)
+//                                }
+//                            },
+//                            visible:false
+//                        })
+//                }
 
 //
 //                var cross_count = 60

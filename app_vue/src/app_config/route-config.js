@@ -12,6 +12,10 @@ const effect = resolve => require(['../components/effect/effect.vue'], resolve)
 const loading_canvas = resolve => require(['../components/effect/loading_canvas.vue'], resolve)
 const threejs_dev = resolve => require(['../components/effect/threejs_dev.vue'], resolve)
 const threejs_dev_trackball = resolve => require(['../components/effect/threejs_dev_trackball.vue'], resolve)
+const word_canvas = resolve => require(['../components/effect/word_canvas.vue'], resolve)
+const draw_canvas = resolve => require(['../components/effect/draw_canvas.vue'], resolve)
+const canvas = resolve => require(['../components/effect/canvas.vue'], resolve)
+
 const routes = [
 
     {
@@ -73,6 +77,30 @@ const routes = [
                     title: 'threejs_dev_trackball'
                 },
                 component: threejs_dev_trackball
+            },
+            {
+                name: 'draw_canvas',
+                path: 'draw_canvas',
+                meta: {
+                    title: 'draw_canvas'
+                },
+                component: draw_canvas
+            },
+            {
+                name: 'canvas',
+                path: 'canvas',
+                meta: {
+                    title: 'canvas'
+                },
+                component: canvas
+            },
+            {
+                name: 'word_canvas',
+                path: 'word_canvas',
+                meta: {
+                    title: 'word_canvas'
+                },
+                component: word_canvas
             },
         ]
     },
