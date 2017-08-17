@@ -77,8 +77,8 @@ class DrawCanvas {
                     scale_Y: scale_fn
                 },
                 vp = {    //消失点
-                    vpX: window.innerWidth / 2,
-                    vpY: window.innerHeight / 2,
+                    vpX: this.canvas.width  / 2,
+                    vpY: this.canvas.height  / 2,
                 },
                 visible = true,
                 colors = [
@@ -88,7 +88,9 @@ class DrawCanvas {
                     {key: 1, value: 'rgba(0,0,0,0.1)'}
                 ],
                 move = true,
-                move_way = false
+                move_way = false,
+                cache = true,
+                cacheCanvas = {}
             }) {
         // console.log(g)
         let dot = {}
@@ -97,29 +99,11 @@ class DrawCanvas {
         dot.start_time = start_time
         dot.end_time = end_time
         if (!radius) {
-            // radius = parseInt(this.width/80)+z
-            // // console.log(radius)
-            // if(radius<0 ){
-            //     radius = 1
-            // }
+
             radius = 40
 
         }
-        // if(!center){
-        //     // init_center = center = {
-        //     //     x:parseInt(Math.abs(Math.random()*this.width)-radius),
-        //     //     y:parseInt(Math.abs(Math.random()*this.height)-radius),
-        //     // }
-        //     if(init_center){
-        //         center = init_center
-        //     }
-        //     else{
-        //         center = init_center = {
-        //                 x:parseInt(Math.abs(Math.random()*this.width)-radius),
-        //                 y:parseInt(Math.abs(Math.random()*this.height)-radius),
-        //             }
-        //     }
-        // }
+
         dot.colors = colors
         dot.visible = visible
         dot.fl = fl
@@ -155,21 +139,76 @@ class DrawCanvas {
 
 
         dot.friction = {
-            x:friction.hasOwnProperty('x')?friction.x:0.98,
-            y:friction.hasOwnProperty('y')?friction.y:0.98,
-            z:friction.hasOwnProperty('z')?friction.z:0.98
+            x: friction.hasOwnProperty('x') ? friction.x : 0.98,
+            y: friction.hasOwnProperty('y') ? friction.y : 0.98,
+            z: friction.hasOwnProperty('z') ? friction.z : 0.98
         }
         // dot.friction ={
         //     x : 1321
-            // y : friction.hasOwnProperty(y)?friction.y:0.98,
-            // z : friction.hasOwnProperty(z)?friction.z:0.98
+        // y : friction.hasOwnProperty(y)?friction.y:0.98,
+        // z : friction.hasOwnProperty(z)?friction.z:0.98
         // }
         // dot.friction.y = friction.hasOwnProperty(y)?friction.y:0.98
         // dot.friction.z = friction.hasOwnProperty(z)?friction.z:0.98
         dot.v = v
         dot.move = move
         dot.move_way = move_way
+        let cacheDom = document.createElement("canvas")
+        cacheDom.width = 2 * radius
+        cacheDom.height = 2 * radius
+        dot.cache = cache
+        if (cache) {
+            dot.cacheCanvas = {
+                cacheDom: cacheDom,
+                cacheCtx: cacheDom.getContext("2d")
+            }
+            dot.cacheCanvas = this.drawCache(dot)
+        }
+        console.log('dot', dot)
+        console.log('cacheDom', cacheDom)
         this.dots.push(dot)
+        console.log('dot.cacheCanvas.cacheDom',dot.cacheCanvas.cacheDom)
+        console.log('dot.cacheCanvas.cacheCtx',dot.cacheCanvas.cacheCtx)
+
+
+    }
+
+    drawCache(dot) {
+        function getZ(num){
+            var rounded;
+            rounded = (0.5 + num) | 0;
+            // A double bitwise not.
+            rounded = ~~(0.5 + num);
+            // Finally, a left bitwise shift.
+            rounded = (0.5 + num) << 0;
+
+            return rounded;
+        }
+        function getRandom(a , b){
+            return Math.random()*(b-a)+a;
+        }
+
+        var canvasCache = dot.cacheCanvas
+        var color = []
+        for(let j=0; j<20; j++){
+            color.push("rgba("+getZ(getRandom(0,255))+","+getZ(getRandom(0,255))+","+getZ(getRandom(0,255))+",1)");
+        }
+        canvasCache.cacheCtx.save();
+        var j=0;
+        canvasCache.cacheCtx.lineWidth = 3;
+        for(let i=1; i<20; i+=3){
+            canvasCache.cacheCtx.beginPath();
+            canvasCache.cacheCtx.strokeStyle = color[j];
+            canvasCache.cacheCtx.arc(20 , 20 , i , 0 , 2*Math.PI);
+            canvasCache.cacheCtx.stroke();
+            j++;
+        }
+        canvasCache.cacheCtx.restore();
+        return canvasCache
+
+
+
+
     }
 
     test({a = 1}) {
@@ -621,7 +660,7 @@ class DrawCanvas {
 
 
                     }
-                    else if(cls.dots[v].group === 'demo'){
+                    else if (cls.dots[v].group === 'word') {
                         cls.dots[v].init_center.x += cls.dots[v].ctrl_v.c_x
                         cls.dots[v].init_center.y += cls.dots[v].ctrl_v.c_y
 
@@ -812,6 +851,7 @@ class DrawCanvas {
         // style = grd
     }
 
+
     drawDots() {
         TWEEN.update()
 
@@ -887,44 +927,51 @@ class DrawCanvas {
                     }
                 }
 
-
             }
-
-            canvasM.ctx.save()
-
             if (k.visible) {
-                if (k.vp) {
-                    canvasM.ctx.translate(k.vp.vpX, k.vp.vpY)
+                
+                if(k.cache){
+                    // console.log('k.cacheCanvas.cacheDom',k.cacheCanvas.cacheDom)
+                    canvasM.ctx.drawImage(k.cacheCanvas.cacheDom ,0,0);
                 }
-                if (k.style) {
-                    if (k.style.RadialGradient) {
-                        // canvasM.ctx.fillStyle = k.style.RadialGradient
-                        canvasM.ctx.fillStyle = canvasM.initStyle(k.center, k.radius, false, k.colors).RadialGradient
+                else{
+                    canvasM.ctx.save()
 
+
+                    if (k.vp) {
+                        canvasM.ctx.translate(k.vp.vpX, k.vp.vpY)
                     }
-                    if (k.style.shadowBlur) {
-                        canvasM.ctx.shadowBlur = k.style.shadowBlur
+                    if (k.style) {
+                        if (k.style.RadialGradient) {
+                            // canvasM.ctx.fillStyle = k.style.RadialGradient
+                            canvasM.ctx.fillStyle = canvasM.initStyle(k.center, k.radius, false, k.colors).RadialGradient
+
+                        }
+                        if (k.style.shadowBlur) {
+                            canvasM.ctx.shadowBlur = k.style.shadowBlur
+                        }
+                        if (k.style.shadowColor) {
+                            canvasM.ctx.shadowBlur = k.style.shadowColor
+                        }
+                        if (k.style.strokeStyle) {
+                            canvasM.ctx.strokeStyle = k.style.strokeStyle
+                        }
                     }
-                    if (k.style.shadowColor) {
-                        canvasM.ctx.shadowBlur = k.style.shadowColor
+
+                    if (k.scale) {
+                        canvasM.ctx.scale(k.scale.scale_X, k.scale.scale_Y)
                     }
+                    canvasM.ctx.beginPath()
+                    canvasM.ctx.arc(k.center.x, k.center.y, k.radius, 0, 2 * Math.PI)
+                    canvasM.ctx.closePath()
+                    // canvasM.ctx.arc(10,10,5,0,2* Math.PI)
+                    // canvasM.ctx.arc(20,20,10,0,2*Math.PI)
                     if (k.style.strokeStyle) {
-                        canvasM.ctx.strokeStyle = k.style.strokeStyle
+                        canvasM.ctx.stroke()
                     }
+                    canvasM.ctx.fill()
                 }
 
-                if (k.scale) {
-                    canvasM.ctx.scale(k.scale.scale_X, k.scale.scale_Y)
-                }
-                canvasM.ctx.beginPath()
-                canvasM.ctx.arc(k.center.x, k.center.y, k.radius, 0, 2 * Math.PI)
-                canvasM.ctx.closePath()
-                // canvasM.ctx.arc(10,10,5,0,2* Math.PI)
-                // canvasM.ctx.arc(20,20,10,0,2*Math.PI)
-                if (k.style.strokeStyle) {
-                    canvasM.ctx.stroke()
-                }
-                canvasM.ctx.fill()
             }
             canvasM.ctx.restore()
 

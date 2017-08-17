@@ -89,8 +89,8 @@
             initDots(){
                 var vm = this
                 this.drawCanvas.dots = []
-                var radius = 8
-                for(let i=1; i<=3000; i++){
+                var radius = 20
+                for(let i=1; i<=1; i++){
                     vm.drawCanvas.initDot(
                         {
                             cid:1,

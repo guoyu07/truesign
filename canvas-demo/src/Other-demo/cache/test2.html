@@ -56,6 +56,8 @@
 				if(useCache){
 					this.cache();
 				}
+				console.log('this.cacheCanvas',this.cacheCanvas)
+				console.log('this.cacheCtx',this.cacheCtx)
 			}
 
 			function getZ(num){
@@ -84,7 +86,9 @@
 						}
 						ctx.restore();
 					} else{
-						ctx.drawImage(this.cacheCanvas , this.x-this.r , this.y-this.r);
+//					    console.log('this.cacheCanvas',this.cacheCanvas)
+//					    console.log(this.x-this.r,this.y-this.r)
+						ctx.drawImage(this.cacheCanvas , 0 , 0);
 					}
 				},
 
@@ -120,8 +124,8 @@
 
 			var Game = {
 				init:function(){
-					for(var i=0;i<100;i++){
-						var b = new ball(getRandom(0,canvas.width) , getRandom(0,canvas.height) , getRandom(-10 , 10) ,  getRandom(-10 , 10) , false)
+					for(var i=0;i<1;i++){
+						var b = new ball(getRandom(0,canvas.width) , getRandom(0,canvas.height) , getRandom(-10 , 10) ,  getRandom(-10 , 10) , true)
 						Balls.push(b);
 					}
 				},
