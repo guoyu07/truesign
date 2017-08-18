@@ -29,7 +29,14 @@ class DrawCanvas {
 
         this.angle = 0.01
         this.hsl = 0
-
+        this.stats = new Stats()
+        this.stats.setMode(0);
+        this.stats.domElement.style.position = 'fixed';
+        this.stats.domElement.style.left = this.width/2-100+'px';
+        this.stats.domElement.style.top = '0px';
+        this.stats.domElement.style.width = '300px';
+        this.stats.domElement.style.height = '100px';
+        document.body.appendChild( this.stats.domElement );
     }
 
     initWidthHeight(width, height) {
@@ -46,8 +53,8 @@ class DrawCanvas {
                 init_center = false,
                 center = false,
                 radius = false,
-                each_touch_test = false,
                 edge_touch_test = false,
+                each_touch_test = false,
                 style = false,
                 z = 0,
                 ctrl_v = {
@@ -60,7 +67,7 @@ class DrawCanvas {
                     right: 0,
                     out: 0
                 },
-                friction = {
+                friction = { /*摩擦力，阻力系数*/
                     x: 0.98,
                     y: 0.98,
                     z: 0.98
@@ -69,6 +76,21 @@ class DrawCanvas {
                     vx: 0,
                     vy: 0,
                     vz: 0
+                },
+                constant_speed =  {
+                    x:0,
+                    y:0,
+                    z:0
+                },
+                vector = { /*向量*/
+                    x: 1,
+                    y: 1,
+                    z: 1
+                },
+                chaos = { /* 混乱系数*/
+                   x: 1,
+                    y: 1,
+                    z: 1,
                 },
                 scale_fn_base = 0,
                 scale_fn = 1 / (1 + -z / fl),
@@ -89,7 +111,7 @@ class DrawCanvas {
                 ],
                 move = true,
                 move_way = false,
-                cache = true,
+                cache = false,
                 cacheCanvas = {}
             }) {
         // console.log(g)
@@ -127,21 +149,35 @@ class DrawCanvas {
         }
 
 
-        style = this.initStyle(dot.center, radius, false, dot.colors)
-
+        style = this.initStyle(dot)
+        // style = {}
 
         dot.style = style
 
-        dot.each_touch_test = each_touch_test
         dot.edge_touch_test = edge_touch_test
+        dot.each_touch_test = each_touch_test
         dot.z = z
         dot.g = g
 
-
+        dot.constant_speed = {
+            x: constant_speed.hasOwnProperty('x') ? constant_speed.x : 0,
+            y: constant_speed.hasOwnProperty('y') ? constant_speed.y : 0,
+            z: constant_speed.hasOwnProperty('z') ? constant_speed.z : 0
+        }
         dot.friction = {
             x: friction.hasOwnProperty('x') ? friction.x : 0.98,
             y: friction.hasOwnProperty('y') ? friction.y : 0.98,
             z: friction.hasOwnProperty('z') ? friction.z : 0.98
+        }
+        dot.vector = {
+            x: vector.hasOwnProperty('x') ? vector.x : 1,
+            y: vector.hasOwnProperty('y') ? vector.y : 1,
+            z: vector.hasOwnProperty('z') ? vector.z : 1
+        }
+        dot.chaos = {
+            x: chaos.hasOwnProperty('x') ? chaos.x : 1,
+            y: chaos.hasOwnProperty('y') ? chaos.y : 1,
+            z: chaos.hasOwnProperty('z') ? chaos.z : 1
         }
         // dot.friction ={
         //     x : 1321
@@ -154,8 +190,11 @@ class DrawCanvas {
         dot.move = move
         dot.move_way = move_way
         let cacheDom = document.createElement("canvas")
-        cacheDom.width = 2 * radius
-        cacheDom.height = 2 * radius
+        // cacheDom.width = 2 * radius
+        // cacheDom.height = 2 * radius
+        cacheDom.width = this.width
+        cacheDom.height = this.height
+        // cacheDom.style.backgroundColor = 'black'
         dot.cache = cache
         if (cache) {
             dot.cacheCanvas = {
@@ -164,52 +203,11 @@ class DrawCanvas {
             }
             dot.cacheCanvas = this.drawCache(dot)
         }
-        console.log('dot', dot)
-        console.log('cacheDom', cacheDom)
         this.dots.push(dot)
-        console.log('dot.cacheCanvas.cacheDom',dot.cacheCanvas.cacheDom)
-        console.log('dot.cacheCanvas.cacheCtx',dot.cacheCanvas.cacheCtx)
-
 
     }
 
-    drawCache(dot) {
-        function getZ(num){
-            var rounded;
-            rounded = (0.5 + num) | 0;
-            // A double bitwise not.
-            rounded = ~~(0.5 + num);
-            // Finally, a left bitwise shift.
-            rounded = (0.5 + num) << 0;
 
-            return rounded;
-        }
-        function getRandom(a , b){
-            return Math.random()*(b-a)+a;
-        }
-
-        var canvasCache = dot.cacheCanvas
-        var color = []
-        for(let j=0; j<20; j++){
-            color.push("rgba("+getZ(getRandom(0,255))+","+getZ(getRandom(0,255))+","+getZ(getRandom(0,255))+",1)");
-        }
-        canvasCache.cacheCtx.save();
-        var j=0;
-        canvasCache.cacheCtx.lineWidth = 3;
-        for(let i=1; i<20; i+=3){
-            canvasCache.cacheCtx.beginPath();
-            canvasCache.cacheCtx.strokeStyle = color[j];
-            canvasCache.cacheCtx.arc(20 , 20 , i , 0 , 2*Math.PI);
-            canvasCache.cacheCtx.stroke();
-            j++;
-        }
-        canvasCache.cacheCtx.restore();
-        return canvasCache
-
-
-
-
-    }
 
     test({a = 1}) {
         console.log('a->', a)
@@ -222,13 +220,29 @@ class DrawCanvas {
         // console.log(x,y,z)
         this.dots.forEach(function (k, v) {
                 if (cls.dots[v].move) {
-                    cls.dots[v].ctrl_v.c_x += cls.ctrl_mode.mode_x
-                    cls.dots[v].ctrl_v.c_x -= cls.dots[v].friction.x * (typeof x === 'undefined' ? 0 : x)
-                    cls.dots[v].ctrl_v.c_y += cls.ctrl_mode.mode_y
-                    cls.dots[v].ctrl_v.c_y -= cls.dots[v].friction.y * (typeof y === 'undefined' ? 0 : y)
-                    cls.dots[v].ctrl_v.c_z += cls.ctrl_mode.mode_z
+                    if(!cls.dots[v].constant_speed.x){
+                        cls.dots[v].ctrl_v.c_x += cls.ctrl_mode.mode_x
+                        cls.dots[v].ctrl_v.c_x -= cls.dots[v].friction.x * (typeof x === 'undefined' ? 0 : x)
+                    }
+                    else{
+                        cls.dots[v].ctrl_v.c_x = cls.dots[v].constant_speed.x
+                    }
+                    if(!cls.dots[v].constant_speed.y){
+                        cls.dots[v].ctrl_v.c_y += cls.ctrl_mode.mode_y
+                        cls.dots[v].ctrl_v.c_y -= cls.dots[v].friction.y * (typeof y === 'undefined' ? 0 : y)
+                    }
+                    else{
+                        cls.dots[v].ctrl_v.c_y = cls.dots[v].constant_speed.y
+                    }
+                    if(!cls.dots[v].constant_speed.z){
+                        cls.dots[v].ctrl_v.c_z += cls.ctrl_mode.mode_z
 
-                    cls.dots[v].ctrl_v.c_z -= cls.dots[v].friction.z * (typeof z === 'undefined' ? 0 : z)
+                        cls.dots[v].ctrl_v.c_z -= cls.dots[v].friction.z * (typeof z === 'undefined' ? 0 : z)
+                    }
+                    else{
+                        cls.dots[v].ctrl_v.c_z = cls.dots[v].constant_speed.z
+                    }
+
                     if (cls.dots[v].group === 'loading_line') {
 
                         var params = ''
@@ -697,9 +711,19 @@ class DrawCanvas {
                         // cls.dots[v].ctrl_v.c_x = cls.ctrl_mode.mode_x
                         // cls.dots[v].ctrl_v.c_y = cls.ctrl_mode.mode_y
                         // cls.dots[v].ctrl_v.c_z = cls.ctrl_mode.mode_z
+                        if(cls.dots[v].edge_touch_test) {
+                            cls.dots[v].init_center.x += cls.dots[v].ctrl_v.c_x * cls.dots[v].vector.x * cls.dots[v].chaos.x
+                            cls.dots[v].init_center.y += cls.dots[v].ctrl_v.c_y * cls.dots[v].vector.y * cls.dots[v].chaos.y
+                            cls.dots[v].scale.scale_X += cls.dots[v].ctrl_v.c_z * cls.dots[v].vector.z * cls.dots[v].chaos.z
+                            cls.dots[v].scale.scale_Y = cls.dots[v].scale.scale_X
+                        }
+                        else{
+                            cls.dots[v].init_center.x += cls.dots[v].ctrl_v.c_x * cls.dots[v].chaos.x
+                            cls.dots[v].init_center.y += cls.dots[v].ctrl_v.c_y * cls.dots[v].chaos.y
+                            cls.dots[v].scale.scale_X += cls.dots[v].ctrl_v.c_z * cls.dots[v].chaos.z
+                            cls.dots[v].scale.scale_Y = cls.dots[v].scale.scale_X
+                        }
 
-                        cls.dots[v].init_center.x += cls.dots[v].ctrl_v.c_x
-                        cls.dots[v].init_center.y += cls.dots[v].ctrl_v.c_y
 
                         cls.dots[v].z += cls.dots[v].ctrl_v.c_z
 
@@ -726,12 +750,31 @@ class DrawCanvas {
 
                         cls.dots[v].center.x = cls.dots[v].init_center.x * cls.dots[v].scale_fn;
                         cls.dots[v].center.y = cls.dots[v].init_center.y * cls.dots[v].scale_fn;
-                        // console.log(cls.dots[v].scale)
-                        // console.log(cls.dots[v].center)
+                        
+                        /*处理墙壁触碰*/
+                        if(cls.dots[v].edge_touch_test){
+                            if(Math.abs(cls.dots[v].center.x)>(Math.abs(cls.canvas.width/2)-cls.dots[v].radius)){
+                                cls.dots[v].vector.x *= -1;
 
-                        cls.dots[v].ctrl_v.c_x *= cls.dots[v].friction.x
-                        cls.dots[v].ctrl_v.c_y *= cls.dots[v].friction.y
-                        cls.dots[v].ctrl_v.c_z *= cls.dots[v].friction.z
+                            }
+                            if(Math.abs(cls.dots[v].center.y)>(Math.abs(cls.canvas.height/2)-cls.dots[v].radius)){
+                                cls.dots[v].vector.y *= -1;
+
+                            }
+                        }
+
+                        if(!cls.dots[v].constant_speed.x){
+                            cls.dots[v].ctrl_v.c_x *= cls.dots[v].friction.x
+
+                        }
+                        if(!cls.dots[v].constant_speed.y){
+                            cls.dots[v].ctrl_v.c_y *= cls.dots[v].friction.y
+
+                        }
+                        if(!cls.dots[v].constant_speed.z){
+                            cls.dots[v].ctrl_v.c_z *= cls.dots[v].friction.z
+
+                        }
                     }
 
 
@@ -763,15 +806,39 @@ class DrawCanvas {
 
     }
 
-    reckon_millisecond(cid, count, center_data, boundary) {
-        if (center_data.x < 0 && center_data.x > boundary[3]) {
-            return parseInt(cid + '00')
-        }
-        else if (center_data.x > 0 && center_data.x < boundary[1]) {
-            return parseInt(count + 1 - cid + '00')
-        }
+    move_simple(x = 0, y = 0.2, z = 0){
+        var cls = this
 
+        // console.log(x,y,z)
+        this.dots.forEach(function (k, v) {
+
+
+            cls.dots[v].ctrl_v.c_x = cls.dots[v].constant_speed.x
+
+            cls.dots[v].ctrl_v.c_y = cls.dots[v].constant_speed.y
+            cls.dots[v].init_center.x += cls.dots[v].ctrl_v.c_x * cls.dots[v].vector.x * cls.dots[v].chaos.x
+            cls.dots[v].init_center.y += cls.dots[v].ctrl_v.c_y * cls.dots[v].vector.y * cls.dots[v].chaos.y
+
+
+            cls.dots[v].center.x = cls.dots[v].init_center.x * cls.dots[v].scale_fn;
+            cls.dots[v].center.y = cls.dots[v].init_center.y * cls.dots[v].scale_fn;
+
+            /*处理墙壁触碰*/
+
+            if(Math.abs(cls.dots[v].center.x)>(Math.abs(cls.canvas.width/2)-cls.dots[v].radius)){
+                cls.dots[v].vector.x *= -1;
+
+            }
+            if(Math.abs(cls.dots[v].center.y)>(Math.abs(cls.canvas.height/2)-cls.dots[v].radius)){
+                cls.dots[v].vector.y *= -1;
+
+            }
+
+
+        })
     }
+
+
 
     move_line(type = 'left_right_center') {
     }
@@ -828,16 +895,23 @@ class DrawCanvas {
         return '#' + is_color
     }
 
-    initStyle(center, radius, add_cmd = false,
-              colors) {
+    initStyle(dot,v_ctx) {
         let style = {}
 
-        let per_style = this.ctx.createRadialGradient(center.x, center.y, radius * 0.1, center.x, center.y, radius)
-
-        for (var item_style of colors) {
-            per_style.addColorStop(item_style.key, item_style.value)
+        var per_style = {}
+        if(v_ctx){
+            per_style = v_ctx.createRadialGradient(dot.radius,dot.radius, dot.radius * 0.1, dot.radius,dot.radius, dot.radius)
+        }
+        else{
+            per_style = this.ctx.createRadialGradient(dot.center.x, dot.center.y, dot.radius * 0.1, dot.center.x, dot.center.y, dot.radius)
         }
 
+        for (var item_style of dot.colors) {
+            per_style.addColorStop(item_style.key, item_style.value)
+        }
+        // per_style.addColorStop(0,"rgba(255,0,0,1)");
+        // per_style.addColorStop(0.2,"rgba(255,255,0,1)");
+        // per_style.addColorStop(1,"rgba(0,0,0,1)");
         style.RadialGradient = per_style
         return style
 
@@ -851,12 +925,51 @@ class DrawCanvas {
         // style = grd
     }
 
+    drawCache(dot) {
+        var canvasCache = dot.cacheCanvas
+        canvasCache.cacheCtx.save()
+        if (dot.style) {
+            if (dot.style.RadialGradient) {
+                // canvasCache.cacheCtx.fillStyle = dot.style.RadialGradient
 
+                var build_style = this.initStyle(dot,canvasCache.cacheCtx).RadialGradient
+                // console.log('grd',grd)
+                // console.log('build_style',build_style)
+                canvasCache.cacheCtx.fillStyle = build_style
+
+            }
+            if (dot.style.shadowBlur) {
+                canvasCache.cacheCtx.shadowBlur = dot.style.shadowBlur
+            }
+            if (dot.style.shadowColor) {
+                canvasCache.cacheCtx.shadowBlur = dot.style.shadowColor
+            }
+            if (dot.style.strokeStyle) {
+                canvasCache.cacheCtx.strokeStyle = dot.style.strokeStyle
+            }
+        }
+
+
+        canvasCache.cacheCtx.beginPath()
+        canvasCache.cacheCtx.arc(dot.radius,dot.radius , dot.radius, 0, 2 * Math.PI)
+        canvasCache.cacheCtx.closePath()
+        // canvasCache.cacheCtx.stroke()
+        // if (dot.style.strokeStyle) {
+        //     canvasCache.cacheCtx.stroke()
+        // }
+        canvasCache.cacheCtx.fill()
+        canvasCache.cacheCtx.restore();
+        return canvasCache
+
+
+
+
+    }
     drawDots() {
         TWEEN.update()
-
+        this.stats.update();
         // console.log(this.dots)
-        this.dots.sort(zSort)
+        // this.dots.sort(zSort)
         // console.log(this.dots)
         this.ctx.clearRect(0, 0, this.width, this.height);
 
@@ -865,11 +978,6 @@ class DrawCanvas {
         var cls = this
         this.dots.forEach(function (k, v) {
 
-            // if(cls.dots[v].move_way.type === 'loading_line'){
-            //     if(cls.dots[v].move_way.params.percent >= 100){
-            //         cls.move_3D()
-            //     }
-            // }
             if (cls.dots[v].move && (cls.ctrl_mode.mode_z || Math.abs(cls.dots[v].ctrl_v.c_z) >= 1)) {
                 cls.dots[v].ctrl_v.c_x += cls.ctrl_mode.mode_x
                 cls.dots[v].ctrl_v.c_x -= cls.dots[v].friction.x * (typeof x === 'undefined' ? 0 : x)
@@ -929,22 +1037,41 @@ class DrawCanvas {
 
             }
             if (k.visible) {
-                
+                canvasM.ctx.save()
                 if(k.cache){
                     // console.log('k.cacheCanvas.cacheDom',k.cacheCanvas.cacheDom)
-                    canvasM.ctx.drawImage(k.cacheCanvas.cacheDom ,0,0);
+
+                    if (k.vp && k.scale) {
+                        canvasM.ctx.translate(k.vp.vpX-k.radius*k.scale.scale_X, k.vp.vpY-k.radius*k.scale.scale_Y)
+
+                    }
+                    else if(k.vp && !k.scale){
+                        canvasM.ctx.translate(k.vp.vpX-k.radius, k.vp.vpY-k.radius)
+                    }
+                    if (k.scale) {
+                        canvasM.ctx.scale(k.scale.scale_X, k.scale.scale_Y)
+
+                    }
+                    canvasM.ctx.drawImage(k.cacheCanvas.cacheDom ,k.center.x,k.center.y);
+                    // canvasM.ctx.drawImage(k.cacheCanvas.cacheDom ,k.center.x+cls.width/2,k.center.y+cls.height/2);
+              
                 }
                 else{
-                    canvasM.ctx.save()
 
+                    if (k.vp && k.scale) {
+                        canvasM.ctx.translate(k.vp.vpX-k.radius*k.scale.scale_X, k.vp.vpY-k.radius*k.scale.scale_Y)
 
-                    if (k.vp) {
-                        canvasM.ctx.translate(k.vp.vpX, k.vp.vpY)
                     }
+                    else if(k.vp && !k.scale){
+                        canvasM.ctx.translate(k.vp.vpX-k.radius, k.vp.vpY-k.radius)
+                    }
+                    // if (k.vp) {
+                    //     canvasM.ctx.translate(k.vp.vpX, k.vp.vpY)
+                    // }
                     if (k.style) {
                         if (k.style.RadialGradient) {
                             // canvasM.ctx.fillStyle = k.style.RadialGradient
-                            canvasM.ctx.fillStyle = canvasM.initStyle(k.center, k.radius, false, k.colors).RadialGradient
+                            canvasM.ctx.fillStyle = canvasM.initStyle(k).RadialGradient
 
                         }
                         if (k.style.shadowBlur) {
@@ -981,6 +1108,87 @@ class DrawCanvas {
         function zSort(a, b) {
             return (a.z - b.z);
         }
+    }
+
+    drawDots_simple(){
+
+        this.stats.update();
+
+        this.ctx.clearRect(0, 0, this.width, this.height);
+
+
+        var canvasM  = this
+
+        this.dots.forEach(function (k, v) {
+
+
+            canvasM.ctx.save()
+            if(k.cache){
+                // console.log('k.cacheCanvas.cacheDom',k.cacheCanvas.cacheDom)
+
+                if (k.vp && k.scale) {
+                    canvasM.ctx.translate(k.vp.vpX-k.radius*k.scale.scale_X, k.vp.vpY-k.radius*k.scale.scale_Y)
+
+                }
+                else if(k.vp && !k.scale){
+                    canvasM.ctx.translate(k.vp.vpX-k.radius, k.vp.vpY-k.radius)
+                }
+                if (k.scale) {
+                    canvasM.ctx.scale(k.scale.scale_X, k.scale.scale_Y)
+
+                }
+                canvasM.ctx.drawImage(k.cacheCanvas.cacheDom ,k.center.x,k.center.y);
+                // canvasM.ctx.drawImage(k.cacheCanvas.cacheDom ,k.center.x+cls.width/2,k.center.y+cls.height/2);
+
+            }
+            else{
+
+                if (k.vp && k.scale) {
+                    canvasM.ctx.translate(k.vp.vpX-k.radius*k.scale.scale_X, k.vp.vpY-k.radius*k.scale.scale_Y)
+
+                }
+                else if(k.vp && !k.scale){
+                    canvasM.ctx.translate(k.vp.vpX-k.radius, k.vp.vpY-k.radius)
+                }
+                // if (k.vp) {
+                //     canvasM.ctx.translate(k.vp.vpX, k.vp.vpY)
+                // }
+                if (k.style) {
+                    if (k.style.RadialGradient) {
+                        // canvasM.ctx.fillStyle = k.style.RadialGradient
+                        canvasM.ctx.fillStyle = canvasM.initStyle(k).RadialGradient
+
+                    }
+                    if (k.style.shadowBlur) {
+                        canvasM.ctx.shadowBlur = k.style.shadowBlur
+                    }
+                    if (k.style.shadowColor) {
+                        canvasM.ctx.shadowBlur = k.style.shadowColor
+                    }
+                    if (k.style.strokeStyle) {
+                        canvasM.ctx.strokeStyle = k.style.strokeStyle
+                    }
+                }
+
+                if (k.scale) {
+                    canvasM.ctx.scale(k.scale.scale_X, k.scale.scale_Y)
+                }
+                canvasM.ctx.beginPath()
+                canvasM.ctx.arc(k.center.x, k.center.y, k.radius, 0, 2 * Math.PI)
+                canvasM.ctx.closePath()
+
+                if (k.style.strokeStyle) {
+                    canvasM.ctx.stroke()
+                }
+                canvasM.ctx.fill()
+            }
+
+            canvasM.ctx.restore()
+
+
+        })
+
+
     }
 
     draw_alfa(v_this, awayfrom = 75, item_radius = 25) {
