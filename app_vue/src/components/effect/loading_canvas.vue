@@ -147,7 +147,7 @@
                                         percent:parseInt(vm.is_line_percent)
                                     }
                                 },
-                                cache:false,
+                                cache:true,
                                 visible:true
                             })
                 }

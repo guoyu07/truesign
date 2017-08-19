@@ -1,5 +1,8 @@
 <template>
     <div id="loading_canvas" style="width: 100%;height: 100%;overflow: hidden">
+      <div style="position: absolute;left: 200px">
+        {{ cache }} {{ num }}
+      </div>
         <canvas id="ball-cas" :width='screenWidth' :height='screenHeight'
                 style="margin:0 auto; background-color: transparent"></canvas>
     </div>
@@ -27,7 +30,9 @@
 //                    {key: 0.8, value: 'black'},
 
                 ],
-                pageTimeout: []
+                pageTimeout: [],
+              cache: false,
+              num: 1,
             }
         },
         props: {
@@ -44,6 +49,14 @@
         },
         mounted(){
             var stats = new Stats();
+            var vm = this
+          if (this.$route.query.cache === 'true') {
+            this.cache = true
+          }
+          else {
+            this.cache = false
+          }
+          this.num = parseInt(this.$route.query.num) > 1 ? parseInt(this.$route.query.num) : 1
             stats.setMode(0);
             stats.domElement.style.position = 'absolute';
             stats.domElement.style.left = 800 + 'px';
@@ -174,8 +187,8 @@
 
                 var Game = {
                     init: function () {
-                        for (var i = 0; i < 500; i++) {
-                            var b = new ball(getRandom(0, canvas.width), getRandom(0, canvas.height), getRandom(-10, 10), getRandom(-10, 10), true)
+                        for (var i = 0; i < vm.num; i++) {
+                            var b = new ball(getRandom(0, canvas.width), getRandom(0, canvas.height), getRandom(-10, 10), getRandom(-10, 10), vm.cache)
                             Balls.push(b);
                         }
                     },
