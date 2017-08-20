@@ -196,7 +196,7 @@
                 this.drawCanvas.initCtrl()
                 this.drawCanvas.drawDots()
 //                this.drawCanvas.move_3D(0, 0, 0)
-                this.drawCanvas.move_simple()
+                this.drawCanvas.move_3D()
 //                this.drawCanvas.move_line()
             },
             animate(){
