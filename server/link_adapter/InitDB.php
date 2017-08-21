@@ -23,7 +23,7 @@ $adapters = array();
 
 $filesnames = scandir(APPLICATION_PATH.'/common/Adapter/');
 foreach ($filesnames as $k=>$dir){
-    if(in_array($dir,array('.','..','Base','Sjtt','DbServer','Shadowsocks','User','Volume','Apps','wechat_marketing'))){
+    if(in_array($dir,array('.','..','Base','Sjtt','DbServer','Shadowsocks','User','Volume','Apps','wechat_marketing','app_socketserver'))){
         unset($filesnames[$k]);
     }
 }

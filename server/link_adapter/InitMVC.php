@@ -22,11 +22,11 @@ $adapters = array();
 
 $filesnames = scandir(APPLICATION_PATH.'/common/Adapter/');
 foreach ($filesnames as $k=>$dir){
-    if(!in_array(strtolower($dir),array('demo'))){
+    if(!in_array(strtolower($dir),array('jktruesign_app'))){
         unset($filesnames[$k]);
     }
 }
-
+var_dump($filesnames) ;
 foreach ($filesnames as $name){
     $adapterFiles =APPLICATION_PATH.'/common/Adapter/'.$name.'/*Adapter.php';
 
