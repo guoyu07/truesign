@@ -1,5 +1,5 @@
 <template>
-    <div :style="{overflow: 'hidden',height:screenHeight+'px'}">
+    <div :style="{overflow: 'auto',height:screenHeight+'px'}">
 
         <!--<pre>-->
         <!--{{table_field}}-->
@@ -30,7 +30,7 @@
 
                 <el-table v-loading="isloading" element-loading-text="数据加载中" :stripe=false ref="multipleTable"
                           :data="table_data" tooltip-effect="dark" style="width: 100%;overflow: auto"
-                          :header-align="'center'" :height="screenHeight-208" :show-summary="true" :sum-text="'汇总'"
+                          :header-align="'center'" :height="screenHeight-78" :show-summary="true" :sum-text="'汇总'"
                           :border="true" :resizable="true" @summary-method="summaryfunction"
                           :highlight-current-row="true" @selection-change="handleSelectionChange" @row-click="rowClick"
                           @row-dblclick="rowDblClick" @sort-change="sortChange">

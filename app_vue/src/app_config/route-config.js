@@ -8,6 +8,13 @@ const home = resolve => require(['../components/Home.vue'], resolve)
 const tools = resolve => require(['../components/tools/tools.vue'], resolve)
 const websocket = resolve => require(['../components/tools/websocket.vue'], resolve)
 
+const socket_server_manager = resolve => require(['../components/project/socket_server_manager/index.vue'], resolve)
+const ssm_user = resolve => require(['../components/project/socket_server_manager/user.vue'], resolve)
+const ssm_app = resolve => require(['../components/project/socket_server_manager/app.vue'], resolve)
+const ssm_authlog = resolve => require(['../components/project/socket_server_manager/authlog.vue'], resolve)
+const ssm_msglog = resolve => require(['../components/project/socket_server_manager/msglog.vue'], resolve)
+
+
 const effect = resolve => require(['../components/effect/effect.vue'], resolve)
 const loading_canvas = resolve => require(['../components/effect/loading_canvas.vue'], resolve)
 const threejs_dev = resolve => require(['../components/effect/threejs_dev.vue'], resolve)
@@ -53,6 +60,49 @@ const routes = [
                     title: 'websocket'
                 },
                 component: websocket
+            },
+        ]
+    },
+
+    {
+        name: 'socket_server_manager',
+        path: '/socket_server_manager',
+        meta: {
+            title: 'socket_server_manager'
+        },
+        component: socket_server_manager,
+        children: [
+            {
+                name: 'ssm_user',
+                path: 'ssm_user',
+                meta: {
+                    title: 'ssm_user'
+                },
+                component: ssm_user
+            },
+            {
+                name: 'ssm_app',
+                path: 'ssm_app',
+                meta: {
+                    title: 'ssm_app'
+                },
+                component: ssm_app
+            },
+            {
+                name: 'ssm_authlog',
+                path: 'ssm_authlog',
+                meta: {
+                    title: 'ssm_authlog'
+                },
+                component: ssm_authlog
+            },
+            {
+                name: 'ssm_msglog',
+                path: 'ssm_msglog',
+                meta: {
+                    title: 'ssm_msglog'
+                },
+                component: ssm_msglog
             },
         ]
     },

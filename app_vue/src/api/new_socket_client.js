@@ -9,7 +9,7 @@ const SOCKET_CLIENT = {
         to: '',
         message: null,
         payload: null,
-        wsserver: 'ws://120.24.54.208:9501',
+        wsserver: 'ws://ws.iamsee.com:9501',
         response: '',
         this_vue: null,
         conn_status: false,
@@ -27,8 +27,6 @@ const SOCKET_CLIENT = {
         else {
             console.log('当前已经为连接状态')
         }
-
-
     },
 
     ws: function (socket_url) {
