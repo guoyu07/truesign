@@ -1,9 +1,15 @@
 <template>
     <div id="loading_canvas" style="width: 100%;height: 100%;overflow: hidden">
+        <input v-model="text" style="color: black !important; width: 30%;height: 30px;position: absolute;bottom: 100px;display: block;left:50%;transform: translateX(-50%);text-align: center;padding: 5px 10px;box-shadow: 0 0 15px black">
+
         <div style="position: absolute;left: 200px">
-            {{ cache }} {{ num }}
+            {{ cache }} {{ num }} {{ ctxFont }}
+            <hr>
+
+
         </div>
-        <canvas id="word-canvas" :width='screenWidth' :height='screenHeight' style="margin:0 auto; background-color: transparent"></canvas>
+        <canvas id="word-canvas" :width='screenWidth' :height='screenHeight'
+                style="margin:0 auto; background-color: transparent"></canvas>
     </div>
 </template>
 <script>
@@ -22,21 +28,28 @@
                 screenHeight: document.body.clientHeight,  // 这里是给到了一个默认值 （这个很重要）
                 help: '',
                 drawCanvas: {},
+                ctxImageData: {},
+                ctxFont:{},
+                loopSeries:[],
                 drawParams: {
                     xy_line: 0,
                     tan: 0,
                     dots_count: 0,
                 },
                 timeOutEvent: 0,
-                color:[
+                color: [
                     {key: 0, value: 'red'},
 //                    {key: 0.3, value: 'black'},
 //                    {key: 0.8, value: 'black'},
 
                 ],
-                pageTimeout:[],
-                cache:false,
-                num:1,
+                textcolor: [
+                    {key: 0, value: 'rgba(0,0,0,0.8)'},
+                ],
+                pageTimeout: [],
+                cache: false,
+                num: 1,
+                text:'hello world',
             }
         },
         props: {
@@ -47,20 +60,21 @@
             },
         },
         watch: {
-            is_line_percent(curVal, oldVal){
-                console.log(curVal, oldVal)
+            text(curVal, oldVal){
+                this.initDots()
+                this.initMove()
             }
         },
         mounted(){
             var vm = this
-            console.log('$route.query',this.$route.query)
-            if(this.$route.query.cache==='true'){
+            console.log('$route.query', this.$route.query)
+            if (this.$route.query.cache === 'true') {
                 this.cache = true
             }
-            else{
+            else {
                 this.cache = false
             }
-            this.num =  parseInt(this.$route.query.num)>1?parseInt(this.$route.query.num):1
+            this.text = this.$route.query.text ? this.$route.query.text : 'hello world'
 
             this.$root.eventHub.$on('screenWidth2screenHeight', function (data) {
                 console.log('canvas-change_w2h')
@@ -74,15 +88,9 @@
             this.start()
 
         },
-        components:{
-        },
+        components: {},
         methods: {
-            doDelete(){
-                alert(1)
-            },
-            test:function(ee){
 
-            },
             start(){
                 console.log('start')
                 this.initBase();
@@ -95,39 +103,52 @@
                 var vm = this
 //                vm.drawParams.xy_line = Math.floor(Math.sqrt(Math.pow(vm.screenHeight,2)+Math.pow(vm.screenWidth,2)))
 
-                vm.drawCanvas = new DrawCanvas('word-canvas', vm.screenWidth - 10, vm.screenHeight - 10)
-                vm.drawParams.tan = vm.screenHeight / vm.screenWidth
-                vm.drawCanvas.ctrl_mode.mode_x = 1
-                vm.drawCanvas.ctrl_mode.mode_y = 1
+                this.drawCanvas = new DrawCanvas('word-canvas', vm.screenWidth, vm.screenHeight)
+
+
 
             },
             initDots(){
                 var vm = this
+                this.drawCanvas.clearCtx()
                 this.drawCanvas.dots = []
-                var radius = 20
-                for(let i=1; i<=vm.num; i++){
-                    vm.drawCanvas.initDot(
+                this.ctxFont = {
+                    fontSize:100,
+                    radius:3,
+                    step:5,
+                    rate:4,
+                }
+                this.ctxImageData = this.drawCanvas.getimgData(this.text,this.ctxFont.fontSize)
+//                console.log('this.ctxImageData', this.ctxImageData)
+
+                this.fixDotsNum(this.ctxFont.fontSize,this.ctxFont.radius,this.ctxFont.step,this.ctxFont.rate)
+                this.ctxImageData = this.drawCanvas.getimgData(this.text,this.ctxFont.fontSize)
+//                console.log('this.loopSeries',this.loopSeries)
+                for (var cid = 1; cid <= this.loopSeries.length; cid++) {
+                    let start_x = vm.loopSeries[cid-1].x
+                    let start_y = vm.loopSeries[cid-1].y
+                    let dot = vm.drawCanvas.initDot(
                         {
-                            cid:1,
-                            group:'demo',
+                            cid:cid,
+                            group:'text',
                             g: {down: 0, right: 0, out: 0},
                             init_center: {
-                                x: ((Math.random()>0.5)?1:-1)*Math.random()*(vm.screenWidth/2-50),
-                                y:((Math.random()>0.5)?1:-1)*Math.random()*(vm.screenHeight/2-50)
+                                x: start_x-vm.ctxImageData.width/2-3,
+                                y: start_y-vm.ctxImageData.height/2-3,
                             },
                             z: 0,
                             scale_fn_base: 1,
-                            radius: radius,
-                            colors: vm.color1,
+                            radius:vm.ctxFont.radius,
+                            colors: vm.textcolor,
                             friction:{
-                                x:0.78,
-                                y:0.78,
+                                x:0.98,
+                                y:0.98,
                                 z:0.98,
                             },
                             constant_speed:{
-                                x:((Math.random()>0.5)?1:-1)*Math.random()*10,
-                                y:((Math.random()>0.5)?1:-1)*Math.random()*10,
-                                z:0
+                                        x:((Math.random()>0.5)?1:-1)*Math.random()*10,
+                                        y:((Math.random()>0.5)?1:-1)*Math.random()*10,
+                                        z:0
                             },
                             chaos:{
                                 x:Math.random(),
@@ -135,68 +156,62 @@
                             },
                             move:true,
                             move_way:{
-                                type:'demo',
+                                type:'text',
                                 params:{
-                                    count:vm.drawParams.dots_count,
-                                    percent:parseInt(vm.is_line_percent)
                                 }
                             },
                             edge_touch_test:true,
                             cache:vm.cache,
                             visible:true
-                        })
+                        }
+                    )
+//                    setTimeout(function () {
+//                        vm.drawCanvas.drawDots(dot)
+//
+//                    },100)
                 }
-//                for(let i=1; i<=1; i++){
-//                    vm.drawCanvas.initDot(
-//                        {
-//                            cid:1,
-//                            group:'word',
-//                            g: {down: 0, right: 0, out: 0},
-//                            init_center: {
-//                                x: 0,
-//                                y:10
-//                            },
-//                            z: 0,
-//                            scale_fn_base: 1,
-//                            radius: radius,
-//                            colors: vm.color1,
-//                            friction:{
-//                                x:0.92,
-//                                y:0.92,
-//                                z:0.92,
-//                            },
-//                            move:true,
-//                            move_way:{
-//                                type:'word',
-//                                params:{
-//                                    count:vm.drawParams.dots_count,
-//                                    percent:parseInt(vm.is_line_percent)
-//                                }
-//                            },
-//                            cache:false,
-//                            visible:true
-//                        })
-//                }
-
-
-
-
 
             },
+            fixDotsNum(fontSize=50,radius=2,step = 3,rate= 4){
+                var vm = this
+                this.num = 0
 
+                this.loopSeries = []
+                for (var x = 0; x < this.ctxImageData.width; x += step) {
+                    for (var y = 0; y < this.ctxImageData.height; y += step) {
+
+                        var i = (y * this.ctxImageData.width + x) * rate
+
+                        if (this.ctxImageData.data[i] >= 128) {
+                            vm.loopSeries.push({x:x,y:y,i:i})
+                            this.num += 1
+                        }
+                    }
+
+                }
+                if(this.num > 3000){
+                    if(radius-1>0){
+                        this.fixDotsNum(fontSize,radius-1,step+1,rate)
+
+                    }
+                }
+                else{
+                    this.ctxFont.fontSize = fontSize
+                    this.ctxFont.radius = radius
+                    this.ctxFont.step = step
+                    this.ctxFont.rate = rate
+                }
+            },
             initMove(){
+                this.drawCanvas.move_3D(0, 0, 0)
 
             },
-            draw(){
-                this.drawCanvas.drawDots()
-            },
-
             render(){
                 this.drawCanvas.initWidthHeight(this.screenWidth, this.screenHeight)
                 this.drawCanvas.initCtrl()
                 this.drawCanvas.drawDots()
 //                this.drawCanvas.move_3D(0, 0, 0)
-                this.drawCanvas.move_3D()
+//                this.drawCanvas.move_3D()
 //                this.drawCanvas.move_line()
             },
             animate(){

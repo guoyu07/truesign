@@ -59,10 +59,10 @@ foreach ($adapters as $adapter) {
 
 
     define('TEMPLATE_PATH',APPLICATION_PATH.'/library/Royal/InitCommand/templates');
-    define('CURRECT_APPLICATION_PATH',APPLICATION_PATH.DIRECTORY_SEPARATOR.'apps'.DIRECTORY_SEPARATOR.$app );
+    define('CURRECT_APPLICATION_PATH',APPLICATION_PATH.'apps'.DIRECTORY_SEPARATOR.$app );
     $application = new \Royal\InitCommand\GenerateMVCCommand();
     $application->execute('index',$table,$desc,$adpName);
-
+    sleep(3);
 
 }
 

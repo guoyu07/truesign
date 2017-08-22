@@ -95,7 +95,7 @@
                 var vm = this
 //                vm.drawParams.xy_line = Math.floor(Math.sqrt(Math.pow(vm.screenHeight,2)+Math.pow(vm.screenWidth,2)))
 
-                vm.drawCanvas = new DrawCanvas('word-canvas', vm.screenWidth - 10, vm.screenHeight - 10)
+                vm.drawCanvas = new DrawCanvas('word-canvas', vm.screenWidth , vm.screenHeight )
                 vm.drawParams.tan = vm.screenHeight / vm.screenWidth
                 vm.drawCanvas.ctrl_mode.mode_x = 1
                 vm.drawCanvas.ctrl_mode.mode_y = 1

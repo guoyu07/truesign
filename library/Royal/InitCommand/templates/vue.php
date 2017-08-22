@@ -10,9 +10,9 @@ $str =  <<< TEMPLATE
                      :table_data="table_model_data"
                      :table_field="table_model_field"
                      :info_transfer_action="info_transfer_action"
-                     :new_add_info="'新增用户'"
+                     :new_add_info="'新增'"
                      groupdelable="true"
-                     :param_apihost = "report_api+'?app=demo'"
+                     :param_apihost = "report_api+'?app='+server_app"
         >
 
         </table_model>
@@ -53,7 +53,8 @@ $str =  <<< TEMPLATE
                 isloading: false,
                 loading_text: '数据加载中',
                 table_currect_select: '',
-                email: ''
+                email: '',
+                server_app:'',
 
             }
         },
@@ -78,6 +79,7 @@ $str =  <<< TEMPLATE
         },
         created(){
             var vm = this
+            this.server_app = '%s'
             this.report_api = this.socket_server_store.apihost + '%s/'
             this.report_api = 'http://localhost:8089/'
             this.\$root.eventHub.\$emit('init_navmenu', '%s')
@@ -127,7 +129,7 @@ $str =  <<< TEMPLATE
                 }
                 search_param.rules = 1
 //        search_param.token = this.socket_server_store.token
-                this.\$http.post(this.report_api + '%s/get%s?app=demo', search_param, this.\$http_config)
+                this.\$http.post(this.report_api + '%s/get%s?app='+this.server_app, search_param, this.\$http_config)
                 //        axios.post(this.report_api + 'get%s', search_param, axios_config)
                     .then((res) => {
                         if (res.data.code === 0) {
@@ -151,10 +153,10 @@ $str =  <<< TEMPLATE
                                 }
                             }
                             vm.info_transfer_action = {
-                                add: '%s/Desc%s?app=demo',
-                                get: '%s/Get%s?app=demo',
-                                update: '%s/Update%s?app=demo',
-                                groupdel: '%s/GroupDel%s?app=demo',
+                                add: '%s/Desc%s?app='+vm.server_app,
+                                get: '%s/Get%s?app='+vm.server_app,
+                                update: '%s/Update%s?app='+vm.server_app,
+                                groupdel: '%s/GroupDel%s?app='+vm.server_app,
                             }
                             vm.table_model_field = analysis_data.rules
                             vm.table_model_data = analysis_data.data

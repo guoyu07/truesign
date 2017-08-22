@@ -10,68 +10,25 @@
                 </el-button>
             </transition>
             <div style="display: inline-block">
-                <el-input v-focus:currect_select="currect_select" :name="item.search_title" :data-key="item.search_key"
-                          style="display: inline-block;width: 180px;" v-for="(item,index) in search_sort_by.search"
-                          :key="index"
-
-                          :placeholder="'请输入'+item.search_title"
-                          icon="search"
-                          v-model="item.search_value"
-                >
+                <el-input v-focus:currect_select="currect_select" :name="item.search_title" :data-key="item.search_key" style="display: inline-block;width: 180px;" v-for="(item,index) in search_sort_by.search" :key="index" :placeholder="'请输入'+item.search_title" icon="search" v-model="item.search_value">
                 </el-input>
                 <el-button @click="resetSelect" v-if="Object.keys(search_sort_by.search).length" size="" type="success">
                     重置检索
                 </el-button>
             </div>
 
-            <el-button v-if="new_add_info" type="primary" style="position: absolute;right: 15px"
-                       @click="add_info">{{ new_add_info }}
+            <el-button v-if="new_add_info" type="primary" style="position: absolute;right: 15px" @click="add_info">{{ new_add_info }}
             </el-button>
 
         </div>
         <transition name="el-zoom-in-top">
             <div class="table_model" key="tabledata" style="" v-if="all_data_count">
 
-                <el-table
-                        v-loading="isloading"
-                        element-loading-text="数据加载中"
-                        :stripe=false
-                        ref="multipleTable"
-                        :data="table_data"
-                        tooltip-effect="dark"
-                        style="width: 100%;overflow: auto"
-                        :header-align="'center'"
-                        :height="screenHeight-208"
-
-                        :show-summary="true"
-                        :sum-text="'汇总'"
-                        :border="true"
-                        :resizable="true"
-                        @summary-method="summaryfunction"
-                        :highlight-current-row="true"
-                        @selection-change="handleSelectionChange"
-                        @row-click="rowClick"
-                        @row-dblclick="rowDblClick"
-                        @sort-change="sortChange"
-                >
-                    <el-table-column v-if="groupdelable"
-
-                                     fixed
-                                     type="selection"
-                                     width="55">
+                <el-table v-loading="isloading" element-loading-text="数据加载中" :stripe=false ref="multipleTable" :data="table_data" tooltip-effect="dark" style="width: 100%;overflow: auto" :header-align="'center'" :height="screenHeight-208" :show-summary="true" :sum-text="'汇总'" :border="true" :resizable="true" @summary-method="summaryfunction" :highlight-current-row="true" @selection-change="handleSelectionChange" @row-click="rowClick" @row-dblclick="rowDblClick" @sort-change="sortChange">
+                    <el-table-column v-if="groupdelable" fixed type="selection" width="55">
                     </el-table-column>
 
-
-                    <el-table-column v-for="(item,index) in table_field"
-                                     v-if="" :key="index"
-                                     :show-overflow-tooltip="true"
-                                     :fixed="index === 'document_id' || index === 'username'"
-                                     :sortable="is_sortable(index)"
-                                     :prop="index"
-                                     :label="item.title"
-                                     :width="item.width"
-
-                    >
+                    <el-table-column v-for="(item,index) in table_field" :key="index" :show-overflow-tooltip="true" :fixed="index === 'document_id' || index === 'username'" :sortable="is_sortable(index)" :prop="index" :label="item.title" :width="item.width">
 
                         <template scope="scope">
                             <div v-if="!item.widgetType">{{scope.row[item.name]}}</div>
@@ -87,12 +44,10 @@
                                 </div>
                             </div>
                             <div v-else-if="item.widgetType[0]==='color'">
-                                <i style="display: block;width: 30px;height: 30px;margin: 0 auto;border-radius: 15px"
-                                   :style="{backgroundColor:scope.row[item.name]}"></i>
+                                <i style="display: block;width: 30px;height: 30px;margin: 0 auto;border-radius: 15px" :style="{backgroundColor:scope.row[item.name]}"></i>
                             </div>
 
-                            <div v-else-if="item.widgetType[0]==='time'">{{ get_timestamp2datetime(scope.row[item.name])
-                                }}
+                            <div v-else-if="item.widgetType[0]==='time'">{{ get_timestamp2datetime(scope.row[item.name]) }}
                             </div>
                             <div v-else-if="item.widgetType[0]==='radio'">
                                 <div v-if="item.widgetStyle.hasOwnProperty(0)">
@@ -104,14 +59,14 @@
                                 <div v-else="item.widgetStyle.hasOwnProperty(0)" class="nozero">
 
                                     <div v-for="radio_item,radio_index in get_str2json(scope.row[item.name])">
-                                        <div v-if="item.widgetStyle">  <!--如果配置了样式-->
-                                            <el-tag v-for="style_item,style_id in item.widgetStyle"
-                                                    v-if="style_id===radio_index" :key="style_id" close-transition
-                                                    :style="style_item"> {{ radio_item }}
+                                        <div v-if="item.widgetStyle">
+                                            <!--如果配置了样式-->
+                                            <el-tag v-for="style_item,style_id in item.widgetStyle" v-if="style_id===radio_index" :key="style_id" close-transition :style="style_item"> {{ radio_item }}
                                             </el-tag>
 
                                         </div>
-                                        <div v-else="item.widgetStyle"> <!--如果没有配置样式-->
+                                        <div v-else="item.widgetStyle">
+                                            <!--如果没有配置样式-->
                                             {{radio_item}}
                                         </div>
                                     </div>
@@ -125,24 +80,22 @@
                             </div>
                             <div v-else-if="item.widgetType[0]==='checkbox'">
 
-                                <div style="display: inline-block;padding-left: 5px"
-                                     v-for="(item_obj,item_index) in get_str2json(scope.row[item.name])">
+                                <div style="display: inline-block;padding-left: 5px" v-for="(item_obj,item_index) in get_str2json(scope.row[item.name])">
                                     <div v-for="type_item,type_id in get_str2json(item_obj)">
                                         <div v-if="item.widgetStyle.hasOwnProperty(0)">
                                             <el-tag close-transition :style="item.widgetStyle[0]">{{type_item}}</el-tag>
                                         </div>
                                         <div v-else="item.widgetStyle.hasOwnProperty(0)">
-                                            <div v-if="item.widgetStyle">  <!--如果配置了样式-->
-                                                <el-tag v-for="style_item,style_index in item.widgetStyle"
-                                                        :key="style_index" v-if="style_index === type_id"
-                                                        close-transition :style="style_item">{{type_item}}
+                                            <div v-if="item.widgetStyle">
+                                                <!--如果配置了样式-->
+                                                <el-tag v-for="style_item,style_index in item.widgetStyle" :key="style_index" v-if="style_index === type_id" close-transition :style="style_item">{{type_item}}
                                                 </el-tag>
                                             </div>
-                                            <div v-else="item.widgetStyle">  <!--如果没有配置样式-->
+                                            <div v-else="item.widgetStyle">
+                                                <!--如果没有配置样式-->
                                                 {{type_item}} &nbsp;
                                             </div>
                                         </div>
-
 
                                     </div>
                                     <!--<div v-for="(style_item,style_index) in get_str2json(item.widgetStyle)">-->
@@ -152,7 +105,6 @@
 
                             </div>
                         </template>
-
 
                     </el-table-column>
 
@@ -167,11 +119,7 @@
                     <!--</template>-->
                     <!--</el-table-column>-->
 
-
-                    <el-table-column
-                            fixed="right"
-                            label="操作"
-                            width="130">
+                    <el-table-column fixed="right" label="操作" width="130">
                         <template scope="scope">
                             <el-button @click="handleViewDetailClick(scope.$index,table_data)" type="text" size="small">
                                 查看
@@ -183,22 +131,14 @@
                 </el-table>
                 <div class="table_footer" style="overflow: hidden;margin-top: 2px">
 
-                    <el-pagination style="float: right;box-shadow:  0 0 15px black;background-color:#ffffff"
-                                   :current-page="parseInt(search_sort_by.page)"
-                                   :page-size="parseInt(search_sort_by.page_size)"
-                                   @size-change="handleSizeChange"
-                                   @current-change="handleCurrentChange"
-                                   :page-sizes="[20, 35, 55, 70]"
-                                   layout="total, sizes, prev, pager, next, jumper"
-                                   :total="all_data_count">
+                    <el-pagination style="float: right;box-shadow:  0 0 15px black;background-color:#ffffff" :current-page="parseInt(search_sort_by.page)" :page-size="parseInt(search_sort_by.page_size)" @size-change="handleSizeChange" @current-change="handleCurrentChange" :page-sizes="[20, 35, 55, 70]" layout="total, sizes, prev, pager, next, jumper" :total="all_data_count">
                     </el-pagination>
                 </div>
             </div>
             <div v-else="all_data_count" key="notabledata" style="text-align: center">
                 <div class="now_data_show" style="">
                     <span style="margin-top: 50px;display: block">{{table_nodatadesc ? table_nodatadesc : '暂无数据'}}</span>
-                    <div class="loader"
-                         style="position:absolute;width: 200px;height: 300px;overflow: hidden;left: 50%;margin-left: -100px;top:220px;">
+                    <div class="loader" style="position:absolute;width: 200px;height: 300px;overflow: hidden;left: 50%;margin-left: -100px;top:220px;">
                         <div class="loading--1" style="display: none"></div>
                         <div class="loading-0" style="margin-left: -100px;border: none"></div>
                         <div class="loading-1" style="display: none"></div>
@@ -209,536 +149,480 @@
             </div>
         </transition>
         <transition name="fade-up" style="">
-            <page_model :element-loading-text="loading_text" v-if="wechat_marketing_store.page_model"
-                        :final_update_action="info_transfer_action.update"
-                        :final_update_btn_desc="'提交修改'"
-                        :page_data="detail_page_model_data"
-                        source_way="table"
-                        :param_apihost="param_apihost"
-                        style="position:absolute;z-index:100;
-            width:100%;text-align: center;bottom: 10px;height:auto;max-height: 600px;overflow-y: auto;overflow-x: hidden">
+            <page_model :element-loading-text="loading_text" v-if="wechat_marketing_store.page_model" :final_update_action="info_transfer_action.update" :final_update_btn_desc="'提交修改'" :page_data="detail_page_model_data" source_way="table" :param_apihost="param_apihost" style="position:absolute;z-index:100;
+                width:100%;text-align: center;bottom: 10px;height:auto;max-height: 600px;overflow-y: auto;overflow-x: hidden">
 
             </page_model>
 
         </transition>
-        <phone_model v-if="show_phone_model"
-                     style="float: right ;margin-bottom: 100px;position: fixed;top:100px;z-index:2000"
-                     :mobile_show_uri="show_phone_model_uri"
-        ></phone_model>
+        <phone_model v-if="show_phone_model" style="float: right ;margin-bottom: 100px;position: fixed;top:100px;z-index:2000" :mobile_show_uri="show_phone_model_uri"></phone_model>
     </div>
 </template>
 
 <script>
-    import page_model from './page_model.vue'
-    import phone_model from './phone_model.vue'
-    import {mapGetters, mapActions} from 'vuex'
-    import axios from 'axios'
-    import {axios_config} from '../../api/axiosApi'
-    import {
-        dbResponseAnalysis2WidgetData,
-        deleteEmptyObj,
-        deleteEmptyString,
-        timestamp2datetime
-    } from '../../api/lib/helper/dataAnalysis'
-    import Vue from 'vue'
-    import {focus} from 'vue-focus';
+import page_model from './page_model.vue'
+import phone_model from './phone_model.vue'
+import { mapGetters, mapActions } from 'vuex'
+import axios from 'axios'
+import { axios_config } from '../../api/axiosApi'
+import {
+    dbResponseAnalysis2WidgetData,
+    deleteEmptyObj,
+    deleteEmptyString,
+    timestamp2datetime
+} from '../../api/lib/helper/dataAnalysis'
+import Vue from 'vue'
+import { focus } from 'vue-focus';
 
-    export default {
-        data() {
-            return {
-                multipleSelection: [],
-                screenWidth: document.body.clientWidth,   // 这里是给到了一个默认值 （这个很重要）
-                screenHeight: document.body.clientHeight,  // 这里是给到了一个默认值 （这个很重要）
-                tableData3: [
-                    {
-                        date: '2016-05-03',
-                        name: '王小虎',
-                        province: '上海',
-                        city: '普陀区',
-                        address: '上海市普陀区金沙江路 1518 弄',
-                        zip: 200333
-                    }, {
-                        date: '2016-05-02',
-                        name: '王小虎',
-                        province: '上海',
-                        city: '普陀区',
-                        address: '上海市普陀区金沙江路 1518 弄',
-                        zip: 200333
-                    }, {
-                        date: '2016-05-04',
-                        name: '王小虎',
-                        province: '上海',
-                        city: '普陀区',
-                        address: '上海市普陀区金沙江路 1518 弄',
-                        zip: 200333
-                    }, {
-                        date: '2016-05-01',
-                        name: '王小虎',
-                        province: '上海',
-                        city: '普陀区',
-                        address: '上海市普陀区金沙江路 1518 弄',
-                        zip: 200333
-                    }, {
-                        date: '2016-05-08',
-                        name: '王小虎',
-                        province: '上海',
-                        city: '普陀区',
-                        address: '上海市普陀区金沙江路 1518 弄',
-                        zip: 200333
-                    }, {
-                        date: '2016-05-06',
-                        name: '王小虎',
-                        province: '上海',
-                        city: '普陀区',
-                        address: '上海市普陀区金沙江路 1518 弄',
-                        zip: 200333
-                    }, {
-                        date: '2016-05-07',
-                        name: '王小虎',
-                        province: '上海',
-                        city: '普陀区',
-                        address: '上海市普陀区金沙江路 1518 弄',
-                        zip: 200333
-                    }, {
-                        date: '2016-05-03',
-                        name: '王小虎',
-                        province: '上海',
-                        city: '普陀区',
-                        address: '上海市普陀区金沙江路 1518 弄',
-                        zip: 200333
-                    }, {
-                        date: '2016-05-02',
-                        name: '王小虎',
-                        province: '上海',
-                        city: '普陀区',
-                        address: '上海市普陀区金沙江路 1518 弄',
-                        zip: 200333
-                    }, {
-                        date: '2016-05-04',
-                        name: '王小虎',
-                        province: '上海',
-                        city: '普陀区',
-                        address: '上海市普陀区金沙江路 1518 弄',
-                        zip: 200333
-                    }, {
-                        date: '2016-05-01',
-                        name: '王小虎',
-                        province: '上海',
-                        city: '普陀区',
-                        address: '上海市普陀区金沙江路 1518 弄',
-                        zip: 200333
-                    }, {
-                        date: '2016-05-08',
-                        name: '王小虎',
-                        province: '上海',
-                        city: '普陀区',
-                        address: '上海市普陀区金沙江路 1518 弄',
-                        zip: 200333
-                    }, {
-                        date: '2016-05-06',
-                        name: '王小虎',
-                        province: '上海',
-                        city: '普陀区',
-                        address: '上海市普陀区金沙江路 1518 弄',
-                        zip: 200333
-                    }, {
-                        date: '2016-05-07',
-                        name: '王小虎',
-                        province: '上海',
-                        city: '普陀区',
-                        address: '上海市普陀区金沙江路 1518 弄',
-                        zip: 200333
-                    }, {
-                        date: '2016-05-03',
-                        name: '王小虎',
-                        province: '上海',
-                        city: '普陀区',
-                        address: '上海市普陀区金沙江路 1518 弄',
-                        zip: 200333
-                    }, {
-                        date: '2016-05-02',
-                        name: '王小虎',
-                        province: '上海',
-                        city: '普陀区',
-                        address: '上海市普陀区金沙江路 1518 弄',
-                        zip: 200333
-                    }, {
-                        date: '2016-05-04',
-                        name: '王小虎',
-                        province: '上海',
-                        city: '普陀区',
-                        address: '上海市普陀区金沙江路 1518 弄',
-                        zip: 200333
-                    }, {
-                        date: '2016-05-01',
-                        name: '王小虎',
-                        province: '上海',
-                        city: '普陀区',
-                        address: '上海市普陀区金沙江路 1518 弄',
-                        zip: 200333
-                    }, {
-                        date: '2016-05-08',
-                        name: '王小虎',
-                        province: '上海',
-                        city: '普陀区',
-                        address: '上海市普陀区金沙江路 1518 弄',
-                        zip: 200333
-                    }, {
-                        date: '2016-05-06',
-                        name: '王小虎',
-                        province: '上海',
-                        city: '普陀区',
-                        address: '上海市普陀区金沙江路 1518 弄',
-                        zip: 200333
-                    }, {
-                        date: '2016-05-07',
-                        name: '王小虎',
-                        province: '上海',
-                        city: '普陀区',
-                        address: '上海市普陀区金沙江路 1518 弄',
-                        zip: 200333
-                    }
-                ],
-                tableField: {
-                    date: {
-                        title: '日期',
+export default {
+    data() {
+        return {
+            multipleSelection: [],
+            screenWidth: document.body.clientWidth,   // 这里是给到了一个默认值 （这个很重要）
+            screenHeight: document.body.clientHeight,  // 这里是给到了一个默认值 （这个很重要）
+            tableData3: [
+                {
+                    date: '2016-05-03',
+                    name: '王小虎',
+                    province: '上海',
+                    city: '普陀区',
+                    address: '上海市普陀区金沙江路 1518 弄',
+                    zip: 200333
+                }, {
+                    date: '2016-05-02',
+                    name: '王小虎',
+                    province: '上海',
+                    city: '普陀区',
+                    address: '上海市普陀区金沙江路 1518 弄',
+                    zip: 200333
+                }, {
+                    date: '2016-05-04',
+                    name: '王小虎',
+                    province: '上海',
+                    city: '普陀区',
+                    address: '上海市普陀区金沙江路 1518 弄',
+                    zip: 200333
+                }, {
+                    date: '2016-05-01',
+                    name: '王小虎',
+                    province: '上海',
+                    city: '普陀区',
+                    address: '上海市普陀区金沙江路 1518 弄',
+                    zip: 200333
+                }, {
+                    date: '2016-05-08',
+                    name: '王小虎',
+                    province: '上海',
+                    city: '普陀区',
+                    address: '上海市普陀区金沙江路 1518 弄',
+                    zip: 200333
+                }, {
+                    date: '2016-05-06',
+                    name: '王小虎',
+                    province: '上海',
+                    city: '普陀区',
+                    address: '上海市普陀区金沙江路 1518 弄',
+                    zip: 200333
+                }, {
+                    date: '2016-05-07',
+                    name: '王小虎',
+                    province: '上海',
+                    city: '普陀区',
+                    address: '上海市普陀区金沙江路 1518 弄',
+                    zip: 200333
+                }, {
+                    date: '2016-05-03',
+                    name: '王小虎',
+                    province: '上海',
+                    city: '普陀区',
+                    address: '上海市普陀区金沙江路 1518 弄',
+                    zip: 200333
+                }, {
+                    date: '2016-05-02',
+                    name: '王小虎',
+                    province: '上海',
+                    city: '普陀区',
+                    address: '上海市普陀区金沙江路 1518 弄',
+                    zip: 200333
+                }, {
+                    date: '2016-05-04',
+                    name: '王小虎',
+                    province: '上海',
+                    city: '普陀区',
+                    address: '上海市普陀区金沙江路 1518 弄',
+                    zip: 200333
+                }, {
+                    date: '2016-05-01',
+                    name: '王小虎',
+                    province: '上海',
+                    city: '普陀区',
+                    address: '上海市普陀区金沙江路 1518 弄',
+                    zip: 200333
+                }, {
+                    date: '2016-05-08',
+                    name: '王小虎',
+                    province: '上海',
+                    city: '普陀区',
+                    address: '上海市普陀区金沙江路 1518 弄',
+                    zip: 200333
+                }, {
+                    date: '2016-05-06',
+                    name: '王小虎',
+                    province: '上海',
+                    city: '普陀区',
+                    address: '上海市普陀区金沙江路 1518 弄',
+                    zip: 200333
+                }, {
+                    date: '2016-05-07',
+                    name: '王小虎',
+                    province: '上海',
+                    city: '普陀区',
+                    address: '上海市普陀区金沙江路 1518 弄',
+                    zip: 200333
+                }, {
+                    date: '2016-05-03',
+                    name: '王小虎',
+                    province: '上海',
+                    city: '普陀区',
+                    address: '上海市普陀区金沙江路 1518 弄',
+                    zip: 200333
+                }, {
+                    date: '2016-05-02',
+                    name: '王小虎',
+                    province: '上海',
+                    city: '普陀区',
+                    address: '上海市普陀区金沙江路 1518 弄',
+                    zip: 200333
+                }, {
+                    date: '2016-05-04',
+                    name: '王小虎',
+                    province: '上海',
+                    city: '普陀区',
+                    address: '上海市普陀区金沙江路 1518 弄',
+                    zip: 200333
+                }, {
+                    date: '2016-05-01',
+                    name: '王小虎',
+                    province: '上海',
+                    city: '普陀区',
+                    address: '上海市普陀区金沙江路 1518 弄',
+                    zip: 200333
+                }, {
+                    date: '2016-05-08',
+                    name: '王小虎',
+                    province: '上海',
+                    city: '普陀区',
+                    address: '上海市普陀区金沙江路 1518 弄',
+                    zip: 200333
+                }, {
+                    date: '2016-05-06',
+                    name: '王小虎',
+                    province: '上海',
+                    city: '普陀区',
+                    address: '上海市普陀区金沙江路 1518 弄',
+                    zip: 200333
+                }, {
+                    date: '2016-05-07',
+                    name: '王小虎',
+                    province: '上海',
+                    city: '普陀区',
+                    address: '上海市普陀区金沙江路 1518 弄',
+                    zip: 200333
+                }
+            ],
+            tableField: {
+                date: {
+                    title: '日期',
 
-                    },
-                    name: {
-                        title: '名称',
-
-                    },
-                    province: {
-                        title: '省份',
-                    },
-                    city: {
-                        title: '城市',
-                    },
-                    address: {
-                        title: '地址',
-                    },
-                    zip: {
-                        title: '编码',
-                    }
                 },
-                show_page_model_ctrl_by_table: false,
-                detail_page_model_data: {},
-                isloading: false,
-                loading_text: '数据加载中',
-                currect_select: '',
+                name: {
+                    title: '名称',
 
-                options4: [],
-                value9: [],
-                list: [],
-                loading: false,
-                states: ["Alabama", "Alaska", "Arizona",
-                    "Arkansas", "California", "Colorado",
-                    "Connecticut", "Delaware", "Florida",
-                    "Georgia", "Hawaii", "Idaho", "Illinois",
-                    "Indiana", "Iowa", "Kansas", "Kentucky",
-                    "Louisiana", "Maine", "Maryland",
-                    "Massachusetts", "Michigan", "Minnesota",
-                    "Mississippi", "Missouri", "Montana",
-                    "Nebraska", "Nevada", "New Hampshire",
-                    "New Jersey", "New Mexico", "New York",
-                    "North Carolina", "North Dakota", "Ohio",
-                    "Oklahoma", "Oregon", "Pennsylvania",
-                    "Rhode Island", "South Carolina",
-                    "South Dakota", "Tennessee", "Texas",
-                    "Utah", "Vermont", "Virginia",
-                    "Washington", "West Virginia", "Wisconsin",
-                    "Wyoming"],
-                focused: false,
-                ready_refresh: 0,
-                show_phone_model_uri: 'http://wap.baidu.com',
-                apihost: '',
-                add_app_param:''
-            }
-
-        },
-        props: {
-            param_apihost: {
-                default: ''
-            },
-            show_phone_model_key: {
-                defult: 'uri'
-            },
-            groupdelable: {
-                default: false
-            },
-            show_phone_model: {
-                default: false
-            },
-            test_props: '123',
-            new_add_info: {
-                type: String,
-                default: ''
-            },
-            search_sort_by: {
-                type: Object,
-                default: function () {
-                    return {
-                        vue_search_way: 'self',
-                        page: 1,
-                        page_size: 20,
-                    }
+                },
+                province: {
+                    title: '省份',
+                },
+                city: {
+                    title: '城市',
+                },
+                address: {
+                    title: '地址',
+                },
+                zip: {
+                    title: '编码',
                 }
             },
-            table_design: {
-                type: Object,
-                default: function () {
-                    return {
-                        height: this.screenHeight
-                    }
-                },
-                required: false,
-            },
-            all_data_count: {
-                default: 0
+            show_page_model_ctrl_by_table: false,
+            detail_page_model_data: {},
+            isloading: false,
+            loading_text: '数据加载中',
+            currect_select: '',
 
-            },
-            table_data: {
-                type: Array,
-                default: function () {
-                    return []
-                },
-                required: false,
-            },
-            table_nodatadesc: {
-                default: '暂无数据',
-                required: false,
-            },
-            table_field: {
-                type: Object,
-                default: function () {
-                    return {}
+            options4: [],
+            value9: [],
+            list: [],
+            loading: false,
+            states: ["Alabama", "Alaska", "Arizona",
+                "Arkansas", "California", "Colorado",
+                "Connecticut", "Delaware", "Florida",
+                "Georgia", "Hawaii", "Idaho", "Illinois",
+                "Indiana", "Iowa", "Kansas", "Kentucky",
+                "Louisiana", "Maine", "Maryland",
+                "Massachusetts", "Michigan", "Minnesota",
+                "Mississippi", "Missouri", "Montana",
+                "Nebraska", "Nevada", "New Hampshire",
+                "New Jersey", "New Mexico", "New York",
+                "North Carolina", "North Dakota", "Ohio",
+                "Oklahoma", "Oregon", "Pennsylvania",
+                "Rhode Island", "South Carolina",
+                "South Dakota", "Tennessee", "Texas",
+                "Utah", "Vermont", "Virginia",
+                "Washington", "West Virginia", "Wisconsin",
+                "Wyoming"],
+            focused: false,
+            ready_refresh: 0,
+            show_phone_model_uri: 'http://wap.baidu.com',
+            apihost: '',
+            add_app_param: ''
+        }
 
-                },
-                required: false,
-            },
-            info_transfer_action: {
-                type: Object,
-                default: function () {
-                    return {
-                        get: '',
-                        update: ''
-                    }
-
-                },
-                required: false,
-            },
-
+    },
+    props: {
+        param_apihost: {
+            default: ''
         },
-        watch: {
-            search_sort_by: {
-                handler: function (val, oldVal) {
-                    this.isloading = true
-
-                },
-                deep: true
-            },
-            table_data: {
-                handler: function (val, oldVal) {
-                    this.isloading = false
-
-                },
-                deep: true
-            },
-            multipleSelection(val, oldVal){
-                console.log('multipleSelection change')
-                console.log(val.length, oldVal.length)
-
+        show_phone_model_key: {
+            defult: 'uri'
+        },
+        groupdelable: {
+            default: false
+        },
+        show_phone_model: {
+            default: false
+        },
+        test_props: '123',
+        new_add_info: {
+            type: String,
+            default: ''
+        },
+        search_sort_by: {
+            type: Object,
+            default: function () {
+                return {
+                    vue_search_way: 'self',
+                    page: 1,
+                    page_size: 20,
+                }
             }
         },
-        computed: {
-            ...mapGetters([
-                'wechat_marketing_store',
-            ]),
-            get_sorter_arr(){
-                var sorter_arr = []
-                for (var index in this.search_sort_by.sorter) {
-                    sorter_arr.push(index)
+        table_design: {
+            type: Object,
+            default: function () {
+                return {
+                    height: this.screenHeight
                 }
-                return sorter_arr
             },
+            required: false,
+        },
+        all_data_count: {
+            default: 0
 
         },
-        created(){
+        table_data: {
+            type: Array,
+            default: function () {
+                return []
+            },
+            required: false,
+        },
+        table_nodatadesc: {
+            default: '暂无数据',
+            required: false,
+        },
+        table_field: {
+            type: Object,
+            default: function () {
+                return {}
+
+            },
+            required: false,
+        },
+        info_transfer_action: {
+            type: Object,
+            default: function () {
+                return {
+                    get: '',
+                    update: ''
+                }
+
+            },
+            required: false,
+        },
+
+    },
+    watch: {
+        search_sort_by: {
+            handler: function (val, oldVal) {
+                this.isloading = true
+
+            },
+            deep: true
+        },
+        table_data: {
+            handler: function (val, oldVal) {
+                this.isloading = false
+
+            },
+            deep: true
+        },
+        multipleSelection(val, oldVal) {
+            console.log('multipleSelection change')
+            console.log(val.length, oldVal.length)
+
+        }
+    },
+    computed: {
+        ...mapGetters([
+            'wechat_marketing_store',
+        ]),
+        get_sorter_arr() {
+            var sorter_arr = []
+            for (var index in this.search_sort_by.sorter) {
+                sorter_arr.push(index)
+            }
+            return sorter_arr
+        },
+
+    },
+    created() {
+        var vm = this
+        console.log('this.param_apihost',this.param_apihost)
+        if (!this.param_apihost) {
+            this.apihost = this.wechat_marketing_store.apihost
+        }
+        else {
+            this.apihost = this.param_apihost
+            let arr = this.param_apihost.split('?')
+            this.apihost = arr[0]
+            this.add_app_param = arr[1]
+        }
+        console.log('apihost=>', this.apihost)
+        this.$root.eventHub.$off('refresh_table_model')
+        this.$root.eventHub.$on('refresh_table_model', (data) => {
+            console.log('on->refresh_table_model')
+            this.refresh_table_data()
+        })
+    },
+    updated() {
+
+        //            console.log('updated->props->search_sort_by->',this.search_sort_by)
+
+        Vue.nextTick(() => {
+            //                console.log('this.table_data',this.table_data)
+        })
+        $(".table_select_bar>div.el-input>input").focus((e) => {
+
+            this.currect_select = e.currentTarget.parentNode.parentNode.dataset.key
+
+        })
+        $("#table_button_bar .el-input>input").focus((e) => {
+
+            var $div_node = e.currentTarget.parentNode
+            this.currect_select = $div_node.dataset.key
+        })
+
+    },
+    mounted() {
+
+        //            console.log('mounted->props->search_sort_by->',this.search_sort_by)
+        //            this.watchSearchSortBy()
+
+        this.list = this.states.map(item => {
+            return { value: item, label: item };
+        });
+        var vm = this
+        this.$root.eventHub.$on('screenWidth2screenHeight', function (data) {
+            var width2height = data.split(",")
+            vm.screenWidth = parseInt(width2height[0])
+            vm.screenHeight = parseInt(width2height[1])
+        })
+
+    },
+    components: {
+        page_model,
+        phone_model,
+    },
+    methods: {
+        ...mapActions([
+            'updateWechat_marketing_store',
+        ]),
+        handleViewDetailClick(index, rows) {
+
+            var currect_row = rows[index]
+            var document_id = currect_row.document_id
+            var username = ''
+            if (currect_row.hasOwnProperty('username')) {
+                username = currect_row.username
+            }
+            //        console.log(rows)
+            //        console.log(index)
+            //        console.log(currect_row)
+            this.getCurrectBusinessDetail(document_id, username)
+            //                this.$root.eventHub.$emit('currect_row_index',row)
+        },
+        handleDelRowClick(index, rows) {
+            var currect_row = rows.slice(index, index + 1);
+            var document_id = currect_row.document_id
+            var username = currect_row.username
+            this.updateCurrectBusinessDetail(index, username, true)
+            //                this.$root.eventHub.$emit('currect_row_index',row)
+        },
+        rowClick(row, event, column) {
+            if (this.show_phone_model) {
+                this.show_phone_model_uri = 'http://' + row[this.show_phone_model_key]
+            }
+        },
+        rowDblClick(row, event, column) {
+            //                this.show_page_model_ctrl_by_table = false
+            this.updateWechat_marketing_store({
+                page_model: {
+                    type: 'del',
+                }
+            })
+        },
+        toggleSelection(rows) {
+            if (rows) {
+                rows.forEach(row => {
+                    this.$refs.multipleTable.toggleRowSelection(row);
+                });
+            } else {
+                this.$refs.multipleTable.clearSelection();
+            }
+        },
+        handleSelectionChange(val) {
+            this.multipleSelection = val;
+        },
+        formatter(row, column) {
+            return row.address;
+        },
+        filterTag(value, row) {
+            return row.tag === value;
+        },
+        add_info() {
             var vm = this
-            if (!this.param_apihost) {
-                this.apihost = this.wechat_marketing_store.apihost
-            }
-            else {
-                this.apihost = this.param_apihost
-                let arr = this.param_apihost.split('?')
-                this.apihost = arr[0]
-                this.add_app_param = arr[1]
-            }
-            console.log('apihost=>',this.apihost)
-            this.$root.eventHub.$off('refresh_table_model')
-            this.$root.eventHub.$on('refresh_table_model', (data) => {
-                console.log('on->refresh_table_model')
-                this.refresh_table_data()
-            })
-        },
-        updated(){
-
-//            console.log('updated->props->search_sort_by->',this.search_sort_by)
-
-            Vue.nextTick(() => {
-//                console.log('this.table_data',this.table_data)
-            })
-            $(".table_select_bar>div.el-input>input").focus((e) => {
-
-                this.currect_select = e.currentTarget.parentNode.parentNode.dataset.key
-
-            })
-            $("#table_button_bar .el-input>input").focus((e) => {
-
-                var $div_node = e.currentTarget.parentNode
-                this.currect_select = $div_node.dataset.key
-            })
-
-        },
-        mounted(){
-
-//            console.log('mounted->props->search_sort_by->',this.search_sort_by)
-//            this.watchSearchSortBy()
-
-            this.list = this.states.map(item => {
-                return {value: item, label: item};
-            });
-            var vm = this
-            this.$root.eventHub.$on('screenWidth2screenHeight', function (data) {
-                var width2height = data.split(",")
-                vm.screenWidth = parseInt(width2height[0])
-                vm.screenHeight = parseInt(width2height[1])
-            })
-
-        },
-        components: {
-            page_model,
-            phone_model,
-        },
-        methods: {
-            ...mapActions([
-                'updateWechat_marketing_store',
-            ]),
-            handleViewDetailClick(index, rows) {
-
-                var currect_row = rows[index]
-                var document_id = currect_row.document_id
-                var username = ''
-                if (currect_row.hasOwnProperty('username')) {
-                    username = currect_row.username
-                }
-//        console.log(rows)
-//        console.log(index)
-//        console.log(currect_row)
-                this.getCurrectBusinessDetail(document_id, username)
-//                this.$root.eventHub.$emit('currect_row_index',row)
-            },
-            handleDelRowClick(index, rows) {
-                var currect_row = rows.slice(index, index + 1);
-                var document_id = currect_row.document_id
-                var username = currect_row.username
-                this.updateCurrectBusinessDetail(index, username, true)
-//                this.$root.eventHub.$emit('currect_row_index',row)
-            },
-            rowClick(row, event, column){
-                if (this.show_phone_model) {
-                    this.show_phone_model_uri = 'http://' + row[this.show_phone_model_key]
-                }
-            },
-            rowDblClick(row, event, column){
-//                this.show_page_model_ctrl_by_table = false
-                this.updateWechat_marketing_store({
-                    page_model: {
-                        type: 'del',
-                    }
-                })
-            },
-            toggleSelection(rows) {
-                if (rows) {
-                    rows.forEach(row => {
-                        this.$refs.multipleTable.toggleRowSelection(row);
-                    });
-                } else {
-                    this.$refs.multipleTable.clearSelection();
-                }
-            },
-            handleSelectionChange(val) {
-                this.multipleSelection = val;
-            },
-            formatter(row, column) {
-                return row.address;
-            },
-            filterTag(value, row) {
-                return row.tag === value;
-            },
-            add_info(){
-                var vm = this
-                this.$http.post(this.apihost + this.info_transfer_action.add, {
-//        axios.post(this.apihost + this.info_transfer_action.add, {
-                    rules: 1,
-                    token: this.wechat_marketing_store.token
-                }, this.$http_config)
-                    .then((res) => {
-                        if (res.data.code === 0) {
-                            let analysis_data = dbResponseAnalysis2WidgetData(res.data.response)
-
-                            var content = analysis_data.widgetdata[0]
-                            vm.detail_page_model_data = {
-                                title: vm.new_add_info + '信息',
-                                content: content
-                            }
-                            vm.updateWechat_marketing_store({
-                                page_model: {
-                                    type: 'update',
-                                    value: true
-                                }
-                            })
-                            console.log('wechat_marketing_store', vm.wechat_marketing_store.page_model)
-                        }
-                        else {
-                            vm.$notify.success({
-                                title: '失败',
-                                message: res.data.code + ' ' + res.data.desc,
-                                type: 'error',
-                                offset: 100,
-                                duration: '2000'
-                            });
-
-                        }
-
-                    })
-            },
-            getCurrectBusinessDetail(id, username){
-                var vm = this
-                var search_param = ''
-                var show_title = ''
-                if (id) {
-                    search_param = {document_id: id, rules: 1}
-                }
-                else {
-                    search_param = {rules: 1}
-                }
-                if (username) {
-                    show_title = username + ' 详细信息'
-                }
-                else {
-                    show_title = '详细数据信息'
-                }
-                vm.isloading = true
-                console.log('start->loading')
-                this.$http.post(this.apihost + this.info_transfer_action.get, search_param, this.$http_config)
-                //        axios.post(this.apihost + this.info_transfer_action.get, search_param, axios_config)
-                    .then((res) => {
+            console.log('this.apihost + this.info_transfer_action.add',this.apihost + this.info_transfer_action.add)
+            this.$http.post(this.apihost + this.info_transfer_action.add, {
+                //        axios.post(this.apihost + this.info_transfer_action.add, {
+                rules: 1,
+                token: this.wechat_marketing_store.token
+            }, this.$http_config)
+                .then((res) => {
+                    if (res.data.code === 0) {
                         let analysis_data = dbResponseAnalysis2WidgetData(res.data.response)
+
                         var content = analysis_data.widgetdata[0]
-                        console.log(analysis_data)
                         vm.detail_page_model_data = {
-                            title: show_title,
+                            title: vm.new_add_info + '信息',
                             content: content
                         }
                         vm.updateWechat_marketing_store({
@@ -747,102 +631,82 @@
                                 value: true
                             }
                         })
-                        vm.isloading = false
-                        console.log('end->loading')
+                        // console.log('wechat_marketing_store', vm.wechat_marketing_store.page_model)
+                    }
+                    else {
+                        vm.$notify.success({
+                            title: '失败',
+                            message: res.data.code + ' ' + res.data.desc,
+                            type: 'error',
+                            offset: 100,
+                            duration: '2000'
+                        });
 
+                    }
+
+                })
+        },
+        getCurrectBusinessDetail(id, username) {
+            var vm = this
+            var search_param = ''
+            var show_title = ''
+            if (id) {
+                search_param = { document_id: id, rules: 1 }
+            }
+            else {
+                search_param = { rules: 1 }
+            }
+            if (username) {
+                show_title = username + ' 详细信息'
+            }
+            else {
+                show_title = '详细数据信息'
+            }
+            vm.isloading = true
+            console.log('start->loading')
+            this.$http.post(this.apihost + this.info_transfer_action.get, search_param, this.$http_config)
+                //        axios.post(this.apihost + this.info_transfer_action.get, search_param, axios_config)
+                .then((res) => {
+                    let analysis_data = dbResponseAnalysis2WidgetData(res.data.response)
+                    var content = analysis_data.widgetdata[0]
+                    console.log(analysis_data)
+                    vm.detail_page_model_data = {
+                        title: show_title,
+                        content: content
+                    }
+                    vm.updateWechat_marketing_store({
+                        page_model: {
+                            type: 'update',
+                            value: true
+                        }
                     })
-                    .catch((error) => {
-                        vm.isloading = error
-                    });
-            },
-            updateCurrectBusinessDetail(index, name, del = false){
-                var vm = this
+                    vm.isloading = false
+                    console.log('end->loading')
 
-                var update_params = {}
-                if (del) {
+                })
+                .catch((error) => {
+                    vm.isloading = error
+                });
+        },
+        updateCurrectBusinessDetail(index, name, del = false) {
+            var vm = this
 
-                    update_params.document_id = this.table_data[index].document_id
-                    update_params.if_delete = 1
-                }
-                else {
-                    update_params = this.table_data[index]
-                    update_params.rules = 1
-                }
-                vm.isloading = true
-                this.$http.post(this.apihost + this.info_transfer_action.update, update_params, this.$http_config)
+            var update_params = {}
+            if (del) {
+
+                update_params.document_id = this.table_data[index].document_id
+                update_params.if_delete = 1
+            }
+            else {
+                update_params = this.table_data[index]
+                update_params.rules = 1
+            }
+            vm.isloading = true
+            this.$http.post(this.apihost + this.info_transfer_action.update, update_params, this.$http_config)
                 //        axios.post(this.apihost + this.info_transfer_action.update, update_params, axios_config)
-                    .then((res) => {
-                        if (res.data.code === 0) {
+                .then((res) => {
+                    if (res.data.code === 0) {
 
-                            vm.$notify.success({
-                                title: '成功',
-                                message: '删除成功',
-                                offset: 100,
-                                duration: '2000'
-                            });
-                            vm.refresh_table_data()
-
-                        }
-                        else {
-                            vm.$notify.success({
-                                title: '失败',
-                                message: res.data.code + ' ' + res.data.desc,
-                                type: 'error',
-                                offset: 100,
-                                duration: '2000'
-                            });
-
-                        }
-                        vm.isloading = false
-
-                    })
-                    .catch((error) => {
-                        vm.isloading = error
-                    });
-            },
-            handleSizeChange(val) {
-                this.isloading = true
-                console.log(`每页 ${val} 条`);
-                this.search_sort_by.vue_search_way = 'self'
-                this.search_sort_by.page_size = val
-                this.handleCurrentChange(1)
-
-            },
-            handleCurrentChange(val) {
-                this.isloading = true
-                this.search_sort_by.page = val
-
-            },
-            refresh_table_data(add_note){
-                var vm = this
-                if (add_note === 'resetselect') {
-                    console.log('emit->refresh_table', add_note)
-
-                    this.$root.eventHub.$emit('refresh_table', 'resetselect')
-                }
-                else {
-                    console.log('emit->refresh_table')
-                    this.$root.eventHub.$emit('refresh_table', JSON.stringify(vm.search_sort_by))
-                }
-
-            },
-            clickCurrectSelect(e){
-            },
-            remoteSearchMethod(query) {
-                this.search_sort_by[this.currect_select] = query
-            },
-            focusCurrectSelect(e){
-            },
-            delSelectOption(){
-                var vm = this
-                var del_ids = []
-                for (var item of this.multipleSelection) {
-                    del_ids.push(item.document_id)
-                }
-                console.log(del_ids)
-                this.$http.post(this.apihost + this.info_transfer_action.groupdel, {ids: del_ids}, this.$http_config)
-                    .then((res) => {
-//                        console.log('groupdel->',res.data)
                         vm.$notify.success({
                             title: '成功',
                             message: '删除成功',
@@ -850,81 +714,150 @@
                             duration: '2000'
                         });
                         vm.refresh_table_data()
-//                        if((typeof res.data === 'object' && res.data.statistic.count>=1) || res.data>=1){
-//                            vm.$notify.success({
-//                                title: '成功',
-//                                message: '删除成功',
-//                                offset: 100,
-//                                duration:'2000'
-//                            });
-//                        }
-//                        else{
-//                            vm.$notify.success({
-//                                title: '失败',
-//                                message: '删除失败',
-//                                type:'error',
-//                                offset: 100,
-//                                duration:'2000'
-//                            });
-//
-//                        }
-//                        vm.$root.eventHub.$emit('refresh_businessinfo',JSON.stringify(vm.search_sort_by))
-//                        vm.isloading = false
-                    })
-                    .catch((error) => {
-                        vm.isloading = error
-                    });
 
-            },
-            resetSelect(){
-                this.handleCurrentChange(1)
-//                $('li.number').eq(0).click()
-//                this.$root.eventHub.$emit('refresh_table','resetselect')
-                this.refresh_table_data('resetselect')
+                    }
+                    else {
+                        vm.$notify.success({
+                            title: '失败',
+                            message: res.data.code + ' ' + res.data.desc,
+                            type: 'error',
+                            offset: 100,
+                            duration: '2000'
+                        });
 
-            },
-            sortChange(column){
-                var default_sorter = this.search_sort_by.sorter
-                for (var index in default_sorter) {
-                    default_sorter[index] = ''
-                }
-                default_sorter[column.prop] = column.order
-                console.log(default_sorter)
+                    }
+                    vm.isloading = false
 
-            },
-            is_sortable(key, e){
+                })
+                .catch((error) => {
+                    vm.isloading = error
+                });
+        },
+        handleSizeChange(val) {
+            this.isloading = true
+            console.log(`每页 ${val} 条`);
+            this.search_sort_by.vue_search_way = 'self'
+            this.search_sort_by.page_size = val
+            this.handleCurrentChange(1)
 
-                if (this.search_sort_by.sorter.hasOwnProperty(key)) {
-                    return 'custom'
-                }
+        },
+        handleCurrentChange(val) {
+            this.isloading = true
+            this.search_sort_by.page = val
 
-            },
-            summaryfunction(columns, data){
-                console.log(columns, data)
-            },
-            get_timestamp2datetime(timestamp){
-                return timestamp2datetime(timestamp)
-            },
-            get_str2json(str){
-                if (str.length >= 2) {
-                    return JSON.parse(str)
-                }
-                else return ''
+        },
+        refresh_table_data(add_note) {
+            var vm = this
+            if (add_note === 'resetselect') {
+                console.log('emit->refresh_table', add_note)
+
+                this.$root.eventHub.$emit('refresh_table', 'resetselect')
+            }
+            else {
+                console.log('emit->refresh_table')
+                this.$root.eventHub.$emit('refresh_table', JSON.stringify(vm.search_sort_by))
             }
 
         },
-        beforeDestroy(){
-            this.$root.eventHub.$off('close_page_model')
-//            console.log('table_model->beforedestroy')
-//            this.$root.eventHub.$off('refresh_table')
-//            this.$root.eventHub.$off('page_model_update_response_done')
+        clickCurrectSelect(e) {
+        },
+        remoteSearchMethod(query) {
+            this.search_sort_by[this.currect_select] = query
+        },
+        focusCurrectSelect(e) {
+        },
+        delSelectOption() {
+            var vm = this
+            var del_ids = []
+            for (var item of this.multipleSelection) {
+                del_ids.push(item.document_id)
+            }
+            console.log(del_ids)
+            this.$http.post(this.apihost + this.info_transfer_action.groupdel, { ids: del_ids }, this.$http_config)
+                .then((res) => {
+                    //                        console.log('groupdel->',res.data)
+                    vm.$notify.success({
+                        title: '成功',
+                        message: '删除成功',
+                        offset: 100,
+                        duration: '2000'
+                    });
+                    vm.refresh_table_data()
+                    //                        if((typeof res.data === 'object' && res.data.statistic.count>=1) || res.data>=1){
+                    //                            vm.$notify.success({
+                    //                                title: '成功',
+                    //                                message: '删除成功',
+                    //                                offset: 100,
+                    //                                duration:'2000'
+                    //                            });
+                    //                        }
+                    //                        else{
+                    //                            vm.$notify.success({
+                    //                                title: '失败',
+                    //                                message: '删除失败',
+                    //                                type:'error',
+                    //                                offset: 100,
+                    //                                duration:'2000'
+                    //                            });
+                    //
+                    //                        }
+                    //                        vm.$root.eventHub.$emit('refresh_businessinfo',JSON.stringify(vm.search_sort_by))
+                    //                        vm.isloading = false
+                })
+                .catch((error) => {
+                    vm.isloading = error
+                });
 
         },
-        destroyed(){
-//            console.log('table_model->destroyed')
+        resetSelect() {
+            this.handleCurrentChange(1)
+            //                $('li.number').eq(0).click()
+            //                this.$root.eventHub.$emit('refresh_table','resetselect')
+            this.refresh_table_data('resetselect')
 
+        },
+        sortChange(column) {
+            var default_sorter = this.search_sort_by.sorter
+            for (var index in default_sorter) {
+                default_sorter[index] = ''
+            }
+            default_sorter[column.prop] = column.order
+            console.log(default_sorter)
+
+        },
+        is_sortable(key, e) {
+
+            if (this.search_sort_by.sorter.hasOwnProperty(key)) {
+                return 'custom'
+            }
+
+        },
+        summaryfunction(columns, data) {
+            console.log(columns, data)
+        },
+        get_timestamp2datetime(timestamp) {
+            return timestamp2datetime(timestamp)
+        },
+        get_str2json(str) {
+            if (str.length >= 2) {
+                return JSON.parse(str)
+            }
+            else return ''
         }
+
+    },
+    beforeDestroy() {
+        this.$root.eventHub.$off('close_page_model')
+        //            console.log('table_model->beforedestroy')
+        //            this.$root.eventHub.$off('refresh_table')
+        //            this.$root.eventHub.$off('page_model_update_response_done')
+
+    },
+    destroyed() {
+        //            console.log('table_model->destroyed')
+
     }
+}
 </script>
 <style lang="stylus" rel="stylesheet/stylus">
     #table_button_bar button {

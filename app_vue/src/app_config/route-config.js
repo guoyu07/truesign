@@ -12,6 +12,7 @@ const effect = resolve => require(['../components/effect/effect.vue'], resolve)
 const loading_canvas = resolve => require(['../components/effect/loading_canvas.vue'], resolve)
 const threejs_dev = resolve => require(['../components/effect/threejs_dev.vue'], resolve)
 const threejs_dev_trackball = resolve => require(['../components/effect/threejs_dev_trackball.vue'], resolve)
+const cache_canvas = resolve => require(['../components/effect/cache_canvas.vue'], resolve)
 const word_canvas = resolve => require(['../components/effect/word_canvas.vue'], resolve)
 const draw_canvas = resolve => require(['../components/effect/draw_canvas.vue'], resolve)
 const canvas = resolve => require(['../components/effect/canvas.vue'], resolve)
@@ -19,7 +20,14 @@ const ball_canvas = resolve => require(['../components/effect/ball_canvas.vue'],
 const ball_canvas_onedraw = resolve => require(['../components/effect/ball_canvas_onedraw.vue'], resolve)
 const ball_canvas_init = resolve => require(['../components/effect/ball_canvas_init.vue'], resolve)
 
+
+const project = resolve => require(['../components/project/project.vue'], resolve)
+const jktruesign_doc = resolve => require(['../components/project/jktruesign_app/doc.vue'], resolve)
+const jktruesign_doctype = resolve => require(['../components/project/jktruesign_app/doc_type.vue'], resolve)
+
+
 const routes = [
+
 
     {
         name: 'home',
@@ -45,6 +53,32 @@ const routes = [
                     title: 'websocket'
                 },
                 component: websocket
+            },
+        ]
+    },
+    {
+        name: 'project',
+        path: '/project',
+        meta: {
+            title: 'project'
+        },
+        component: project,
+        children: [
+            {
+                name: 'jktruesign_doc',
+                path: 'jktruesign_doc',
+                meta: {
+                    title: 'jktruesign_doc'
+                },
+                component: jktruesign_doc
+            },
+            {
+                name: 'jktruesign_doctype',
+                path: 'jktruesign_doctype',
+                meta: {
+                    title: 'jktruesign_doctype'
+                },
+                component: jktruesign_doctype
             },
         ]
     },
@@ -105,7 +139,14 @@ const routes = [
                 },
                 component: word_canvas
             },
-
+            {
+                name: 'cache_canvas',
+                path: 'cache_canvas',
+                meta: {
+                    title: 'cache_canvas'
+                },
+                component: cache_canvas
+            },
             {
                 name: 'ball_canvas',
                 path: 'ball_canvas',

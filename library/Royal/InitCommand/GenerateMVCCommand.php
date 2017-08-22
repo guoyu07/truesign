@@ -50,51 +50,51 @@ class GenerateMVCCommand extends Command
     {
 
 
-        echo " 开始处理 Controllers ===========================".PHP_EOL;
-        $this->outputControllerName = $this->targetControllerPath . DIRECTORY_SEPARATOR . ucfirst($controllerName) . '.php';
-        $template = require_once $this->controllerTemplatePath;
+        echo " 开始处理 Controllers =>".PHP_EOL;
+        $this->outputControllerName = $this->targetControllerPath . DIRECTORY_SEPARATOR . ucfirst(strtolower($this->convertUnderline($controllerName))) . '.php';
+        $template = require $this->controllerTemplatePath;
         $data = sprintf($template,
-            ucfirst($controllerName) . 'Controller',
+            ucfirst(strtolower($this->convertUnderline($controllerName))). 'Controller',
             ucfirst(basename(CURRECT_APPLICATION_PATH)),
-            ucfirst($controllerName),
-            ucfirst($controllerName) . 'Controller',
-            ucfirst($controllerName),
-            ucfirst($controllerName),
-            ucfirst($controllerName),
+            ucfirst(strtolower($this->convertUnderline($controllerName))),
+            ucfirst(strtolower($this->convertUnderline($controllerName))). 'Controller',
+            ucfirst(strtolower($this->convertUnderline($controllerName))),
+            ucfirst(strtolower($this->convertUnderline($controllerName))),
+            ucfirst(strtolower($this->convertUnderline($controllerName))),
             $desc,
-            ucfirst($controllerName),
-            ucfirst($controllerName),
+            ucfirst(strtolower($this->convertUnderline($controllerName))),
+            ucfirst(strtolower($this->convertUnderline($controllerName))),
             $desc,
-            ucfirst($controllerName),
-            ucfirst($controllerName),
+            ucfirst(strtolower($this->convertUnderline($controllerName))),
+            ucfirst(strtolower($this->convertUnderline($controllerName))),
             $desc,
-            ucfirst($controllerName),
-            ucfirst($controllerName),
+            ucfirst(strtolower($this->convertUnderline($controllerName))),
+            ucfirst(strtolower($this->convertUnderline($controllerName))),
             $desc
         );
 
-
+        echo $this->outputControllerName.PHP_EOL;
         if (!is_writable(dirname($this->outputControllerName))) {
             echo "控制器文件不可写" . PHP_EOL;
         }
 
         if (file_exists($this->outputControllerName)) {
-            echo "控制器 " . $controllerName . " 文件存在" . PHP_EOL;
+            echo "控制器 " . ucfirst(strtolower($this->convertUnderline($controllerName))) . " 文件存在" . PHP_EOL;
 
 
         } else {
-            $controller = require_once $this->baseControllerTemplatePath;
+            $controller = require $this->baseControllerTemplatePath;
             $targetControllerPath = $this->targetControllerPath . DIRECTORY_SEPARATOR . 'AppBase.php';
             file_put_contents($targetControllerPath, $controller);
 
             echo "Controller AppBase创建完成" . PHP_EOL;
             file_put_contents($this->outputControllerName, $data);
-            echo $controllerName . "文件创建完成" . PHP_EOL;
+            echo "Controller " . ucfirst(strtolower($this->convertUnderline($controllerName))) . "创建完成" . PHP_EOL;
 
 
         }
 
-        echo "开始处理Service =================================".PHP_EOL;
+        echo "开始处理 Service =>".PHP_EOL;
 
 
 
@@ -106,19 +106,19 @@ class GenerateMVCCommand extends Command
 //            echo "创建文件夹" . $targetServiceDir ."完成" . PHP_EOL;
         }
 
-        $serviceFilePath = $this->targetServicePath . DIRECTORY_SEPARATOR . ucfirst($controllerName) . 'Service.php';
+        $serviceFilePath = $this->targetServicePath . DIRECTORY_SEPARATOR . ucfirst(strtolower($this->convertUnderline($controllerName))) . 'Service.php';
         if (file_exists($serviceFilePath)) {
             echo "服务 " . $serviceFilePath . " 文件存在" . PHP_EOL;
         } else {
-            $base_service = require_once $this->baseServiceTemplatePath;
+            $base_service = require $this->baseServiceTemplatePath;
             file_put_contents($this->targetServicePath . DIRECTORY_SEPARATOR . 'BaseService.php', sprintf($base_service, ucfirst($this->appName)));
             echo "Service BaseService 创建完成" . PHP_EOL;
-            $servicefile = require_once $this->serviceTemplatePath;
+            $servicefile = require $this->serviceTemplatePath;
             $service_data = sprintf($servicefile,
                 ucfirst($this->appName),
                 ucfirst($this->appName),
                 $adpName,
-                ucfirst($controllerName),
+                ucfirst(strtolower($this->convertUnderline($controllerName))),
                 $adpName
             );
 
@@ -127,7 +127,7 @@ class GenerateMVCCommand extends Command
         }
 
 
-        echo "开始处理 View =================================".PHP_EOL;
+        echo "开始处理 View =>".PHP_EOL;
         $targetViewDir = $this->targetViewPath;
         echo $targetViewDir.PHP_EOL;
         if (!is_dir($targetViewDir)) {
@@ -135,33 +135,41 @@ class GenerateMVCCommand extends Command
             echo $targetViewDir.'文件夹创建完成'.PHP_EOL;
         }
         $targetViewFile = $targetViewDir.DIRECTORY_SEPARATOR.$controllerName.'.vue';
-        $viewTemplateFile = require_once $this->vuePath;
+        $viewTemplateFile = require $this->vuePath;
         $view_data = sprintf($viewTemplateFile,
-            ucfirst($controllerName),
-            ucfirst($controllerName),
-            ucfirst($controllerName),
-            ucfirst($controllerName),
-            ucfirst($controllerName),
-            ucfirst($controllerName),
-            ucfirst($controllerName),
-            ucfirst($controllerName),
-            ucfirst($controllerName),
-            ucfirst($controllerName),
-            ucfirst($controllerName),
-            ucfirst($controllerName),
-            ucfirst($controllerName),
-            ucfirst($controllerName),
-            ucfirst($controllerName),
-            ucfirst($controllerName),
-            ucfirst($controllerName),
-            ucfirst($controllerName),
-            ucfirst($controllerName),
-            ucfirst($controllerName),
-            ucfirst($controllerName)
+            ucfirst(strtolower($this->convertUnderline($controllerName))),
+            strtolower($this->appName),
+            ucfirst(strtolower($this->convertUnderline($controllerName))),
+            ucfirst(strtolower($this->convertUnderline($controllerName))),
+            ucfirst(strtolower($this->convertUnderline($controllerName))),
+            ucfirst(strtolower($this->convertUnderline($controllerName))),
+            ucfirst(strtolower($this->convertUnderline($controllerName))),
+            ucfirst(strtolower($this->convertUnderline($controllerName))),
+            ucfirst(strtolower($this->convertUnderline($controllerName))),
+            ucfirst(strtolower($this->convertUnderline($controllerName))),
+            ucfirst(strtolower($this->convertUnderline($controllerName))),
+            ucfirst(strtolower($this->convertUnderline($controllerName))),
+            ucfirst(strtolower($this->convertUnderline($controllerName))),
+            ucfirst(strtolower($this->convertUnderline($controllerName))),
+            ucfirst(strtolower($this->convertUnderline($controllerName))),
+            ucfirst(strtolower($this->convertUnderline($controllerName))),
+            ucfirst(strtolower($this->convertUnderline($controllerName))),
+            ucfirst(strtolower($this->convertUnderline($controllerName))),
+            ucfirst(strtolower($this->convertUnderline($controllerName))),
+            ucfirst(strtolower($this->convertUnderline($controllerName))),
+            ucfirst(strtolower($this->convertUnderline($controllerName))),
+            ucfirst(strtolower($this->convertUnderline($controllerName)))
             );
         file_put_contents($targetViewFile, $view_data);
         echo "View 创建完成".PHP_EOL;
 
 
+    }
+        //将下划线命名转换为驼峰式命名
+    public function convertUnderline ( $str , $ucfirst = true)
+    {
+        $str = ucwords(str_replace('_', ' ', $str));
+        $str = str_replace(' ','',lcfirst($str));
+        return $ucfirst ? ucfirst($str) : $str;
     }
 }
