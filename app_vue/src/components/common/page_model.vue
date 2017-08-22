@@ -125,16 +125,16 @@
                         </div>
                     </transition>
 
-                    <div class="page_footer" v-if="show_content_footer">
-                        <transition name="shifting-half-fade">
-                            <div v-if="update_response !== '-1'  && update_response !== '0' " class="show_db_reponse" key="update_ok" style="width: 100px;height: 35px;border-radius: 5px;background-color: rgba(50,65,87,0.53);position: absolute;right: 100px;bottom: 3px;line-height: 35px;text-align: center;color: white;font-size: 18px">
-                                更新成功
-                            </div>
-                            <div v-else-if="update_response === '-1'" class="show_db_reponse" key="update_err" style="width: 100px;height: 35px;border-radius: 5px;background-color: rgba(182,43,21,0.53);position: absolute;right: 100px;bottom: 3px;line-height: 35px;text-align: center;color: white;font-size: 18px">
-                                更新失败
-                            </div>
-                            <div v-else-if="update_response === '0'" class="show_db_reponse" key="update_err" style="width: 100px;height: 35px;border-radius: 5px;background-color: rgba(182,82,64,0);position: absolute;right: 100px;bottom: 36px;"></div>
-                        </transition>
+                    <div class="page_footer" v-if="show_content_footer" style="text-align: left">
+                        <!--<transition name="shifting-half-fade">-->
+                            <!--<div v-if="update_response !== '-1'  && update_response !== '0' " class="show_db_reponse" key="update_ok" style="width: 100px;height: 35px;border-radius: 5px;background-color: rgba(50,65,87,0.53);position: absolute;right: 100px;bottom: 3px;line-height: 35px;text-align: center;color: white;font-size: 18px">-->
+                                <!--更新成功-->
+                            <!--</div>-->
+                            <!--<div v-else-if="update_response === '-1'" class="show_db_reponse" key="update_err" style="width: 100px;height: 35px;border-radius: 5px;background-color: rgba(182,43,21,0.53);position: absolute;right: 100px;bottom: 3px;line-height: 35px;text-align: center;color: white;font-size: 18px">-->
+                                <!--更新失败-->
+                            <!--</div>-->
+                            <!--<div v-else-if="update_response === '0'" class="show_db_reponse" key="update_err" style="width: 100px;height: 35px;border-radius: 5px;background-color: rgba(182,82,64,0);position: absolute;right: 100px;bottom: 36px;"></div>-->
+                        <!--</transition>-->
                         <button @click="final_update_data" id="final_update_btn" :class="{ui:ClassisActive, inverted:ClassisActive, teal:ClassisActive, basic:ClassisActive,
                        button:ClassisActive,loading:authing,    forminput:ClassisActive}" :disabled="authing" style="">
                             {{final_update_btn_desc}}
@@ -617,19 +617,20 @@ export default {
 
         },
         beforeAvatarUpload(file) {
+            console.log('beforeAvatarUpload')
             var vm = this
             $.ajaxSetup({ async: false });
-            $.post(this.report_api + 'common/updateimg2ossByClient', {
+            $.post('https://www.iamsee.com/common/updateimg2ossByClient?app=o_app', {
                 filename: Date.parse(new Date()) / 1000 + '_._._' + this.upload_params.tmp_upload_index + '_._._' + file.name,
                 type: 'business_logo'
             }, function (result) {
-
-                var pre_up2oss_params = JSON.parse(result)
-                var currect_uri = pre_up2oss_params.uri
-                var currect_param = pre_up2oss_params.param
-                vm.upload_params.up_action = currect_uri
-                vm.upload_params.up_param = currect_param
-                vm.upload_params.up_filename = 'file'
+                console.log('result',result)
+//                var pre_up2oss_params = JSON.parse(result)
+//                var currect_uri = pre_up2oss_params.uri
+//                var currect_param = pre_up2oss_params.param
+//                vm.upload_params.up_action = currect_uri
+//                vm.upload_params.up_param = currect_param
+//                vm.upload_params.up_filename = 'file'
             })
 
             const isJPGOrPng = (file.type === 'image/jpeg' || file.type === 'image/png');

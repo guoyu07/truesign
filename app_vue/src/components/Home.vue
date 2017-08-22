@@ -1,5 +1,5 @@
 <template>
-    <div class="root_home" style="background-color: black" >
+    <div class="root_home" style="background-color: translate" >
         <!--<div class="word_show">-->
             <!--<h1>数据</h1>-->
             <!--<h1>可视</h1>-->
@@ -8,16 +8,13 @@
         <!--</div>-->
         <!--<input  v-model="is_line_percent" style="border: 2px solid black;color:black !important;display: block;position: absolute;z-index:100;left:20%">-->
         <!--<input type="button" @click="add" value="增加" style="border: 2px solid black;color:black !important;display: block;position: absolute;z-index:100;left:40%">-->
-        <loading_canvas   style="background-color: transparent;position: absolute;" ></loading_canvas>
+        <word_canvas   style="background-color: transparent;position: absolute;" ></word_canvas>
 
-        <transition >
-             <main_page v-if="type==='main_page'"></main_page>
-        </transition>
+        
     </div>
 </template>
 <script>
-    import main_page from './pages/main_page_20170816.vue'
-    import loading_canvas from './effect/loading_canvas.vue'
+    import word_canvas from './effect/word_canvas'
 
     export default {
         data(){
@@ -42,8 +39,7 @@
             }
         },
         components:{
-            main_page,
-            loading_canvas
+            word_canvas,
         }
     }
 </script>

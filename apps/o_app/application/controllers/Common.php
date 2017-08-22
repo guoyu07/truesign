@@ -11,7 +11,7 @@ class CommonController extends OAppBaseController {
         }
         $pre_data['status'] = 1;
         $pre_data['sys_msg'] = 'oss';
-        $this->setResponseBody($pre_data);
+        $this->output2json($pre_data);
 
 	}
     public function updateimg2ossByClientOnEditorAction() {

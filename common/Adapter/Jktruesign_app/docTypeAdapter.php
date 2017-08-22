@@ -51,6 +51,8 @@ class docTypeAdapter extends DbLibraryAdapter
             ->def('document_id')->map('id')->int()->desc('id')
             ->def('doc_type_name')->map('doc_type_name')->varchar(100)->desc('文档类型名')
             ->def('doc_suffix')->map('doc_suffix')->varchar(100)->desc('文档后缀')
+            ->def('doc_color')->map('doc_color')->varchar(100)->desc('文档颜色标示')->widgetType('color')
+            ->def('doc_headpic')->map('doc_headpic')->varchar(100)->desc('文档图标标示')->widgetType('headpic')
             ->end();
     }
 

@@ -193,6 +193,7 @@ export const mutations = {
             }
         }
         if (data.hasOwnProperty('page_model')) {
+            console.log('update_page_model status',data)
             if (data.page_model.type === 'update') {
                 state.wechat_marketing_store.page_model = data.page_model.value
 

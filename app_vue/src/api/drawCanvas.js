@@ -41,7 +41,7 @@ class DrawCanvas {
         this.stats.setMode(0);
         this.stats.domElement.id='canvas_stats'
         this.stats.domElement.style.position = 'fixed';
-        this.stats.domElement.style.left = this.width / 2 - 100 + 'px';
+        this.stats.domElement.style.left = this.width  - 100 + 'px';
         this.stats.domElement.style.top = '0px';
         this.stats.domElement.style.width = '300px';
         this.stats.domElement.style.height = '100px';

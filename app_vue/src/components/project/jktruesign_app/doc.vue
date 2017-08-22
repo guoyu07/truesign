@@ -1,5 +1,5 @@
 <template>
-    <div class="top_router_view" id="business_client_ctrl" style="overflow: auto">
+    <div class="" id="business_client_ctrl" :style="{overflow:'hidden',height:sysinfo.screenHeight+'px'}">
         <table_model v-loading="isloading"
                      :currect_select="table_currect_select"
                      :element-loading-text="loading_text"
@@ -73,6 +73,7 @@
         computed: {
             ...mapGetters([
                 'socket_server_store',
+                'sysinfo'
             ])
         },
         created(){

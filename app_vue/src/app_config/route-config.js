@@ -24,10 +24,10 @@ const ball_canvas_init = resolve => require(['../components/effect/ball_canvas_i
 const project = resolve => require(['../components/project/project.vue'], resolve)
 const jktruesign_doc = resolve => require(['../components/project/jktruesign_app/doc.vue'], resolve)
 const jktruesign_doctype = resolve => require(['../components/project/jktruesign_app/doc_type.vue'], resolve)
+const jktruesign_doc_handle_log = resolve => require(['../components/project/jktruesign_app/doc_handle_log.vue'], resolve)
 
-
+const test = resolve => require(['../components/test/test.vue'], resolve)
 const routes = [
-
 
     {
         name: 'home',
@@ -79,6 +79,14 @@ const routes = [
                     title: 'jktruesign_doctype'
                 },
                 component: jktruesign_doctype
+            },
+            {
+                name: 'jktruesign_doc_handle_log',
+                path: 'jktruesign_doc_handle_log',
+                meta: {
+                    title: 'jktruesign_doc_handle_log'
+                },
+                component: jktruesign_doc_handle_log
             },
         ]
     },
@@ -171,6 +179,7 @@ const routes = [
                 },
                 component: ball_canvas_init
             },
+          
         ]
     },
 ]

@@ -52,7 +52,7 @@
         },
         "workbench.action.closeWindow": {
             "id": "workbench.action.closeWindow",
-            "label": "Ctrl+Shift+W",
+            "label": "Ctrl+W",
             "isNative": true
         },
         "workbench.action.closeFolder": {
@@ -432,10 +432,12 @@
         }
     },
     "telemetry.machineId": "40811d6059d75ad1873207b287ea565c81d1ab3eeb111fbdaa9465f1600e9b87",
-    "theme": "vs-dark teabyii-ayu-ayu-mirage-json",
-    "themeBackground": "#212733",
+    "theme": "vs-dark vscode-theme-defaults-themes-dark_plus-json",
+    "themeBackground": "#1e1e1e",
     "openedPathsList": {
         "workspaces": [
+            "/iamseeData/workSpace/javaSpace/Jtruesign",
+            "/iamseeData/workSpace/javaSpace/JKtruesign",
             "/iamseeData/webspace/truesign"
         ],
         "files": []

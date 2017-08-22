@@ -1,6 +1,6 @@
 <template>
     <div id="loading_canvas" style="width: 100%;height: 100%;overflow: hidden">
-        <input v-model="text" style="color: black !important; width: 30%;height: 30px;position: absolute;bottom: 100px;display: block;left:50%;transform: translateX(-50%);text-align: center;padding: 5px 10px;box-shadow: 0 0 15px black">
+        <!-- <input v-model="text" style="color: black !important; width: 30%;height: 30px;position: absolute;bottom: 100px;display: block;left:50%;transform: translateX(-50%);text-align: center;padding: 5px 10px;box-shadow: 0 0 15px black"> -->
 
         <div style="position: absolute;left: 200px">
             {{ cache }} {{ num }} {{ ctxFont }}
@@ -68,13 +68,13 @@
         mounted(){
             var vm = this
             console.log('$route.query', this.$route.query)
-            if (this.$route.query.cache === 'true') {
-                this.cache = true
-            }
-            else {
+            if (this.$route.query.cache === 'false') {
                 this.cache = false
             }
-            this.text = this.$route.query.text ? this.$route.query.text : 'hello world'
+            else {
+                this.cache = true
+            }
+            this.text = this.$route.query.text ? this.$route.query.text : '欢迎来到 ^   真实世界'
 
             this.$root.eventHub.$on('screenWidth2screenHeight', function (data) {
                 console.log('canvas-change_w2h')
@@ -113,9 +113,9 @@
                 this.drawCanvas.clearCtx()
                 this.drawCanvas.dots = []
                 this.ctxFont = {
-                    fontSize:100,
+                    fontSize:80,
                     radius:3,
-                    step:5,
+                    step:6,
                     rate:4,
                 }
                 this.ctxImageData = this.drawCanvas.getimgData(this.text,this.ctxFont.fontSize)
