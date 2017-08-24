@@ -8,6 +8,7 @@
             <input value="已经断开" v-else="conn_status">
             <input id="username" placeholder="用户名" v-model="socket_account.username"  >
             <input id="pass" placeholder="密码"  v-model="socket_account.password">
+            <input id="authway" placeholder="认证途径"  v-model="socket_account.authway">
             <input type="button" @click="login_socket" value="登录">
             <el-select v-if="socketinfo.apps" @change="app_change" clearable filterable style="position: absolute;margin-left: 10px;width: 200px;background-color: white" v-model="app_selected" multiple placeholder="请选择">
                 <el-option
@@ -71,7 +72,7 @@
                 socket_account:{
                     username:'',
                     password:'',
-                    authway:'KKK',
+                    authway:'',
                 },
                 conn_status:false,
                 yaf:{

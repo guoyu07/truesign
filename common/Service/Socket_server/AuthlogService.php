@@ -103,7 +103,6 @@ class AuthlogService extends BaseService
         $unique_auth_code = $params['unique_auth_code'];
         $authway = $params['authway'];
         $stop_fd = $this->Dao->get(array('unique_auth_code'=>$unique_auth_code,'authway'=>$authway),array('fd'));
-        throw new \Exception(json_encode($stop_fd),-199);
         $UserSerivce = new UserService();
         $service_reponse = $UserSerivce->AuthAccount($params);
         if (!empty($service_reponse)) {

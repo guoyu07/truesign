@@ -426,21 +426,23 @@ class new_socket_server{
         }
         else{
 //            $to_id = gettype($to_id) == 'array'?$to_id:[$to_id];
-            $app = json_decode($yaf_response['desc'],true)['app'];
+            $apps = json_decode($yaf_response['desc'],true)['app'];
             $to_id = json_decode($yaf_response['desc'],true)['to_id'];
 
             $to_id = empty($to_id)?[$request->fd]:$to_id;
 
-            $yaf_response = $receive['payload_data'];
-            unset($yaf_response['unique_auth_code']);
-            unset($yaf_response['token']);
+            /*消息转发，之后需要添加消息过滤&监视*/
+            $msg_forward = $receive['payload_data'];
+            unset($msg_forward['unique_auth_code']);
+            unset($msg_forward['token']);
+            $relation['apps'] = $yaf_response;
         }
         $relation['from'] = $request->fd;
         $relation['request'] = $receive;
-        $relation['apps'] = $app;
+
 //        $relation['to'] = $to_id;
 
-        $msg = json_encode(array('type'=>$receive['payload_type'],'socket_response'=>$yaf_response,'relation'=>$relation));
+        $msg = json_encode(array('type'=>$receive['payload_type'],'socket_response'=>$msg_forward,'relation'=>$relation));
 
         $task = [
             'to' => $to_id,
@@ -461,7 +463,7 @@ class new_socket_server{
         $this->initYaf();
         $sendee = $data['to'];
         $sender = json_decode($data['data'],true)['relation']['from'];
-        $apps = json_decode($data['data'],true)['relation']['app'];
+        $apps = json_decode($data['data'],true)['relation']['apps'];
         $request = json_decode($data['data'],true)['relation']['request'];
 
         $type = json_decode($data['data'],true)['type'];
@@ -477,7 +479,7 @@ class new_socket_server{
         $yaf_payload = self::buildYaf('index','msglog','add',$payload_data);
         $yaf_response = $this->runYaf($yaf_payload);
         echo 'payload_data=================>'.PHP_EOL;
-        var_dump(json_encode($request));
+        var_dump(json_decode($data['data'],true));
         echo 'msglog=====================>'.PHP_EOL;
         var_dump($yaf_response);
         if (count($data['to']) > 0) {
