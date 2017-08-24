@@ -13,7 +13,7 @@ use Royal\Data\DAO;
 use Truesign\Adapter\Jktruesign_app\docTypeAdapter;
 
 
-class Doc_typeService extends BaseService
+class DoctypeService extends BaseService
 {
     private $Adapter;
     private $Dao;
