@@ -12,6 +12,7 @@ namespace Royal\Prof;
 class TrueSignConst
 {
     static function SUCCESS($info=''){return array('code' => 0, 'desc' => empty($info)?'代码逻辑正常':$info);   }
+    static function SYSTIP($info=''){return array('code' => 10, 'desc' => empty($info)?'系统通知':$info);   }
     static function WARNING($info=''){return array('code' => 100, 'desc' => empty($info)?'系统逻辑警告':$info);   }
     static function ERROR($info=''){return array('code' => 200, 'desc' => empty($info)?'系统运行异常':$info);   }
     static function ERROR_DATA_FORMAT($info=''){return array('code' => 210, 'desc' => empty($info)?'数据格式不正确':$info);   }

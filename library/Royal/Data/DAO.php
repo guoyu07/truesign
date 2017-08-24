@@ -1044,6 +1044,8 @@ class DAO
 
     public function updateByQuery($toUpdate, $query)
     {
+
+
         self::checkDemo();
         if (!$this->adapter->wrapWriteParams($toUpdate)) {
             return false;
@@ -1056,6 +1058,7 @@ class DAO
 
         $update_response = $this->getDb()->updateTable($this->getTable($this->adapter->table_Prefix().$this->adapter->table()), $toUpdateFieldValues,
             $this->paramsToCondition($query));
+
         if ($update_response
         ) {
             if ($es = $this->getEs()) {

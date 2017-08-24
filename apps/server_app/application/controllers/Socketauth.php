@@ -1,4 +1,5 @@
 <?php
+use Royal\Prof\TrueSignConst;
 use  \Truesign\Service\Socket_server\UserService;
 
 class SocketauthController extends ServerAppBaseController
@@ -39,12 +40,9 @@ class SocketauthController extends ServerAppBaseController
     public function disAuthAppAction(){
         $params = $this->getParams(array('fd'));
         if(!empty($params['fd'])){
-            $update_params['app'] = '';
-            $update_params['ctrlname'] = '';
-            $update_params['fd'] = '';
-            $search_params['fd'] = $params['fd'];
+
             $doService = new \Truesign\Service\Socket_server\AuthlogService();
-            $service_response = $doService->updateByQuery($update_params,$search_params);
+            $service_response = $doService->disAuth($params['fd']);
             $this->setResponseBody($service_response);
         }
         else{
@@ -65,5 +63,19 @@ class SocketauthController extends ServerAppBaseController
         $params['app'] = empty($params['app']) ? "" : json_encode($params['app']);
         $server_reponse = $doService->insertOrupdate(array('app' => $params['app']), $search_params);
         $this->setResponseBody($server_reponse);
+    }
+
+    public function getUserByFdAction()
+    {
+        $params = $this->getParams(array('fds'),array());
+        $fds = $params['fds'];
+        if(empty($fds)){
+            $this->setResponseBody(TrueSignConst::EMPTY_PARAMS('fds参数为空'));
+        }
+        else{
+            $doService = new \Truesign\Service\Socket_server\AuthlogService();
+            $yaf_response = $doService->getUserByFd($params['fds']);
+            $this->setResponseBody($yaf_response);
+        }
     }
 }

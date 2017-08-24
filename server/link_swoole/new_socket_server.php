@@ -9,7 +9,10 @@
 namespace server\link_swoole;
 
 
+use function json_encode;
+use const PHP_EOL;
 use \Royal\Data\resources;
+use function var_dump;
 use Yaf\Exception;
 
 class new_socket_server{
@@ -357,7 +360,7 @@ class new_socket_server{
         $query_string = $request->server['query_string'];
         parse_str($query_string,$query_arr);
         echo $query_string.PHP_EOL;
-        var_dump($query_arr);
+//        var_dump($query_arr);
         if(!empty($query_arr['unique_auth_code'])){
             echo "存在唯一识别id\n";
 
@@ -379,7 +382,7 @@ class new_socket_server{
         $sysinfo['authway']='Browser';
         $yaf_payload = $this->buildYaf('index','Socketauth','conn',array('sysinfo'=>$sysinfo));
         $conn_yaf_response = $this->runYaf($yaf_payload);
-        var_dump($conn_yaf_response);
+//        var_dump($conn_yaf_response);
 
         $serv->task([
             'to' => [$request->fd],
@@ -400,22 +403,14 @@ class new_socket_server{
     public function onMessage( $serv , $request ){
         echo '====================》【onmessage】'.PHP_EOL;
         $receive = json_decode($request->data,true);
-        echo 'receive=============>'.PHP_EOL;
-        var_dump($receive);
+//        echo 'receive=============>'.PHP_EOL;
+//        var_dump($receive);
         $yaf_payload = self::buildYaf($receive['yaf']['module'],$receive['yaf']['controller'],$receive['yaf']['action'],$receive['payload_data']);
 
         $yaf_response = $this->runYaf($yaf_payload);
-        echo 'response=>'.PHP_EOL,
-        var_dump($yaf_response);
-//        $to_id = [];
-//        $from = [
-//            'fd_type'=>'client',
-//            'fd'=>$request->fd,
-//        ];
-//        $to = [
-//            'id_type'=>'client',
-//            'id'=>$to_id
-//        ];
+//        echo 'response=>'.PHP_EOL,
+//        var_dump($yaf_response);
+
         $to_id = $receive['to'];
 
         if($to_id == 'self'){
@@ -425,24 +420,48 @@ class new_socket_server{
             $to_id = [$request->fd];
         }
         else{
-//            $to_id = gettype($to_id) == 'array'?$to_id:[$to_id];
-            $apps = json_decode($yaf_response['desc'],true)['app'];
+            $apps = json_decode($yaf_response['desc'],true)['apps'];
             $to_id = json_decode($yaf_response['desc'],true)['to_id'];
 
             $to_id = empty($to_id)?[$request->fd]:$to_id;
-
+//            echo PHP_EOL;
+//            var_dump('=============');
+//            var_dump($yaf_response);
             /*消息转发，之后需要添加消息过滤&监视*/
             $msg_forward = $receive['payload_data'];
             unset($msg_forward['unique_auth_code']);
             unset($msg_forward['token']);
-            $relation['apps'] = $yaf_response;
+            $relation['apps'] = $apps;
         }
         $relation['from'] = $request->fd;
         $relation['request'] = $receive;
+        $socket_reponse = empty($msg_forward)?$yaf_response:$msg_forward;
 
+        /*、处理系统返回任务通知*/
+//        echo "socket_reponse".PHP_EOL;
+//        var_dump($socket_reponse);
+        if(!empty($socket_reponse['syscmd'])){
+            $syscmd = $socket_reponse['syscmd'];
+            unset($socket_reponse['syscmd']);
+            /*进行fd、连接 关闭*/
+            if(!empty($syscmd['stop_fds'])){
+                $sys_msg = json_encode(
+                    array(
+                        'type'=>$receive['sys_msg'],
+                        'socket_response'=>array('code'=>10,'desc'=>'此账户在其它地方以方式['.$receive['payload_data']['authway'].']登录成功.你被强制断开认证'),
+                        'relation'=>array('from'=>0))
+                );
+                $sys_task = [
+                    'to' => $syscmd['stop_fds'],
+                    'except' => [],
+                    'data' => $sys_msg
+                ];
+                $serv->task($sys_task);
+            }
+        }
 //        $relation['to'] = $to_id;
 
-        $msg = json_encode(array('type'=>$receive['payload_type'],'socket_response'=>$msg_forward,'relation'=>$relation));
+        $msg = json_encode(array('type'=>$receive['payload_type'],'socket_response'=>$socket_reponse,'relation'=>$relation));
 
         $task = [
             'to' => $to_id,
@@ -460,9 +479,24 @@ class new_socket_server{
     }
     public function onTask(\swoole_server $serv, $task_id, $src_worker_id, $data){
         echo "【s】onTask \n";
+//        var_dump(json_decode($data['data'],true));
         $this->initYaf();
-        $sendee = $data['to'];
-        $sender = json_decode($data['data'],true)['relation']['from'];
+
+            $yaf_payload = self::buildYaf('index','socketauth','getUserByFd',array('fds'=>$data['to']));
+            $yaf_response = $this->runYaf($yaf_payload);
+        $sendee = $yaf_response;
+//        echo "sendee========>".PHP_EOL;
+//        var_dump($sendee);
+        if(json_decode($data['data'],true)['type'] == 'open'){
+            $sender = json_encode(array(0=>'open'));
+        }
+        else{
+            $yaf_payload = self::buildYaf('index','socketauth','getUserByFd',array('fds'=>json_decode($data['data'],true)['relation']['from']));
+            $yaf_response = $this->runYaf($yaf_payload);
+            $sender = json_encode($yaf_response,256);
+
+        }
+
         $apps = json_decode($data['data'],true)['relation']['apps'];
         $request = json_decode($data['data'],true)['relation']['request'];
 
@@ -479,9 +513,9 @@ class new_socket_server{
         $yaf_payload = self::buildYaf('index','msglog','add',$payload_data);
         $yaf_response = $this->runYaf($yaf_payload);
         echo 'payload_data=================>'.PHP_EOL;
-        var_dump(json_decode($data['data'],true));
+//        var_dump(json_decode($data['data'],true));
         echo 'msglog=====================>'.PHP_EOL;
-        var_dump($yaf_response);
+//        var_dump($yaf_response);
         if (count($data['to']) > 0) {
             echo "存在指定接收人,开始遍历发送消息".PHP_EOL;
             echo json_encode($data).PHP_EOL;

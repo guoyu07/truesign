@@ -445,12 +445,14 @@ class MySQL {
         else{
             $where = '';
         }
+
         if (is_array($data)) {
             list ($fields, $values) = $this->getConditionArray($data);
             if (count($values) > 0) {
                 $sql = sprintf('UPDATE %s SET %s %s %s', $table, $fields,$where, $condition);
                 if (count($conditionValues))
                     $values = array_merge($values, $conditionValues);
+
                 return $this->query($sql, $values)->rowCount();
             }
 

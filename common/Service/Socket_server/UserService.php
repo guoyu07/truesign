@@ -101,6 +101,7 @@ class UserService extends BaseService
         $db_reponse = $this->Dao->get(array('username'=>$username),array('document_id','username','password','level'));
         if($db_reponse['password'] == $password){
             $service_response = $db_reponse;
+
         }
         else{
             $service_response = false;

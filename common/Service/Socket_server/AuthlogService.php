@@ -9,7 +9,15 @@
 namespace Truesign\Service\Socket_server;
 
 
+use function array_values;
 use EasyWeChat\Core\Exception;
+use function explode;
+use function gettype;
+use function implode;
+use function in_array;
+use function is_array;
+use function json_decode;
+use function json_encode;
 use Royal\Crypt\Decrypt;
 use Royal\Data\DAO;
 use Royal\Prof\TrueSignConst;
@@ -78,16 +86,24 @@ class AuthlogService extends BaseService
             return $service_reponse;
         }
     }
-    public function updateByQuery($params = array(), $search_params = array())
+    public function disAuth($params = array())
     {
         if (empty($params)) {
             return 0;
         } else {
+
+            $search_params['fd'] = $params['fd'];
+            $params = [];
+            $params['app'] = '';
+            $params['ctrlname'] = '';
+            $params['fd'] = '';
+            $params['authway'] = '';
             $db_reponse = $this->Dao->updateByQuery($params, $search_params);
+
             if (empty($db_reponse)) {
-                $service_reponse = TrueSignConst::SQL_ERR('authLog数据更新出错');
+                $service_reponse = TrueSignConst::SQL_ERR('断线  ！ authLog数据更新出错');
             } else {
-                $service_reponse = TrueSignConst::SUCCESS('authLog数据更新成功');
+                $service_reponse = TrueSignConst::SUCCESS('断线  ！ authLog数据更新成功');
             }
             return $service_reponse;
         }
@@ -102,11 +118,26 @@ class AuthlogService extends BaseService
 
         $unique_auth_code = $params['unique_auth_code'];
         $authway = $params['authway'];
-        $stop_fd = $this->Dao->get(array('unique_auth_code'=>$unique_auth_code,'authway'=>$authway),array('fd'));
         $UserSerivce = new UserService();
         $service_reponse = $UserSerivce->AuthAccount($params);
         if (!empty($service_reponse)) {
+
             $auth_reponse['ctrlname'] = array($service_reponse['document_id'] => $service_reponse['username']);
+
+
+            /*、对  相同[账户&密码&认证平台、方式 的之前登录用户进行掉线处理，返回fd]*/
+            $stop_fds_check = $this->Dao->readSpecified(
+                array('ctrlname'=>json_encode($auth_reponse['ctrlname'],256),'authway'=>$authway),
+                array('fd')
+            );
+            if(!empty($stop_fds_check['statistic']['count'])){
+                $stop_fds = [];
+                foreach ($stop_fds_check['data'] as $index=>$fd_arr){
+                    $fd = (int)implode('',array_values($fd_arr));
+                    $stop_fds[] = $fd;
+                    self::disAuth(array('fd'=>$fd)); /*强制断线，并更新数据*/
+                }
+            }
             $update_response = $this->insertOrupdate(array('ctrlname'=>json_encode($auth_reponse['ctrlname'],256),'authway'=>$params['authway']),array('unique_auth_code'=>$unique_auth_code));
             if(!empty($update_response)){
                 $auth_reponse['ctrlname']['level'] = $service_reponse['level'];
@@ -126,6 +157,7 @@ class AuthlogService extends BaseService
         } else {
             $final_response = TrueSignConst::AUTH_ERROR();
         }
+        $final_response['syscmd']['stop_fds'] = $stop_fds;
         return $final_response;
 
     }
@@ -137,7 +169,8 @@ class AuthlogService extends BaseService
     {
         self::setParam('ctrlname','neq','',$search_params);
         self::setParam('app','neq','',$search_params);
-        self::setParam('unique_auth_code','eq','',$unique_auth_code);
+        self::setParam('authway','neq','',$search_params);
+        self::setParam('unique_auth_code','eq',$unique_auth_code,$search_params);
         $self_db_reponse = $this->Dao->get($search_params,array('app'));
         $self_app = $self_db_reponse['app'];
         $self_app_ids = [];
@@ -147,15 +180,22 @@ class AuthlogService extends BaseService
                 $self_app_ids[] = (integer)implode('',array_keys($v));
             }
         }
+        $apps = $self_app;
         $to_id = [];
-        $app = [];
         if(!empty($self_app_ids)){
             unset($search_params['unique_auth_code']);
             $all_db_reponse = $this->Dao->readSpecified($search_params,array('app','fd'));
             if(!empty($all_db_reponse['statistic']['count'])){
                 $all_db_reponse = $all_db_reponse['data'];
                 foreach ($all_db_reponse as $k=>$v){
-                    $app[] = array_merge($v['app']);
+//                    if(!empty($v['app'])){
+//                        foreach (json_decode($v['app'],ture) as $app_id=>$app){
+//                            if(!in_array($app,$apps)){
+//                                $apps[] = $app;
+//
+//                            }
+//                        }
+//                    };
                     $id_list = $this->getIdListfromDataList(json_decode($v['app'],true));
                     foreach ($id_list as $index=>$id){
                         if(in_array($id,$self_app_ids)){
@@ -174,8 +214,8 @@ class AuthlogService extends BaseService
 
         }
         $to_id = array_values(array_unique($to_id));
-        $app = array_values(array_unique($app));
-        return array('app'=>$app,'to_id'=>$to_id);
+//        $apps = array_values(array_unique($apps));
+        return array('apps'=>$apps,'to_id'=>$to_id);
     }
 
     public function getIdListfromDataList($datalist)
@@ -188,6 +228,38 @@ class AuthlogService extends BaseService
         }
         return $id_list;
 
+    }
+
+    public function getUserByFd($fds)
+    {
+        if(is_array($fds)){
+            $server_reposne = [];
+            foreach ($fds as $i => $fd) {
+                $base_user_info = $this->Dao->get(array('fd'=>$fd),array('ctrlname','authway'));
+                if(!empty($base_user_info['ctrlname'])){
+                    $user = $base_user_info['ctrlname'];
+                    $authway = $base_user_info['authway'];
+                }
+                else{
+                    $user = '';
+                    $authway = '';
+                }
+                $server_reposne[] = array($fd=>array('user'=>$user,'authway'=>$authway));
+            }
+        }
+        else{
+            $base_user_info = $this->Dao->get(array('fd'=>$fds),array('ctrlname','authway'));
+            if(!empty($base_user_info['ctrlname'])){
+                $user = $base_user_info['ctrlname'];
+                $authway = $base_user_info['authway'];
+            }
+            else{
+                $user = '';
+                $authway = '';
+            }
+            $server_reposne = array($fds=>array('user'=>$user,'authway'=>$authway));
+        }
+        return $server_reposne;
     }
 
 

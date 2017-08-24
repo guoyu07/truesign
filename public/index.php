@@ -10,7 +10,7 @@ if(strtoupper($_SERVER['REQUEST_METHOD'])== 'OPTIONS'){
     exit;
 };
 header('Access-Control-Allow-Methods: GET, POST, PUT,DELETE');
-$app = 'o_app';
+$app = 'origin';
 foreach ($_REQUEST as $k=>$v){
     if($k=='app'){
         $app = $v;
