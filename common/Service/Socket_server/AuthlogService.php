@@ -64,7 +64,7 @@ class AuthlogService extends BaseService
         return $db_resposne;
     }
 
-    public function Update($params = array(), $search_params = array())
+    public function insertOrupdate($params = array(), $search_params = array())
     {
         if (empty($params)) {
             return 0;
@@ -78,6 +78,21 @@ class AuthlogService extends BaseService
             return $service_reponse;
         }
     }
+    public function updateByQuery($params = array(), $search_params = array())
+    {
+        if (empty($params)) {
+            return 0;
+        } else {
+            $db_reponse = $this->Dao->updateByQuery($params, $search_params);
+            if (empty($db_reponse)) {
+                $service_reponse = TrueSignConst::SQL_ERR('authLog数据更新出错');
+            } else {
+                $service_reponse = TrueSignConst::SUCCESS('authLog数据更新成功');
+            }
+            return $service_reponse;
+        }
+    }
+
 
     /*
      * 进行登录认证
@@ -86,11 +101,14 @@ class AuthlogService extends BaseService
     {
 
         $unique_auth_code = $params['unique_auth_code'];
+        $authway = $params['authway'];
+        $stop_fd = $this->Dao->get(array('unique_auth_code'=>$unique_auth_code,'authway'=>$authway),array('fd'));
+        throw new \Exception(json_encode($stop_fd),-199);
         $UserSerivce = new UserService();
         $service_reponse = $UserSerivce->AuthAccount($params);
         if (!empty($service_reponse)) {
             $auth_reponse['ctrlname'] = array($service_reponse['document_id'] => $service_reponse['username']);
-            $update_response = $this->Update(array('ctrlname'=>json_encode($auth_reponse['ctrlname'],256)),array('unique_auth_code'=>$unique_auth_code));
+            $update_response = $this->insertOrupdate(array('ctrlname'=>json_encode($auth_reponse['ctrlname'],256),'authway'=>$params['authway']),array('unique_auth_code'=>$unique_auth_code));
             if(!empty($update_response)){
                 $auth_reponse['ctrlname']['level'] = $service_reponse['level'];
                 $auth_reponse['token'] = Decrypt::encryption($service_reponse['username'], $service_reponse['document_id'], 'socket');
@@ -131,12 +149,14 @@ class AuthlogService extends BaseService
             }
         }
         $to_id = [];
+        $app = [];
         if(!empty($self_app_ids)){
             unset($search_params['unique_auth_code']);
             $all_db_reponse = $this->Dao->readSpecified($search_params,array('app','fd'));
             if(!empty($all_db_reponse['statistic']['count'])){
                 $all_db_reponse = $all_db_reponse['data'];
                 foreach ($all_db_reponse as $k=>$v){
+                    $app[] = array_merge($v['app']);
                     $id_list = $this->getIdListfromDataList(json_decode($v['app'],true));
                     foreach ($id_list as $index=>$id){
                         if(in_array($id,$self_app_ids)){
@@ -154,7 +174,9 @@ class AuthlogService extends BaseService
 //            }
 
         }
-        return array_values(array_unique($to_id));
+        $to_id = array_values(array_unique($to_id));
+        $app = array_values(array_unique($app));
+        return array('app'=>$app,'to_id'=>$to_id);
     }
 
     public function getIdListfromDataList($datalist)

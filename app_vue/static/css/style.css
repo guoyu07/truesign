@@ -5,7 +5,7 @@ html,body{
     background:gainsboro !important;
 }
 body{
-    overflow:auto;
+    overflow:hidden;
 }
 nav{
     display:none

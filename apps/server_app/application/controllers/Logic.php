@@ -13,7 +13,7 @@ class LogicController extends ServerAppBaseController {
         $params = $this->getParams(array('unique_auth_code'));
         $doService = new \Truesign\Service\Socket_server\AuthlogService();
         $service_response = $doService->GetFdByUAC($params['unique_auth_code']);
-        $this->setResponseBody(\Royal\Prof\TrueSignConst::SUCCESS(json_encode(array('to_id'=>$service_response))));
+        $this->setResponseBody(\Royal\Prof\TrueSignConst::SUCCESS(json_encode($service_response)));
     }
 
 

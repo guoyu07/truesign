@@ -158,8 +158,6 @@ class DAO
 
         self::checkDemo();
         $fields = $this->prepareForCreate($params);
-
-
         $id = $this->getDb()->insertOrUpdateTable(
             $this->getTable($this->adapter->table_Prefix().$this->adapter->table()),
             $fields,

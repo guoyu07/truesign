@@ -70,7 +70,8 @@
             return {
                 socket_account:{
                     username:'',
-                    password:''
+                    password:'',
+                    authway:'KKK',
                 },
                 conn_status:false,
                 yaf:{

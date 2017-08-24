@@ -352,6 +352,7 @@ class MySQL {
 
         if (count($values)) {
             $sql = sprintf('INSERT INTO %s SET %s', $table, $fields);
+
             $this->query($sql, $values,$ignore_error);
             return intval($this->dbh->lastInsertId());
         }
@@ -464,9 +465,11 @@ class MySQL {
 
         if ($row) {
             unset($data['create_time']);
+
             $this->updateTable($table, $data, $condition);
             return $row[$idField];
         } else {
+
             return $this->insertTable($table, $data);
         }
     }

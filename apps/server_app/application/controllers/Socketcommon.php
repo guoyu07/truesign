@@ -10,8 +10,4 @@ class SocketcommonController extends ServerAppBaseController {
 
 	    $this->setResponseBody(\Royal\Prof\TrueSignConst::SUCCESS(json_encode(array(1,2,3,4))));
 	}
-
-
-
-
 }

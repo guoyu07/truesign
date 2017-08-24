@@ -1,6 +1,6 @@
 <template>
-    <div class="top_router_view" style="text-align: center;overflow: auto">
-      
+    <div class="testest" style="text-align: center;overflow: auto">
+        <button v-if="ctrl===9">123</button>
     </div>
 </template>
 
@@ -8,7 +8,7 @@
     export default {
         data: function () {
             return {
-               
+                ctrl:8
             }
         },
         created(){

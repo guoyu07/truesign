@@ -44,14 +44,14 @@ class appAuthLogAdapter extends DbLibraryAdapter
     {
         return Field::start()
             ->def('document_id')->map('id')->int()->desc('id')
-            ->def('app')->map('app')->varchar(100)->desc('绑定app')
-            ->def('ctrlname')->map('ctrlname')->varchar(100)->desc('控制人员名称')
+            ->def('app')->map('app')->varchar(100)->desc('绑定app')->issearch(true)
+            ->def('ctrlname')->map('ctrlname')->varchar(100)->desc('控制人员名称')->issearch(true)
             ->def('authway')->map('authway')->varchar(255)->desc('认证方式') //web 、客户端
             ->def('note')->map('note')->varchar(255)->desc('备注')
-            ->def('user_agent')->map('user_agent')->varchar(1000)->desc('系统信息')
-            ->def('ip')->map('ip')->varchar(255)->desc('认证ip')
-            ->def('unique_auth_code')->map('unique_auth_code')->varchar(100)->desc('唯一序列码')->unique()
-            ->def('fd')->map('fd')->varchar(100)->desc('socket唯一联系id')
+            ->def('user_agent')->map('user_agent')->varchar(1000)->desc('系统信息')->issearch(true)
+            ->def('ip')->map('ip')->varchar(255)->desc('认证ip')->issearch(true)
+            ->def('unique_auth_code')->map('unique_auth_code')->varchar(100)->desc('唯一序列码')->unique()->issearch(true)
+            ->def('fd')->map('fd')->varchar(100)->desc('socket唯一id')
             ->end();
     }
 

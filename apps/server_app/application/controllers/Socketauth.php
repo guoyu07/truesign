@@ -20,7 +20,7 @@ class SocketauthController extends ServerAppBaseController
             $search_params['ip'] = $params_conn['ip'];
 //            $search_params['user_agent'] = $params_conn['user_agent']; /*ql-error:加上后会出现ua查询不出的情况存在一些问题*/
             $search_params['unique_auth_code'] = $params_conn['unique_auth_code'];
-            $server_reponse = $doService->Update($params_conn, $search_params);
+            $server_reponse = $doService->insertOrupdate($params_conn, $search_params);
             $yaf_reponse = $server_reponse;
         } else {
             $yaf_reponse = \Royal\Prof\TrueSignConst::EMPTY_PARAMS();
@@ -31,8 +31,7 @@ class SocketauthController extends ServerAppBaseController
 
     public function authAction()
     {
-
-        $params = $this->getParams(array('username', 'password', 'unique_auth_code'));
+        $params = $this->getParams(array('username', 'password', 'unique_auth_code','authway'));
         $doService = new \Truesign\Service\Socket_server\AuthlogService();
         $yaf_response = $doService->Auth($params);
         $this->setResponseBody($yaf_response);
@@ -45,7 +44,7 @@ class SocketauthController extends ServerAppBaseController
             $update_params['fd'] = '';
             $search_params['fd'] = $params['fd'];
             $doService = new \Truesign\Service\Socket_server\AuthlogService();
-            $service_response = $doService->Update($update_params,$search_params);
+            $service_response = $doService->updateByQuery($update_params,$search_params);
             $this->setResponseBody($service_response);
         }
         else{
@@ -64,7 +63,7 @@ class SocketauthController extends ServerAppBaseController
         }
         $doService = new \Truesign\Service\Socket_server\AuthlogService();
         $params['app'] = empty($params['app']) ? "" : json_encode($params['app']);
-        $server_reponse = $doService->Update(array('app' => $params['app']), $search_params);
+        $server_reponse = $doService->insertOrupdate(array('app' => $params['app']), $search_params);
         $this->setResponseBody($server_reponse);
     }
 }

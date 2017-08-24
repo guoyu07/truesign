@@ -44,9 +44,12 @@ class appMsgLogAdapter extends DbLibraryAdapter
     {
         return Field::start()
             ->def('document_id')->map('id')->int()->desc('id')
-            ->def('sender')->map('sender')->varchar(100)->desc('发送人')
-            ->def('sendee')->map('sendee')->varchar(100)->desc('接收人')
-            ->def('apps')->map('apps')->varchar(100)->desc('绑定app')
+            ->def('sender')->map('sender')->varchar(100)->desc('发送人')->issearch(true)
+            ->def('sendee')->map('sendee')->varchar(100)->desc('接收人')->issearch(true)
+            ->def('apps')->map('apps')->varchar(100)->desc('绑定app')->issearch(true)
+            ->def('type')->map('type')->varchar(100)->desc('类型')->issearch(true)
+            ->def('request')->map('request')->text()->desc('请求')
+            ->def('response')->map('response')->text()->desc('响应')
             ->def('note')->map('note')->text()->desc('备注')
             ->end();
     }

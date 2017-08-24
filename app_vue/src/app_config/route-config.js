@@ -44,6 +44,14 @@ const routes = [
         },
         component: home
     },
+    {
+        name: 'test',
+        path: '/test',
+        meta: {
+            title: 'test'
+        },
+        component: test
+    },
 
     {
         name: 'tools',

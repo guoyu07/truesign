@@ -36,6 +36,21 @@ class MsglogService extends BaseService
     }
 
 
+
+    public function add($msg_params)
+    {
+        $db_resposne = $this->Dao->create($msg_params);
+        if($db_resposne){
+            $reponse = TrueSignConst::SUCCESS('消息日志增加成功');
+        }
+        else{
+            $response = TrueSignConst::SQL_ERR('消息日志存储失败');
+        }
+
+        return $response;
+    }
+
+
     public function Desc($params=array(),$search_params=array(),$page_params=array())
     {
         $db_resposne['statistic']['count'] = 1;

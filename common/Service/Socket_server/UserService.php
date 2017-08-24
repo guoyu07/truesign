@@ -82,6 +82,7 @@ class UserService extends BaseService
 //        else{
 //            $response = TrueSignConst::OPERATION_lOGIC_ERR('密码错误，无法更新数据');
 //        }
+
         $db_response = $this->Dao->insertOrupdate($params,$search_params);
         if($db_response > 0){
             $response = TrueSignConst::SUCCESS('更新成功');

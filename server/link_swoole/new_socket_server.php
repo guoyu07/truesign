@@ -400,7 +400,7 @@ class new_socket_server{
     public function onMessage( $serv , $request ){
         echo '====================》【onmessage】'.PHP_EOL;
         $receive = json_decode($request->data,true);
-        echo 'receive=>'.PHP_EOL,
+        echo 'receive=============>'.PHP_EOL;
         var_dump($receive);
         $yaf_payload = self::buildYaf($receive['yaf']['module'],$receive['yaf']['controller'],$receive['yaf']['action'],$receive['payload_data']);
 
@@ -426,14 +426,19 @@ class new_socket_server{
         }
         else{
 //            $to_id = gettype($to_id) == 'array'?$to_id:[$to_id];
+            $app = json_decode($yaf_response['desc'],true)['app'];
             $to_id = json_decode($yaf_response['desc'],true)['to_id'];
+
             $to_id = empty($to_id)?[$request->fd]:$to_id;
+
             $yaf_response = $receive['payload_data'];
             unset($yaf_response['unique_auth_code']);
             unset($yaf_response['token']);
         }
         $relation['from'] = $request->fd;
-        $relation['to'] = $to_id;
+        $relation['request'] = $receive;
+        $relation['apps'] = $app;
+//        $relation['to'] = $to_id;
 
         $msg = json_encode(array('type'=>$receive['payload_type'],'socket_response'=>$yaf_response,'relation'=>$relation));
 
@@ -453,8 +458,28 @@ class new_socket_server{
     }
     public function onTask(\swoole_server $serv, $task_id, $src_worker_id, $data){
         echo "【s】onTask \n";
+        $this->initYaf();
+        $sendee = $data['to'];
+        $sender = json_decode($data['data'],true)['relation']['from'];
+        $apps = json_decode($data['data'],true)['relation']['app'];
+        $request = json_decode($data['data'],true)['relation']['request'];
 
-
+        $type = json_decode($data['data'],true)['type'];
+        $response = json_decode($data['data'],true)['socket_response'];
+        $payload_data = array(
+          'sender' => $sender,
+          'sendee' => json_encode($sendee,256),
+          'apps' => json_encode($apps,256),
+          'type' => $type,
+          'request' => json_encode($request,256),
+          'response' => json_encode($response,256)
+        );
+        $yaf_payload = self::buildYaf('index','msglog','add',$payload_data);
+        $yaf_response = $this->runYaf($yaf_payload);
+        echo 'payload_data=================>'.PHP_EOL;
+        var_dump(json_encode($request));
+        echo 'msglog=====================>'.PHP_EOL;
+        var_dump($yaf_response);
         if (count($data['to']) > 0) {
             echo "存在指定接收人,开始遍历发送消息".PHP_EOL;
             echo json_encode($data).PHP_EOL;

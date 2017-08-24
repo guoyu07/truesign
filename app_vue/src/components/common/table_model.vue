@@ -1,5 +1,5 @@
 <template>
-    <div :style="{overflow: 'auto',height:screenHeight+'px'}">
+    <div id="t_table_modle" :style="{overflow: 'scroll',height:screenHeight-60+'px'}">
 
         <!--<pre>-->
         <!--{{table_field}}-->
@@ -30,7 +30,7 @@
 
                 <el-table v-loading="isloading" element-loading-text="数据加载中" :stripe=false ref="multipleTable"
                           :data="table_data" tooltip-effect="dark" style="width: 100%;overflow: auto"
-                          :header-align="'center'" :height="screenHeight-78" :show-summary="true" :sum-text="'汇总'"
+                          :header-align="'center'" :height="screenHeight-150" :show-summary="true" :sum-text="'汇总'"
                           :border="true" :resizable="true" @summary-method="summaryfunction"
                           :highlight-current-row="true" @selection-change="handleSelectionChange" @row-click="rowClick"
                           @row-dblclick="rowDblClick" @sort-change="sortChange">
@@ -916,16 +916,25 @@
         text-align center
     }
 
+
     #t_page_model {
         position: absolute;
         z-index: 100;
         width: 100%;
         text-align: center;
-        bottom: 10px;
         height: auto;
+        bottom:0
         max-height: 600px;
         overflow-y: auto;
         overflow-x: hidden
-        transition :all 0.8s
+    /*
+
+
+
+
+
+transition :all 0.8s
+*/
     }
+
 </style>

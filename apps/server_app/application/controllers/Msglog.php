@@ -38,14 +38,15 @@ class MsglogController extends ServerAppBaseController {
 
 
     }
-    /*
-         * @for 客户信息更新、软删除接口
-         *
-         */
-    public function UpdateAction(){
-        $response = \Royal\Prof\TrueSignConst::ACCESS_DENIED('禁止操作日志记录');
-        $this->output2json($response);
+    public function addAction()
+    {
+        $params = $this->getParams(array('sender','sendee','apps','type','request','response'));
+        $doService = new MsglogService();
+        $serverResponse =  $doService->add($params);
+        $this->setResponseBody($serverResponse);
+
     }
+
 
 
 }
