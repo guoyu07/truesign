@@ -17,7 +17,9 @@ class IndexController extends OAppBaseController {
         echo '<a href="https://iamsee.com">请跳转主页 <相关第三方></a>';
 
 	}
-
+    public function infoAction(){
+	    echo phpinfo();
+    }
     public function testAction()
     {
         throw new Exception('111',-199);
