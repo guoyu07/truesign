@@ -21,6 +21,7 @@ const threejs_dev = resolve => require(['../components/effect/threejs_dev.vue'],
 const threejs_dev_trackball = resolve => require(['../components/effect/threejs_dev_trackball.vue'], resolve)
 const cache_canvas = resolve => require(['../components/effect/cache_canvas.vue'], resolve)
 const word_canvas = resolve => require(['../components/effect/word_canvas.vue'], resolve)
+const countdown_canvas = resolve => require(['../components/effect/countdown_canvas.vue'], resolve)
 const draw_canvas = resolve => require(['../components/effect/draw_canvas.vue'], resolve)
 const canvas = resolve => require(['../components/effect/canvas.vue'], resolve)
 const ball_canvas = resolve => require(['../components/effect/ball_canvas.vue'], resolve)
@@ -204,6 +205,14 @@ const routes = [
                     title: 'word_canvas'
                 },
                 component: word_canvas
+            },
+            {
+                name: 'countdown_canvas',
+                path: 'countdown_canvas',
+                meta: {
+                    title: 'countdown_canvas'
+                },
+                component: countdown_canvas
             },
             {
                 name: 'cache_canvas',

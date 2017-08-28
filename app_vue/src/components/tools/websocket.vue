@@ -4,12 +4,12 @@
 
             <button type="button" class="btn btn-default" @click="socket_init">连接socket</button>
             <button type="button" class="btn btn-default" @click="disconnect">断开socket</button>
-            <input value="已经连接" v-if="conn_status">
-            <input value="已经断开" v-else="conn_status">
-            <input id="username" placeholder="用户名" v-model="socket_account.username"  >
-            <input id="pass" placeholder="密码"  v-model="socket_account.password">
-            <input id="authway" placeholder="认证途径"  v-model="socket_account.authway">
-            <input type="button" @click="login_socket" value="登录">
+            <input class="lable_input" value="已经连接" v-if="conn_status">
+            <input class="lable_input" value="已经断开" v-else="conn_status">
+            <input class="lable_input" id="username" placeholder="用户名" v-model="socket_account.username"  >
+            <input class="lable_input" id="pass" placeholder="密码"  v-model="socket_account.password">
+            <input class="lable_input" id="authway" placeholder="认证途径"  v-model="socket_account.authway">
+            <input class="lable_input" type="button" @click="login_socket" value="登录">
             <el-select v-if="socketinfo.apps" @change="app_change" clearable filterable style="position: absolute;margin-left: 10px;width: 200px;background-color: white" v-model="app_selected" multiple placeholder="请选择">
                 <el-option
                         v-for="item,index in socketinfo.apps"
@@ -126,7 +126,7 @@
                 var vm = this
                 var params = {
                     to:'todo',
-                    payload_type:'send',
+                    payload_type:'chat',
                     payload_data:JSON.parse(this.payload_data),
                     yaf:this.yaf
                 }
@@ -163,6 +163,11 @@
 
 <style lang="stylus" rel="stylesheet/stylus">
     #tools_websocket
+        .lable_input
+            background-color grey
+            padding:5px 10px !important
+            width:100px;
+
         input
             background-color grey
             padding:5px 10px !important

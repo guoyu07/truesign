@@ -33,7 +33,8 @@ const SOCKET_CLIENT = {
 
         console.log('准备连接到服务器=>')
         // this.data.wSock  =  new WebSocket('ws://iamsee.com:9501/?unique_auth_code='+unique_auth_code);
-        this.data.wSock = new reconnectingwebsocket(socket_url);
+        // this.data.wSock = new reconnectingwebsocket(socket_url);
+        this.data.wSock = new WebSocket(socket_url);
         this.wsOpen();
         this.wsMessage();
         this.wsOnclose();

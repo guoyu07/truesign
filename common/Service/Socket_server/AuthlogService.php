@@ -188,14 +188,7 @@ class AuthlogService extends BaseService
             if(!empty($all_db_reponse['statistic']['count'])){
                 $all_db_reponse = $all_db_reponse['data'];
                 foreach ($all_db_reponse as $k=>$v){
-//                    if(!empty($v['app'])){
-//                        foreach (json_decode($v['app'],ture) as $app_id=>$app){
-//                            if(!in_array($app,$apps)){
-//                                $apps[] = $app;
-//
-//                            }
-//                        }
-//                    };
+
                     $id_list = $this->getIdListfromDataList(json_decode($v['app'],true));
                     foreach ($id_list as $index=>$id){
                         if(in_array($id,$self_app_ids)){
@@ -205,16 +198,8 @@ class AuthlogService extends BaseService
                 }
             }
 
-//            if(!empty($all_db_reponse)){
-//                foreach ($all_db_reponse as $k=>$v) {
-//
-//                    return $v;
-//                }
-//            }
-
         }
         $to_id = array_values(array_unique($to_id));
-//        $apps = array_values(array_unique($apps));
         return array('apps'=>$apps,'to_id'=>$to_id);
     }
 

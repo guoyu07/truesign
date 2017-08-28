@@ -447,16 +447,18 @@ class new_socket_server{
             if(!empty($syscmd['stop_fds'])){
                 $sys_msg = json_encode(
                     array(
-                        'type'=>$receive['sys_msg'],
+                        'type'=>'close_fd',
                         'socket_response'=>array('code'=>10,'desc'=>'此账户在其它地方以方式['.$receive['payload_data']['authway'].']登录成功.你被强制断开认证'),
                         'relation'=>array('from'=>0))
                 );
+
                 $sys_task = [
                     'to' => $syscmd['stop_fds'],
                     'except' => [],
                     'data' => $sys_msg
                 ];
                 $serv->task($sys_task);
+             
             }
         }
 //        $relation['to'] = $to_id;
@@ -512,19 +514,19 @@ class new_socket_server{
         );
         $yaf_payload = self::buildYaf('index','msglog','add',$payload_data);
         $yaf_response = $this->runYaf($yaf_payload);
-        echo 'payload_data=================>'.PHP_EOL;
-//        var_dump(json_decode($data['data'],true));
-        echo 'msglog=====================>'.PHP_EOL;
-//        var_dump($yaf_response);
         if (count($data['to']) > 0) {
             echo "存在指定接收人,开始遍历发送消息".PHP_EOL;
-            echo json_encode($data).PHP_EOL;
 
             $clients = $data['to'];
             foreach ($clients as $fd) {
                 if (!in_array($fd, $data['except'])) {
                     $serv->push($fd,$data['data'],2);
                 }
+            }
+            
+            if($type==='close_fd'){
+                echo 'task=>close=>fd:'.$fd.PHP_EOL;
+                $serv->close($fd);
             }
         }
         else{

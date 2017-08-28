@@ -1,6 +1,6 @@
 <template>
     <div id="loading_canvas" style="width: 100%;height: 100%;overflow: hidden">
-        <!-- <input v-model="text" style="color: black !important; width: 30%;height: 30px;position: absolute;bottom: 100px;display: block;left:50%;transform: translateX(-50%);text-align: center;padding: 5px 10px;box-shadow: 0 0 15px black"> -->
+         <!--<input v-model="text" style="color: black !important; width: 30%;height: 30px;position: absolute;bottom: 100px;display: block;left:50%;transform: translateX(-50%);text-align: center;padding: 5px 10px;box-shadow: 0 0 15px black">-->
 
         <div style="position: absolute;left: 200px">
             {{ cache }} {{ num }} {{ ctxFont }}
@@ -74,7 +74,7 @@
             else {
                 this.cache = true
             }
-            this.text = this.$route.query.text ? this.$route.query.text : '欢迎来到 ^   真实世界'
+            this.text = this.$route.query.text ? this.$route.query.text : '20000'
 
             this.$root.eventHub.$on('screenWidth2screenHeight', function (data) {
                 console.log('canvas-change_w2h')
@@ -86,6 +86,14 @@
                 })
             })
             this.start()
+            var iscount = setInterval(function () {
+//                console.log(vm.text)
+                if(parseInt(vm.text) <= 0){
+                    clearInterval(iscount)
+                    return
+                }
+                vm.text = parseInt(vm.text) -1 + ''
+            },20)
 
         },
         components: {},
@@ -113,7 +121,7 @@
                 this.drawCanvas.clearCtx()
                 this.drawCanvas.dots = []
                 this.ctxFont = {
-                    fontSize:80,
+                    fontSize:180,
                     radius:3,
                     step:6,
                     rate:4,
@@ -130,7 +138,7 @@
                     let dot = vm.drawCanvas.initDot(
                         {
                             cid:cid,
-                            group:'text',
+                            group:'countdown',
                             g: {down: 0, right: 0, out: 0},
                             init_center: {
                                 x: start_x-vm.ctxImageData.width/2-3,
@@ -146,9 +154,9 @@
                                 z:0.98,
                             },
                             constant_speed:{
-                                        x:((Math.random()>0.5)?1:-1)*Math.random()*10,
-                                        y:((Math.random()>0.5)?1:-1)*Math.random()*10,
-                                        z:0
+                                x:((Math.random()>0.5)?1:-1)*Math.random()*10,
+                                y:((Math.random()>0.5)?1:-1)*Math.random()*10,
+                                z:0
                             },
                             chaos:{
                                 x:Math.random(),
@@ -156,8 +164,9 @@
                             },
                             move:true,
                             move_way:{
-                                type:'text',
+                                type:'countdown',
                                 params:{
+                                    num:parseInt(vm.text)
                                 }
                             },
                             edge_touch_test:true,

@@ -640,53 +640,6 @@ class DrawCanvas {
                         }
 
 
-                        // recovery_loading_line.chain(init_loading_line)
-
-
-                        // if(params && params.percent === 100 && cls.dots[v].cid === params.count){
-                        //     var left_x = -cls.canvas.width/2
-                        //     var right_x = cls.canvas.width/2
-                        //     var top_y = -cls.canvas.height/2
-                        //     var bottom_y = cls.canvas.height/2
-
-                        // cls.dots.forEach(function (kk,vv){
-                        //     if(cls.dots[vv].group === 'loading_line') {
-                        // var speed = (1/(1 + -cls.dots[vv].cid/params.count)-1)
-                        // if (cls.dots[vv].center.x < 0 && cls.dots[vv].center.x > left_x) {
-                        //     cls.ctrl_mode.mode_z = 1
-                        //     let speed_lenght = (cls.dots[vv].center.x - left_x) / 10
-                        //     if(speed_lenght > 1){
-                        //         cls.dots[vv].center.x -= speed_lenght
-                        //
-                        //     }
-                        //     else{
-                        //         let speed_lenght = (cls.dots[vv].center.y - top_y) / 20
-                        //         cls.dots[vv].center.y -= speed_lenght
-                        //         if(speed_lenght <= 1){
-                        //             cls.dots[vv].center.x -= speed_lenght
-                        //             cls.ctrl_mode.mode_z = 0
-                        //
-                        //         }
-                        //     }
-                        //
-                        // }
-                        //
-                        // else if (cls.dots[vv].center.x > 0 && cls.dots[vv].center.x < right_x - 10) {
-                        //     let speed_lenght = (right_x - 10 - cls.dots[vv].center.x) / 10
-                        //     if(speed_lenght > 1) {
-                        //         cls.dots[vv].center.x += speed_lenght
-                        //     }
-                        //     else{
-                        //         let speed_lenght = -(cls.dots[vv].center.y - bottom_y) / 20
-                        //         cls.dots[vv].center.y += speed_lenght
-                        //     }
-                        // }
-
-                        // }
-                        // })
-
-
-                        // }
 
 
                     }
@@ -778,6 +731,83 @@ class DrawCanvas {
                             init_dots_xyz.start()
                         }
                        
+                        /*处理墙壁触碰*/
+                        if (cls.dots[v].edge_touch_test) {
+                            if (Math.abs(cls.dots[v].center.x) > (Math.abs(cls.canvas.width / 2) - cls.dots[v].radius)) {
+                                cls.dots[v].vector.x *= -1;
+
+                            }
+                            if (Math.abs(cls.dots[v].center.y) > (Math.abs(cls.canvas.height / 2) - cls.dots[v].radius)) {
+                                cls.dots[v].vector.y *= -1;
+
+                            }
+                        }
+
+
+                    }
+                    else if (cls.dots[v].group === 'countdown') {
+                        // var countdown_start = 0
+                        // if(countdown_start === 0){
+                        //     countdown_start = cls.dots[v].move_way.params.num
+                        // }
+
+                        if(cls.dots[v].init_center.x === cls.dots[v].center.x && cls.dots.length>0){
+
+                            // let start_countdown = new TWEEN.Tween(countdown_start)
+                            //     .to(
+                            //         {
+                            //             countdown_start:0,
+                            //             y:cls.dots[v].center.y
+                            //         }, 1000
+                            //     )
+                            //     .easing(TWEEN.Easing.Linear.None)
+                            //     .onUpdate(function () {
+                            //         console.log(countdown_start)
+                            //
+                            //     })
+                            //     .start()
+
+                            // let init_dots_xyz = new TWEEN.Tween(cls.dots[v].center)
+                            //     .to(
+                            //         {
+                            //             x:cls.dots[v].center.x,
+                            //             y:cls.dots[v].center.y
+                            //         }, 1000
+                            //     )
+                            //     .delay(1500)
+                            //     .easing(TWEEN.Easing.Linear.None)
+                            //     .onUpdate(function () {
+                            //         if(cls.dots[v]) {
+                            //
+                            //             if (cls.dots[v].hasOwnProperty('z')) {
+                            //                 cls.dots[v].z = 0
+                            //                 cls.dots[v].scale_fn = 1 / (1 + -cls.dots[v].z / cls.dots[v].fl)
+                            //
+                            //
+                            //                 if (cls.dots[v].z > cls.dots[v].fl) {
+                            //                     cls.dots[v].z = -1000
+                            //                 }
+                            //                 if (cls.dots[v].scale_fn > 1000) {
+                            //                     cls.dots[v].scale_fn = 1000
+                            //                 }
+                            //                 if (cls.dots[v].z < -1000) {
+                            //                     cls.dots[v].z = cls.dots[v].fl
+                            //
+                            //                 }
+                            //                 cls.dots[v].scale = {
+                            //                     scale_X: cls.dots[v].scale_fn,
+                            //                     scale_Y: cls.dots[v].scale_fn
+                            //                 }
+                            //             }
+                            //         }
+                            //
+                            //     })
+                            //
+                            //
+                            //
+                            // init_dots_xyz.start()
+                        }
+
                         /*处理墙壁触碰*/
                         if (cls.dots[v].edge_touch_test) {
                             if (Math.abs(cls.dots[v].center.x) > (Math.abs(cls.canvas.width / 2) - cls.dots[v].radius)) {
