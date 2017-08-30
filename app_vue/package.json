@@ -42,7 +42,7 @@
     "stats.js": "^0.17.0",
     "stylus": "^0.54.5",
     "stylus-loader": "^3.0.1",
-    "three": "^0.85.2",
+    "three": "^0.87.1",
     "three-bmfont-text": "^2.2.1",
     "three.meshline": "^1.0.3",
     "ua-parser-js": "^0.7.13",
