@@ -6,19 +6,19 @@
  * Time: 下午4:50
  */
 
-namespace Truesign\Adapter\Volume;
+namespace Truesign\Adapter\Shop;
 use Truesign\Adapter\Base\DbLibraryAdapter;
 use Royal\Data\Field;
 
 
-class danmuLogAdapter extends DbLibraryAdapter
+class productCategoryAdapter extends DbLibraryAdapter
 {
     public function database()
     {
-        return 'truesign_app';
+        return 'app_shop';
     }
     public function dbConfig(){
-        return 'truesign_app';
+        return 'shop';
     }
     public function table_Prefix()
     {
@@ -31,29 +31,27 @@ class danmuLogAdapter extends DbLibraryAdapter
 
     public function table()
     {
-        return 'danmu_log';
+        return 'product_category';
 
     }
 
     public function tableDesc()
     {
-        return '海量弹幕信息保存';
+        return '商品类目';
     }
 
     public function tableInit()
     {
         return Field::start()
-            ->def('document_id')->map('id')->int()->desc('人员 id')
-            ->def('unique_id')->map('unique_id')->varchar(100)->desc('来源唯一id')->key()
-            ->def('username')->map('username')->varchar(100)->desc('名称')->key()
-            ->def('danmu')->map('danmu')->varchar(1000)->desc('弹幕')
-            ->def('source')->map('source')->varchar(300)->desc('来源')
+            ->def('document_id')->map('id')->bigint()->desc('id')
+            ->def('category_name')->map('category_name')->varchar(64)->desc('类目名称')
+            ->def('category_type')->map('category_type')->int()->desc('类目编号')->key()
             ->end();
     }
 
     public function tableAdd()
     {
-
+        
     }
     public function tableModify()
     {
@@ -65,6 +63,7 @@ class danmuLogAdapter extends DbLibraryAdapter
 
     }
     static function show(){
-        print('showme');
+        // TODO: Implement show() method.
+
     }
 }

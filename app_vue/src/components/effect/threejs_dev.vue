@@ -192,51 +192,71 @@
 
             },
             init_objects(){
-                var video = document.getElementById( 'video' );
+                var vm = this
+                this.threejs_dev.video = document.getElementById( 'video' );
 
                 //
 
-                var image = document.createElement( 'canvas' );
-                image.width = 480;
-                image.height = 204;
+                this.threejs_dev.image = document.createElement( 'canvas' );
+                this.threejs_dev.image.width = 480;
+                this.threejs_dev.image.height = 204;
 
-                var imageContext = image.getContext( '2d' );
-                imageContext.fillStyle = '#000000';
-                imageContext.fillRect( 0, 0, 480, 204 );
-                imageContext.drawImage( video, 0, 0 );
-                var texture = new THREE.Texture( image );
+                this.threejs_dev.imageContext = this.threejs_dev.image.getContext( '2d' );
+                this.threejs_dev.imageContext.fillStyle = '#000000';
+                this.threejs_dev.imageContext.fillRect( 0, 0, 480, 204 );
+                this.threejs_dev.texture = new THREE.Texture( this.threejs_dev.image );
 
-                var material = new THREE.MeshBasicMaterial( { map: texture, overdraw: 0.5 } );
+                var material = new THREE.MeshBasicMaterial( { map: this.threejs_dev.texture , overdraw: 0.5 } );
+                var img = require('../../../static/img/flag_of_china.png')
+                var imgTexture = THREE.ImageUtils.loadTexture(img);
 
-//                var imageReflection = document.createElement( 'canvas' );
-//                imageReflection.width = 480;
-//                imageReflection.height = 204;
+                var plane = new THREE.CubeGeometry( 480, 204, 0 );
 
-//                var imageReflectionContext = imageReflection.getContext( '2d' );
-//                imageReflectionContext.fillStyle = '#000000';
-//                imageReflectionContext.fillRect( 0, 0, 480, 204 );
-//
-//                var imageReflectionGradient = imageReflectionContext.createLinearGradient( 0, 0, 0, 204 );
-//                imageReflectionGradient.addColorStop( 0.2, 'rgba(240, 240, 240, 1)' );
-//                imageReflectionGradient.addColorStop( 1, 'rgba(240, 240, 240, 0.8)' );
-//
-//                var textureReflection = new THREE.Texture( imageReflection );
-//
-//                var materialReflection = new THREE.MeshBasicMaterial( { map: textureReflection, side: THREE.BackSide, overdraw: 0.5 } );
 
-                //
+                var width_num = this.screenWidth / 480+1
+                var height_num = this.screenHeight /204+1
+                var amount = width_num * height_num
+//                for(let i=0; i< width_num; i++){
+//                    for(let j = 0; j<height_num; j++){
+//                        let mesh  = new THREE.Mesh( plane, material );
+//                        mesh.position.set(-this.screenWidth/2+38 + i* 480,this.screenHeight/2  -j*204,1)
+//                        this.threejs_dev.scene.add(mesh);
+//                    }
+//                }
 
-                var plane = new THREE.PlaneGeometry( 480, 204, 4, 4 );
-
-                var mesh = new THREE.Mesh( plane, material );
+                let mesh  = new THREE.Mesh( plane, material );
+                mesh.position.set(-30,0,10)
                 mesh.scale.x = mesh.scale.y = mesh.scale.z = 1.5;
                 this.threejs_dev.scene.add(mesh);
 
-//                mesh = new THREE.Mesh( plane, materialReflection );
-//                mesh.position.y = -306;
-//                mesh.rotation.x = -Math.PI;
-//                mesh.scale.x = mesh.scale.y = mesh.scale.z = 1.5;
-//                this.threejs_dev.scene.add( mesh );
+
+                var cube = new THREE.Mesh( new THREE.CubeGeometry( 200, 200, 200 ), new THREE.MeshNormalMaterial() );
+                cube.position.x = -30;
+                cube.position.y = 0;
+                cube.position.z = -350;
+                this.threejs_dev.scene.add( cube );
+
+                var urlPrefix1	= require('../../../static/img/flag_of_china.png');
+                var urlPrefix2	= require('../../../static/sky/asmr.jpg');
+//                var urlPrefix2	= require("../../../static/sky/negx.jpg");
+//                var urlPrefix3	= require("../../../static/sky/posy.jpg");
+//                var urlPrefix4	= require("../../../static/sky/negy.jpg");
+//                var urlPrefix5	= require("../../../static/sky/posz.jpg");
+//                var urlPrefix6	= require("../../../static/sky/negz.jpg");
+
+//                var urls = [ urlPrefix1,urlPrefix2,urlPrefix3,urlPrefix4,urlPrefix5,urlPrefix6 ];
+                var textureCube	= THREE.ImageUtils.loadTextureCube( img );
+
+                var shader	= THREE.ShaderUtils.lib["cube"];
+                shader.uniforms["tCube"].texture = textureCube;
+                var material_m = new THREE.MeshShaderMaterial({
+                    fragmentShader	: shader.fragmentShader,
+                    vertexShader	: shader.vertexShader,
+                    uniforms	: shader.uniforms
+                });
+
+                var skyboxMesh	= new THREE.Mesh( new THREE.CubeGeometry( 100000, 100000, 100000, 1, 1, 1, null, true ), material_m );
+                this.threejs_dev.scene.add( skyboxMesh );
             },
             init_resize(){
                 var vm = this
@@ -257,6 +277,18 @@
             do_render(){
 
 
+                if ( this.threejs_dev.video.readyState === this.threejs_dev.video.HAVE_ENOUGH_DATA ) {
+
+                    this.threejs_dev.imageContext.drawImage( this.threejs_dev.video, 0, 0 );
+
+                    if ( this.threejs_dev.texture ) this.threejs_dev.texture.needsUpdate = true;
+//                    if ( this.threejs_dev.textureReflection ) this.threejs_dev.textureReflection.needsUpdate = true;
+//
+//                    this.threejs_dev.imageReflectionContext.drawImage( this.threejs_dev.image, 0, 0 );
+//                    this.threejs_dev.imageReflectionContext.fillStyle = this.threejs_dev.imageReflectionGradient;
+//                    this.threejs_dev.imageReflectionContext.fillRect( 0, 0, 480, 204 );
+
+                }
                 this.threejs_dev.renderer.render( this.threejs_dev.scene, this.threejs_dev.camera );
 
             },
