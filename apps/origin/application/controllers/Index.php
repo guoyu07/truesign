@@ -1,11 +1,13 @@
 <?php
+use Royal\Util\helper;
+
 /**
  * @name IndexController
  * @author ql_os
  * @desc 默认控制器
  * @see http://www.php.net/manual/en/class.yaf-controller-abstract.php
  */
-class IndexController extends OAppBaseController {
+class IndexController extends AppBaseController {
 
 
 	/** 
@@ -16,6 +18,11 @@ class IndexController extends OAppBaseController {
 	public function indexAction($name = "Stranger") {
         echo '<a href="https://iamsee.com">请跳转主页 <相关第三方></a>';
 
+	}
+
+    public function ipAction()
+    {
+        print_r(helper::getClientIP());
 	}
     public function infoAction(){
 	    echo phpinfo();

@@ -60,7 +60,6 @@ class new_socket_server{
         $this->packMaxLen=$config['package_max_length'];
         $this->sw = new \swoole_websocket_server($this->host, $this->port);
 
-        var_dump($config);
         $this->sw->set($config);
         $this->bind($config);
 

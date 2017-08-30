@@ -1,7 +1,8 @@
 <template>
   <div id="tools_websocket" style="text-align: left">
         <div style="left:50%;position: absolute;top:0;transform:translate(-50%);min-width: 1000px">
-
+            <input class="lable_input" style="width: 400px" id="websocket_url" placeholder="websocket url" v-model="websocket_url"  >
+            <hr>
             <button type="button" class="btn btn-default" @click="socket_init">连接socket</button>
             <button type="button" class="btn btn-default" @click="disconnect">断开socket</button>
             <input class="lable_input" value="已经连接" v-if="conn_status">
@@ -20,14 +21,14 @@
             </el-select>
 
         </div>
-        <div style="left:50%;top:50px;position: absolute;transform:translate(-50%);min-width: 1000px">
+        <div style="left:50%;top:150px;position: absolute;transform:translate(-50%);min-width: 1000px">
             {{socketinfo.unique_auth_code }} cid: {{socketinfo.cid}}
             <p v-if="socketinfo.token">{{socketinfo.userinfo }} token: {{socketinfo.token }}</p>
             <hr>
 
             {{socketinfo.ping }}
         </div>
-        <div style="left:50%;position: absolute;top:150px;transform:translate(-50%);min-width: 1000px">
+        <div style="left:50%;position: absolute;top:250px;transform:translate(-50%);min-width: 1000px">
             <label for="module">module</label><input v-model="yaf.module" id="module">
             <label for="controller">controller</label><input v-model="yaf.controller" id="controller">
             <label for="action">action</label><input v-model="yaf.action" id="action">
@@ -40,7 +41,7 @@
 
         </div>
 
-      <div style="width: 800px;height: 300px;min-width: 900px;margin: 0 auto;position: absolute;top:230px;left:50%;transform: translateX(-50%);text-align: center;border-radius: 8px;min-width: 1000px">
+      <div style="width: 800px;height: 300px;min-width: 900px;margin: 0 auto;position: absolute;top:330px;left:50%;transform: translateX(-50%);text-align: center;border-radius: 8px;min-width: 1000px">
           <!--{{ socketinfo.apps }}-->
           <!--{{ app_selected }}-->
           {{ socketinfo.relation }}
@@ -67,6 +68,16 @@
             })
 
         },
+        watch: {
+            websocket_url: {
+                handler: function (val, oldVal) {
+                    console.log('change websocket url=>'+val)
+                    SOCKET_CLIENT.data.wsserver = val
+
+                },
+                deep: true
+            },
+        },
         data () {
             return {
                 socket_account:{
@@ -74,6 +85,7 @@
                     password:'',
                     authway:'',
                 },
+                websocket_url:'ws://ws.iamsee.com:9501',
                 conn_status:false,
                 yaf:{
                     module:'index',

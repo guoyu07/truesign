@@ -27,6 +27,7 @@ const canvas = resolve => require(['../components/effect/canvas.vue'], resolve)
 const ball_canvas = resolve => require(['../components/effect/ball_canvas.vue'], resolve)
 const ball_canvas_onedraw = resolve => require(['../components/effect/ball_canvas_onedraw.vue'], resolve)
 const ball_canvas_init = resolve => require(['../components/effect/ball_canvas_init.vue'], resolve)
+const canvas_materials_video = resolve => require(['../components/effect/canvas_materials_video.vue'], resolve)
 
 
 const project = resolve => require(['../components/project/project.vue'], resolve)
@@ -158,6 +159,14 @@ const routes = [
         component: effect,
 
         children: [
+            {
+                name: 'canvas_materials_video',
+                path: 'canvas_materials_video',
+                meta: {
+                    title: 'canvas_materials_video'
+                },
+                component: canvas_materials_video
+            },
             {
                 name: 'loading_canvas',
                 path: 'loading_canvas',
