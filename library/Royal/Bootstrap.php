@@ -36,25 +36,26 @@ abstract class Bootstrap {
 
     static function run($app='o_app')
     {
-        define('CURRECT_APPLICATION_PATH', APPLICATION_PATH.DIRECTORY_SEPARATOR.'apps'.DIRECTORY_SEPARATOR.$app);
-        static::loadConfig();
-        if (php_sapi_name() != 'cli') {
-            TimeStack::start();
-            $application = new \Yaf_Application(array(
-                'application' => array(
-                    'directory' => CURRECT_APPLICATION_PATH.DIRECTORY_SEPARATOR.'application',
-                    'system' => array(
-                        'use_spl_autoload' => 1
-                    ),
-                    'dispatcher' => array(
-                        'catchException' => true
-                    ),
-                )
-            ));
-            $application->bootstrap()->run();
-
-
-        }
+        echo 1;
+//        define('CURRECT_APPLICATION_PATH', APPLICATION_PATH.DIRECTORY_SEPARATOR.'apps'.DIRECTORY_SEPARATOR.$app);
+////        static::loadConfig();
+//        if (php_sapi_name() != 'cli') {
+//            TimeStack::start();
+//            $application = new \Yaf_Application(array(
+//                'application' => array(
+//                    'directory' => CURRECT_APPLICATION_PATH.DIRECTORY_SEPARATOR.'application',
+//                    'system' => array(
+//                        'use_spl_autoload' => 1
+//                    ),
+//                    'dispatcher' => array(
+//                        'catchException' => true
+//                    ),
+//                )
+//            ));
+//            $application->bootstrap()->run();
+//
+//
+//        }
 
     }
 }
