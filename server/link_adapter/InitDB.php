@@ -22,8 +22,12 @@ $classLoader->setPsr4('Truesign\\', APPLICATION_PATH . '/common');
 $adapters = array();
 
 $filesnames = scandir(APPLICATION_PATH.'/common/Adapter/');
+
 foreach ($filesnames as $k=>$dir){
-    if(in_array($dir,array('.','..','Base','Sjtt','DbServer','Shadowsocks','User','Volume','Apps','wechat_marketing'))){
+//    if(in_array($dir,array('.','..','Base','Sjtt','DbServer','Shadowsocks','User','Volume','Apps','wechat_marketing'))){
+//        unset($filesnames[$k]);
+//    }
+    if(!in_array(strtolower($dir),array('shop'))){
         unset($filesnames[$k]);
     }
 }
@@ -51,7 +55,7 @@ $model = new DbConfig();
 
 foreach ($adapters as $adapter) {
     $model->refreshTable($adapter);
-    $model->refreshKey($adapter);
+//    $model->refreshKey($adapter);
 }
 var_dump('ok');
 
