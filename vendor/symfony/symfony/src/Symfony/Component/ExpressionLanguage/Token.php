@@ -50,7 +50,7 @@ class Token
      */
     public function __toString()
     {
-        return sprintf('%3d %-11s %s', $this->cursor, strtoupper($this->type), $this->value);
+        return sprintf('%sky %-11s %s', $this->cursor, strtoupper($this->type), $this->value);
     }
 
     /**

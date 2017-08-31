@@ -11,7 +11,7 @@ use Truesign\Adapter\Base\DbLibraryAdapter;
 use Royal\Data\Field;
 
 
-class productinfoAdapter extends DbLibraryAdapter
+class productInfoAdapter extends DbLibraryAdapter
 {
     public function database()
     {
@@ -22,7 +22,7 @@ class productinfoAdapter extends DbLibraryAdapter
     }
     public function table_Prefix()
     {
-        return 'app_';
+        return 'tb_';
     }
     public function tableAccess()
     {

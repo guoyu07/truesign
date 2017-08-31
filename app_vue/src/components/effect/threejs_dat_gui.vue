@@ -265,14 +265,14 @@
 
 
                 this.threejs_dev.controls = new THREE.TrackballControls(this.threejs_dev.camera);
-                this.threejs_dev.controls.rotateSpeed = 1.0;
-                this.threejs_dev.controls.zoomSpeed = 1.2;
-                this.threejs_dev.controls.panSpeed = 0.8;
-                this.threejs_dev.controls.noZoom = false;
-                this.threejs_dev.controls.noPan = false;
-                this.threejs_dev.controls.staticMoving = false;
-                this.threejs_dev.controls.dynamicDampingFactor = 0.1;
-                this.threejs_dev.controls.keys = [65, 83, 68];
+//                this.threejs_dev.controls.rotateSpeed = 1.0;
+//                this.threejs_dev.controls.zoomSpeed = 1.2;
+//                this.threejs_dev.controls.panSpeed = 0.8;
+//                this.threejs_dev.controls.noZoom = false;
+//                this.threejs_dev.controls.noPan = false;
+//                this.threejs_dev.controls.staticMoving = false;
+//                this.threejs_dev.controls.dynamicDampingFactor = 0.1;
+//                this.threejs_dev.controls.keys = [65, 83, 68];
 //                this.threejs_dev.controls.addEventListener('mousemove', this.do_render);
 
 

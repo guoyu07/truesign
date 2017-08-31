@@ -11,7 +11,7 @@ use Truesign\Adapter\Base\DbLibraryAdapter;
 use Royal\Data\Field;
 
 
-class productCategoryAdapter extends DbLibraryAdapter
+class orderMasterAdapter extends DbLibraryAdapter
 {
     public function database()
     {
@@ -22,7 +22,7 @@ class productCategoryAdapter extends DbLibraryAdapter
     }
     public function table_Prefix()
     {
-        return 'app_';
+        return 'tb_';
     }
     public function tableAccess()
     {
@@ -31,21 +31,26 @@ class productCategoryAdapter extends DbLibraryAdapter
 
     public function table()
     {
-        return 'product_category';
+        return 'order_master';
 
     }
 
     public function tableDesc()
     {
-        return '商品类目';
+        return '订单主表';
     }
 
     public function tableInit()
     {
         return Field::start()
             ->def('document_id')->map('id')->bigint()->desc('id')
-            ->def('category_name')->map('category_name')->varchar(64)->desc('类目名称')
-            ->def('category_type')->map('category_type')->int()->desc('类目编号')->key()
+            ->def('buyer_name')->map('buyer_name')->varchar(32)->desc('买家名称')
+            ->def('buyer_phone')->map('buyer_phone')->varchar(32)->desc('买家电话')
+            ->def('buyer_address')->map('buyer_address')->varchar(32)->desc('买家地址')
+            ->def('buyer_openid')->map('buyer_openid')->varchar(32)->desc('买家微信openid')->key()
+            ->def('order_amount')->map('order_amount')->double()->desc('订单总金额')
+            ->def('order_status')->map('order_status')->int()->desc('订单状态')->widgetType('radio',array('',array('0'=>'新下单','1'=>'旧订单')))
+            ->def('pay_status')->map('pay_status')->int()->desc('支付状态')->widgetType('radio',array('',array('0'=>'未支付','1'=>'已支付')))
             ->end();
     }
 

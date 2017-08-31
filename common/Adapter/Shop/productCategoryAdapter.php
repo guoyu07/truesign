@@ -11,7 +11,7 @@ use Truesign\Adapter\Base\DbLibraryAdapter;
 use Royal\Data\Field;
 
 
-class productInfoAdapter extends DbLibraryAdapter
+class productCategoryAdapter extends DbLibraryAdapter
 {
     public function database()
     {
@@ -22,7 +22,7 @@ class productInfoAdapter extends DbLibraryAdapter
     }
     public function table_Prefix()
     {
-        return 'app_';
+        return 'tb_';
     }
     public function tableAccess()
     {
@@ -31,25 +31,21 @@ class productInfoAdapter extends DbLibraryAdapter
 
     public function table()
     {
-        return 'product_info';
+        return 'product_category';
 
     }
 
     public function tableDesc()
     {
-        return '商品信息';
+        return '商品类目';
     }
 
     public function tableInit()
     {
         return Field::start()
             ->def('document_id')->map('id')->bigint()->desc('id')
-            ->def('product_name')->map('product_name')->varchar(64)->desc('商品名称')
-            ->def('product_price')->map('product_price')->double()->desc('单价')
-            ->def('product_stock')->map('product_stock')->int()->desc('库存')
-            ->def('product_description')->map('product_description')->varchar(64)->desc('描述')
-            ->def('product_icon')->map('product_icon')->varchar(512)->desc('小图')
-            ->def('category_type')->map('category_type')->int()->desc('类目编号')
+            ->def('category_name')->map('category_name')->varchar(64)->desc('类目名称')
+            ->def('category_type')->map('category_type')->int()->desc('类目编号')->unique()
             ->end();
     }
 
@@ -67,6 +63,7 @@ class productInfoAdapter extends DbLibraryAdapter
 
     }
     static function show(){
-        print('showme');
+        // TODO: Implement show() method.
+
     }
 }

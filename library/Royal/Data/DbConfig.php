@@ -2,6 +2,8 @@
 namespace Royal\Data;
 
 
+use function var_dump;
+
 class DbConfig {
     protected static $_dbConf = array();
 
@@ -217,15 +219,15 @@ class DbConfig {
         $createtimeField = $adapter->autoCreateTimestamp();
         if ($createtimeField) {
             $attrs["$prefix$createtimeField"] = array(
-                'type' => 'int',
-                'length' => 11,
+                'type' => 'timestamp',
+//                'length' => 11,
             );
         }
         $uptimeField = $adapter->autoUpdateTimestamp();
         if ($uptimeField) {
             $attrs["$prefix$uptimeField"] = array(
-                'type' => 'int',
-                'length' => 11,
+                'type' => 'timestamp',
+//                'length' => 11,
             );
         }
         return $attrs;
@@ -235,6 +237,7 @@ class DbConfig {
         $db = DAO::instance($adapter)->getDb();
 
         $sqls = $this->diffTable($adapter);
+
         foreach ($sqls as $sql) {
             var_dump($sql);
             $db->query($sql);
@@ -273,7 +276,9 @@ class DbConfig {
     public function diffTable(DAOAdapter $adapter,$mysql_user = null) {
         $exceptAttrs = $this->analysisAdapter($adapter);
         $currentAttrs = $this->analysisTable($adapter,$mysql_user);
+
         if (!$currentAttrs) {
+
             return $this->getCreateSql($adapter, $exceptAttrs);
         }
         $sql = array();
@@ -291,11 +296,15 @@ class DbConfig {
         foreach ($currentAttrs as $field => $attr) {
             $sql[] = $this->getDropFieldSql($adapter, $field);
         }
+
         if (!$sql) {
             return array();
         }
+
         $sql = $sqlPrefix . join(', ', $sql);
+
         return array($sql);
+
     }
 
     public function getDropFieldSql($adapter, $field) {
@@ -331,6 +340,7 @@ class DbConfig {
 //    }
 
     public function getFieldSqlByAttr($field, $attr) {
+
         $default = ($attr['type'] == 'varchar' || $attr['type'] == 'text') ? "''" : 0;
         if('datetime' === $attr['type']){
             $default = "'".$attr['length']."'";
@@ -339,6 +349,13 @@ class DbConfig {
         $type = ($attr['type'] == 'varchar') ? $attr['type'] . '(' . $attr['length'] . ')' : $attr['type'];
         if($attr['auto_increment'] || $type =='text' || $type =='longtext') {
             return "`$field` $type";
+        }
+
+        if($field == 'create_time'){
+            $default = 'current_timestamp';
+        }
+        if($field == 'update_time'){
+            $default = 'current_timestamp on update current_timestamp';
         }
         return "`$field` $type default $default";
     }
@@ -350,13 +367,16 @@ class DbConfig {
         $columns = array();
         foreach ($attrs as $field => $attr) {
             $fieldSql = $this->getFieldSqlByAttr($field, $attr);
+
             $primaryKeySql = (isset($attr['key']) && $attr['key'] == 'primary') ? 'primary key' : '';
             $autoIncSql = ($attr['auto_increment']) ? 'auto_increment' : '';
             $columns[] = "$fieldSql $type $primaryKeySql $autoIncSql";
         }
+
         $columns = join(",\n", $columns);
 //        $sql = "CREATE TABLE `$table`(\n$columns\n) ENGINE=InnoDB DEFAULT CHARSET=utf8";
         $sql = "CREATE TABLE `$table`(\n$columns\n) ENGINE=InnoDB DEFAULT CHARSET=utf8";
+
         return array($sql);
     }
 

@@ -11,7 +11,7 @@ use Truesign\Adapter\Base\DbLibraryAdapter;
 use Royal\Data\Field;
 
 
-class orderMasterAdapter extends DbLibraryAdapter
+class orderDetailAdapter extends DbLibraryAdapter
 {
     public function database()
     {
@@ -22,7 +22,7 @@ class orderMasterAdapter extends DbLibraryAdapter
     }
     public function table_Prefix()
     {
-        return 'app_';
+        return 'tb_';
     }
     public function tableAccess()
     {
@@ -31,26 +31,25 @@ class orderMasterAdapter extends DbLibraryAdapter
 
     public function table()
     {
-        return 'order_master';
+        return 'order_detail';
 
     }
 
     public function tableDesc()
     {
-        return '订单主表';
+        return '订单详情';
     }
 
     public function tableInit()
     {
         return Field::start()
             ->def('document_id')->map('id')->bigint()->desc('id')
-            ->def('buyer_name')->map('buyer_name')->varchar(32)->desc('买家名称')
-            ->def('buyer_phone')->map('buyer_phone')->varchar(32)->desc('买家电话')
-            ->def('buyer_address')->map('buyer_address')->varchar(32)->desc('买家地址')
-            ->def('buyer_openid')->map('buyer_openid')->varchar(32)->desc('买家微信openid')->key()
-            ->def('order_amount')->map('order_amount')->double()->desc('订单总金额')
-            ->def('order_status')->map('order_status')->int()->desc('订单状态')->widgetType('radio',array('',array('0'=>'新下单','1'=>'旧订单')))
-            ->def('pay_status')->map('pay_status')->int()->desc('支付状态')->widgetType('radio',array('',array('0'=>'未支付','1'=>'已支付')))
+            ->def('order_id')->map('order_id')->bigint()->desc('订单id')->key()
+            ->def('product_id')->map('product_id')->bigint()->desc('商品id')
+            ->def('product_name')->map('product_name')->varchar(64)->desc('商品名称')
+            ->def('product_price')->map('product_price')->double()->desc('商品价格')
+            ->def('product_quantity')->map('product_quantity')->int()->desc('商品数量')
+            ->def('product_icon')->map('product_icon')->varchar(512)->desc('商品小图')
             ->end();
     }
 

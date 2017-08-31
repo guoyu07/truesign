@@ -16,14 +16,14 @@
 
 
 <script>
-    const TWEEN = require('@tweenjs/tween.js');
+    //    var TWEEN =  require('tween')
     var THREE = require('three/build/three')
     var TrackballControls = require('three/examples/js/controls/TrackballControls')
     var CSS3DRenderer = require('three/examples/js/renderers/CSS3DRenderer')
 
     var stats = require('three/examples/js/libs/stats.min')
     var Projector = require('three/examples/js/renderers/Projector')
-    var DAT = require('three/examples/js/libs/dat.gui.min')
+    var dat = require('three/examples/js/libs/dat.gui.min')
     var CanvasRenderer = require('three/examples/js/renderers/CanvasRenderer')
     export default {
         data () {
@@ -36,33 +36,12 @@
                 },
                 threejs_dev: {
                     stats: '',
-                    gui:'',
                     container: '',
                     scene: '',
                     camera: '',
                     renderer: '',
                     controls: '',
-                    objects: '',
-                    meshs: {},
-                    tween: {
-                        obj: {},
-                        opts: {
-                            range: 800,
-                            duration: 2500,
-                            delay: 200,
-                            easing: 'Elastic.EaseInOut',
-                            position: {
-                                x: 0,
-                                y: 0,
-                                z: 0,
-                            },
-                            scale: {
-                                x: 1,
-                                y: 1,
-                                z: 1
-                            }
-                        }
-                    }
+                    objects: ''
                 },
                 textureList: [
                     require("../../../static/img/flowers/flower-1.png"),
@@ -90,23 +69,6 @@
                 vm.screenWidth = parseInt(width2height[0])
                 vm.screenHeight = parseInt(width2height[1])
             })
-            var Options = function() {
-                this.number = 1;
-            };
-
-            window.onload = function() {
-                var options = new Options();
-                var gui = new DAT.GUI();
-                var controller = gui.add(options, 'number').min(0).max(10).step(1);
-
-                controller.onChange(function(value) {
-                    console.log("onChange:" + value)
-                });
-
-                controller.onFinishChange(function(value) {
-                    console.log("onFinishChange" + value)
-                });
-            };
         },
         mounted(){
             this.start()
@@ -115,43 +77,18 @@
         },
         methods: {
             start(){
-                var vm = this
                 this.initStats()
-
                 this.init_renderer()
                 this.init_container()
                 this.init_scene()
                 this.init_camera()
-                this.init_helper()
+//                this.init_helper()
                 this.init_objects()
-
-//                this.initGui(this.threejs_dev.tween.opts,function (options) {
-//                    console.log("userOpts", userOpts)
-//                    vm.initTween();
-//                    console.log('callback=>',options)
-//                    console.log('callback=>',vm.threejs_dev.tween.opts)
-//                })
-
-//                this.initGui(this.threejs_dev.tween.opts)
                 this.init_controls()
                 this.do_render()
                 this.do_animate()
 
 
-            },
-            initGui(){
-                var Options = function() {
-                    this.color0 = "#ffae23"; // CSS string
-                    this.color1 = [ 0, 128, 255 ]; // RGB array
-                    this.color2 = [ 0, 128, 255, 0.3 ]; // RGB with alpha
-                    this.color3 = { h: 350, s: 0.9, v: 0.3 }; // Hue, saturation, value
-                };
-                var options = new Options();
-                var gui = new DAT.GUI();
-                gui.addColor(options, 'color0');
-                gui.addColor(options, 'color1');
-                gui.addColor(options, 'color2');
-                gui.addColor(options, 'color3');
             },
             initStats(){
                 let old_stats = document.getElementById('threejs_stats')
@@ -163,32 +100,10 @@
                 this.threejs_dev.stats.domElement.id = 'threejs_stats'
                 this.threejs_dev.stats.domElement.style.position = 'fixed';
                 this.threejs_dev.stats.domElement.style.left = this.screenWidth - 100 + 'px';
-                this.threejs_dev.stats.domElement.style.top = this.screenHeight-100+'px';
+                this.threejs_dev.stats.domElement.style.top = '0px';
 //                this.threejs_dev.stats.domElement.style.width = '300px';
 //                this.threejs_dev.stats.domElement.style.height = '100px';
                 document.body.appendChild(this.threejs_dev.stats.domElement);
-            },
-            initTween(){
-                var vm = this
-                var update	= function(){
-                    vm.threejs_dev.meshs['move_cube'].position.x = current.x;
-                }
-                var current	= { x: -vm.threejs_dev.tween.opts.range };
-                TWEEN.removeAll();
-                var easing	= TWEEN.Easing[vm.threejs_dev.tween.opts.easing.split('.')[0]][vm.threejs_dev.tween.opts.easing.split('.')[1]];
-                var tweenHead	= new TWEEN.Tween(current)
-                    .to({x: +vm.threejs_dev.tween.opts.range}, vm.threejs_dev.tween.opts.duration)
-                    .delay(vm.threejs_dev.tween.opts.delay)
-                    .easing(easing)
-                    .onUpdate(update);
-                var tweenBack	= new TWEEN.Tween(current)
-                    .to({x: -vm.threejs_dev.tween.opts.range}, vm.threejs_dev.tween.opts.duration)
-                    .delay(vm.threejs_dev.tween.opts.delay)
-                    .easing(easing)
-                    .onUpdate(update);
-                tweenHead.chain(tweenBack);
-                tweenBack.chain(tweenHead);
-                tweenHead.start();
             },
             do_change_render(){
 //                this.threejs_dev.renderer.setSize(500,500);
@@ -196,10 +111,13 @@
 
             },
             init_renderer(){
-                this.threejs_dev.renderer = new THREE.CanvasRenderer();
-                this.threejs_dev.renderer.setClearColor(0xffffff, 1);
-                this.threejs_dev.renderer.setPixelRatio(window.devicePixelRatio);
+                this.threejs_dev.renderer = new THREE.WebGLRenderer();
+
+
+//                this.threejs_dev.renderer.setPixelRatio(window.devicePixelRatio);
                 this.threejs_dev.renderer.setSize(this.screenWidth, this.screenHeight);
+                this.threejs_dev.renderer.autoClear = false;
+                this.threejs_dev.renderer.setClearColor(0xffffff, 1);
 
             },
             init_container(){
@@ -215,8 +133,9 @@
 //                this.threejs_dev.scene.fog = new THREE.FogExp2( 0xcccccc, 0.002 );
             },
             init_camera(){
-                this.threejs_dev.camera = new THREE.PerspectiveCamera(55, this.screenWidth / this.screenHeight, 1, 10000);
-                this.threejs_dev.camera.position.z = 1000;
+                this.threejs_dev.camera = new THREE.PerspectiveCamera(50, this.screenWidth / this.screenHeight, 1, 100);
+//                this.threejs_dev.camera = new THREE.PerspectiveCamera(55, this.screenWidth / this.screenHeight, 1, 10000);
+                this.threejs_dev.camera.position.z = -1;
             },
             init_helper(){
                 var vm = this
@@ -253,8 +172,6 @@
                 }
 
 
-
-
             },
             init_controls(){
                 // this.threejs_dev.controls = new THREE.TrackballControls(this.threejs_dev.camera, this.threejs_dev.renderer.domElement);
@@ -273,64 +190,23 @@
                 this.threejs_dev.controls.staticMoving = false;
                 this.threejs_dev.controls.dynamicDampingFactor = 0.1;
                 this.threejs_dev.controls.keys = [65, 83, 68];
-//                this.threejs_dev.controls.addEventListener('mousemove', this.do_render);
+                this.threejs_dev.controls.addEventListener('change', this.do_render);
 
 
             },
             init_objects(){
                 var vm = this
-                this.threejs_dev.video = document.getElementById('video');
 
-                //
-
-                this.threejs_dev.image = document.createElement('canvas');
-                this.threejs_dev.image.width = 480;
-                this.threejs_dev.image.height = 204;
-
-                this.threejs_dev.imageContext = this.threejs_dev.image.getContext('2d');
-                this.threejs_dev.imageContext.fillStyle = '#000000';
-                this.threejs_dev.imageContext.fillRect(0, 0, 480, 204);
-                this.threejs_dev.texture = new THREE.Texture(this.threejs_dev.image);
-
-                var material = new THREE.MeshBasicMaterial({map: this.threejs_dev.texture, overdraw: 0.5});
-
-
-                var plane = new THREE.CubeGeometry(480, 204, 0);
-
-
-                var width_num = this.screenWidth / 480 + 1
-                var height_num = this.screenHeight / 204 + 1
-                var amount = width_num * height_num
-//                for(let i=0; i< width_num; i++){
-//                    for(let j = 0; j<height_num; j++){
-//                        let mesh  = new THREE.Mesh( plane, material );
-//                        mesh.position.set(-this.screenWidth/2+38 + i* 480,this.screenHeight/2  -j*204,1)
-//                        this.threejs_dev.scene.add(mesh);
-//                    }
-//                }
-
-                let base_mesh = new THREE.Mesh(plane, material);
-                base_mesh.position.set(-30, 0, 10)
-                base_mesh.scale.x = base_mesh.scale.y = base_mesh.scale.z = 1.5;
-                this.addMeshToScene('base_mesh', base_mesh);
 
 
                 var cube = new THREE.Mesh(new THREE.CubeGeometry(200, 200, 200), new THREE.MeshNormalMaterial());
                 cube.position.x = -530;
                 cube.position.y = 0;
                 cube.position.z = 0;
-                this.addMeshToScene('cube', cube);
+                this.threejs_dev.scene.add(cube);
 
 
-                var img = require('../../../static/img/flag_of_china.png')
-                var imgTexture = THREE.ImageUtils.loadTexture(img);
-//                var imgTexture = THREE.TextureLoader(img,{}, function() { this.threejs_dev.renderer.render(this.threejs_dev.scene, this.threejs_dev.camera);});
-                var imgMaterial = new THREE.MeshLambertMaterial({map: imgTexture});
-                var imgMesh = new THREE.Mesh(new THREE.CubeGeometry(200, 200, 200), imgMaterial);
-                imgMesh.position.x = 550;
-                imgMesh.position.y = 0;
-                imgMesh.position.z = 0;
-                this.addMeshToScene('imgMesh', imgMesh);
+
 
 
                 var urlPrefix1 = require("../../../static/sky/posx.jpg");
@@ -339,30 +215,34 @@
                 var urlPrefix4 = require("../../../static/sky/negy.jpg");
                 var urlPrefix5 = require("../../../static/sky/posz.jpg");
                 var urlPrefix6 = require("../../../static/sky/negz.jpg");
+//                var urlPrefix1 = require("../../../static/hourse/qian.jpg");
+//                var urlPrefix2 = require("../../../static/hourse/zuo.jpg");
+//                var urlPrefix3 = require("../../../static/hourse/shang.jpg");
+//                var urlPrefix4 = require("../../../static/hourse/xia.jpg");
+//                var urlPrefix5 = require("../../../static/hourse/hou.jpg");
+//                var urlPrefix6 = require("../../../static/hourse/you.jpg");
 
                 var urls = [urlPrefix1, urlPrefix2, urlPrefix3, urlPrefix4, urlPrefix5, urlPrefix6];
-                var materials = [];
-                for (var i = 0; i < urls.length; i++) {
-                    console.log(i)
-                    materials.push(new THREE.MeshBasicMaterial({
-                            map: THREE.ImageUtils.loadTexture(urls[i])
-                        })
-                    )
-                }
-                var textureCubeFace = new THREE.MeshFaceMaterial(materials);
-                var skyboxMeshFace = new THREE.Mesh(new THREE.CubeGeometry(200, 200, 200), textureCubeFace);
-                skyboxMeshFace.position.x = 0;
-                skyboxMeshFace.position.y = 330;
-                skyboxMeshFace.position.z = 0;
-                this.addMeshToScene('skyboxMeshFace', skyboxMeshFace);
 
+                var reflectionCube = THREE.ImageUtils.loadTextureCube( urls );
+                reflectionCube.format = THREE.RGBFormat;
 
-                var cube_move = new THREE.Mesh(new THREE.SphereGeometry(80, 48, 32), new THREE.MeshNormalMaterial());
-                cube_move.position.x = -530;
-                cube_move.position.y = 330;
-                cube_move.position.z = 0;
-                this.addMeshToScene('cube_move', cube_move);
+                var shader = THREE.ShaderLib[ "cube" ];
+                shader.uniforms[ "tCube" ].value = reflectionCube;
 
+                var material = new THREE.ShaderMaterial( {
+
+                    fragmentShader: shader.fragmentShader,
+                    vertexShader: shader.vertexShader,
+                    uniforms: shader.uniforms,
+                    depthWrite: false,
+                    side: THREE.BackSide
+
+                } );
+
+                var mesh = new THREE.Mesh( new THREE.BoxGeometry( 100, 100, 100 ), material );
+
+                this.threejs_dev.scene.add(mesh);
             },
             init_resize(){
                 var vm = this
@@ -382,19 +262,9 @@
             },
             do_render(){
 
-
-                if (this.threejs_dev.video.readyState === this.threejs_dev.video.HAVE_ENOUGH_DATA) {
-
-                    this.threejs_dev.imageContext.drawImage(this.threejs_dev.video, 0, 0);
-
-                    if (this.threejs_dev.texture) this.threejs_dev.texture.needsUpdate = true;
-//                    if ( this.threejs_dev.textureReflection ) this.threejs_dev.textureReflection.needsUpdate = true;
-//
-//                    this.threejs_dev.imageReflectionContext.drawImage( this.threejs_dev.image, 0, 0 );
-//                    this.threejs_dev.imageReflectionContext.fillStyle = this.threejs_dev.imageReflectionGradient;
-//                    this.threejs_dev.imageReflectionContext.fillRect( 0, 0, 480, 204 );
-
-                }
+//                var timer =  -new Date().getTime() * 0.0002;
+//                this.threejs_dev.camera.position.x = 1000 * Math.cos( timer );
+//                this.threejs_dev.camera.position.z = 1000 * Math.sin( timer );
                 this.threejs_dev.renderer.render(this.threejs_dev.scene, this.threejs_dev.camera);
 
             },
@@ -405,12 +275,6 @@
                 this.do_render();
 
 
-            },
-
-            /*###### 扩展方法  #############*/
-            addMeshToScene(name, mesh){
-                this.threejs_dev.meshs[name] = mesh
-                this.threejs_dev.scene.add(mesh)
             }
 
 

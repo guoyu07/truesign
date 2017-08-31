@@ -18,6 +18,8 @@ const ssm_msglog = resolve => require(['../components/project/socket_server_mana
 const effect = resolve => require(['../components/effect/effect.vue'], resolve)
 const loading_canvas = resolve => require(['../components/effect/loading_canvas.vue'], resolve)
 const threejs_dev = resolve => require(['../components/effect/threejs_dev.vue'], resolve)
+const threejs_skybox = resolve => require(['../components/effect/threejs_skybox.vue'], resolve)
+const threejs_dat_gui = resolve => require(['../components/effect/threejs_dat_gui.vue'], resolve)
 const threejs_dev_trackball = resolve => require(['../components/effect/threejs_dev_trackball.vue'], resolve)
 const cache_canvas = resolve => require(['../components/effect/cache_canvas.vue'], resolve)
 const word_canvas = resolve => require(['../components/effect/word_canvas.vue'], resolve)
@@ -184,6 +186,22 @@ const routes = [
                 component: threejs_dev
             },
             {
+                name: 'threejs_skybox',
+                path: 'threejs_skybox',
+                meta: {
+                    title: 'threejs_skybox'
+                },
+                component: threejs_skybox
+            },
+            {
+                name: 'threejs_dat_gui',
+                path: 'threejs_dat_gui',
+                meta: {
+                    title: 'threejs_dat_gui'
+                },
+                component: threejs_dat_gui
+            },
+            {
                 name: 'threejs_dev_trackball',
                 path: 'threejs_dev_trackball',
                 meta: {
@@ -255,7 +273,7 @@ const routes = [
                 },
                 component: ball_canvas_init
             },
-          
+
         ]
     },
 ]
