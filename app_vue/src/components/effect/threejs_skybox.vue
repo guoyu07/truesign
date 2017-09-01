@@ -113,7 +113,6 @@
             init_renderer(){
                 this.threejs_dev.renderer = new THREE.WebGLRenderer();
 
-
 //                this.threejs_dev.renderer.setPixelRatio(window.devicePixelRatio);
                 this.threejs_dev.renderer.setSize(this.screenWidth, this.screenHeight);
                 this.threejs_dev.renderer.autoClear = false;
@@ -204,9 +203,6 @@
                 cube.position.y = 0;
                 cube.position.z = 0;
                 this.threejs_dev.scene.add(cube);
-
-
-
 
 
                 var urlPrefix1 = require("../../../static/sky/posx.jpg");

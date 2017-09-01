@@ -264,7 +264,9 @@
                 // this.threejs_dev.controls.addEventListener('change', this.do_render);
 
 
-                this.threejs_dev.controls = new THREE.TrackballControls(this.threejs_dev.camera);
+//                this.threejs_dev.controls = new THREE.TrackballControls(this.threejs_dev.camera);
+                this.threejs_dev.controls = new THREE.TrackballControls(this.threejs_dev.camera, this.threejs_dev.renderer.domElement);
+
                 this.threejs_dev.controls.rotateSpeed = 1.0;
                 this.threejs_dev.controls.zoomSpeed = 1.2;
                 this.threejs_dev.controls.panSpeed = 0.8;

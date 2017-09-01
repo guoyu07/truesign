@@ -32,12 +32,9 @@ class IndexController extends AppBaseController {
 
     }
     public function mysql2Action(){
-//        $doDao = new \Royal\Data\DAO(new productCategoryAdapter());
-
-//        $db=Remote::getDb('shop');
-//        $sql = "select count(*) from tb_product_category";
-//        $result = $db->manualSqlAll($sql);
-//        echo (json_encode($result));
+        $doDao = new \Royal\Data\DAO(new productCategoryAdapter());
+        $result = $doDao->read();
+        echo json_encode($result);
 
 
     }
