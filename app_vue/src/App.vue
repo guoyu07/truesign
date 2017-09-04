@@ -103,9 +103,9 @@ export default {
             ])
         },
         components: {
-                slidermenu,
-                footerbar,
-                window_resize
+              slidermenu,
+              footerbar,
+              window_resize
         }
 }
 
