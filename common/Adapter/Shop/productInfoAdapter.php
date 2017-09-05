@@ -48,6 +48,7 @@ class productInfoAdapter extends DbLibraryAdapter
             ->def('product_price')->map('product_price')->double()->desc('单价')
             ->def('product_stock')->map('product_stock')->int()->desc('库存')
             ->def('product_description')->map('product_description')->varchar(64)->desc('描述')
+            ->def('product_status')->map('product_status')->int()->desc('商品状态')
             ->def('product_icon')->map('product_icon')->varchar(512)->desc('小图')
             ->def('category_type')->map('category_type')->int()->desc('类目编号')
             ->end();

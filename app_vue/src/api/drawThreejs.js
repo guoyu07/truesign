@@ -20,13 +20,8 @@ class DrawThreejs {
         dat_gui: {},
       },
       meshsName:[]
-
     }
-
-
-
   }
-
   initWidthHeight(width, height) {
     this.width = width
     this.height = height
@@ -58,17 +53,14 @@ class DrawThreejs {
   }
   init_objects({obj_meshs:meshs}){
     var vm = this
-    for (let mesh in meshs){
+    for (let mesh of meshs){
       vm.threejs_dev.scene.add(mesh.obj)
       vm.threejs_dev.meshsName[mesh.name] = mesh.obj
     }
   }
-  init_controls({controller}){
-    this.threejs_dev.controls = controller
+  init_controls({dev_controls}){
+    this.threejs_dev.controls = dev_controls
   }
-
-
-
 }
 
 export default DrawThreejs

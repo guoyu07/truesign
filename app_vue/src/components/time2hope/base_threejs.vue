@@ -5,110 +5,314 @@
 <script>
   import {mapGetters, mapActions} from 'vuex'
   import drawThreejs from '../../api/drawThreejs'
-  const CanvasRenderer = require('three/examples/js/renderers/CanvasRenderer')
+  const TWEEN = require('@tweenjs/tween.js');
+  var THREE = require('three/build/three')
+  var TrackballControls = require('three/examples/js/controls/TrackballControls')
+  var CSS3DRenderer = require('three/examples/js/renderers/CSS3DRenderer')
+
+  var stats = require('three/examples/js/libs/stats.min')
+  var Projector = require('three/examples/js/renderers/Projector')
+  var DAT = require('three/examples/js/libs/dat.gui.min')
+  var CanvasRenderer = require('three/examples/js/renderers/CanvasRenderer')
+
+
+  import THREEx_LaserBeam from '../../api/lib/threejs/THREEx_LaserBeam'
   export default {
-    data() {
+    data () {
       return {
-        screenWidth: document.width,
-        screenHeight: document.height,
-        threejs_obj:{}
-      }
-    },
-    watch: {
-      screenWidth: function (a, b) {
+        screenWidth: document.body.clientWidth,   // 这里是给到了一个默认值 （这个很重要）
+        screenHeight: document.body.clientHeight,  // 这里是给到了一个默认值 （这个很重要）
+        mouse_move: {
+          mouseX: 0,
+          mouseY: 0,
+        },
+        threejs_dev: {
+          stats: '',
+          gui:'',
+          container: '',
+          scene: '',
+          camera: '',
+          renderer: '',
+          controls: '',
+          objects: '',
+          meshs: {},
+          tween: {
+            obj: {},
+            opts: {
+              range: 800,
+              duration: 2500,
+              delay: 200,
+              easing: 'Elastic.EaseInOut',
+              position: {
+                x: 0,
+                y: 0,
+                z: 0,
+              },
+              scale: {
+                x: 1,
+                y: 1,
+                z: 1
+              }
+            }
+          }
+        },
+        textureList: [
+          require("../../../static/img/flowers/flower-1.png"),
+          require("../../../static/img/flowers/flower-2.png"),
+          require("../../../static/img/flowers/flower-3.png"),
+          require("../../../static/img/flowers/flower-4.png"),
+          require("../../../static/img/flowers/flower-5.png"),
+          require("../../../static/img/flowers/flower-6.png"),
+          require("../../../static/img/flowers/flower-7.png"),
+          require("../../../static/img/flowers/flower-8.png"),
+          require("../../../static/img/flowers/flower-9.png"),
+          require("../../../static/img/flowers/flower-10.png"),
 
-      },
-      screenHeight: function (a, b) {
-
+        ],
+        particles: []
       }
-    },
-    mounted() {
-      this.screenWidth = this.sysinfo.screenWidth
-      this.screenHeight = this.sysinfo.screenHeight
-      this.start()
     },
     computed: {
+      // 使用对象展开运算符将 getters 混入 computed 对象中
       ...mapGetters([
-          'apprules',
-          'website',
-          'sysinfo',
-          'appshow'
-        ])
+        'sysinfo',
+      ])
+    },
+    created(){
+      var vm = this
+      this.$root.eventHub.$on('screenWidth2screenHeight', function (data) {
+//                console.log('screenWidth2screenHeight')
+//                console.log(data)
+        var width2height = data.split(",")
+//                console.log(width2height)
+        vm.screenWidth = parseInt(width2height[0])
+        vm.screenHeight = parseInt(width2height[1])
+        vm.do_resize()
+      })
+      var Options = function() {
+        this.number = 1;
+      };
+
+      window.onload = function() {
+        var options = new Options();
+        var gui = new DAT.GUI();
+        var controller = gui.add(options, 'number').min(0).max(10).step(1);
+
+        controller.onChange(function(value) {
+          console.log("onChange:" + value)
+        });
+
+        controller.onFinishChange(function(value) {
+          console.log("onFinishChange" + value)
+        });
+      };
+    },
+    mounted(){
+      this.start()
+      window.addEventListener('resize', this.init_resize, false);
+
     },
     methods: {
       start(){
         var vm = this
-        this.init_container()
+        this.initStats()
+
         this.init_renderer()
+        this.init_container()
         this.init_scene()
         this.init_camera()
-        this.init_helper()
+//        this.init_helper()
         this.init_objects()
+
+
         this.init_controls()
         this.do_render()
         this.do_animate()
+        //                this.initGui(this.threejs_dev.tween.opts,function (options) {
+//                    console.log("userOpts", userOpts)
+//                    vm.initTween();
+//                    console.log('callback=>',options)
+//                    console.log('callback=>',vm.threejs_dev.tween.opts)
+//                })
+
+//                this.initGui(this.threejs_dev.tween.opts)
+
+
+      },
+      initGui(){
+        var Options = function() {
+          this.color0 = "#ffae23"; // CSS string
+          this.color1 = [ 0, 128, 255 ]; // RGB array
+          this.color2 = [ 0, 128, 255, 0.3 ]; // RGB with alpha
+          this.color3 = { h: 350, s: 0.9, v: 0.3 }; // Hue, saturation, value
+        };
+        var options = new Options();
+        var gui = new DAT.GUI();
+        gui.addColor(options, 'color0');
+        gui.addColor(options, 'color1');
+        gui.addColor(options, 'color2');
+        gui.addColor(options, 'color3');
+      },
+      initStats(){
+        let old_stats = document.getElementById('threejs_stats')
+        if (old_stats !== null) {
+          document.body.removeChild(old_stats);
+        }
+        this.threejs_dev.stats = new Stats()
+        this.threejs_dev.stats.setMode(0);
+        this.threejs_dev.stats.domElement.id = 'threejs_stats'
+        this.threejs_dev.stats.domElement.style.position = 'fixed';
+        this.threejs_dev.stats.domElement.style.left = this.screenWidth - 100 + 'px';
+        this.threejs_dev.stats.domElement.style.top = this.screenHeight-100+'px';
+//                this.threejs_dev.stats.domElement.style.width = '300px';
+//                this.threejs_dev.stats.domElement.style.height = '100px';
+        document.body.appendChild(this.threejs_dev.stats.domElement);
+      },
+      initTween(){
+        var vm = this
+        var update	= function(){
+          vm.threejs_dev.meshs['move_cube'].position.x = current.x;
+        }
+        var current	= { x: -vm.threejs_dev.tween.opts.range };
+        TWEEN.removeAll();
+        var easing	= TWEEN.Easing[vm.threejs_dev.tween.opts.easing.split('.')[0]][vm.threejs_dev.tween.opts.easing.split('.')[1]];
+        var tweenHead	= new TWEEN.Tween(current)
+          .to({x: +vm.threejs_dev.tween.opts.range}, vm.threejs_dev.tween.opts.duration)
+          .delay(vm.threejs_dev.tween.opts.delay)
+          .easing(easing)
+          .onUpdate(update);
+        var tweenBack	= new TWEEN.Tween(current)
+          .to({x: -vm.threejs_dev.tween.opts.range}, vm.threejs_dev.tween.opts.duration)
+          .delay(vm.threejs_dev.tween.opts.delay)
+          .easing(easing)
+          .onUpdate(update);
+        tweenHead.chain(tweenBack);
+        tweenBack.chain(tweenHead);
+        tweenHead.start();
+      },
+      do_change_render(){
+//                this.threejs_dev.renderer.setSize(500,500);
+
+
       },
       init_renderer(){
-        let renderer = new THREE.CanvasRenderer();
-        renderer.setClearColor(0xffffff, 1);
-        renderer.setPixelRatio(window.devicePixelRatio);
-        renderer.setSize(this.screenWidth, this.screenHeight);
-        this.threejs_obj.basethreejs.init_renderer({render_type:renderer})
+        this.threejs_dev.renderer = new THREE.CanvasRenderer();
+        this.threejs_dev.renderer.setClearColor(0xffffff, 1);
+        this.threejs_dev.renderer.setPixelRatio(window.devicePixelRatio);
+        this.threejs_dev.renderer.setSize(this.screenWidth, this.screenHeight);
 
       },
       init_container(){
-        this.threejs_obj.basethreejs = new drawThreejs('v-basethreejs')
+        var vm = this
+        this.threejs_dev.container = document.createElement('div');
+//                this.threejs_dev.container.style.width = this.screenWidth+'px'
+//                this.threejs_dev.container.style.height = this.screenHeight+'px'
+        document.getElementById("v-basethreejs").appendChild(this.threejs_dev.container);
+        this.threejs_dev.container.appendChild(this.threejs_dev.renderer.domElement);
       },
       init_scene(){
-        let fog = new THREE.FogExp2( 0xcccccc, 0.002 );
-        this.threejs_obj.basethreejs.init_scene({fog:fog})
+        this.threejs_dev.scene = new THREE.Scene();
+//                this.threejs_dev.scene.fog = new THREE.FogExp2( 0xcccccc, 0.002 );
       },
       init_camera(){
-        let camera = new THREE.PerspectiveCamera(55, this.screenWidth / this.screenHeight, 1, 10000);
-        this.threejs_obj.basethreejs.init_camera({camera:camera,x:0,y:0,z:1000})
-
+        this.threejs_dev.camera = new THREE.PerspectiveCamera(55, this.screenWidth / this.screenHeight, 1, 10000);
+        this.threejs_dev.camera.position.z = 100;
       },
       init_helper(){
-        this.threejs_obj.basethreejs.init_helper()
+        var vm = this
+        var separation = 50;
+        var amountx = 10;
+        var amounty = 10;
+        var PI2 = Math.PI * 2;
+        var material = new THREE.SpriteCanvasMaterial({
+
+//                    color: 0x000000,
+          color: 0xE72D2D,
+          program: function (context) {
+
+            context.beginPath();
+            context.arc(0, 0, 1, 0, PI2, true);
+            context.fill();
+
+          }
+
+        });
+        for (var ix = 0; ix < amountx; ix++) {
+
+          for (var iy = 0; iy < amounty; iy++) {
+
+            var particle = new THREE.Sprite(material);
+            particle.position.x = ix * separation - ( ( amountx * separation ) / 2 );
+            particle.position.y = -153;
+            particle.position.z = iy * separation - ( ( amounty * separation ) / 2 );
+            particle.scale.x = particle.scale.y = 6;
+            vm.threejs_dev.scene.add(particle);
+
+          }
+
+        }
+
+
+
+
       },
       init_controls(){
+        this.threejs_dev.controls = new THREE.TrackballControls(this.threejs_dev.camera, this.threejs_dev.renderer.domElement);
 
-         controls = new THREE.TrackballControls(this.threejs_obj.basethreejs.threejs_dev.camera, this.threejs_obj.basethreejs.threejs_dev.renderer.domElement);
-
-         controls.rotateSpeed = 1.0;
-         controls.zoomSpeed = 1.2;
-         controls.panSpeed = 0.8;
-         controls.noZoom = false;
-         controls.noPan = false;
-         controls.staticMoving = false;
-         controls.dynamicDampingFactor = 0.1;
-         controls.keys = [65, 83, 68];
+        this.threejs_dev.controls.rotateSpeed = 1.0;
+        this.threejs_dev.controls.zoomSpeed = 1.2;
+        this.threejs_dev.controls.panSpeed = 0.8;
+        this.threejs_dev.controls.noZoom = false;
+        this.threejs_dev.controls.noPan = false;
+        this.threejs_dev.controls.staticMoving = false;
+        this.threejs_dev.controls.dynamicDampingFactor = 0.1;
+        this.threejs_dev.controls.keys = [65, 83, 68];
 //                this.threejs_dev.controls.addEventListener('mousemove', this.do_render);
 
 
       },
       init_objects(){
         var vm = this
-        var meshs = []
+        var scale = 1.5
+        let geometry	= new THREE.CubeGeometry(1, 1, 1);
+        let material	= new THREE.MeshPhongMaterial({
+          color	: 0xaa8888,
+          specular: 0xffffff,
+          // shininess: 200,
+          side	: THREE.BackSide,
+        });
+        let object3d	= new THREE.Mesh( geometry, material )
+        object3d.scale.set(30,16,30)
+        this.threejs_dev.scene.add(object3d)
 
-        var img = require('../../../static/img/flag_of_china.png')
-        var imgTexture = THREE.ImageUtils.loadTexture(img);
-//                var imgTexture = THREE.TextureLoader(img,{}, function() { this.threejs_dev.renderer.render(this.threejs_dev.scene, this.threejs_dev.camera);});
-        var imgMaterial = new THREE.MeshLambertMaterial({map: imgTexture});
-        var imgMesh = new THREE.Mesh(new THREE.CubeGeometry(200, 200, 200), imgMaterial);
-//        imgMesh.position.x = 550;
-//        imgMesh.position.y = 0;
-//        imgMesh.position.z = 0;
-        meshs.push({name:'imgMesh',obj:imgMesh})
-        this.threejs_obj.basethreejs.init_objects({obj_meshs:meshs})
+        for(var i = 0; i < 2; i++){
+          let geometry	= new THREE.TorusGeometry(0.5-0.15, 0.15, 32, 16);
+          //var geometry	= new THREE.SphereGeometry(0.5, 32, 16);
+          let material	= new THREE.MeshPhongMaterial({
+            color	: 0xffffff,
+            specular: 0xffffff,
+            shininess: 200,
+          });
+          let object3d	= new THREE.Mesh( geometry, material );
+          object3d.scale.set(20,10,20).multiplyScalar(1/2)
+          this.threejs_dev.scene.add( object3d );
+          object3d.position.x	= (Math.random()-0.5)*10
+          object3d.position.y	= (Math.random()-0.5)*5
+          object3d.position.z	= (Math.random()-0.5)*10
+
+          object3d.rotation.x	= (Math.random()-0.5)*Math.PI*2
+          object3d.rotation.y	= (Math.random()-0.5)*Math.PI*2
+          object3d.rotation.z	= (Math.random()-0.5)*Math.PI*2
+        }
 
       },
       init_resize(){
         var vm = this
 
-        this.threejs_obj.basethreejs.threejs_dev.camera.aspect = this.screenWidth / this.screenHeight
-        this.threejs_obj.basethreejs.threejs_dev.camera.updateProjectionMatrix();
-        this.threejs_obj.basethreejs.threejs_dev.renderer.setSize(this.screenWidth, this.screenHeight);
+        this.threejs_dev.camera.aspect = this.screenWidth / this.screenHeight
+        this.threejs_dev.camera.updateProjectionMatrix();
+
+        this.threejs_dev.renderer.setSize(this.screenWidth, this.screenHeight);
 
 
       },
@@ -120,23 +324,35 @@
       },
       do_render(){
 
-        this.threejs_obj.basethreejs.threejs_dev.renderer.render(this.threejs_obj.basethreejs.threejs_dev.scene, this.threejs_obj.basethreejs.threejs_dev.camera);
+        this.threejs_dev.renderer.render(this.threejs_dev.scene, this.threejs_dev.camera);
 
       },
       do_animate() {
         requestAnimationFrame(this.do_animate);
-        this.threejs_obj.basethreejs.threejs_dev.controls.update();
-        this.threejs_obj.basethreejs.threejs_dev.stats.update()
+        this.threejs_dev.controls.update();
+        this.threejs_dev.stats.update()
         this.do_render();
 
 
       },
-    },
-    components: {}
+      do_resize(){
+        this.initStats()
+        this.threejs_dev.renderer.setSize( this.screenWidth,this.screenHeight );
+        this.init_camera()
+        this.init_controls()
+      },
+      /*###### 扩展方法  #############*/
+      addMeshToScene(name, mesh){
+        this.threejs_dev.meshs[name] = mesh
+        this.threejs_dev.scene.add(mesh)
+      }
+
+
+    }
   }
 </script>
 <style lang="stylus" rel="stylesheet/stylus">
 #v-time2hope
 
-  background-color rgba(97, 97, 97, 0.65)
+  background-color transparent
 </style>
