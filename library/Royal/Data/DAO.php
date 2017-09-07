@@ -187,18 +187,14 @@ class DAO
             if(!isset($params[$createField]))
                 $params[$createField] = 0;
         }
-        $time = time();
-        if ($createField = $this->adapter->autoCreateTimestamp()) {
-            if(!isset($params[$createField]))
-                $params[$createField] = $time;
-        }
-        if ($createField = $this->adapter->autoCreateTimestamp()) {
-            if(!isset($params[$createField]))
-                $params[$createField] = $time;
-        }
-        if ($updateField = $this->adapter->autoUpdateTimestamp()) {
-            $params[$updateField] = $time;
-        }
+//        $time = time();
+//        if ($createField = $this->adapter->autoCreateTimestamp()) {
+//            if(!isset($params[$createField]))
+//                $params[$createField] = $time;
+//        }
+//        if ($updateField = $this->adapter->autoUpdateTimestamp()) {
+//            $params[$updateField] = $time;
+//        }
 
         $fields = $this->paramPairsToFieldPairs($params);
         return $fields;

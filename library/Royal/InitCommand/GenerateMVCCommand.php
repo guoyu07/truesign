@@ -52,6 +52,7 @@ class GenerateMVCCommand extends Command
 
         echo " 开始处理 Controllers =>".PHP_EOL;
         $this->outputControllerName = $this->targetControllerPath . DIRECTORY_SEPARATOR . ucfirst(strtolower($this->convertUnderline($controllerName))) . '.php';
+
         $template = require $this->controllerTemplatePath;
         $data = sprintf($template,
             ucfirst(strtolower($this->convertUnderline($controllerName))). 'Controller',

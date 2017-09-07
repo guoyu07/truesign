@@ -10,6 +10,7 @@
     ],
     "require": {
       "phpmailer/phpmailer": "^5.2",
-      "monolog/monolog": "^1.21"
+      "monolog/monolog": "^1.21",
+        "symfony/console": "^3.3"
     }
 }

@@ -79,6 +79,14 @@ const webpackConfig = {
           limit: 10000,
           name: utils.assetsPath('fonts/[name].[hash:7].[ext]')
         }
+      },
+      {
+        test: /\.(fnt?|vert|frag|otf)(\?.*)?$/,
+        loader: 'url-loader',
+        options: {
+          limit: 10000,
+          name: utils.assetsPath('obj/[name].[hash:7].[ext]')
+        }
       }
     ]
   }

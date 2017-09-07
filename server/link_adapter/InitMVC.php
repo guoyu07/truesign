@@ -22,7 +22,7 @@ $adapters = array();
 
 $filesnames = scandir(APPLICATION_PATH.'/common/Adapter/');
 foreach ($filesnames as $k=>$dir){
-    if(!in_array(strtolower($dir),array('jktruesign_app'))){
+    if(!in_array(strtolower($dir),array('note'))){
         unset($filesnames[$k]);
     }
 }
@@ -61,8 +61,9 @@ foreach ($adapters as $adapter) {
     define('TEMPLATE_PATH',APPLICATION_PATH.'/library/Royal/InitCommand/templates');
     define('CURRECT_APPLICATION_PATH',APPLICATION_PATH.'apps'.DIRECTORY_SEPARATOR.$app );
     $application = new \Royal\InitCommand\GenerateMVCCommand();
+    echo $table.' '. $desc.' '.$adpName;
     $application->execute('index',$table,$desc,$adpName);
-    sleep(3);
+    sleep(1);
 
 }
 

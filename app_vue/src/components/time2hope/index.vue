@@ -1,5 +1,5 @@
 <template>
-  <div id="v-time2hope" :style="{width:screenWidth+'px',height:screenHeight+'px'}">
+  <div id="v-time2hope" :style="{width:sysinfo.screenWidth+'px',height:sysinfo.screenHeight+'px'}">
     <router-view></router-view>
   </div>
 </template>
