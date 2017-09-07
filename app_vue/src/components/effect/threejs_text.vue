@@ -1,5 +1,6 @@
 <template>
   <div id="v-basethreejs" :style="{width:screenWidth+'px',height:screenHeight+'px'}">
+    <input type="button" value="重新描绘" @click="init_objects" style="margin-left: 400px;display: none">
   </div>
 </template>
 <script>
@@ -19,8 +20,7 @@
 
   /*文字展示效果*/
 
-  import THREEx_LaserBeam from '../../api/lib/threejs/THREEx_LaserBeam'
-  import THREEx_LaserCooked from '../../api/lib/threejs/THREEx_LaserCooked'
+  import {SpriteText2D, MeshText2D, textAlign} from 'three-text2d'
 
   export default {
     data() {
@@ -74,7 +74,11 @@
           require("../../../static/img/flowers/flower-10.png"),
 
         ],
-        particles: []
+        particles: [],
+        note: {
+          statistic: {count: 0},
+          data: []
+        }
       }
     },
     computed: {
@@ -101,7 +105,7 @@
     methods: {
       start() {
         var vm = this
-        this.initStats()
+//        this.initStats()
 
         this.init_renderer()
         this.init_container()
@@ -183,7 +187,7 @@
         var vm = this
         this.threejs_dev.container = document.createElement('div');
         document.getElementById("v-basethreejs").appendChild(this.threejs_dev.container);
-        console.log('container_div', this.threejs_dev.container)
+//        console.log('container_div', this.threejs_dev.container)
         this.threejs_dev.container.id = 'container_div'
         this.threejs_dev.container.style.fontSize = 0
         this.threejs_dev.container.appendChild(this.threejs_dev.renderer.domElement);
@@ -194,32 +198,32 @@
       },
       init_camera() {
         this.threejs_dev.camera = new THREE.PerspectiveCamera(45, this.screenWidth / this.screenHeight, 0.1, 10000);
-        this.threejs_dev.camera.position.set(50,30,50);
-        this.threejs_dev.camera.lookAt(new THREE.Vector3(0,0,0))
+        this.threejs_dev.camera.position.set(50, 30, 1000);
+        this.threejs_dev.camera.lookAt(new THREE.Vector3(0, 0, 0))
       },
       init_helper() {
         var vm = this
         /*环境光*/
-        var ambient = new THREE.AmbientLight( 0xffffff, 0.4 );
-        this.threejs_dev.scene.add( ambient );
+        var ambient = new THREE.AmbientLight(0xffffff, 0.4);
+        this.threejs_dev.scene.add(ambient);
 
-        var floor_material = new THREE.MeshPhongMaterial( { color: 0x666666, dithering: true } );
-        var floor_geometry = new THREE.BoxGeometry( 1000, 1, 1000 );
-        var floor_mesh = new THREE.Mesh( floor_geometry, floor_material );
-        floor_mesh.position.set( 0, -10, 0 );
+        var floor_material = new THREE.MeshPhongMaterial({color: 0x666666, dithering: true});
+        var floor_geometry = new THREE.BoxGeometry(1000, 1, 1000);
+        var floor_mesh = new THREE.Mesh(floor_geometry, floor_material);
+        floor_mesh.position.set(0, -10, 0);
         floor_mesh.receiveShadow = true;
-        this.threejs_dev.scene.add( floor_mesh );
+        this.threejs_dev.scene.add(floor_mesh);
 
 
-        var floorcenter_material = new THREE.MeshPhongMaterial( { color: 0x4080ff, dithering: true } );
-        var loorcenter_geometry = new THREE.BoxGeometry( 3, 1, 2 );
-        var loorcenter_mesh = new THREE.Mesh( loorcenter_geometry, floorcenter_material );
-        loorcenter_mesh.position.set( 10, 10, 0 );
+        var floorcenter_material = new THREE.MeshPhongMaterial({color: 0x4080ff, dithering: true});
+        var loorcenter_geometry = new THREE.BoxGeometry(3, 1, 2);
+        var loorcenter_mesh = new THREE.Mesh(loorcenter_geometry, floorcenter_material);
+        loorcenter_mesh.position.set(10, 10, 0);
         loorcenter_mesh.castShadow = true;
-        this.threejs_dev.scene.add( loorcenter_mesh );
+        this.threejs_dev.scene.add(loorcenter_mesh);
 
-        let spotLight = new THREE.SpotLight( 0xffffff, 1 );
-        spotLight.position.set( 50,50, 0 );
+        let spotLight = new THREE.SpotLight(0xffffff, 1);
+        spotLight.position.set(50, 50, 0);
         spotLight.angle = Math.PI / 6;
         spotLight.penumbra = 0.05;
         spotLight.decay = 2;
@@ -229,12 +233,12 @@
         spotLight.shadow.mapSize.height = 1024;
         spotLight.shadow.camera.near = 10;
         spotLight.shadow.camera.far = 200;
-        this.threejs_dev.scene.add( spotLight );
-        let lightHelper = new THREE.SpotLightHelper( spotLight );
-        this.threejs_dev.scene.add( lightHelper );
-        let shadowCameraHelper = new THREE.CameraHelper( spotLight.shadow.camera );
-        this.threejs_dev.scene.add( shadowCameraHelper );
-        this.threejs_dev.scene.add( new THREE.AxisHelper( 10 ) );
+        this.threejs_dev.scene.add(spotLight);
+        let lightHelper = new THREE.SpotLightHelper(spotLight);
+        this.threejs_dev.scene.add(lightHelper);
+        let shadowCameraHelper = new THREE.CameraHelper(spotLight.shadow.camera);
+        this.threejs_dev.scene.add(shadowCameraHelper);
+        this.threejs_dev.scene.add(new THREE.AxisHelper(10));
 
       },
       init_controls() {
@@ -254,6 +258,61 @@
       },
       init_objects() {
 
+        let sprite = new SpriteText2D(
+          '你在等..什么...',
+          {align: textAlign.center, font: '40px Arial', fillStyle: '#000000', antialias: true}
+        )
+        this.threejs_dev.scene.add(sprite);
+        this.addMeshToScene('sprite', sprite)
+        var text = ''
+        var time = ''
+        var vm = this
+        setInterval(function () {
+          vm.$http.post('https://www.iamsee.com/Note/getNote?app=note', [], this.$http_config)
+          //              axios.post(this.wechat_marketing_store.apihost+'LoginOrReg/login',formdata,axios_config)
+            .then((res) => {
+              if (res.data.code === 0) {
+                if (res.data.response.statistic.count > 0 && vm.note.statistic.count !== res.data.response.statistic.count) {
+                  vm.note.statistic = res.data.response.statistic
+                  vm.note.data = res.data.response.data
+                }
+              }
+
+
+              if (vm.threejs_dev.meshs.hasOwnProperty('sprite')) {
+                vm.threejs_dev.scene.remove(vm.threejs_dev.meshs.sprite);
+                vm.threejs_dev.scene.remove(vm.threejs_dev.meshs.time);
+              }
+              if (vm.note.statistic.count > 0) {
+                let num = parseInt(vm.randomNumLeft(0, vm.note.statistic.count))
+                let data = vm.note.data[num]
+                text = data.note
+                time = data.update_time
+
+              }
+              else {
+                text = '数据等待中...'
+              }
+
+              let sprite = new SpriteText2D(
+                text,
+                {align: textAlign.center, font: '40px Arial', fillStyle: '#000000', antialias: true}
+              )
+              vm.threejs_dev.scene.add(sprite);
+              vm.addMeshToScene('sprite', sprite)
+
+              let time = new SpriteText2D(
+                time,
+                {align: textAlign.topLeft, font: '20px Arial', fillStyle: '#000000', antialias: true}
+              )
+//              vm.threejs_dev.scene.add(time);
+              vm.addMeshToScene('time', time)
+            })
+
+        },5000)
+
+
+//        this.threejs_dev.scene.add(text);
       },
       init_resize() {
         var vm = this
@@ -283,7 +342,7 @@
       do_animate() {
         requestAnimationFrame(this.do_animate);
         this.threejs_dev.controls.update();
-        this.threejs_dev.stats.update()
+//        this.threejs_dev.stats.update()
         this.do_render();
 
 
@@ -322,6 +381,12 @@
         context.fillRect(0, 0, canvas.width, canvas.height);
         // return the just built canvas
         return canvas;
+      },
+      randomNumLeft(Min, Max) {
+        var Range = Max - Min;
+        var Rand = Math.random();
+        var num = Min + Math.floor(Rand * Range); //舍去
+        return num;
       }
 
 

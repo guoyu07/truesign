@@ -223,49 +223,10 @@
       },
       init_camera() {
         this.threejs_dev.camera = new THREE.PerspectiveCamera(45, this.screenWidth / this.screenHeight, 0.1, 10000);
-        this.threejs_dev.camera.position.set(50,30,50);
+        this.threejs_dev.camera.position.set(4,4,4);
         this.threejs_dev.camera.lookAt(new THREE.Vector3(0,0,0))
       },
-      init_helper() {
-        var vm = this
-        /*环境光*/
-        var ambient = new THREE.AmbientLight( 0xffffff, 0.4 );
-        this.threejs_dev.scene.add( ambient );
 
-        var floor_material = new THREE.MeshPhongMaterial( { color: 0x666666, dithering: true } );
-        var floor_geometry = new THREE.BoxGeometry( 1000, 1, 1000 );
-        var floor_mesh = new THREE.Mesh( floor_geometry, floor_material );
-        floor_mesh.position.set( 0, -10, 0 );
-        floor_mesh.receiveShadow = true;
-        this.threejs_dev.scene.add( floor_mesh );
-
-
-        var floorcenter_material = new THREE.MeshPhongMaterial( { color: 0x4080ff, dithering: true } );
-        var loorcenter_geometry = new THREE.BoxGeometry( 3, 1, 2 );
-        var loorcenter_mesh = new THREE.Mesh( loorcenter_geometry, floorcenter_material );
-        loorcenter_mesh.position.set( 10, 10, 0 );
-        loorcenter_mesh.castShadow = true;
-        this.threejs_dev.scene.add( loorcenter_mesh );
-
-        let spotLight = new THREE.SpotLight( 0xffffff, 1 );
-        spotLight.position.set( 50,50, 0 );
-        spotLight.angle = Math.PI / 6;
-        spotLight.penumbra = 0.05;
-        spotLight.decay = 2;
-        spotLight.distance = 200;
-        spotLight.castShadow = true;
-        spotLight.shadow.mapSize.width = 1024;
-        spotLight.shadow.mapSize.height = 1024;
-        spotLight.shadow.camera.near = 10;
-        spotLight.shadow.camera.far = 200;
-        this.threejs_dev.scene.add( spotLight );
-        let lightHelper = new THREE.SpotLightHelper( spotLight );
-        this.threejs_dev.scene.add( lightHelper );
-        let shadowCameraHelper = new THREE.CameraHelper( spotLight.shadow.camera );
-        this.threejs_dev.scene.add( shadowCameraHelper );
-        this.threejs_dev.scene.add( new THREE.AxisHelper( 10 ) );
-
-      },
       init_controls() {
         this.threejs_dev.controls = new THREE.TrackballControls(this.threejs_dev.camera, this.threejs_dev.renderer.domElement);
 
@@ -281,23 +242,153 @@
 
 
       },
+
+      init_helper() {
+        var vm = this
+        /*环境光*/
+        var ambient = new THREE.AmbientLight( 0xe8e2e2, 0.4 );
+//        this.threejs_dev.scene.add( ambient );
+
+        var floor_material = new THREE.MeshPhongMaterial( { color: 0x666666, dithering: true } );
+        var floor_geometry = new THREE.BoxGeometry( 1000, 1, 1000 );
+        var floor_mesh = new THREE.Mesh( floor_geometry, floor_material );
+        floor_mesh.position.set( 0, -10, 0 );
+        floor_mesh.receiveShadow = true;
+        this.threejs_dev.scene.add( floor_mesh );
+
+
+
+
+        let spotLight = new THREE.SpotLight( 0xffffff, 1 );
+        spotLight.position.set( 50,50, 0 );
+        spotLight.angle = Math.PI / 6;
+        spotLight.penumbra = 0.05;
+        spotLight.decay = 2;
+        spotLight.distance = 200;
+        spotLight.castShadow = true;
+        spotLight.shadow.mapSize.width = 1024;
+        spotLight.shadow.mapSize.height = 1024;
+        spotLight.shadow.camera.near = 10;
+        spotLight.shadow.camera.far = 200;
+//        this.threejs_dev.scene.add( spotLight );
+        let lightHelper = new THREE.SpotLightHelper( spotLight );
+        this.threejs_dev.scene.add( lightHelper );
+        let shadowCameraHelper = new THREE.CameraHelper( spotLight.shadow.camera );
+        this.threejs_dev.scene.add( shadowCameraHelper );
+        this.threejs_dev.scene.add( new THREE.AxisHelper( 10 ) );
+
+        let directionalLight = new THREE.DirectionalLight( 0x53f953, 1 );
+        directionalLight.position.set( 0, 0, 30 );
+
+//        this.threejs_dev.scene.add( directionalLight );
+
+        let directionalLightHelper = new THREE.DirectionalLightHelper( directionalLight );
+        this.threejs_dev.scene.add( directionalLightHelper );
+        let shadowCameraHelper_directionalLight = new THREE.CameraHelper( directionalLight.shadow.camera );
+        this.threejs_dev.scene.add( shadowCameraHelper_directionalLight );
+
+        /*半球/自然光*/
+        var hemisphereLight	= new THREE.HemisphereLight( 0xfffff0, 0x101020, 0.2 )
+        hemisphereLight.position.set( 0, 0, 6 )
+//        this.threejs_dev.scene.add(hemisphereLight)
+        let hemisphereLightHelper = new THREE.HemisphereLightHelper( hemisphereLight );
+        this.threejs_dev.scene.add( hemisphereLightHelper );
+
+        /*点光源/精灵*/
+
+        var sprite_textureUrl	= require('../../api/lib/threejs/light/blue_particle.jpg')
+        var sprite_texture	= new THREE.TextureLoader().load(sprite_textureUrl)
+        var sprite_material	= new THREE.SpriteMaterial({
+          map		: sprite_texture,
+          blending	: THREE.AdditiveBlending,
+        })
+        var sprite	= new THREE.Sprite(sprite_material)
+        sprite.scale.x = 2
+        sprite.scale.y = 2;
+        sprite.position.set(0,0,0.1)
+        this.threejs_dev.scene.add( sprite );
+
+
+        /*点光源上下左右*/
+        var point_light_z = -0.35
+        var point_light_intensity = 2
+        var point_light_distance  = 15
+        var point_light_decay = 2
+
+        var point_light_top	= new THREE.PointLight( 0xffffff, point_light_intensity, point_light_distance ,point_light_decay);
+        this.threejs_dev.scene.add( point_light_top );
+        point_light_top.position.set(0,0.3,point_light_z)
+        var sphereSize = 1;
+        var pointLightTopHelper = new THREE.PointLightHelper( point_light_top, sphereSize );
+//        this.threejs_dev.scene.add( pointLightTopHelper );
+
+        var point_light_bottom	= new THREE.PointLight( 0xffffff, point_light_intensity, point_light_distance ,point_light_decay);
+        this.threejs_dev.scene.add( point_light_bottom );
+        point_light_bottom.position.set(0,-0.3,point_light_z)
+        var pointLightBottomHelper = new THREE.PointLightHelper( point_light_bottom, sphereSize );
+//        this.threejs_dev.scene.add( pointLightBottomHelper );
+
+        var point_light_Left	= new THREE.PointLight( 0xffffff, point_light_intensity, point_light_distance ,point_light_decay);
+        this.threejs_dev.scene.add( point_light_Left );
+        point_light_Left.position.set(0.3,0,point_light_z)
+        var pointLightLeftHelper = new THREE.PointLightHelper( point_light_top, sphereSize );
+//        this.threejs_dev.scene.add( pointLightTopHelper );
+
+        var point_light_right	= new THREE.PointLight( 0xffffff, point_light_intensity, point_light_distance ,point_light_decay);
+        this.threejs_dev.scene.add( point_light_right );
+        point_light_right.position.set(-0.3,0,-0.3)
+        var pointLightRightHelper = new THREE.PointLightHelper( point_light_right, sphereSize );
+//        this.threejs_dev.scene.add( pointLightTopHelper );
+
+
+
+      },
       init_objects() {
         var vm = this
 
-        var line_material	= new THREE.MeshBasicMaterial({
+        var floorcenter_material = new THREE.MeshPhongMaterial( { color: 0x4080ff, dithering: false } );
+        var floorcenter_geometry = new THREE.BoxGeometry( 3, 1, 2 );
+        var floorcenter_mesh = new THREE.Mesh( floorcenter_geometry, floorcenter_material );
+        floorcenter_mesh.position.set( 10, 10, 0 );
+        floorcenter_mesh.castShadow = true;
+        this.threejs_dev.scene.add( floorcenter_mesh );
+
+        var line_material	= new THREE.MeshPhongMaterial({
 
           blending	: THREE.AdditiveBlending,
-          color		: 0xffffff,
+//          color:0x1aec1a,
           side		: THREE.DoubleSide,
-          depthWrite	: false,
+//          depthWrite	: false,
           transparent	: false
         })
-        var line_geometry = new THREE.CylinderBufferGeometry( 0.1, 0.1, 16, 16 );
+        var line_geometry = new THREE.CylinderBufferGeometry( 0.1, 0.1, this.screenWidth/2, 16 );
         let line_mesh	= new THREE.Mesh(line_geometry, line_material)
-
-        line_mesh.position.set( 0, 10, 0 );
-
+        line_mesh.rotation.x	= 1/2 * Math.PI
+        line_mesh.position.set( 0, 0, -this.screenWidth/4 );
+        line_mesh.castShadow = true;
         this.threejs_dev.scene.add(line_mesh)
+        this.addMeshToScene('line_mesh', line_mesh)
+
+        var o_mesh_objs = []
+        for(let i=1; i<=100; i++){
+          let o_geometry = new THREE.TorusBufferGeometry(0.3, 0.1, 16, 300 );
+
+          let o_material = new THREE.MeshLambertMaterial(
+            {
+              color:0x1aec1a,
+              emissive: 0x53f953,
+              side:
+              THREE.DoubleSide
+            } )
+          let o_mesh = new THREE.Mesh( o_geometry, o_material );
+          o_mesh.position.set(0,0, 0-(i * vm.screenWidth/200))
+          o_mesh.castShadow = true;
+          this.threejs_dev.scene.add( o_mesh );
+
+          o_mesh_objs.push(o_mesh)
+        }
+
+        this.addMeshToScene('o_mesh_objs', o_mesh_objs)
       },
       init_resize() {
         var vm = this
@@ -316,10 +407,23 @@
 
       },
       do_render() {
+        var vm = this
         var delta = 10
 //        console.log("this.threejs_dev.meshs['laserBeam'].object3d",this.threejs_dev.meshs['laserBeam'].object3d)
 //        this.threejs_dev.meshs['line_object3d'].rotation.x += 0.4 * delta;
 //        this.threejs_dev.meshs['line_object3d'].rotation.y += 0.5 * delta;
+//        var o_mesh_speed = Math.abs(this.threejs_dev.meshs.o_mesh.position.z)/vm.screenWidth/2 * 18
+//        if(o_mesh_speed < 1.5){
+//          o_mesh_speed = 1.5
+//        }
+        var o_mesh_len = vm.screenWidth/100
+        vm.threejs_dev.meshs.o_mesh_objs.forEach(function (v,k) {
+          if(vm.threejs_dev.meshs.o_mesh_objs[k].position.z>=0){
+            vm.threejs_dev.meshs.o_mesh_objs[k].position.z = -vm.screenWidth/2
+          }
+          vm.threejs_dev.meshs.o_mesh_objs[k].position.z += o_mesh_len /   60
+        })
+
         this.threejs_dev.renderer.render(this.threejs_dev.scene, this.threejs_dev.camera);
 
 

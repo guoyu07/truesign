@@ -8,13 +8,13 @@
         <!--</div>-->
         <!--<input  v-model="is_line_percent" style="border: 2px solid black;color:black !important;display: block;position: absolute;z-index:100;left:20%">-->
         <!--<input type="button" @click="add" value="增加" style="border: 2px solid black;color:black !important;display: block;position: absolute;z-index:100;left:40%">-->
-        <word_canvas   style="background-color: transparent;position: absolute;" ></word_canvas>
+        <threejs_text   style="background-color: transparent;position: absolute;" ></threejs_text>
 
-        
+
     </div>
 </template>
 <script>
-    import word_canvas from './effect/word_canvas'
+    import threejs_text from './effect/threejs_text.vue'
 
     export default {
         data(){
@@ -39,7 +39,7 @@
             }
         },
         components:{
-            word_canvas,
+          threejs_text,
         }
     }
 </script>

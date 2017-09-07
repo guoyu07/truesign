@@ -8,7 +8,6 @@ const home = resolve => require(['../components/Home.vue'], resolve)
 const time2hope_index = resolve => require(['../components/time2hope/index.vue'], resolve)
 const base_threejs = resolve => require(['../components/time2hope/base_threejs.vue'], resolve)
 const timeline_threejs = resolve => require(['../components/time2hope/timeline_threejs.vue'], resolve)
-const threejs_text = resolve => require(['../components/effect/threejs_text.vue'], resolve)
 const note = resolve => require(['../components/project/note/note.vue'], resolve)
 // const threejs_dev = resolve => require(['../components/effect/threejs_dev.vue'], resolve)
 // const threejs_dat_gui = resolve => require(['../components/effect/threejs_dat_gui.vue'], resolve)
@@ -31,14 +30,6 @@ const routes = [
       title: 'note'
     },
     component: note
-  },
-  {
-    name: 'threejs_text',
-    path: '/threejs_text',
-    meta: {
-      title: 'threejs_text'
-    },
-    component: threejs_text
   },
   {
     name: 'time2hope_index',

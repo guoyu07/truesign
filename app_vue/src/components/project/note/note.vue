@@ -79,7 +79,7 @@
             var vm = this
             this.server_app = 'note'
             this.report_api = this.socket_server_store.apihost + 'Note/'
-            this.report_api = 'http://localhost:8089/'
+            this.report_api = 'https://www.iamsee.com/'
             this.$root.eventHub.$emit('init_navmenu', 'Note')
             this.$root.eventHub.$off('currect_row_index')
             this.$root.eventHub.$on('currect_row_index', () => {
