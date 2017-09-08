@@ -86,7 +86,8 @@ class NoteService extends BaseService
     public function Update($params=array(),$search_params=array(),$page_params=array()){
 
         $search_params['id'] = $params['document_id'];
-        unset($search_params['document_id']);
+        unset($params['document_id']);
+
         $db_response = $this->Dao->insertOrupdate($params,$search_params);
         return $db_response;
     }

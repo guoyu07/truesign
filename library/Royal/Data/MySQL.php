@@ -11,6 +11,7 @@ use Royal\Logger\Logger;
 use Royal\Prof\TimeStack;
 use \PDO as PDO;
 use \Exception as Exception;
+use Royal\Prof\TrueSignConst;
 
 class MySQL {
     /**
@@ -466,8 +467,8 @@ class MySQL {
 
 
         if ($row) {
-            unset($data['create_time']);
 
+            unset($data['create_time']);
             $this->updateTable($table, $data, $condition);
             return $row[$idField];
         } else {

@@ -76,11 +76,11 @@ class NoteController extends AppBaseController
          */
     public function UpdateNoteAction(){
         $params = $_POST;
-        $condition['id'] = $params['document_id'];
         unset($params['create_time'],$params['update_time']);
+//        $params['update_time'] = date('Y-M-D h:i:s',time());
         $doService = new NoteService();
         $response = \Royal\Prof\TrueSignConst::SUCCESS('更新文字的故事信息成功');
-        $response['response'] = $doService->Update($params,$condition);
+        $response['response'] = $doService->Update($params);
         $this->output2json($response);
     }
 

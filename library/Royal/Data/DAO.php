@@ -158,6 +158,7 @@ class DAO
 
         self::checkDemo();
         $fields = $this->prepareForCreate($params);
+
         $id = $this->getDb()->insertOrUpdateTable(
             $this->getTable($this->adapter->table_Prefix().$this->adapter->table()),
             $fields,
@@ -176,6 +177,7 @@ class DAO
             return false;
         }
         $defaultValues = $this->adapter->defaultParamValues();
+
         if (!empty($defaultValues)) {
             foreach ($defaultValues as $k => $v) {
                 if (!isset($params[$k])) {
@@ -183,10 +185,12 @@ class DAO
                 }
             }
         }
+
         if ($createField = $this->adapter->autoIfDelete()) {
             if(!isset($params[$createField]))
                 $params[$createField] = 0;
         }
+
 //        $time = time();
 //        if ($createField = $this->adapter->autoCreateTimestamp()) {
 //            if(!isset($params[$createField]))
@@ -196,7 +200,9 @@ class DAO
 //            $params[$updateField] = $time;
 //        }
 
+
         $fields = $this->paramPairsToFieldPairs($params);
+
         return $fields;
 
     }
