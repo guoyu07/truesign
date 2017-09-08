@@ -17,9 +17,6 @@
   var CanvasRenderer = require('three/examples/js/renderers/CanvasRenderer')
 
 
-  import THREEx_LaserBeam from '../../api/lib/threejs/THREEx_LaserBeam'
-  import THREEx_LaserCooked from '../../api/lib/threejs/THREEx_LaserCooked'
-
   export default {
     data() {
       return {
