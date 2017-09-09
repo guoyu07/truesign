@@ -605,21 +605,21 @@
 
         this.threejs_dev.renderer.render(this.threejs_dev.scene, this.threejs_dev.camera);
         /*立方体移动*/
-//        vm.threejs_dev.meshs.cube_os.forEach(function (v, k) {
-//          if (!v.hasOwnProperty('f')) {
-//
-//            v.f = 1
-//          }
-//
-//          if (v.position.y >= 0) {
-//            v.f = -1
-//          }
-//          if (v.position.y <= -100) {
-//            v.f = 1
-//          }
-////          console.log(k,v.position.y,v.f)
-//          v.position.y += v.f * (k + 1) / 100
-//        })
+        vm.threejs_dev.meshs.cube_objs.forEach(function (v, k) {
+          if (!v.hasOwnProperty('f')) {
+
+            v.f = 1
+          }
+
+          if (v.position.y >= 0) {
+            v.f = -1
+          }
+          if (v.position.y <= -100) {
+            v.f = 1
+          }
+//          console.log(k,v.position.y,v.f)
+          v.position.y += v.f * (k + 1) / 100
+        })
         /*粒子缓动*/
         var segments = vm.threejs_dev.meshs.maxParticleCount * vm.threejs_dev.meshs.maxParticleCount;
         var positions = new Float32Array( segments * 3 );
@@ -693,7 +693,7 @@
           }
         }
 
-        vm.threejs_dev.meshs.linesMesh.geometry.setDrawRange(0, numConnected * 2);
+        vm.threejs_dev.meshs.linesMesh.geometry.setDrawRange(0, 10 * 2);
         vm.threejs_dev.meshs.linesMesh.geometry.attributes.position.needsUpdate = true;
         vm.threejs_dev.meshs.linesMesh.geometry.attributes.color.needsUpdate = true;
         vm.threejs_dev.meshs.pointCloud.geometry.attributes.position.needsUpdate = true;
