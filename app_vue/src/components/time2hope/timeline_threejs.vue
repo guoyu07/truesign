@@ -443,7 +443,7 @@
         }
 
         this.threejs_dev.renderer.render(this.threejs_dev.scene, this.threejs_dev.camera);
-
+        this.camera_animation()
 
       },
       do_animate() {
@@ -572,6 +572,9 @@
           start: Math.floor(100 + 200 * Math.random()),
           dynamic: dynamic
         });
+      },
+      camera_animation(){
+        this.threejs_dev.camera.position.set(0, 0, 20);
       }
 
 
