@@ -384,7 +384,7 @@
 
         var o_mesh_objs = []
         for (let i = 1; i <= 100; i++) {
-          let o_geometry = new THREE.TorusBufferGeometry(0.3, 0.1, 32, 300);
+          let o_geometry = new THREE.TorusBufferGeometry(0.3, 0.1, 8, 300);
 
           let o_material = new THREE.MeshLambertMaterial(
             {
@@ -402,6 +402,163 @@
         }
 
         this.addMeshToScene('o_mesh_objs', o_mesh_objs)
+
+
+        /*平面模型*/
+//        var plane_objs = []
+//        for(let i=0; i<=20; i++){
+//          var random_center_z = Math.random() * (-vm.screenWidth/2) * 0.1 - i
+//          var random_center_x =  ((Math.random()>0.5)?1:-1) * (10+Math.random()*10)
+//          var random_center_y = ((Math.random()>0.5)?1:-1) * (10+Math.random()*10)
+//          let plan_geometry = new THREE.PlaneGeometry( 8, 12, 32 );
+//          var plan_material = new THREE.MeshPhongMaterial( {color: 0x000000, side: THREE.DoubleSide} );
+//          var plane = new THREE.Mesh( plan_geometry, plan_material );
+//          plane.position.set(random_center_x,random_center_y,random_center_z)
+//          plane.rotation.x = Math.random()*360
+//          plane.rotation.y = Math.random()*360
+//          plane.rotation.z = Math.random()*360
+//          plane.castShadow = true;
+//          this.threejs_dev.scene.add( plane );
+//          plane_objs.push(plane)
+//        }
+//        this.addMeshToScene('plane_objs',plane_objs)
+
+        /*立方体模型*/
+        var cube_objs = []
+        for (let i = -5 * 4; i <= 5 * 4; i += 4) {
+          for (let j = -5 * 4; j <= 5 * 4; j += 4) {
+            var color = 0x969696
+            if (Math.abs(j % 4) === 0) {
+              color = 0x969696
+            }
+            else if (Math.abs(j % 4) === 1) {
+              color = 0x161196
+
+            }
+            else if (Math.abs(j % 4) === 2) {
+              color = 0x000000
+
+            }
+            else if (Math.abs(j % 4) === 3) {
+              color = 0x189836
+
+            }
+            let box_geometry = new THREE.BoxGeometry(2, 1, 2);
+            let box_material = new THREE.MeshPhongMaterial({color: color});
+            let cube = new THREE.Mesh(box_geometry, box_material);
+            cube.position.set(i, -99, j)
+            this.threejs_dev.scene.add(cube);
+            cube_objs.push(cube)
+          }
+
+
+        }
+        this.addMeshToScene('cube_objs', cube_objs)
+
+        /*粒子 星*/
+//        var particleCount = 1800,
+//          particles = new THREE.Geometry(),
+//          pMaterial = new THREE.PointsMaterial({
+//            color: 0xFFFFFF,
+//            size: 20,
+//            map: THREE.ImageUtils.loadTexture(require('../../api/lib/threejs/light/blue_particle.jpg')),
+//            blending: THREE.AdditiveBlending,
+//            transparent: true
+//          });
+//
+//        for (var p = 0; p < particleCount; p++) {
+//          var pX = Math.random() * 500 - 250,
+//            pY = Math.random() * 500 - 250,
+//            pZ = Math.random() * 500 - 250
+//          pY = pY<-100?-100:pY
+//          let particle = new THREE.Vector3(pX, pY, pZ);
+//
+//          particles.vertices.push(particle);
+//        }
+//
+//        var particleSystem = new THREE.Points(
+//          particles,
+//          pMaterial);
+//
+//        particleSystem.sortParticles = true;
+//        this.threejs_dev.scene.add( particleSystem );
+
+        var maxParticleCount = 500
+        var particleCount = 250
+        var particlesData = []
+        var pMaterial = new THREE.PointsMaterial({
+          color: 0xFFFFFF,
+          size: 3,
+          blending: THREE.AdditiveBlending,
+          transparent: true,
+          sizeAttenuation: false
+        });
+        var particles = new THREE.BufferGeometry();
+        var particlePositions = new Float32Array(maxParticleCount * 3);
+        var r = 50
+        for (var i = 0; i < maxParticleCount; i++) {
+          var x = Math.random() * r - r / 2;
+          var y = Math.random() * r - r / 2;
+          var z = Math.random() * r - r / 2;
+          particlePositions[i * 3] = x;
+          particlePositions[i * 3 + 1] = y;
+          particlePositions[i * 3 + 2] = z;
+          // add it to the geometry
+          particlesData.push({
+            velocity: new THREE.Vector3(-1 + Math.random() * 2, -1 + Math.random() * 2, -1 + Math.random() * 2),
+            numConnections: 0
+          });
+        }
+        this.addMeshToScene('maxParticleCount', maxParticleCount)
+        this.addMeshToScene('particlesData', particlesData)
+        this.addMeshToScene('particleCount', particleCount)
+        this.addMeshToScene('particlePositions', particlePositions)
+        particles.setDrawRange(0, particleCount);
+        particles.addAttribute('position', new THREE.BufferAttribute(particlePositions, 3).setDynamic(true));
+        // create the particle system
+        var pointCloud = new THREE.Points(particles, pMaterial);
+        this.threejs_dev.scene.add(pointCloud)
+        this.addMeshToScene('pointCloud', pointCloud)
+
+        let geometry = new THREE.BufferGeometry();
+        var segments = vm.threejs_dev.meshs.maxParticleCount * vm.threejs_dev.meshs.maxParticleCount;
+        var positions = new Float32Array( segments * 3 );
+        var colors = new Float32Array( segments * 3 );
+
+        geometry.addAttribute( 'position', new THREE.BufferAttribute( positions, 3 ).setDynamic( true ) );
+        geometry.addAttribute( 'color', new THREE.BufferAttribute( colors, 3 ).setDynamic( true ) );
+        geometry.computeBoundingSphere();
+        geometry.setDrawRange( 0, 0 );
+        let material = new THREE.LineBasicMaterial( {
+          vertexColors: THREE.VertexColors,
+          blending: THREE.AdditiveBlending,
+          transparent: true
+        } );
+        let linesMesh = new THREE.LineSegments( geometry, material );
+        this.threejs_dev.scene.add(linesMesh)
+        this.addMeshToScene('linesMesh', linesMesh)
+        /*模型*/
+//        var BinaryLoader = new THREE.BinaryLoader()
+//        BinaryLoader.load(require("../../api/lib/threejs/obj/veyron/VeyronNoUv_bin.js"),function () {
+//
+//        })
+//        BinaryLoader.load(require("../../api/lib/threejs/obj/veyron/VeyronNoUv_bin.js"), function (geometry) {
+////          vm.createMesh(geometry, scene, 6.8, 2200, -200, -100, 0x0055ff, false);
+//        });
+//        BinaryLoader.load(require("../../api/lib/threejs/obj/female02/Female02_bin.js"), function (geometry) {
+//          vm.createMesh(geometry, scene, 4.05, -1000, -350, 0, 0xffdd44, true);
+//          vm.createMesh(geometry, scene, 4.05, 0, -350, 0, 0xffffff, true);
+//          vm.createMesh(geometry, scene, 4.05, 1000, -350, 400, 0xff4422, true);
+//          vm.createMesh(geometry, scene, 4.05, 250, -350, 1500, 0xff9955, true);
+//          vm.createMesh(geometry, scene, 4.05, 250, -350, 2500, 0xff77dd, true);
+//        });
+//        BinaryLoader.load(require("../../api/lib/threejs/obj/male02/Male02_bin.js"), function (geometry) {
+//          vm.createMesh(geometry, scene, 4.05, -500, -350, 600, 0xff7744, true);
+//          vm.createMesh(geometry, scene, 4.05, 500, -350, 0, 0xff5522, true);
+//          vm.createMesh(geometry, scene, 4.05, -250, -350, 1500, 0xff9922, true);
+//          vm.createMesh(geometry, scene, 4.05, -250, -350, -1500, 0xff99ff, true);
+//        });
+
       },
       init_resize() {
         var vm = this
@@ -410,10 +567,14 @@
         this.threejs_dev.camera.updateProjectionMatrix();
 
         this.threejs_dev.renderer.setSize(this.screenWidth, this.screenHeight);
+
+
       },
       init_mouse_move(event) {
         this.mouse_move.mouseX = ( event.clientX - this.screenWidth / 2 );
         this.mouse_move.mouseY = ( event.clientY - this.screenHeight / 2 ) * 1;
+
+
       },
       do_render() {
         var vm = this
@@ -443,6 +604,99 @@
         }
 
         this.threejs_dev.renderer.render(this.threejs_dev.scene, this.threejs_dev.camera);
+        /*立方体移动*/
+        vm.threejs_dev.meshs.cube_objs.forEach(function (v, k) {
+          if (!v.hasOwnProperty('f')) {
+
+            v.f = 1
+          }
+
+          if (v.position.y >= 0) {
+            v.f = -1
+          }
+          if (v.position.y <= -100) {
+            v.f = 1
+          }
+//          console.log(k,v.position.y,v.f)
+          v.position.y += ((k + 1) / 100)<0.5?(v.f*(101-k)/100):(v.f * (k + 1) / 100)
+        })
+        /*粒子缓动*/
+        var segments = vm.threejs_dev.meshs.maxParticleCount * vm.threejs_dev.meshs.maxParticleCount;
+        var positions = new Float32Array( segments * 3 );
+        var colors = new Float32Array( segments * 3 );
+        var effectController = {
+          showDots: true,
+          showLines: true,
+          minDistance: 150,
+          limitConnections: false,
+          maxConnections: 20,
+          particleCount: 500
+        };
+        var r = 50
+        var rHalf = r / 2;
+        var vertexpos = 0;
+        var colorpos = 0;
+        var numConnected = 0;
+        for (let i = 0; i < vm.threejs_dev.meshs.particleCount; i++){
+          vm.threejs_dev.meshs.particlesData[i].numConnections = 10;
+        }
+        for (let i = 0; i < vm.threejs_dev.meshs.particleCount; i++) {
+          // get the particle
+          var particleData = vm.threejs_dev.meshs.particlesData[i];
+          vm.threejs_dev.meshs.particlePositions[i * 3] += particleData.velocity.x;
+          vm.threejs_dev.meshs.particlePositions[i * 3 + 1] += particleData.velocity.y;
+          vm.threejs_dev.meshs.particlePositions[i * 3 + 2] += particleData.velocity.z;
+          if (vm.threejs_dev.meshs.particlePositions[i * 3 + 1] < -rHalf || vm.threejs_dev.meshs.particlePositions[i * 3 + 1] > rHalf){
+            particleData.velocity.y = -particleData.velocity.y;
+
+          }
+          if (vm.threejs_dev.meshs.particlePositions[i * 3] < -rHalf || vm.threejs_dev.meshs.particlePositions[i * 3] > rHalf){
+            particleData.velocity.x = -particleData.velocity.x;
+
+          }
+          if (vm.threejs_dev.meshs.particlePositions[i * 3 + 2] < -rHalf || vm.threejs_dev.meshs.particlePositions[i * 3 + 2] > rHalf){
+            particleData.velocity.z = -particleData.velocity.z;
+          }
+          if (effectController.limitConnections && particleData.numConnections >= effectController.maxConnections){
+            continue;
+
+          }
+          // Check collision
+          for (let j = i + 1; j < vm.threejs_dev.meshs.particleCount; j++) {
+            var particleDataB = vm.threejs_dev.meshs.particlesData[j];
+            if (effectController.limitConnections && particleDataB.numConnections >= effectController.maxConnections){
+              continue;
+
+            }
+            var dx = vm.threejs_dev.meshs.particlePositions[i * 3] - vm.threejs_dev.meshs.particlePositions[j * 3];
+            var dy = vm.threejs_dev.meshs.particlePositions[i * 3 + 1] - vm.threejs_dev.meshs.particlePositions[j * 3 + 1];
+            var dz = vm.threejs_dev.meshs.particlePositions[i * 3 + 2] - vm.threejs_dev.meshs.particlePositions[j * 3 + 2];
+            var dist = Math.sqrt(dx * dx + dy * dy + dz * dz);
+            if (dist < effectController.minDistance) {
+              particleData.numConnections++;
+              particleDataB.numConnections++;
+              var alpha = 1.0 - dist / effectController.minDistance;
+              positions[vertexpos++] = vm.threejs_dev.meshs.particlePositions[i * 3];
+              positions[vertexpos++] = vm.threejs_dev.meshs.particlePositions[i * 3 + 1];
+              positions[vertexpos++] = vm.threejs_dev.meshs.particlePositions[i * 3 + 2];
+              positions[vertexpos++] = vm.threejs_dev.meshs.particlePositions[j * 3];
+              positions[vertexpos++] = vm.threejs_dev.meshs.particlePositions[j * 3 + 1];
+              positions[vertexpos++] = vm.threejs_dev.meshs.particlePositions[j * 3 + 2];
+              colors[colorpos++] = alpha;
+              colors[colorpos++] = alpha;
+              colors[colorpos++] = alpha;
+              colors[colorpos++] = alpha;
+              colors[colorpos++] = alpha;
+              colors[colorpos++] = alpha;
+              numConnected++;
+            }
+          }
+        }
+
+        vm.threejs_dev.meshs.linesMesh.geometry.setDrawRange(0, 10 * 2);
+        vm.threejs_dev.meshs.linesMesh.geometry.attributes.position.needsUpdate = true;
+        vm.threejs_dev.meshs.linesMesh.geometry.attributes.color.needsUpdate = true;
+        vm.threejs_dev.meshs.pointCloud.geometry.attributes.position.needsUpdate = true;
 
 
       },
@@ -451,6 +705,8 @@
         this.threejs_dev.controls.update();
         this.threejs_dev.stats.update()
         this.do_render();
+
+
       },
       do_resize() {
         this.initStats()
