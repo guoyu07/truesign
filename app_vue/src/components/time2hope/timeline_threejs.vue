@@ -618,7 +618,7 @@
             v.f = 1
           }
 //          console.log(k,v.position.y,v.f)
-          v.position.y += v.f * (k + 1) / 100
+          v.position.y += ((k + 1) / 100)<0.5?(v.f*(101-k)/100):(v.f * (k + 1) / 100)
         })
         /*粒子缓动*/
         var segments = vm.threejs_dev.meshs.maxParticleCount * vm.threejs_dev.meshs.maxParticleCount;
