@@ -47,7 +47,7 @@ function timeLine(applyId) {
         // this.do_animate()
     }
     this.box = {
-        r : this.screenWidth
+        r: this.screenWidth
     }
     this.test = function (a, b) {
         console.log(a, b)
@@ -132,7 +132,7 @@ function timeLine(applyId) {
     }
     this.init_camera = function () {
         this.threejs_dev.camera = new THREE.PerspectiveCamera(55, this.screenWidth / this.screenHeight, 0.1, 100000);
-        this.threejs_dev.camera.position.set(0, 0,12);
+        this.threejs_dev.camera.position.set(0, 0, 12);
         this.threejs_dev.camera.lookAt(new THREE.Vector3(0, 0, 0))
     }
     this.init_controls = function () {
@@ -162,7 +162,7 @@ function timeLine(applyId) {
         var floor_material = new THREE.MeshPhongMaterial({color: 0x666666, dithering: true});
         var floor_geometry = new THREE.BoxGeometry(this.screenWidth, 1, this.screenWidth);
         var floor_mesh = new THREE.Mesh(floor_geometry, floor_material);
-        floor_mesh.position.set(0, -this.screenWidth/2, 0);
+        floor_mesh.position.set(0, -this.screenWidth / 2, 0);
         floor_mesh.receiveShadow = true;
         this.threejs_dev.scene.add(floor_mesh);
 
@@ -179,47 +179,47 @@ function timeLine(applyId) {
         spotLight.shadow.camera.near = 10;
         spotLight.shadow.camera.far = 200;
         this.threejs_dev.scene.add(spotLight);
-        if(this.showhelper){
-             var lightHelper = new THREE.SpotLightHelper(spotLight);
+        if (this.showhelper) {
+            var lightHelper = new THREE.SpotLightHelper(spotLight);
             this.threejs_dev.scene.add(lightHelper);
-             var shadowCameraHelper = new THREE.CameraHelper(spotLight.shadow.camera);
-        this.threejs_dev.scene.add(shadowCameraHelper);
+            var shadowCameraHelper = new THREE.CameraHelper(spotLight.shadow.camera);
+            this.threejs_dev.scene.add(shadowCameraHelper);
         }
-       
-       
+
+
         this.threejs_dev.scene.add(new THREE.AxisHelper(10));
 
-  if(this.showhelper){
-        var size = this.box.r ;
-        var step = 30;
-        var gridHelper = new THREE.GridHelper( size, step );
-        this.threejs_dev.scene.add( gridHelper );
+        if (this.showhelper) {
+            var size = this.box.r;
+            var step = 30;
+            var gridHelper = new THREE.GridHelper(size, step);
+            this.threejs_dev.scene.add(gridHelper);
 
-}
+        }
         var sphere = new THREE.SphereGeometry();
-        var object = new THREE.Mesh( sphere, new THREE.MeshBasicMaterial(0xff0000) );
-        var box = new THREE.BoxHelper( object );
-        this.threejs_dev.scene.add( box );
+        var object = new THREE.Mesh(sphere, new THREE.MeshBasicMaterial(0xff0000));
+        var box = new THREE.BoxHelper(object);
+        this.threejs_dev.scene.add(box);
 
         /*平行光*/
         var directionalLight = new THREE.DirectionalLight(0xffffff, 8);
         directionalLight.position.set(0, 0, 30);
 
         this.threejs_dev.scene.add(directionalLight);
-  if(this.showhelper){
-        var directionalLightHelper = new THREE.DirectionalLightHelper(directionalLight);
-        this.threejs_dev.scene.add(directionalLightHelper);
-        var shadowCameraHelper_directionalLight = new THREE.CameraHelper(directionalLight.shadow.camera);
-        this.threejs_dev.scene.add(shadowCameraHelper_directionalLight);
-}
+        if (this.showhelper) {
+            var directionalLightHelper = new THREE.DirectionalLightHelper(directionalLight);
+            this.threejs_dev.scene.add(directionalLightHelper);
+            var shadowCameraHelper_directionalLight = new THREE.CameraHelper(directionalLight.shadow.camera);
+            this.threejs_dev.scene.add(shadowCameraHelper_directionalLight);
+        }
         /*半球/自然光*/
         var hemisphereLight = new THREE.HemisphereLight(0xfffff0, 0x101020, 0.2)
         hemisphereLight.position.set(0, 0, 6)
         // this.threejs_dev.scene.add(hemisphereLight)
-         if(this.showhelper){ 
-        var hemisphereLightHelper = new THREE.HemisphereLightHelper(hemisphereLight);
-        this.threejs_dev.scene.add(hemisphereLightHelper);
-}
+        if (this.showhelper) {
+            var hemisphereLightHelper = new THREE.HemisphereLightHelper(hemisphereLight);
+            this.threejs_dev.scene.add(hemisphereLightHelper);
+        }
         /*点光源/精灵*/
 
         var sprite_textureUrl = '../api/lib/threejs/light/blue_particle.jpg'
@@ -233,9 +233,6 @@ function timeLine(applyId) {
         sprite.scale.y = 5;
         sprite.position.set(0, 0, 0.1)
         this.threejs_dev.scene.add(sprite);
-
-
-
 
 
     }
@@ -345,7 +342,7 @@ function timeLine(applyId) {
     }
     this.group_init_particle = function () {
         var particlesData = [];
-        var maxParticleCount = 2;
+        var maxParticleCount = 800;
         var r = this.box.r;
         var rHalf = r / 2;
         this.addMeshToScene('rHalf', rHalf)
@@ -367,7 +364,6 @@ function timeLine(applyId) {
 
 
         this.addMeshToScene('group_particle_helper', helper)
-
 
 
         var particlePositions = new Float32Array(maxParticleCount * 3);
@@ -403,7 +399,7 @@ function timeLine(applyId) {
         particles.addAttribute('position', new THREE.BufferAttribute(particlePositions, 3).setDynamic(true));
         var pMaterial = new THREE.PointsMaterial({
             color: 0xFFFFFF,
-            size: 13,
+            size: 4,
             blending: THREE.AdditiveBlending,
             transparent: true,
             sizeAttenuation: false
@@ -411,25 +407,30 @@ function timeLine(applyId) {
         pointCloud = new THREE.Points(particles, pMaterial);
         this.threejs_dev.scene.add(pointCloud)
         this.addMeshToScene('pointCloud', pointCloud)
-        positions = new Float32Array([
-            -1.0, -1.0, 1.0,
-            1.0, -1.0, 1.0,
-            1.0, 1.0, 1.0,
-
-        ]);
+        // positions = new Float32Array([
+        //     -1.0, -1.0, 1.0,
+        //     1.0, -1.0, 1.0,
+        //     1.0, 1.0, 1.0,
+        //
+        // ]);
         var geometry = new THREE.BufferGeometry();
-        geometry.addAttribute( 'position', new THREE.BufferAttribute( positions, 3 ).setDynamic( true ) );
-        geometry.addAttribute( 'color', new THREE.BufferAttribute( colors, 3 ).setDynamic( true ) );
+        // geometry.addAttribute('position', new THREE.BufferAttribute(positions, 3).setDynamic(true));
+        // geometry.addAttribute('color', new THREE.BufferAttribute(colors, 3).setDynamic(true));
+        // geometry.computeBoundingSphere();
+        // geometry.setDrawRange(0, 0);
+        // var material = new THREE.LineBasicMaterial({
+        //     vertexColors: THREE.VertexColors,
+        //     blending: THREE.AdditiveBlending,
+        //     transparent: false
+        // });
+        // var material = new THREE.LineBasicMaterial({vertexColors: THREE.VertexColors});
+        var geometry = new THREE.BufferGeometry();
+        geometry.addAttribute('position', new THREE.BufferAttribute(positions, 3));
+        geometry.addAttribute('color', new THREE.BufferAttribute(colors, 3));
         geometry.computeBoundingSphere();
-        geometry.setDrawRange( 0, 0 );
-        var material = new THREE.LineBasicMaterial( {
-            vertexColors: THREE.VertexColors,
-            blending: THREE.AdditiveBlending,
-            transparent: false
-        } );
-        var linesMesh = new THREE.LineSegments( geometry, material );
+        var linesMesh = new THREE.LineSegments(geometry, material);
         this.threejs_dev.scene.add(linesMesh)
-        this.addMeshToScene('group_init_particle_linesMesh',linesMesh)
+        this.addMeshToScene('group_init_particle_linesMesh', linesMesh)
         var geometry_test = new THREE.BufferGeometry();
 // create a simple square shape. We duplicate the top left and bottom right
 // vertices because each vertex needs to appear once per triangle.
@@ -442,9 +443,9 @@ function timeLine(applyId) {
 
 
 // itemSize = 3 because there are 3 values (components) per vertex
-        console.log('geometry',geometry)
+        console.log('geometry', geometry)
         geometry_test.addAttribute('position', new THREE.BufferAttribute(vertices, 3));
-        console.log('geometry_test',geometry_test)
+        console.log('geometry_test', geometry_test)
         var material = new THREE.MeshBasicMaterial({color: 0xffffff});
         var mesh = new THREE.Mesh(geometry_test, material);
         // this.threejs_dev.scene.add(mesh)
@@ -507,30 +508,39 @@ function timeLine(applyId) {
         // this.threejs_dev.meshs.pointCloud.geometry.attributes.position.needsUpdate = true;
     }
     this.group_init_line = function () {
-        var segments = 1000;
-        var geometry = new THREE.BufferGeometry();
-        var material = new THREE.LineBasicMaterial({ vertexColors: THREE.VertexColors });
-        var positions = new Float32Array( segments * 3 );
-        var colors = new Float32Array( segments * 3 );
+        var segments = 10000;
+
+
+        var positions = new Float32Array(segments * 3);
+        var colors = new Float32Array(segments * 3);
         var r = 50;
-        for ( var i = 0; i < segments; i ++ ) {
-            var x = Math.random() * r - r / 2;
-            var y = Math.random() * r - r / 2;
-            var z = Math.random() * r - r / 2;
+        for (var i = 0; i < segments; i++) {
+
+            var xyz = this.randomLinePoint(i,r,positions)
+            x = xyz[0]
+            y = xyz[1]
+            z = xyz[2]
+            twoPointLen = xyz[3]
+
             // positions
-            positions[ i * 3 ] = x;
-            positions[ i * 3 + 1 ] = y;
-            positions[ i * 3 + 2 ] = z;
+            positions[i * 3] = x;
+            positions[i * 3 + 1] = y;
+            positions[i * 3 + 2] = z;
             // colors
-            colors[ i * 3 ] = ( x / r ) + 0.5;
-            colors[ i * 3 + 1 ] = ( y / r ) + 0.5;
-            colors[ i * 3 + 2 ] = ( z / r ) + 0.5;
+            colors[i * 3] = ( x / r ) + 0.5;
+            colors[i * 3 + 1] = ( y / r ) + 0.5;
+            colors[i * 3 + 2] = ( z / r ) + 0.5;
         }
-        geometry.addAttribute( 'position', new THREE.BufferAttribute( positions, 3 ) );
-        geometry.addAttribute( 'color', new THREE.BufferAttribute( colors, 3 ) );
+
+
+
+        var material = new THREE.LineBasicMaterial({vertexColors: THREE.VertexColors});
+        var geometry = new THREE.BufferGeometry();
+        geometry.addAttribute('position', new THREE.BufferAttribute(positions, 3));
+        geometry.addAttribute('color', new THREE.BufferAttribute(colors, 3));
         geometry.computeBoundingSphere();
-        mesh = new THREE.LineSegments( geometry, material );
-        this.threejs_dev.scene.add( mesh );
+        mesh = new THREE.LineSegments(geometry, material);
+        this.threejs_dev.scene.add(mesh);
     }
     /*###### 扩展方法  #############*/
     this.addMeshToScene = function (name, mesh) {
@@ -650,6 +660,30 @@ function timeLine(applyId) {
     this.camera_animation = function () {
         this.threejs_dev.camera.position.set(0, 0, 20);
     }
-}
+    this.randomLinePoint = function(i,r,positions){
+        var x = Math.random() * r - r / 2;
+        var y = Math.random() * r - r / 2;
+        var z = Math.random() * r - r / 2;
+        // var limit = 2
+        // var _vm = this
+        // if(i !== 0 && i % 2 ===1){
+        //     var twoPointLen = Math.sqrt(Math.pow(x-positions[i*3-3],2)+Math.pow(y-positions[i*3-2],2)+Math.pow(z-positions[i*3-1],2))
+        //     // console.log('aaa',Math.sqrt(Math.pow(x-positions[i*3-3],2)+Math.pow(y-positions[i*3-2],2)+Math.pow(z-positions[i*3-1],2)))
+        //     if(twoPointLen > limit){
+        //         _vm.randomLinePoint(i,r,positions)
+        //
+        //     }
+        //
+        //     return [x,y,z,twoPointLen]
+        //
+        //
+        // }
+        // else{
+        //     console.log(111111111)
+        //     return  [x,y,z,0]
+        // }
+        return  [x,y,z,0]
 
+    }
+}
 
