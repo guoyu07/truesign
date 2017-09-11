@@ -47,7 +47,7 @@ var gulp = require('gulp'),
 
     notify = require('gulp-notify'),  //任务完成后的通知
 
-    sass = require('gulp-sass'), //sass
+    // sass = require('gulp-sass'), //sass
 
 //sass = require('gulp-ruby-sass'), //sass
 
@@ -58,24 +58,23 @@ var gulp = require('gulp'),
     browserSync = require("browser-sync").create(),
     path = {
         HTML: "src/**/*.html",
-		SCSS: "src/scss/*.scss",
-        STYLUS: "src/stylus/*.styl",
+		// SCSS: "src/scss/*.scss",
         CSS: "src/css/*.css",
         JS: "src/js/*.js"
     };
 
-gulp.task("serve", [ "html","scss","STYLUS","css", "js-watch"], function () {
+// gulp.task("serve", [ "html","scss","css", "js-watch"], function () {
+gulp.task("serve", [ "html","css", "js-watch"], function () {
     browserSync.init({
         port: 3939,                  //修改默认的端口3000，ui端口是3001
         server: "./src",           //从何处加载服务器
 		startPath: 'index.html',    //默认加载的页面 ，也可用index
 		online: "true",
 		scrollProportionally: "false", //gundong
-        browser: ["chrome"] //打开的浏览器
+        browser: ["chrome", "firefox"] //打开的浏览器
     });
 	
-    gulp.watch(path.SCSS, ["scss"]);
-    gulp.watch(path.STYLUS, ["styl"]);
+    // gulp.watch(path.SCSS, ["scss"]);
     gulp.watch(path.CSS, ["css"]);
     gulp.watch(path.JS, ["js-watch"]);
     gulp.watch(path.HTML, ["html"]);
@@ -84,18 +83,12 @@ gulp.task("serve", [ "html","scss","STYLUS","css", "js-watch"], function () {
     });
 });
 
-gulp.task("scss", function () {
-    gulp.src(path.SCSS)
-		.pipe(sass({style: 'expanded'}))
-        .pipe(gulp.dest('src/css'))
-        .pipe(browserSync.stream());
-})
-gulp.task("STYLUS", function () {
-    gulp.src(path.STYLUS)
-        .pipe(sass({style: 'expanded'}))
-        .pipe(gulp.dest('src/css'))
-        .pipe(browserSync.stream());
-})
+// gulp.task("scss", function () {
+//     gulp.src(path.SCSS)
+// 		.pipe(sass({style: 'expanded'}))
+//         .pipe(gulp.dest('src/css'))
+//         .pipe(browserSync.stream());
+// })
 
 
 gulp.task("css", function () {
@@ -158,28 +151,17 @@ gulp.task('minify-css', function () {
 
 
 /*sass编译并压缩**/
-gulp.task('sass', function () {
-    return gulp.src('src/scss/*.scss')
-        .pipe(sass({style: 'expanded'}))
-        .pipe(gulp.dest('src/css'))
-        .pipe(minifyCss())
-        .pipe(rename({suffix: '.min'}))
-        .pipe(gulp.dest('gulp_min/css_min'))
-        .pipe(notify({message: 'sass编译压缩完成在/css_min/*.min.css'}));
-
-
-});
-gulp.task('styl', function () {
-    return gulp.src('src/stylus/*.styl')
-        .pipe(sass({style: 'expanded'}))
-        .pipe(gulp.dest('src/css'))
-        .pipe(minifyCss())
-        .pipe(rename({suffix: '.min'}))
-        .pipe(gulp.dest('gulp_min/css_min'))
-        .pipe(notify({message: 'stylus编译压缩完成在/css_min/*.min.css'}));
-
-
-});
+// gulp.task('sass', function () {
+//     return gulp.src('src/scss/*.scss')
+//         .pipe(sass({style: 'expanded'}))
+//         .pipe(gulp.dest('src/css'))
+//         .pipe(minifyCss())
+//         .pipe(rename({suffix: '.min'}))
+//         .pipe(gulp.dest('gulp_min/css_min'))
+//         .pipe(notify({message: 'sass编译压缩完成在/css_min/*.min.css'}));
+//
+//
+// });
 
 
 /*img压缩*/
@@ -195,7 +177,8 @@ gulp.task('minify-img', function () {
 /*默认全部压缩*/
 
 gulp.task('default', function () {
-    gulp.start('sass', 'minify-js', 'minify-html', 'minify-img');
+    gulp.start('minify-js', 'minify-html', 'minify-img');
+    // gulp.start('sass', 'minify-js', 'minify-html', 'minify-img');
 });
 
 /*合并js文件*/

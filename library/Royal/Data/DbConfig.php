@@ -357,6 +357,9 @@ class DbConfig {
         if($field == 'update_time'){
             $default = 'current_timestamp on update current_timestamp';
         }
+        if($field == 'update_time'){
+            $default = 0;
+        }
         return "`$field` $type default $default";
     }
 

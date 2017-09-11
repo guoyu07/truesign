@@ -43,8 +43,9 @@ class orderDetailAdapter extends DbLibraryAdapter
     public function tableInit()
     {
         return Field::start()
-            ->def('document_id')->map('id')->bigint()->desc('id')
-            ->def('order_id')->map('order_id')->bigint()->desc('订单id')->key()
+            ->def('document_id')->map('id')->int()->desc('id')->key()
+            ->def('order_detail_id')->map('order_detail_id')->varchar(100)->desc('order_detail_id')->unique()->key()
+            ->def('order_id')->map('order_id')->varchar(100)->desc('order_id')->key()
             ->def('product_id')->map('product_id')->bigint()->desc('商品id')
             ->def('product_name')->map('product_name')->varchar(64)->desc('商品名称')
             ->def('product_price')->map('product_price')->double()->desc('商品价格')

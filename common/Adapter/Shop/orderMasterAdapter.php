@@ -43,7 +43,8 @@ class orderMasterAdapter extends DbLibraryAdapter
     public function tableInit()
     {
         return Field::start()
-            ->def('document_id')->map('id')->bigint()->desc('id')
+            ->def('document_id')->map('id')->int()->desc('id')->key()
+            ->def('order_id')->map('order_id')->varchar(100)->desc('order_id')->unique()->key()
             ->def('buyer_name')->map('buyer_name')->varchar(32)->desc('买家名称')
             ->def('buyer_phone')->map('buyer_phone')->varchar(32)->desc('买家电话')
             ->def('buyer_address')->map('buyer_address')->varchar(32)->desc('买家地址')

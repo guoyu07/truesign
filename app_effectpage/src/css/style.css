@@ -1,0 +1,230 @@
+html,body{
+    height:100%;
+    width:100%;
+    margin:0px;
+    background:gainsboro !important;
+}
+body{
+    overflow:hidden;
+}
+nav{
+    display:none
+}
+
+
+* {
+    box-sizing: border-box;
+}
+
+*:before, *:after {
+    box-sizing: border-box;
+}
+
+*, *:before, *:after {
+    -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+}
+
+html, body, div, span, object, iframe, h1, h2, h3, h4, h5, h6, p, blockquote, pre, a, abbr, address, cite, code, del, dfn, em, img, ins, kbd, q, samp, small, strong, sub, sup, var, b, i, dl, dt, dd, ol, ul, li, fieldset, form, label, legend, table, caption, tbody, tfoot, thead, tr, th, td {
+    border: 0 none;
+    font-size: inherit;
+    color: inherit;
+    margin: 0;
+    padding: 0;
+    vertical-align: baseline;
+
+    /* 在X5新内核Blink中，在排版页面的时候，会主动对字体进行放大，会检测页面中的主字体，当某一块字体在我们的判定规则中，认为字号较小，并且是页面中的主要字体，就会采取主动放大的操作。然而这不是我们想要的，可以采取给最大高度解决 */
+    max-height: 100000px;
+}
+
+h1, h2, h3, h4, h5, h6 {
+    font-weight: normal;
+}
+
+em, strong {
+    font-style: normal;
+}
+
+ul, ol, li {
+    list-style: none;
+}
+
+body {
+    font-family: "Helvetica Neue",Helvetica,"PingFang SC","Hiragino Sans GB","Microsoft YaHei","\5FAE\8F6F\96C5\9ED1",Arial,sans-serif;
+    line-height: 1.5;
+    color: #333;
+    /*background-color: #f2f2f2;*/
+}
+
+a {
+    text-decoration: none;
+}
+.box {
+    position: relative;
+    max-width: 10rem;
+    margin: 0 auto;
+}
+.navRoot {
+    position: fixed;
+    z-index: 50;
+    bottom: 0;
+    left:0;
+    width: 100%;
+    height: 1rem;
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    border-top: 0.01rem solid #ccc;
+    background:#f2f2f2;
+}
+
+.navLink {
+    -webkit-box-flex: 1;
+    -ms-flex: auto;
+    flex: auto;
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    -webkit-box-orient: vertical;
+    -webkit-box-direction: normal;
+    -ms-flex-direction: column;
+    flex-direction: column;
+    -ms-flex-wrap: wrap;
+    flex-wrap: wrap;
+    -webkit-box-pack: center;
+    -ms-flex-pack: center;
+    justify-content: center;
+    -webkit-box-align: center;
+    -ms-flex-align: center;
+    align-items: center;
+    line-height: 1;
+    color: #666;
+}
+.navLink.active {
+    color: #1abc9c
+}
+.navLinkIco {
+    display: block;
+    margin-bottom: 0.1rem;
+}
+
+.navLinkText {
+    display: block;
+    line-height: 1;
+}
+
+.img-responsive {
+    width: 100%;
+}
+.pullup{
+    transition: all 1.5s ease;
+    transform: translateY(-100%);
+}
+
+.pullin{
+    transition: all 1.5s ease;
+    transform: translateX(0);
+    transform: translateY(0);
+}
+.pullright{
+    transition: all 1.5s ease;
+    transform: translateX(100%);
+}
+.smooth{
+    background-color:rgba(255, 254, 252, 0.2);
+    backdrop-filter:blur(5px);
+    border: rgba(119, 118, 117, 0.12) 2px solid;
+    color: white;
+}
+
+::-webkit-scrollbar
+{
+    width: 8px;
+    height: 8px;
+}
+::-webkit-scrollbar-track-piece
+{
+    background-color: rgba(215, 218, 223, 0.15);
+    -webkit-border-radius: 6px;
+}
+::-webkit-scrollbar-thumb:vertical
+{
+    height: 8px;
+    background-color: #53dfd6;
+    -webkit-border-radius: 6px;
+}
+::-webkit-scrollbar-thumb:horizontal
+{
+    width: 8px;
+    background-color: #53dfd6;
+    -webkit-border-radius: 6px;
+}
+
+.top_router_view{
+    /*position: static;*/
+    width: 100%;
+    height: 100%;
+    overflow:auto;
+    /*background-color: red;*/
+    /*z-index:10*/
+    /*border: red 2px solid;*/
+}
+.top_router_tip{
+    position: fixed;
+    right:10px;
+    top:10px;
+    font-size: 22px;
+    color: #00b5ad;
+    font-weight: 800;
+
+
+
+}
+.sec_router_tip{
+    position: fixed;
+    right:10px;
+    top:50px;
+    font-size: 18px;
+    color: #e3cc20;
+    font-weight: 600;
+}
+.third_router_tip{
+    position: fixed;
+    right:10px;
+    top:90px;
+    font-size: 16px;
+    color: #858585;
+    font-weight: 400;
+}
+input::-webkit-input-placeholder{
+    text-align:center;
+    color: #69d2e7;opacity:1;
+}
+
+.blur {
+    filter: blur(5px);
+
+}
+
+.rotate_self{
+    animation-delay: 0s;
+    animation-direction: normal;
+    animation-duration: 2s;
+    animation-fill-mode: none;
+    animation-iteration-count: infinite;
+    animation-name: spin;
+    animation-timing-function: linear;
+    font-smoothing: antialiased;
+}
+.rotate_aw{
+animation:rotatealways 5s   infinite
+}
+@keyframes rotatealways{
+    0%{
+        transform:rotate(0deg)
+
+    }
+    100%{
+        transform:rotate(360deg)
+    }
+}
+

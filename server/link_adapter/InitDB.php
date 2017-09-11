@@ -55,7 +55,7 @@ $model = new DbConfig();
 
 foreach ($adapters as $adapter) {
     $model->refreshTable($adapter);
-//    $model->refreshKey($adapter);
+    $model->refreshKey($adapter);
 }
 var_dump('ok');
 
