@@ -14,6 +14,7 @@ function timeLine(applyId) {
         controls: '',
         objects: '',
         meshs: [],
+        group_meshs:{},
         tween: {
             obj: {},
             opts: {
@@ -35,10 +36,14 @@ function timeLine(applyId) {
         }
     }
     this.start = function () {
+        this.threejs_dev.group_meshs = new THREE.Group();
+
         this.initStats()
         this.init_renderer()
         this.init_container()
         this.init_scene()
+        this.threejs_dev.scene.add(this.threejs_dev.group_meshs)
+
         this.init_camera()
         this.init_helper()
         this.init_objects()
@@ -128,11 +133,11 @@ function timeLine(applyId) {
     }
     this.init_scene = function () {
         this.threejs_dev.scene = new THREE.Scene();
-        this.threejs_dev.scene.fog = new THREE.FogExp2(0xcccccc, 0.002);
+        // this.threejs_dev.scene.fog = new THREE.FogExp2(0xcccccc, 0.002);
     }
     this.init_camera = function () {
         this.threejs_dev.camera = new THREE.PerspectiveCamera(55, this.screenWidth / this.screenHeight, 0.1, 100000);
-        this.threejs_dev.camera.position.set(0, 0, 12);
+        this.threejs_dev.camera.position.set(-400, 200, 0);
         this.threejs_dev.camera.lookAt(new THREE.Vector3(0, 0, 0))
     }
     this.init_controls = function () {
@@ -146,7 +151,7 @@ function timeLine(applyId) {
         this.threejs_dev.controls.staticMoving = false;
         this.threejs_dev.controls.dynamicDampingFactor = 0.1;
         this.threejs_dev.controls.keys = [65, 83, 68];
-        // this.threejs_dev.controls.target = new THREE.Vector3(0, 0, -15);
+        this.threejs_dev.controls.target = new THREE.Vector3(0, 0, -15);
 //                this.threejs_dev.controls.addEventListener('mousemove', this.do_render);
 
 
@@ -159,11 +164,23 @@ function timeLine(applyId) {
         this.threejs_dev.scene.add(ambient);
 
         // var floor_material = new THREE.MeshPhongMaterial({color: 0x666666, dithering: true});
-        var floor_material = new THREE.MeshPhongMaterial({color: 0x666666, dithering: true});
+        var floor_texture = new THREE.TextureLoader().load('./api/lib/threejs/imgs/星空.jpg')
+        // var floor_material = new THREE.SpriteMaterial({
+        //     map: floor_texture,
+        //     blending: THREE.AdditiveBlending,
+        // })
+        var floor_material = new THREE.MeshBasicMaterial({
+            map: floor_texture
+        });
+        // var floor_material = new THREE.MeshPhongMaterial(
+        //     {
+        //         color: 0x666666,
+        //         dithering: true
+        //     });
         var floor_geometry = new THREE.BoxGeometry(this.screenWidth, 1, this.screenWidth);
         var floor_mesh = new THREE.Mesh(floor_geometry, floor_material);
         floor_mesh.position.set(0, -this.screenWidth / 2, 0);
-        floor_mesh.receiveShadow = true;
+        floor_mesh.receiveShadow = false;
         this.threejs_dev.scene.add(floor_mesh);
 
 
@@ -232,7 +249,67 @@ function timeLine(applyId) {
         sprite.scale.x = 5
         sprite.scale.y = 5;
         sprite.position.set(0, 0, 0.1)
-        this.threejs_dev.scene.add(sprite);
+        // this.threejs_dev.scene.add(sprite);
+
+        /*点光源上下左右*/
+        var point_light_z = -0.35
+        var point_light_intensity = 20
+        var point_light_distance = 15
+        var point_out = 1
+        var point_light_decay = 0.9
+        var color = 0xffffff
+
+        var point_light_top = new THREE.PointLight(color, point_light_intensity, point_light_distance, point_light_decay);
+        point_light_top.position.set(0, point_out, point_light_z)
+        var sphereSize = 1;
+        var pointLightTopHelper = new THREE.PointLightHelper(point_light_top, sphereSize);
+//        this.threejs_dev.scene.add( pointLightTopHelper );
+
+        var point_light_bottom = new THREE.PointLight(color, point_light_intensity, point_light_distance, point_light_decay);
+        point_light_bottom.position.set(0, -point_out, point_light_z)
+        var pointLightBottomHelper = new THREE.PointLightHelper(point_light_bottom, sphereSize);
+//        this.threejs_dev.scene.add( pointLightBottomHelper );
+
+        var point_light_Left = new THREE.PointLight(color, point_light_intensity, point_light_distance, point_light_decay);
+        point_light_Left.position.set(point_out, 0, point_light_z)
+        var pointLightLeftHelper = new THREE.PointLightHelper(point_light_top, sphereSize);
+//        this.threejs_dev.scene.add( pointLightTopHelper );
+
+        var point_light_right = new THREE.PointLight(color, point_light_intensity, point_light_distance, point_light_decay);
+        point_light_right.position.set(-point_out, 0, point_light_z)
+        var pointLightRightHelper = new THREE.PointLightHelper(point_light_right, sphereSize);
+        // this.threejs_dev.scene.add( pointLightTopHelper );
+        this.threejs_dev.scene.add(point_light_top);
+        this.threejs_dev.scene.add(point_light_bottom);
+        this.threejs_dev.scene.add(point_light_Left);
+        this.threejs_dev.scene.add(point_light_right);
+        var point_light = {
+            'point_light_top': point_light_top,
+            'point_light_bottom': point_light_bottom,
+            'point_light_Left': point_light_Left,
+            'point_light_right': point_light_right,
+        }
+        this.addMeshToScene('point_light', point_light)
+        var point_light_move_z = -2
+        var point_light_top_move = new THREE.PointLight(color, point_light_intensity, point_light_distance, point_light_decay);
+        point_light_top_move.position.set(0, point_out, point_light_move_z)
+        var point_light_bottom_move = new THREE.PointLight(color, point_light_intensity, point_light_distance, point_light_decay);
+        point_light_bottom_move.position.set(0, -point_out, point_light_move_z)
+        var point_light_Left_move = new THREE.PointLight(color, point_light_intensity, point_light_distance, point_light_decay);
+        point_light_Left_move.position.set(point_out, 0, point_light_move_z)
+        var point_light_right_move = new THREE.PointLight(color, point_light_intensity, point_light_distance, point_light_decay);
+        point_light_right_move.position.set(-point_out, 0, point_light_move_z)
+        this.threejs_dev.scene.add(point_light_top_move);
+        this.threejs_dev.scene.add(point_light_bottom_move);
+        this.threejs_dev.scene.add(point_light_Left_move);
+        this.threejs_dev.scene.add(point_light_right_move);
+        var point_light_move = {
+            'point_light_top_move': point_light_top_move,
+            'point_light_bottom_move': point_light_bottom_move,
+            'point_light_Left_move': point_light_Left_move,
+            'point_light_right_move': point_light_right_move,
+        }
+        this.addMeshToScene('point_light_move', point_light_move)
 
 
     }
@@ -297,14 +374,20 @@ function timeLine(applyId) {
     }
     this.do_render = function () {
         var vm = this
-        var delta = 10
-//        console.log("this.threejs_dev.meshs['laserBeam'].object3d",this.threejs_dev.meshs['laserBeam'].object3d)
-//        this.threejs_dev.meshs['line_object3d'].rotation.x += 0.4 * delta;
-//        this.threejs_dev.meshs['line_object3d'].rotation.y += 0.5 * delta;
-//        var o_mesh_speed = Math.abs(this.threejs_dev.meshs.o_mesh.position.z)/vm.screenWidth/2 * 18
-//        if(o_mesh_speed < 1.5){
-//          o_mesh_speed = 1.5
-//        }
+        var time = Date.now() * 0.001;
+        // this.threejs_dev.controls.target = new THREE.Vector3(0, Math.sin(Date.now() * 0.001 + 1), Math.cos(Date.now() * 0.001 + 1) );
+
+        // this.threejs_dev.meshs.particle_linesMesh.rotation.y = time * 0.1
+        // this.threejs_dev.meshs.pointCloud.rotation.y = time * 0.1
+        // this.threejs_dev.group_meshs.rotation.x = time * 0.1
+
+        this.threejs_dev.renderer.render(this.threejs_dev.scene, this.threejs_dev.camera);
+        // this.camera_animation()
+
+    }
+    this.move_point_light_animate = function () {
+        var vm = this
+
         /*光圈移动*/
         var o_mesh_len = vm.screenWidth / 100
         vm.threejs_dev.meshs.o_mesh_objs.forEach(function (v, k) {
@@ -321,10 +404,6 @@ function timeLine(applyId) {
             }
             vm.threejs_dev.meshs.point_light_move[k].position.z += point_light_speed
         }
-
-        this.threejs_dev.renderer.render(this.threejs_dev.scene, this.threejs_dev.camera);
-        // this.camera_animation()
-
     }
     this.do_animate = function () {
         // requestAnimationFrame(this.do_animate);
@@ -342,34 +421,21 @@ function timeLine(applyId) {
     }
     this.group_init_particle = function () {
         var particlesData = [];
-        var maxParticleCount = 800;
+        var particleCount = 100;
         var r = this.box.r;
         var rHalf = r / 2;
-        this.addMeshToScene('rHalf', rHalf)
-        this.addMeshToScene('maxParticleCount', maxParticleCount)
-
-        var effectController = {
-            showDots: true,
-            showLines: true,
-            minDistance: 800,
-            limitConnections: false,
-            maxConnections: 20,
-        };
-        this.addMeshToScene('effectController', effectController)
-        var helper = new THREE.BoxHelper(new THREE.Mesh(new THREE.BoxGeometry(r, r, r)));
-        helper.material.color.setHex(0x080808);
-        helper.material.blending = THREE.AdditiveBlending;
-        helper.material.transparent = true;
-        this.threejs_dev.scene.add(helper)
+        this.addMeshToScene('particleCount', particleCount)
+        var box_helper = new THREE.BoxHelper(new THREE.Mesh(new THREE.BoxGeometry(r, r, r)));
+        box_helper.material.color.setHex(0x080808);
+        box_helper.material.blending = THREE.AdditiveBlending;
+        box_helper.material.transparent = true;
+        this.threejs_dev.scene.add(box_helper)
 
 
-        this.addMeshToScene('group_particle_helper', helper)
+        var particles = new THREE.BufferGeometry();
+        var particlePositions = new Float32Array(particleCount * 3);
 
-
-        var particlePositions = new Float32Array(maxParticleCount * 3);
-        console.log('maxParticleCount', maxParticleCount)
-
-        for (var i = 0; i < maxParticleCount; i++) {
+        for (var i = 0; i < particleCount; i++) {
             var x = Math.random() * r - r / 2;
             var y = Math.random() * r - r / 2;
             var z = Math.random() * r - r / 2;
@@ -377,135 +443,127 @@ function timeLine(applyId) {
             particlePositions[i * 3 + 1] = y;
             particlePositions[i * 3 + 2] = z;
 
-            // add it to the geometry
-            // particlesData.push( {
-            // velocity: new THREE.Vector3( -1 + Math.random() * 2, -1 + Math.random() * 2,  -1 + Math.random() * 2 ),
-            // numConnections: 0
-            // } );
+            particlesData.push( {
+                velocity: new THREE.Vector3( -1 + Math.random() * 2, -1 + Math.random() * 2,  -1 + Math.random() * 2 ),
+                numConnections: 0
+            } );
         }
-        this.addMeshToScene('particlePositions', particlePositions)
-        // this.addMeshToScene('particlesData',particlesData)
-
-        // particles.setDrawRange( 0, maxParticleCount );
-        var particles = new THREE.BufferGeometry();
-
-        var segments = maxParticleCount * maxParticleCount;
-        this.addMeshToScene('segments', segments)
-        var positions = new Float32Array(segments * 3);
-        var colors = new Float32Array(segments * 3);
-        this.addMeshToScene('positions', positions)
-        this.addMeshToScene('colors', colors)
-
+        particles.setDrawRange( 0, particleCount );
         particles.addAttribute('position', new THREE.BufferAttribute(particlePositions, 3).setDynamic(true));
         var pMaterial = new THREE.PointsMaterial({
             color: 0xFFFFFF,
-            size: 4,
+            size: 3,
             blending: THREE.AdditiveBlending,
             transparent: true,
             sizeAttenuation: false
         });
         pointCloud = new THREE.Points(particles, pMaterial);
         this.threejs_dev.scene.add(pointCloud)
-        this.addMeshToScene('pointCloud', pointCloud)
-        // positions = new Float32Array([
-        //     -1.0, -1.0, 1.0,
-        //     1.0, -1.0, 1.0,
-        //     1.0, 1.0, 1.0,
-        //
-        // ]);
+
+
+
+        var segments = particleCount * particleCount;
+        var positions = new Float32Array( segments * 3 );
+        var colors = new Float32Array( segments * 3 );
+
         var geometry = new THREE.BufferGeometry();
-        // geometry.addAttribute('position', new THREE.BufferAttribute(positions, 3).setDynamic(true));
-        // geometry.addAttribute('color', new THREE.BufferAttribute(colors, 3).setDynamic(true));
-        // geometry.computeBoundingSphere();
-        // geometry.setDrawRange(0, 0);
-        // var material = new THREE.LineBasicMaterial({
-        //     vertexColors: THREE.VertexColors,
-        //     blending: THREE.AdditiveBlending,
-        //     transparent: false
-        // });
-        // var material = new THREE.LineBasicMaterial({vertexColors: THREE.VertexColors});
-        var geometry = new THREE.BufferGeometry();
-        geometry.addAttribute('position', new THREE.BufferAttribute(positions, 3));
-        geometry.addAttribute('color', new THREE.BufferAttribute(colors, 3));
+        geometry.addAttribute( 'position', new THREE.BufferAttribute( positions, 3 ).setDynamic( true ) );
+        geometry.addAttribute( 'color', new THREE.BufferAttribute( colors, 3 ).setDynamic( true ) );
         geometry.computeBoundingSphere();
-        var linesMesh = new THREE.LineSegments(geometry, material);
-        this.threejs_dev.scene.add(linesMesh)
-        this.addMeshToScene('group_init_particle_linesMesh', linesMesh)
-        var geometry_test = new THREE.BufferGeometry();
-// create a simple square shape. We duplicate the top left and bottom right
-// vertices because each vertex needs to appear once per triangle.
-        var vertices = new Float32Array([
-            -1.0, -1.0, 1.0,
-            1.0, -1.0, 1.0,
-            1.0, 1.0, 1.0,
+        geometry.setDrawRange( 0, 0 );
+        var material = new THREE.LineBasicMaterial( {
+            vertexColors: THREE.VertexColors,
+            blending: THREE.AdditiveBlending,
+            transparent: true
+        } );
+        // var material = new THREE.MeshBasicMaterial({color: 0xffffff});
+        var particle_linesMesh = new THREE.LineSegments( geometry, material );
+        this.threejs_dev.scene.add(particle_linesMesh)
+        var effectController = {
+            showDots: true,
+            showLines: true,
+            minDistance: 150,
+            limitConnections: false,
+            maxConnections: 20,
+            particleCount: 500
+        };
 
-        ]);
-
-
-// itemSize = 3 because there are 3 values (components) per vertex
-        console.log('geometry', geometry)
-        geometry_test.addAttribute('position', new THREE.BufferAttribute(vertices, 3));
-        console.log('geometry_test', geometry_test)
-        var material = new THREE.MeshBasicMaterial({color: 0xffffff});
-        var mesh = new THREE.Mesh(geometry_test, material);
-        // this.threejs_dev.scene.add(mesh)
-
+        var group_init_particle = {
+            'particle_linesMesh':particle_linesMesh,
+            'particleCount':particleCount,
+            'particlesData':particlesData,
+            'pointCloud':pointCloud,
+            'effectController':effectController,
+            'positions':positions,
+            'colors':colors,
+            'particle_linesMesh':particle_linesMesh
+        }
+        this.addMeshToScene('group_init_particle', group_init_particle)
     }
 
     this.group_init_particle_animate = function () {
 
-        // var vertexpos = 0;
-        // var colorpos = 0;
-        // var numConnected = 0;
-        // for ( var i = 0; i <  this.threejs_dev.meshsmaxParticleCount; i++ )
-        //     this.threejs_dev.meshs.particlesData[ i ].numConnections = 0;
-        // for ( var i = 0; i < this.threejs_dev.meshsmaxParticleCount; i++ ) {
-        //     // get the particle
-        //     var particleData = this.threejs_dev.meshs.particlesData[i];
-        //     this.threejs_dev.meshs.particlePositions[ i * 3     ] += particleData.velocity.x;
-        //     this.threejs_dev.meshs.particlePositions[ i * 3 + 1 ] += particleData.velocity.y;
-        //     this.threejs_dev.meshs.particlePositions[ i * 3 + 2 ] += particleData.velocity.z;
-        //     if ( this.threejs_dev.meshs.particlePositions[ i * 3 + 1 ] < -this.threejs_dev.meshs.rHalf || this.threejs_dev.meshs.particlePositions[ i * 3 + 1 ] > this.threejs_dev.meshs.rHalf )
-        //         particleData.velocity.y = -particleData.velocity.y;
-        //     if ( this.threejs_dev.meshs.particlePositions[ i * 3 ] < -this.threejs_dev.meshs.rHalf || this.threejs_dev.meshs.particlePositions[ i * 3 ] > this.threejs_dev.meshs.rHalf )
-        //         particleData.velocity.x = -particleData.velocity.x;
-        //     if ( this.threejs_dev.meshs.particlePositions[ i * 3 + 2 ] < -this.threejs_dev.meshs.rHalf || this.threejs_dev.meshs.particlePositions[ i * 3 + 2 ] > this.threejs_dev.meshs.rHalf )
-        //         particleData.velocity.z = -particleData.velocity.z;
-        //     if ( this.threejs_dev.meshs.effectController.limitConnections && particleData.numConnections >= this.threejs_dev.meshs.effectController.maxConnections )
-        //         continue;
-        //     // Check collision
-        //     for ( var j = i + 1; j < this.threejs_dev.meshsmaxParticleCount; j++ ) {
-        //         var particleDataB = this.threejs_dev.meshs.particlesData[ j ];
-        //         if ( this.threejs_dev.meshs.effectController.limitConnections && particleDataB.numConnections >= this.threejs_dev.meshs.effectController.maxConnections )
-        //             continue;
-        //         var dx = this.threejs_dev.meshs.particlePositions[ i * 3     ] - this.threejs_dev.meshs.particlePositions[ j * 3     ];
-        //         var dy = this.threejs_dev.meshs.particlePositions[ i * 3 + 1 ] - this.threejs_dev.meshs.particlePositions[ j * 3 + 1 ];
-        //         var dz = this.threejs_dev.meshs.particlePositions[ i * 3 + 2 ] - this.threejs_dev.meshs.particlePositions[ j * 3 + 2 ];
-        //         var dist = Math.sqrt( dx * dx + dy * dy + dz * dz );
-        //         if ( dist < this.threejs_dev.meshs.effectController.minDistance ) {
-        //             particleData.numConnections++;
-        //             particleDataB.numConnections++;
-        //             var alpha = 1.0 - dist / this.threejs_dev.meshs.effectController.minDistance;
-        //             this.threejs_dev.meshs.positions[ vertexpos++ ] = this.threejs_dev.meshs.particlePositions[ i * 3     ];
-        //             this.threejs_dev.meshs.positions[ vertexpos++ ] = this.threejs_dev.meshs.particlePositions[ i * 3 + 1 ];
-        //             this.threejs_dev.meshs.positions[ vertexpos++ ] = this.threejs_dev.meshs.particlePositions[ i * 3 + 2 ];
-        //             this.threejs_dev.meshs.positions[ vertexpos++ ] = this.threejs_dev.meshs.particlePositions[ j * 3     ];
-        //             this.threejs_dev.meshs.positions[ vertexpos++ ] = this.threejs_dev.meshs.particlePositions[ j * 3 + 1 ];
-        //             this.threejs_dev.meshs.positions[ vertexpos++ ] = this.threejs_dev.meshs.particlePositions[ j * 3 + 2 ];
-        //             this.threejs_dev.meshs.colors[ colorpos++ ] = alpha;
-        //             this.threejs_dev.meshs.colors[ colorpos++ ] = alpha;
-        //             this.threejs_dev.meshs.colors[ colorpos++ ] = alpha;
-        //             this.threejs_dev.meshs.colors[ colorpos++ ] = alpha;
-        //             this.threejs_dev.meshs.colors[ colorpos++ ] = alpha;
-        //             this.threejs_dev.meshs.colors[ colorpos++ ] = alpha;
-        //             numConnected++;
-        //         }
-        //     }
-        // }
-        // // this.threejs_dev.meshs.group_init_particle_linesMesh.geometry.setDrawRange( 0, numConnected * 2 );
-        // // this.threejs_dev.meshs.group_init_particle_linesMesh.geometry.attributes.position.needsUpdate = true;
-        // // this.threejs_dev.meshs.group_init_particle_linesMesh.geometry.attributes.color.needsUpdate = true;
-        // this.threejs_dev.meshs.pointCloud.geometry.attributes.position.needsUpdate = true;
+        var particlePositions = this.threejs_dev.meshs.group_init_particle.pointCloud.geometry.attributes.position.array;
+        var particleCount = this.threejs_dev.meshs.group_init_particle.particleCount
+        var particlesData = this.threejs_dev.meshs.group_init_particle.particlesData
+        var effectController = this.threejs_dev.meshs.group_init_particle.effectController
+        var positions = this.threejs_dev.meshs.group_init_particle.positions
+        var colors = this.threejs_dev.meshs.group_init_particle.colors
+        var particle_linesMesh = this.threejs_dev.meshs.group_init_particle.particle_linesMesh
+        var pointCloud = this.threejs_dev.meshs.group_init_particle.pointCloud
+        var rHalf = this.box.r/2
+        var vertexpos = 0;
+        var colorpos = 0;
+        var numConnected = 0;
+        for ( var i = 0; i < particleCount; i++ )
+            particlesData[ i ].numConnections = 0;
+        for ( var i = 0; i < particleCount; i++ ) {
+            // get the particle
+            var particleData = particlesData[i];
+            particlePositions[ i * 3     ] += particleData.velocity.x;
+            particlePositions[ i * 3 + 1 ] += particleData.velocity.y;
+            particlePositions[ i * 3 + 2 ] += particleData.velocity.z;
+            if ( particlePositions[ i * 3 + 1 ] < -rHalf || particlePositions[ i * 3 + 1 ] > rHalf )
+                particleData.velocity.y = -particleData.velocity.y;
+            if ( particlePositions[ i * 3 ] < -rHalf || particlePositions[ i * 3 ] > rHalf )
+                particleData.velocity.x = -particleData.velocity.x;
+            if ( particlePositions[ i * 3 + 2 ] < -rHalf || particlePositions[ i * 3 + 2 ] > rHalf )
+                particleData.velocity.z = -particleData.velocity.z;
+            if ( effectController.limitConnections && particleData.numConnections >= effectController.maxConnections )
+                continue;
+            // Check collision
+            for ( var j = i + 1; j < particleCount; j++ ) {
+                var particleDataB = particlesData[ j ];
+                if ( effectController.limitConnections && particleDataB.numConnections >= effectController.maxConnections )
+                    continue;
+                var dx = particlePositions[ i * 3     ] - particlePositions[ j * 3     ];
+                var dy = particlePositions[ i * 3 + 1 ] - particlePositions[ j * 3 + 1 ];
+                var dz = particlePositions[ i * 3 + 2 ] - particlePositions[ j * 3 + 2 ];
+                var dist = Math.sqrt( dx * dx + dy * dy + dz * dz );
+                if ( dist < effectController.minDistance ) {
+                    particleData.numConnections++;
+                    particleDataB.numConnections++;
+                    var alpha = 1.0 - dist / effectController.minDistance;
+                    positions[ vertexpos++ ] = particlePositions[ i * 3     ];
+                    positions[ vertexpos++ ] = particlePositions[ i * 3 + 1 ];
+                    positions[ vertexpos++ ] = particlePositions[ i * 3 + 2 ];
+                    positions[ vertexpos++ ] = particlePositions[ j * 3     ];
+                    positions[ vertexpos++ ] = particlePositions[ j * 3 + 1 ];
+                    positions[ vertexpos++ ] = particlePositions[ j * 3 + 2 ];
+                    colors[ colorpos++ ] = alpha;
+                    colors[ colorpos++ ] = alpha;
+                    colors[ colorpos++ ] = alpha;
+                    colors[ colorpos++ ] = alpha;
+                    colors[ colorpos++ ] = alpha;
+                    colors[ colorpos++ ] = alpha;
+                    numConnected++;
+                }
+            }
+        }
+        particle_linesMesh.geometry.setDrawRange( 0, numConnected * 2 );
+        particle_linesMesh.geometry.attributes.position.needsUpdate = true;
+        particle_linesMesh.geometry.attributes.color.needsUpdate = true;
+        pointCloud.geometry.attributes.position.needsUpdate = true;
     }
     this.group_init_line = function () {
         var segments = 10000;
@@ -516,7 +574,7 @@ function timeLine(applyId) {
         var r = 50;
         for (var i = 0; i < segments; i++) {
 
-            var xyz = this.randomLinePoint(i,r,positions)
+            var xyz = this.randomLinePoint(i, r, positions)
             x = xyz[0]
             y = xyz[1]
             z = xyz[2]
@@ -533,7 +591,6 @@ function timeLine(applyId) {
         }
 
 
-
         var material = new THREE.LineBasicMaterial({vertexColors: THREE.VertexColors});
         var geometry = new THREE.BufferGeometry();
         geometry.addAttribute('position', new THREE.BufferAttribute(positions, 3));
@@ -542,9 +599,52 @@ function timeLine(applyId) {
         mesh = new THREE.LineSegments(geometry, material);
         this.threejs_dev.scene.add(mesh);
     }
+
+    this.init_dynamically_line = function () {
+        var MAX_POINTS = 200;
+
+// geometry
+        var geometry = new THREE.BufferGeometry();
+
+// attributes
+        var positions = new Float32Array(MAX_POINTS * 3); // 3 vertices per point
+
+        geometry.addAttribute('position', new THREE.BufferAttribute(positions, 3));
+
+// draw range
+        drawCount = 800; // draw the first 2 points, only
+        geometry.setDrawRange(0, drawCount);
+
+// material
+        var material = new THREE.LineBasicMaterial({color: 0xff0000});
+
+// line
+        dynamically_line = new THREE.Line(geometry, material);
+        this.threejs_dev.scene.add(dynamically_line);
+        this.addMeshToScene('dynamically_line',dynamically_line)
+    }
+    this.init_dynamically_line_animate = function () {
+        var positions = this.threejs_dev.meshs.dynamically_line.geometry.attributes.position.array;
+        var MAX_POINTS = 200;
+        var x = y = z = index = 0;
+
+        for ( var i = 0, l = MAX_POINTS; i < l; i ++ ) {
+
+            positions[ index ++ ] = x;
+            positions[ index ++ ] = y;
+            positions[ index ++ ] = z;
+
+            x += ( Math.random() - 0.5 ) * 30;
+            y += ( Math.random() - 0.5 ) * 30;
+            z += ( Math.random() - 0.5 ) * 30;
+
+        }
+        this.threejs_dev.meshs.dynamically_line.geometry.attributes.position.needsUpdate = true;
+    }
     /*###### 扩展方法  #############*/
     this.addMeshToScene = function (name, mesh) {
         this.threejs_dev.meshs[name] = mesh
+
     }
     this.generateLaserBodyCanvas = function () {
         // init canvas
@@ -660,7 +760,7 @@ function timeLine(applyId) {
     this.camera_animation = function () {
         this.threejs_dev.camera.position.set(0, 0, 20);
     }
-    this.randomLinePoint = function(i,r,positions){
+    this.randomLinePoint = function (i, r, positions) {
         var x = Math.random() * r - r / 2;
         var y = Math.random() * r - r / 2;
         var z = Math.random() * r - r / 2;
@@ -682,7 +782,64 @@ function timeLine(applyId) {
         //     console.log(111111111)
         //     return  [x,y,z,0]
         // }
-        return  [x,y,z,0]
+        return [x, y, z, 0]
+
+    }
+    
+    this.point_light_animate = function () {
+        var point_light_speed = 1
+
+        if(!this.threejs_dev.meshs.point_light.point_light_Left.hasOwnProperty('flag_speed')){
+            this.threejs_dev.meshs.point_light.point_light_Left.flag_speed = 0.3
+        }
+        if(!this.threejs_dev.meshs.point_light.point_light_right.hasOwnProperty('flag_speed')){
+            this.threejs_dev.meshs.point_light.point_light_right.flag_speed = 0.3
+        }
+        if(!this.threejs_dev.meshs.point_light.point_light_top.hasOwnProperty('flag_speed')){
+            this.threejs_dev.meshs.point_light.point_light_top.flag_speed = 0.5
+        }
+        if(!this.threejs_dev.meshs.point_light.point_light_bottom.hasOwnProperty('flag_speed')){
+            this.threejs_dev.meshs.point_light.point_light_bottom.flag_speed = 0.5
+        }
+
+        if(this.threejs_dev.meshs.point_light.point_light_Left.intensity<=0){
+            this.threejs_dev.meshs.point_light.point_light_Left.flag_speed = Math.abs(this.threejs_dev.meshs.point_light.point_light_Left.flag_speed)
+        }
+        else if(this.threejs_dev.meshs.point_light.point_light_Left.intensity>=20){
+            this.threejs_dev.meshs.point_light.point_light_Left.flag_speed = -Math.abs(this.threejs_dev.meshs.point_light.point_light_Left.flag_speed)
+        }
+        this.threejs_dev.meshs.point_light.point_light_Left.intensity += this.threejs_dev.meshs.point_light.point_light_Left.flag_speed
+        if(this.threejs_dev.meshs.point_light.point_light_right.intensity<=0){
+            this.threejs_dev.meshs.point_light.point_light_right.flag_speed = Math.abs(this.threejs_dev.meshs.point_light.point_light_right.flag_speed)
+        }
+        else if(this.threejs_dev.meshs.point_light.point_light_right.intensity>=20){
+            this.threejs_dev.meshs.point_light.point_light_right.flag_speed = -Math.abs(this.threejs_dev.meshs.point_light.point_light_right.flag_speed)
+        }
+        this.threejs_dev.meshs.point_light.point_light_right.intensity += this.threejs_dev.meshs.point_light.point_light_right.flag_speed
+
+        if(this.threejs_dev.meshs.point_light.point_light_top.intensity<=0){
+            this.threejs_dev.meshs.point_light.point_light_top.flag_speed = Math.abs(this.threejs_dev.meshs.point_light.point_light_top.flag_speed)
+        }
+        else if(this.threejs_dev.meshs.point_light.point_light_top.intensity >=20){
+            this.threejs_dev.meshs.point_light.point_light_top.flag_speed = -Math.abs(this.threejs_dev.meshs.point_light.point_light_top.flag_speed)
+
+        }
+        this.threejs_dev.meshs.point_light.point_light_top.intensity += this.threejs_dev.meshs.point_light.point_light_top.flag_speed
+
+        if(this.threejs_dev.meshs.point_light.point_light_bottom.intensity<=0){
+            this.threejs_dev.meshs.point_light.point_light_bottom.flag_speed = Math.abs(this.threejs_dev.meshs.point_light.point_light_bottom.flag_speed)
+
+        }
+        else if(this.threejs_dev.meshs.point_light.point_light_bottom.intensity>=20){
+            this.threejs_dev.meshs.point_light.point_light_bottom.flag_speed =- Math.abs(this.threejs_dev.meshs.point_light.point_light_bottom.flag_speed)
+
+        }
+        this.threejs_dev.meshs.point_light.point_light_bottom.intensity += this.threejs_dev.meshs.point_light.point_light_bottom.flag_speed
+
+        // this.threejs_dev.meshs.point_light.point_light_left -= point_light_speed+0.5
+        // console.log(this.threejs_dev.meshs.point_light)
+        // this.threejs_dev.meshs.point_light.forEach(function (v,k) {
+        // })
 
     }
 }

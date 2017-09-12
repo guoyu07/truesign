@@ -8,12 +8,16 @@ $(document).ready(function () {
     })
     timeline.group_init_particle()
     timeline.group_init_line()
+    // timeline.init_dynamically_line()
     function do_animate(){
         requestAnimationFrame(do_animate)
         timeline.threejs_dev.controls.update();
         timeline.threejs_dev.stats.update()
         timeline.do_render();
         timeline.group_init_particle_animate();
+        timeline.move_point_light_animate();
+        timeline.point_light_animate();
+        // timeline.init_dynamically_line_animate();
     }
     do_animate()
 
