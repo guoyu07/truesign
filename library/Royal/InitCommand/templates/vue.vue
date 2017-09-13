@@ -74,13 +74,13 @@ $str =  <<< TEMPLATE
         },
         computed: {
             ...mapGetters([
-                'socket_server_store',
+                'sysinfo',
             ])
         },
         created(){
             var vm = this
             this.server_app = 'Demo'
-            this.report_api = this.socket_server_store.apihost + '%s/'
+            this.report_api = this.sysinfo.apihost + '%s/'
             this.report_api = 'http://localhost:8089/'
             this.\$root.eventHub.\$emit('init_navmenu', '%s')
             this.\$root.eventHub.\$off('currect_row_index')

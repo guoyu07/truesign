@@ -5,7 +5,7 @@
  * Date: 9/13/17
  * Time: 10:21 AM
  */
-namespace Truesign\Adapter\api;
+namespace Truesign\Adapter\Techies;
 use Truesign\Adapter\Base\DbLibraryAdapter;
 use Royal\Data\Field;
 class paylogAdapter extends DbLibraryAdapter

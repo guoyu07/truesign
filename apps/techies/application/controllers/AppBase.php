@@ -1,5 +1,4 @@
 <?php
-
 use Royal\Validator\ParamValidator_CLI;
 use Royal\Validator\ParamRule;
 
@@ -61,16 +60,24 @@ class AppBaseController extends \ReInit\YafBase\Controller
 
     protected function inputError($code, $msg)
     {
-        echo json_encode(array('code' => $code, 'desc' => $msg));
+        $start_exec_time = \Yaf_Registry::get('START_EXEC_TIME');
+        $start_exec_memory = \Yaf_Registry::get('START_EXEC_MEMORY');
+
+
+        $exec=[
+            'execTime'=>\Royal\Util\helper::exeTime($start_exec_time),
+            'runMem'=>\Royal\Util\helper::run_mem($start_exec_memory)
+        ];
+        echo json_encode(array('code' => $code, 'desc' => $msg,'exec'=>$exec));
         \Yaf_Dispatcher::getInstance()->autoRender(FALSE);
     }
 
 
 
 
-    public function setResponseBody($data, string $info='', int $code=200){
+    public function setResponseBody($data){
         $helper = new \Royal\Util\helper();
-        $rev=$helper::getBody($data, $info, $code);
+//        $rev=$helper::getBody($data, $info, $code);
 
         if(IS_CLI) {
 //            $response = $this->getResponse();
@@ -78,16 +85,18 @@ class AppBaseController extends \ReInit\YafBase\Controller
             $response = $this->getResponse();
 
 //            $request = $this->getRequest();
-            $response_data['datatype']=gettype($rev);
-            $response_data['response_data']=$rev;
-            $response->contentBody=$response_data;
+//            $response_data['datatype']=gettype($rev);
+//            $response_data['response_data']=$rev;
+            $response->contentBody=$data;
         }else{
+            $start_exec_time = \Yaf_Registry::get('START_EXEC_TIME');
+            $start_exec_memory = \Yaf_Registry::get('START_EXEC_MEMORY');
             $rev['argv']=$this->getData();
             $rev['serv']=[
-                'execTime'=>\exeTime(SYS_START_TIME),
-                'runMem'=>\run_mem(SYS_MEMORY_USE)
+                'execTime'=>\exeTime($start_exec_time),
+                'runMem'=>\run_mem($start_exec_memory)
             ];
-            r($rev);
+//            r($rev);
         }
         return $rev;
     }

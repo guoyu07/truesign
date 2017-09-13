@@ -22,11 +22,10 @@ $adapters = array();
 
 $filesnames = scandir(APPLICATION_PATH.'/common/Adapter/');
 foreach ($filesnames as $k=>$dir){
-    if(!in_array(strtolower($dir),array('note'))){
+    if(!in_array(strtolower($dir),array('techies'))){
         unset($filesnames[$k]);
     }
 }
-var_dump($filesnames) ;
 foreach ($filesnames as $name){
     $adapterFiles =APPLICATION_PATH.'/common/Adapter/'.$name.'/*Adapter.php';
 
@@ -50,7 +49,7 @@ foreach ($adapters as $adapter) {
 
     $adpName = basename($filepath);
     $adp = new $adapter;
-    $app = $adp->belongApp();
+    $app = strtolower($adp->belongApp());
 
     $database = $adp->database();
     $table = $adp->table();

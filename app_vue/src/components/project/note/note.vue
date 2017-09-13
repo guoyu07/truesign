@@ -79,7 +79,7 @@
             var vm = this
             this.server_app = 'note'
             this.report_api = this.socket_server_store.apihost + 'Note/'
-            this.report_api = 'https://www.iamsee.com/'
+            this.report_api = 'http://localhost:8089/'
             this.$root.eventHub.$emit('init_navmenu', 'Note')
             this.$root.eventHub.$off('currect_row_index')
             this.$root.eventHub.$on('currect_row_index', () => {
@@ -131,9 +131,8 @@
                 //        axios.post(this.report_api + 'getNote', search_param, axios_config)
                     .then((res) => {
                         if (res.data.code === 0) {
-                            console.log('res.data',res.data)
+
                             let analysis_data = dbResponseAnalysis2WidgetData(res.data.response)
-                          console.log('analysis_data',analysis_data)
                             for (let index in analysis_data.searchWidget) {
 //                                      进行响应式set key
                                 //1.0版本

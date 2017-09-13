@@ -5,8 +5,8 @@
  * Date: 9/13/17
  * Time: 10:21 AM
  */
-namespace Techies\Adapter\api;
-use Techies\Adapter\Base\DbLibraryAdapter;
+namespace Truesign\Adapter\Techies;
+use Truesign\Adapter\Base\DbLibraryAdapter;
 use Royal\Data\Field;
 class userAdapter extends DbLibraryAdapter
 {
@@ -16,10 +16,10 @@ class userAdapter extends DbLibraryAdapter
     }
     public function database()
     {
-        return 'Techies';
+        return 'db_techies';
     }
     public function dbConfig(){
-        return 'Techies';
+        return 'techies';
     }
     public function table_Prefix()
     {

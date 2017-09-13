@@ -5,10 +5,15 @@
 import {router_spa} from '../components/project/spa/router-spa'
 
 const home = resolve => require(['../components/Home.vue'], resolve)
-const time2hope_index = resolve => require(['../components/time2hope/index.vue'], resolve)
-const base_threejs = resolve => require(['../components/time2hope/base_threejs.vue'], resolve)
-const timeline_threejs = resolve => require(['../components/time2hope/timeline_threejs.vue'], resolve)
-const note = resolve => require(['../components/project/note/note.vue'], resolve)
+const images = resolve => require(['../components/project/Techies/images.vue'], resolve)
+const pay_logs = resolve => require(['../components/project/Techies/pay_logs.vue'], resolve)
+const sysconfig = resolve => require(['../components/project/Techies/sysconfig.vue'], resolve)
+const user = resolve => require(['../components/project/Techies/user.vue'], resolve)
+const test = resolve => require(['../components/test/test.vue'], resolve)
+// const time2hope_index = resolve => require(['../components/time2hope/index.vue'], resolve)
+// const base_threejs = resolve => require(['../components/time2hope/base_threejs.vue'], resolve)
+// const timeline_threejs = resolve => require(['../components/time2hope/timeline_threejs.vue'], resolve)
+// const note = resolve => require(['../components/project/note/note.vue'], resolve)
 // const threejs_dev = resolve => require(['../components/effect/threejs_dev.vue'], resolve)
 // const threejs_dat_gui = resolve => require(['../components/effect/threejs_dat_gui.vue'], resolve)
 // const threejs_skybox = resolve => require(['../components/effect/threejs_skybox.vue'], resolve)
@@ -16,64 +21,46 @@ const note = resolve => require(['../components/project/note/note.vue'], resolve
 const routes = [
 
   {
-    name: 'home',
+    name: 'test',
     path: '/',
     meta: {
-      title: 'home'
+      title: 'test'
     },
-    component: home
+    component: test
   },
-  {
-    name: 'note',
-    path: '/note',
-    meta: {
-      title: 'note'
-    },
-    component: note
-  },
-  {
-    name: 'time2hope_index',
-    path: '/time2hope_index',
-    meta: {
-      title: 'time2hope_index'
-    },
-    component: time2hope_index,
-    children: [
-      {
-        name: 'timeline_threejs',
-        path: 'timeline_threejs',
+    {
+        name: 'images',
+        path: '/images',
         meta: {
-          title: 'timeline_threejs'
+            title: 'images'
         },
-        component: timeline_threejs
-      },
+        component: images
+    },
+    {
+        name: 'pay_logs',
+        path: '/pay_logs',
+        meta: {
+            title: 'pay_logs'
+        },
+        component: pay_logs
+    },
+    {
+        name: 'sysconfig',
+        path: '/sysconfig',
+        meta: {
+            title: 'sysconfig'
+        },
+        component: sysconfig
+    },
+    {
+        name: 'user',
+        path: '/user',
+        meta: {
+            title: 'user'
+        },
+        component: user
+    }
 
-      // {
-      //   name: 'threejs_dev',
-      //   path: 'threejs_dev',
-      //   meta: {
-      //     title: 'threejs_dev'
-      //   },
-      //   component: threejs_dev
-      // },
-      // {
-      //   name: 'threejs_dat_gui',
-      //   path: 'threejs_dat_gui',
-      //   meta: {
-      //     title: 'threejs_dat_gui'
-      //   },
-      //   component: threejs_dat_gui
-      // },
-      // {
-      //   name: 'threejs_skybox',
-      //   path: 'threejs_skybox',
-      //   meta: {
-      //     title: 'threejs_skybox'
-      //   },
-      //   component: threejs_skybox
-      // },
-    ]
-  },
 
 
 ]

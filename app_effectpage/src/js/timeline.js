@@ -3,7 +3,7 @@ function timeLine(applyId) {
     this.screenWidth = document.body.clientWidth   // 这里是给到了一个默认值 （这个很重要）
     this.screenHeight = document.body.clientHeight  // 这里是给到了一个默认值 （这个很重要）
     this.applyId = applyId
-    this.showhelper = false
+    this.showhelper = true
     this.threejs_dev = {
         stats: '',
         gui: '',
@@ -36,13 +36,12 @@ function timeLine(applyId) {
         }
     }
     this.start = function () {
-        this.threejs_dev.group_meshs = new THREE.Group();
 
         this.initStats()
         this.init_renderer()
         this.init_container()
         this.init_scene()
-        this.threejs_dev.scene.add(this.threejs_dev.group_meshs)
+        // this.threejs_dev.scene.add(this.threejs_dev.group_meshs)
 
         this.init_camera()
         this.init_helper()
@@ -151,7 +150,7 @@ function timeLine(applyId) {
         this.threejs_dev.controls.staticMoving = false;
         this.threejs_dev.controls.dynamicDampingFactor = 0.1;
         this.threejs_dev.controls.keys = [65, 83, 68];
-        this.threejs_dev.controls.target = new THREE.Vector3(0, 0, -15);
+        this.threejs_dev.controls.target = new THREE.Vector3(0, 0, 0);
 //                this.threejs_dev.controls.addEventListener('mousemove', this.do_render);
 
 
@@ -196,6 +195,24 @@ function timeLine(applyId) {
         spotLight.shadow.camera.near = 10;
         spotLight.shadow.camera.far = 200;
         this.threejs_dev.scene.add(spotLight);
+
+        /*箭头辅助*/
+        var origin = new THREE.Vector3( 0, 0, 0 );
+        var x_dir = new THREE.Vector3( 1, 0, 0 );
+        var y_dir = new THREE.Vector3( 0, 1, 0 );
+        var z_dir = new THREE.Vector3( 0, 0, 1 );
+
+        var length = 200;
+        var x_hex = 0xff0000;
+        var y_hex = 0x00FF00
+        var z_hex = 0x00FFFF
+        var x_arrowHelper = new THREE.ArrowHelper( x_dir, origin, length, x_hex );
+        var y_arrowHelper = new THREE.ArrowHelper( y_dir, origin, length, y_hex );
+        var z_arrowHelper = new THREE.ArrowHelper( z_dir, origin, length, z_hex );
+        this.threejs_dev.scene.add( x_arrowHelper );
+        this.threejs_dev.scene.add( y_arrowHelper );
+        this.threejs_dev.scene.add( z_arrowHelper );
+
         if (this.showhelper) {
             var lightHelper = new THREE.SpotLightHelper(spotLight);
             this.threejs_dev.scene.add(lightHelper);
@@ -212,12 +229,17 @@ function timeLine(applyId) {
             var gridHelper = new THREE.GridHelper(size, step);
             this.threejs_dev.scene.add(gridHelper);
 
-        }
-        var sphere = new THREE.SphereGeometry();
-        var object = new THREE.Mesh(sphere, new THREE.MeshBasicMaterial(0xff0000));
-        var box = new THREE.BoxHelper(object);
-        this.threejs_dev.scene.add(box);
 
+            var sphere = new THREE.SphereGeometry();
+            // var object = new THREE.Mesh(sphere, new THREE.MeshBasicMaterial({color:0xffffff}));
+            var object = new THREE.Mesh(sphere);
+
+            var box = new THREE.BoxHelper(object);
+            box.material.color.setHex(0xff2d00);
+            box.material.blending = THREE.AdditiveBlending;
+            box.material.transparent = true;
+            this.threejs_dev.scene.add(box);
+        }
         /*平行光*/
         var directionalLight = new THREE.DirectionalLight(0xffffff, 8);
         directionalLight.position.set(0, 0, 30);
@@ -421,17 +443,17 @@ function timeLine(applyId) {
     }
     this.group_init_particle = function () {
         var particlesData = [];
-        var particleCount = 100;
+        var particleCount = 2;
         var r = this.box.r;
         var rHalf = r / 2;
         this.addMeshToScene('particleCount', particleCount)
-        var box_helper = new THREE.BoxHelper(new THREE.Mesh(new THREE.BoxGeometry(r, r, r)));
-        box_helper.material.color.setHex(0x080808);
-        box_helper.material.blending = THREE.AdditiveBlending;
-        box_helper.material.transparent = true;
-        this.threejs_dev.scene.add(box_helper)
-
-
+        if(this.showhelper){
+            var box_helper = new THREE.BoxHelper(new THREE.Mesh(new THREE.BoxGeometry(r, r, r)));
+            box_helper.material.color.setHex(0xffffff);
+            box_helper.material.blending = THREE.AdditiveBlending;
+            box_helper.material.transparent = true;
+            this.threejs_dev.scene.add(box_helper)
+        }
         var particles = new THREE.BufferGeometry();
         var particlePositions = new Float32Array(particleCount * 3);
 
@@ -448,7 +470,7 @@ function timeLine(applyId) {
                 numConnections: 0
             } );
         }
-        particles.setDrawRange( 0, particleCount );
+        particles.setDrawRange( 0, particleCount ); /*wiki https://stackoverflow.com/questions/31399856/drawing-a-line-with-three-js-dynamically/31411794*/
         particles.addAttribute('position', new THREE.BufferAttribute(particlePositions, 3).setDynamic(true));
         var pMaterial = new THREE.PointsMaterial({
             color: 0xFFFFFF,
@@ -565,6 +587,29 @@ function timeLine(applyId) {
         particle_linesMesh.geometry.attributes.color.needsUpdate = true;
         pointCloud.geometry.attributes.position.needsUpdate = true;
     }
+
+    this.custom_group_init_particle = function (groupname,obj,particleType,moveWay,effect) {
+        var geometry = new THREE.BufferGeometry();
+// create a simple square shape. We duplicate the top left and bottom right
+// vertices because each vertex needs to appear once per triangle.
+        var vertices = new Float32Array( [
+            -1.0, -1.0,  1.0,
+            1.0, -1.0,  1.0,
+            1.0,  1.0,  1.0,
+
+            1.0,  1.0,  1.0,
+            -1.0,  1.0,  1.0,
+            -1.0, -1.0,  1.0
+        ] );
+
+// itemSize = 3 because there are 3 values (components) per vertex
+        geometry.addAttribute( 'position', new THREE.BufferAttribute( vertices, 3 ) );
+        geometry.computeBoundingSphere();
+        geometry.setDrawRange( 0, 3 );
+        var material = new THREE.MeshBasicMaterial( { color: 0xff0000 } );
+        var mesh = new THREE.Mesh( geometry, material );
+        this.addGroupMeshToScene('lineParticle','mesh',mesh)
+    }
     this.group_init_line = function () {
         var segments = 10000;
 
@@ -644,6 +689,14 @@ function timeLine(applyId) {
     /*###### 扩展方法  #############*/
     this.addMeshToScene = function (name, mesh) {
         this.threejs_dev.meshs[name] = mesh
+
+    }
+    this.addGroupMeshToScene = function (groupname,name,mesh) {
+        if(this.threejs_dev.group_meshs[groupname] === undefined){
+            this.threejs_dev.group_meshs[groupname] =  new THREE.Group()
+        }
+        this.threejs_dev.scene.add(this.threejs_dev.group_meshs[groupname])
+        this.threejs_dev.group_meshs[groupname].add(mesh)
 
     }
     this.generateLaserBodyCanvas = function () {

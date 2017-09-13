@@ -527,6 +527,7 @@
         created() {
             var vm = this
             console.log('this.param_apihost', this.param_apihost)
+
             if (!this.param_apihost) {
                 this.apihost = this.wechat_marketing_store.apihost
             }

@@ -1,6 +1,9 @@
 <template>
     <div class="testest" style="text-align: center;overflow: auto">
-        <button v-if="ctrl===9">123</button>
+        123
+
+        <input   style="border: 2px solid black;"  value="123" v-on:input="test">
+
     </div>
 </template>
 
@@ -8,24 +11,20 @@
     export default {
         data: function () {
             return {
-                ctrl:8
+                ctrl:8,
+                flag:false
             }
         },
         created(){
 
-
-                var $val =   new number(1)
-                console.log(typeof $val.valueOf())
-               
-
-                
-                
         },
         mounted(){
            
         },
         methods: {
-            
+            test(){
+                console.log(1)
+            }
         },
         updated(){
         },
