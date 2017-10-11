@@ -27,7 +27,7 @@ foreach ($filesnames as $k=>$dir){
 //    if(in_array($dir,array('.','..','Base','Sjtt','DbServer','Shadowsocks','User','Volume','Apps','wechat_marketing'))){
 //        unset($filesnames[$k]);
 //    }
-    if(!in_array(strtolower($dir),array('api'))){
+    if(!in_array(strtolower($dir),array('techies'))){
         unset($filesnames[$k]);
     }
 }
